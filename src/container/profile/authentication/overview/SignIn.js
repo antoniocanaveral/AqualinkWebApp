@@ -2,7 +2,7 @@ import UilFacebook from '@iconscout/react-unicons/icons/uil-facebook-f';
 import UilGithub from '@iconscout/react-unicons/icons/uil-github';
 import UilTwitter from '@iconscout/react-unicons/icons/uil-twitter';
 import { Button, Col, Form, Input, Row } from 'antd';
-import { Auth0Lock } from 'auth0-lock';
+//import { Auth0Lock } from 'auth0-lock';
 import React, { useCallback, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,12 +10,12 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { ReactSVG } from 'react-svg';
 import { AuthFormWrap } from './style';
-import { login, authOLogin } from '../../../../redux/authentication/actionCreator';
+import { login/*,authOLogin*/ } from '../../../../redux/authentication/actionCreator';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
-import { auth0options } from '../../../../config/auth0';
+//import { auth0options } from '../../../../config/auth0';
 
-const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+//const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+//const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 function SignIn() {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function SignIn() {
     checked: null,
   });
 
-  const lock = new Auth0Lock(clientId, domain, auth0options);
+  //const lock = new Auth0Lock(clientId, domain, auth0options);
 
   const handleSubmit = useCallback(
     (values) => {
@@ -35,17 +35,18 @@ function SignIn() {
     [navigate, dispatch],
   );
 
-  const handleAuthOSubmit = useCallback(
+/*  const handleAuthOSubmit = useCallback(
     (values) => {
       dispatch(authOLogin(values, () => navigate('/admin')));
     },
     [navigate, dispatch],
-  );
+  );*/
 
   const onChange = (checked) => {
     setState({ ...state, checked });
   };
 
+  /*
   lock.on('authenticated', (authResult) => {
     lock.getUserInfo(authResult.accessToken, (error) => {
       if (error) {
@@ -55,7 +56,7 @@ function SignIn() {
       lock.hide();
     });
   });
-
+*/
   return (
     <Row justify="center">
       <Col xxl={6} xl={8} md={12} sm={18} xs={24}>
@@ -115,9 +116,6 @@ function SignIn() {
                 </li>
               </ul>
               <div className="auth0-login">
-                <Link to="#" onClick={() => lock.show()}>
-                  SignIn with Auth0
-                </Link>
                 <Link to="/fbSignIn">SignIn With Firebase</Link>
               </div>
             </Form>

@@ -19,6 +19,8 @@ const { themeColor } = config;
 
 function ProviderConfig() {
   const { rtl, isLoggedIn, topMenu, mainContent } = useSelector((state) => {
+    //TODO: FIX LOGIN
+    state.auth.login=true;
     return {
       rtl: state.ChangeLayoutMode.rtlData,
       topMenu: state.ChangeLayoutMode.topMenu,
