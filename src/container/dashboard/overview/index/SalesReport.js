@@ -52,7 +52,7 @@ const SalesReport = React.memo(({ title }) => {
   const salesRevenueDatasets = [
     {
       data: salesRevenue.users[1],
-      borderColor: '#8231D3',
+      borderColor: '#0372CE',
       borderWidth: 3,
       fill: true,
       backgroundColor: () =>
@@ -65,7 +65,7 @@ const SalesReport = React.memo(({ title }) => {
       pointRadius: '0',
       hoverRadius: '9',
       pointBorderColor: '#fff',
-      pointBackgroundColor: '#8231D3',
+      pointBackgroundColor: '#0372CE',
       hoverBorderWidth: 5,
       amount: '$7,596',
       amountClass: 'current-amount',

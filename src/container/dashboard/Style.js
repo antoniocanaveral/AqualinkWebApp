@@ -904,7 +904,7 @@ const RevenueGeneratedWrapper = Styled.div`
                 background-color: #E6D5F6;
                 svg{
                     path{
-                        fill: #8231D3;
+                        fill: #0372CE;
                     }
                 }
             }

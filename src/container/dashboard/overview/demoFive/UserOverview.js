@@ -23,8 +23,8 @@ const UserOverview = React.memo(() => {
   const userOverviewDataset = [
     {
       data: userOverviewData[overviewTab].target,
-      backgroundColor: '#8231D380',
-      hoverBackgroundColor: '#8231D3',
+      backgroundColor: '#0372CE80',
+      hoverBackgroundColor: '#0372CE',
       label: 'target',
       maxBarThickness: 10,
       barThickness: 16,

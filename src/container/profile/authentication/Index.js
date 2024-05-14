@@ -15,7 +15,7 @@ const AuthLayout = (WraperContent) => {
         <AuthenticationWrap style={{ backgroundImage: `url("${require('../../../static/img/admin-bg-light.png')}")` }}>
           <div className="ninjadash-authentication-wrap">
             <div className="ninjadash-authentication-brand">
-              <img src={require(`../../../static/img/logo_dark.svg`).default} alt="" />
+              <img className='aqx-authentication-brand' src={require(`../../../static/img/AQx-IMG/logo-aqualink-240x36px-bgLite-02.svg`).default} alt="AquaLink" />
             </div>
             <WraperContent />
           </div>

@@ -128,8 +128,8 @@ const ThemeLayout = (WrappedComponent) => {
                       <img
                         src={
                           layoutMode === 'lightMode'
-                            ? require(`../static/img/logo_dark.svg`).default
-                            : require(`../static/img/logo_white.svg`).default
+                            ? require(`../static/img/AQx-IMG/aqualink-dark.svg`).default
+                            : require(`../static/img/AQx-IMG/aqualink-lite.svg`).default
                         }
                         alt=""
                       />

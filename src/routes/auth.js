@@ -2,8 +2,8 @@ import React, { lazy, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import AuthLayout from '../container/profile/authentication/Index';
 
-const ForgotPass = lazy(() => import('../container/profile/authentication/overview/ForgotPassword'));
-const Login = lazy(() => import('../container/profile/authentication/overview/SignIn'));
+const ForgotPass = lazy(() => import('../container/profile/authentication/overview/AQx-ForgotPassword'));
+const Login = lazy(() => import('../container/profile/authentication/overview/AQx-SignIn'));
 const SignUp = lazy(() => import('../container/profile/authentication/overview/Signup'));
 const FbLogin = lazy(() => import('../container/profile/authentication/overview/FbSignIn'));
 const FbSignUp = lazy(() => import('../container/profile/authentication/overview/FbSignup'));

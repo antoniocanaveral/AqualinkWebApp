@@ -51,7 +51,7 @@ const SalesOverview = React.memo(() => {
             type="circle"
             width={230}
             percent={75}
-            strokeColor="#8231D3"
+            strokeColor="#0372CE"
             trailColor={mainContent === 'lightMode' ? '#E6D5F6' : '#322035'}
           />
           <div className="ninjadash-sales-content d-flex">

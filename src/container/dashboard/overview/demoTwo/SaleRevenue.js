@@ -32,12 +32,12 @@ const SaleRevenue = React.memo(({ title }) => {
   const salesRevenueDatasets = [
     {
       data: salesRevenue[revenue].users,
-      borderColor: '#8231D3',
+      borderColor: '#0372CE',
       borderWidth: 3,
       fill: true,
       backgroundColor: () =>
         chartLinearGradient(document.getElementById('ninjadash-sales-revenue'), 300, {
-          start: '#8231D340',
+          start: '#0372CE40',
           end: '#ffffff05',
         }),
       label: 'Current period',
@@ -45,7 +45,7 @@ const SaleRevenue = React.memo(({ title }) => {
       pointRadius: '0',
       hoverRadius: '9',
       pointBorderColor: '#fff',
-      pointBackgroundColor: '#8231D3',
+      pointBackgroundColor: '#0372CE',
       hoverBorderWidth: 5,
       amount: '$7,596',
       amountClass: 'current-amount',

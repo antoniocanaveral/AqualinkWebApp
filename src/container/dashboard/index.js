@@ -14,17 +14,17 @@ const BrowserState = lazy(() => import('./overview/index/BrowserState'));
 function Dashboard() {
   const PageRoutes = [
     {
-      path: 'index',
-      breadcrumbName: 'Dashboard',
+      path: '/admin',
+      breadcrumbName: 'AquaLink',
     },
     {
-      path: 'first',
-      breadcrumbName: 'Demo 1',
+      path: '/admin',
+      breadcrumbName: 'Smart Aquaculture Ecosystem',
     },
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Dashboard" routes={PageRoutes} />
+      <PageHeader className="ninjadash-page-header-main" title="Bienvenido Esteban!" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>

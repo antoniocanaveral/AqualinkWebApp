@@ -32,7 +32,7 @@ const SourceRevenueGenerated = React.memo(() => {
     datasets: [
       {
         data: [1540, 1540, 5346],
-        backgroundColor: ['#00AAFF', '#8231D3', '#5840FF'],
+        backgroundColor: ['#00AAFF', '#0372CE', '#5840FF'],
       },
     ],
     scales: {

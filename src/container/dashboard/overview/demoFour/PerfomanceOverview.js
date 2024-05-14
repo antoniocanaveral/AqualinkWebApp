@@ -54,7 +54,7 @@ const PerformanceOverview = React.memo(() => {
   const datasets = [
     {
       data: [10, 60, 30],
-      backgroundColor: ['#FA8B0C', '#8231D3', '#00E4EC'],
+      backgroundColor: ['#FA8B0C', '#0372CE', '#00E4EC'],
       centerText: '',
       centerTextLabel: 'Completed',
     },

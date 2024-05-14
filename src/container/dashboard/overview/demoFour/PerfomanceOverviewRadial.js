@@ -22,7 +22,7 @@ const dataSets = {
         enabled: true,
       },
     },
-    colors: ['#8231D3', '#00AAFF', '#FA8B0C'],
+    colors: ['#0372CE', '#00AAFF', '#FA8B0C'],
     plotOptions: {
       radialBar: {
         hollow: {

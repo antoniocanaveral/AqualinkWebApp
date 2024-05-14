@@ -58,7 +58,7 @@ const MessageBox = React.memo(() => {
   const content = (
     <UserActionDropDown className="ninjadash-top-dropdown">
       <Heading className="ninjadash-top-dropdown__title" as="h5">
-        <span className="title-text">Messages</span>
+        <span className="title-text">Mensajes AquaLink</span>
         <Badge className="badge-success" count={3} />
       </Heading>
       <Scrollbars
@@ -77,7 +77,7 @@ const MessageBox = React.memo(() => {
                   <img src={require('../../../static/img/avatar/NoPath.png')} alt="" />
                   <figcaption>
                     <Heading as="h5">
-                      Software <span className="color-success">3 hrs ago</span>
+                      Software <span className="color-success">hace 1 minuto</span>
                     </Heading>
                     <div>
                       <span className="ninjadash-top-dropdownText">Lorem ipsum dolor amet cosec...</span>
@@ -95,12 +95,12 @@ const MessageBox = React.memo(() => {
                   <img src={require('../../../static/img/avatar/NoPath.png')} alt="" />
                   <figcaption>
                     <Heading as="h5">
-                      Software <span className="color-success">3 hrs ago</span>
+                      Software <span className="color-success">hace 1 hora</span>
                     </Heading>
                     <div>
                       <span className="ninjadash-top-dropdownText">Lorem ipsum dolor amet cosec...</span>
                       <span>
-                        <Badge className="badge-success" count={3} />
+                        <Badge className='badge-success' count={3} />
                       </span>
                     </div>
                   </figcaption>
@@ -113,12 +113,12 @@ const MessageBox = React.memo(() => {
                   <img src={require('../../../static/img/avatar/NoPath.png')} alt="" />
                   <figcaption>
                     <Heading as="h5">
-                      Software <span className="color-success">3 hrs ago</span>
+                      Software <span className="color-success">hace 3 horas</span>
                     </Heading>
                     <div>
                       <span className="ninjadash-top-dropdownText">Lorem ipsum dolor amet cosec...</span>
                       <span>
-                        <Badge className="badge-success" count={3} />
+                        <Badge className="badge-success" count={1} />
                       </span>
                     </div>
                   </figcaption>
@@ -166,7 +166,7 @@ const MessageBox = React.memo(() => {
         </div>
       </Scrollbars>
       <Link className="btn-seeAll" to="#">
-        See all messages
+        Ver todos los mensajes
       </Link>
     </UserActionDropDown>
   );

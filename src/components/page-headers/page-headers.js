@@ -13,7 +13,7 @@ function PageHeader(props) {
           <Breadcrumb.Item key={index}>{route.breadcrumbName}</Breadcrumb.Item>
         ) : (
           <Breadcrumb.Item key={index}>
-            <ReactSVG src={require(`../../static/img/icon/home.svg`).default} />{' '}
+            <img src={require(`../../static/img/AQx-IMG/shrimp16.svg`).default} /> {' '}
             <Link to={route.path}>{route.breadcrumbName}</Link>
           </Breadcrumb.Item>
         ),

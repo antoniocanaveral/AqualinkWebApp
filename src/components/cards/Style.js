@@ -366,8 +366,8 @@ const OverviewCardMeshWrap = Styled.div`
                 }
                 svg{
                     @media only screen and (max-width: 1599px){
-                        width: 20px;
-                        height: 20px;
+                        width: 36px;
+                        height: 36px;
                     }
                 }
                 &.ninjadash-primary{
@@ -434,10 +434,10 @@ const OverviewCardMeshWrap = Styled.div`
                     margin-bottom: 0;
                     color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
                     @media only screen and (max-width: 1599px){
-                        font-size: 24px;
+                        font-size: 16px;
                     }
                     @media only screen and (max-width: 1399px){
-                        font-size: 18px;
+                        font-size: 16px;
                     }
                     @media only screen and (max-width: 991px){
                         font-size: 20px;

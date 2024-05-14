@@ -17,6 +17,10 @@ const AuthenticationWrap = Styled.div`
   .ninjadash-authentication-brand{
     text-align: center;
   }
+  .aqx-authentication-brand{
+    text-align: center;
+    width:300px;
+  }
 `;
 
 const Content = Styled.div`

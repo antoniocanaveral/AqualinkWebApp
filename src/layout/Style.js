@@ -101,7 +101,7 @@ const LayoutContainer = Styled.div`
             padding: 0 20px 0 30px;
             background-color: ${({ theme }) => theme[theme.mainContent]['brand-background']};
             @media only screen and (max-width: 1499px){
-                min-width: 220px;
+                min-width: 280px;
             }
             @media only screen and (max-width: 767px){
                 padding: 0 20px 0 8px;
@@ -134,7 +134,7 @@ const LayoutContainer = Styled.div`
                     ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 0;
                 }
                 img{
-                    max-width: ${({ theme }) => (theme.topMenu ? '140px' : '120px')};
+                    max-width: ${({ theme }) => (theme.topMenu ? '140px' : '189px')};
                     width: 100%;
                     @media only screen and (max-width: 475px){
                         max-width: ${({ theme }) => (theme.topMenu ? '100px' : '100px')};
@@ -656,7 +656,7 @@ const LayoutContainer = Styled.div`
                         width: 100%;
                         display: flex !important;
                         align-items: center;
-                        text-transform: capitalize;
+                        text-transform: none;
                         .feather{
                             width: 16px;
                             color: ${({ theme }) => theme['extra-light-color']};

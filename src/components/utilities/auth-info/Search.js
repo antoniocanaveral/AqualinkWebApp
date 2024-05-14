@@ -40,7 +40,7 @@ const SearchBar = React.memo(() => {
       <div className="ninjadash-searchbar">
         <Form form={form} name="ninjadash-search">
           <Form.Item name="search-input">
-            <Input placeholder="Search Here" />
+            <Input placeholder="Buscar aquí..." />
           </Form.Item>
         </Form>
       </div>

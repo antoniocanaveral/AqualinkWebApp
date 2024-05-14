@@ -73,9 +73,9 @@ function ComingSoon() {
               <Cards headless>
                 <div className="ninjaDash-logo">
                   {mainContent === 'lightMode' ? (
-                    <img src={require('../../static/img/logo_dark.svg').default} alt="" />
+                    <img src={require('../../static/img/AQx-IMG/aqualink-dark.svg').default} alt="" />
                   ) : (
-                    <img src={require('../../static/img/logo_white.svg').default} alt="" />
+                    <img src={require('../../static/img/AQx-IMG/aqualink-lite.svg').default} alt="" />
                   )}
                 </div>
                 <div className="coming-soon-content">

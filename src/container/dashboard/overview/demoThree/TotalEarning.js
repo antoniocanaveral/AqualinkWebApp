@@ -51,7 +51,7 @@ const TotalEarning = React.memo(() => {
                             borderColor: item.lineColor,
                             borderWidth: 3,
                             fill: false,
-                            pointBackgroundColor: '#8231D3',
+                            pointBackgroundColor: '#0372CE',
                             pointBorderColor: '#fff',
                             pointHoverBorderColor: '#fff',
                             pointBorderWidth: 0,

@@ -26,7 +26,7 @@ const AuthInfo = React.memo(() => {
   const dispatch = useDispatch();
 
   const [state, setState] = useState({
-    flag: 'en',
+    flag: 'esp',
   });
   const navigate = useNavigate();
   const { i18n } = useTranslation();
@@ -42,41 +42,31 @@ const AuthInfo = React.memo(() => {
     <UserDropDwon>
       <div className="user-dropdwon">
         <figure className="user-dropdwon__info">
-          <img src={require('../../../static/img/avatar/chat-auth.png')} alt="" />
+          <img src={require('../../../static/img/AQx-IMG/avatar48b.png')} alt="" />
           <figcaption>
-            <Heading as="h5">Abdullah Bin Talha</Heading>
-            <p>UI Expert</p>
+            <Heading as="h5">Esteban Gallegos</Heading>
+            <p>Super Administrador</p>
           </figcaption>
         </figure>
         <ul className="user-dropdwon__links">
           <li>
             <Link to="#">
-              <UilUser /> Profile
+              <UilUser /> Perfil
             </Link>
           </li>
           <li>
             <Link to="#">
-              <UilSetting /> Settings
+              <UilSetting /> Configuración
             </Link>
           </li>
           <li>
             <Link to="#">
-              <UilDollarSign /> Billing
-            </Link>
-          </li>
-          <li>
-            <Link to="#">
-              <UilUsersAlt /> Activity
-            </Link>
-          </li>
-          <li>
-            <Link to="#">
-              <UilBell /> Help
+              <UilBell /> Centro de Ayuda
             </Link>
           </li>
         </ul>
         <Link className="user-dropdwon__bottomAction" onClick={SignOut} to="#">
-          <UilSignout /> Sign Out
+          <UilSignout /> Salir
         </Link>
       </div>
     </UserDropDwon>
@@ -94,16 +84,12 @@ const AuthInfo = React.memo(() => {
   const country = (
     <NavAuth>
       <Link onClick={(e) => onFlagChangeHandle('en', e)} to="#">
-        <img src={require('../../../static/img/flag/en.png')} alt="" />
+        <img src={require('../../../static/img/AQx-IMG/en.png')} alt="" />
         <span>English</span>
       </Link>
       <Link onClick={(e) => onFlagChangeHandle('esp', e)} to="#">
-        <img src={require('../../../static/img/flag/esp.png')} alt="" />
-        <span>Spanish</span>
-      </Link>
-      <Link onClick={(e) => onFlagChangeHandle('ar', e)} to="#">
-        <img src={require('../../../static/img/flag/ar.png')} alt="" />
-        <span>Arabic</span>
+        <img src={require('../../../static/img/AQx-IMG/esp.png')} alt="" />
+        <span>Español</span>
       </Link>
     </NavAuth>
   );
@@ -114,18 +100,19 @@ const AuthInfo = React.memo(() => {
       <Message />
       <Notification />
       <Settings />
+
       <div className="ninjadash-nav-actions__item ninjadash-nav-actions__language">
         <Dropdown placement="bottomRight" content={country} trigger="click">
           <Link to="#" className="ninjadash-nav-action-link">
-            <img src={require(`../../../static/img/flag/${flag}.png`)} alt="" />
+            <img src={require(`../../../static/img/AQx-IMG/${flag}.png`)} alt="" />
           </Link>
         </Dropdown>
       </div>
       <div className="ninjadash-nav-actions__item ninjadash-nav-actions__author">
         <Popover placement="bottomRight" content={userContent} action="click">
           <Link to="#" className="ninjadash-nav-action-link">
-            <Avatar src="https://cdn0.iconfinder.com/data/icons/user-pictures/100/matureman1-512.png" />
-            <span className="ninjadash-nav-actions__author--name">Md. Rafiq</span>
+            <Avatar src="../../../static/img/AQx-IMG/ecssa.png" />
+            <span className="ninjadash-nav-actions__author--name">EcSSA SAS</span>
             <UilAngleDown />
           </Link>
         </Popover>
