@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { getItem } from '../../utility/localStorageControl';
 
-const API_ENDPOINT = `${process.env.REACT_APP_API_ENDPOINT}/api`;
+
+const API_ENDPOINT = `${process.env.REACT_APP_API_ENDPOINT}/api/v1`;
+console.log(API_ENDPOINT);
 
 const authHeader = () => ({
   Authorization: `Bearer ${getItem('access_token')}`,
@@ -17,6 +19,7 @@ const client = axios.create({
 
 class DataService {
   static get(path = '') {
+    console.log("-->1");
     return client({
       method: 'GET',
       url: path,
@@ -62,22 +65,44 @@ client.interceptors.request.use((config) => {
   const requestConfig = config;
   const { headers } = config;
   requestConfig.headers = { ...headers, Authorization: `Bearer ${getItem('access_token')}` };
-
+  console.log("---->");
   return requestConfig;
 });
 
 client.interceptors.response.use(
-  (response) => response,
+  (response) => { console.log("--->2"); return response;},
   (error) => {
     /**
      * Do something in case the response returns an error code [3**, 4**, 5**] etc
      * For example, on token expiration retrieve a new access token, retry a failed request etc
      */
+    console.log("--->3");
+    console.log( JSON.stringify(error) );
     const { response } = error;
     const originalRequest = error.config;
     if (response) {
-      if (response.status === 500) {
+      if(response.status === 401) {
+        return Promise.reject({
+          withError: true,
+          invalidTokenError: true,
+          networkError: false,
+          error
+        });
+      } else if(response.status === 504) {
+        return Promise.reject({
+          withError: true,
+          invalidTokenError: false,
+          networkError: true,
+          error
+        });
+      } else if (response.status === 500) {
         // do something here
+        return Promise.reject({
+          withError: true,
+          invalidTokenError: false,
+          networkError: false,
+          error
+        });
       } else {
         return originalRequest;
       }

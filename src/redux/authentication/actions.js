@@ -3,6 +3,12 @@ const actions = {
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
   LOGIN_ERR: 'LOGIN_ERR',
 
+  ROLES_BEGIN: 'ROLES_BEGIN',
+  ROLES_SUCCESS: 'ROLES_SUCCESS',
+  ROLES_ERR: 'ROLES_ERR',
+
+  MODULE_SELECTION: 'MODULE_SELECTION',
+
   LOGOUT_BEGIN: 'LOGOUT_BEGIN',
   LOGOUT_SUCCESS: 'LOGOUT_SUCCESS',
   LOGOUT_ERR: 'LOGOUT_ERR',
@@ -23,6 +29,34 @@ const actions = {
   loginErr: (err) => {
     return {
       type: actions.LOGIN_ERR,
+      err,
+    };
+  },
+
+
+  rolesBegin: () => {
+    return {
+      type: actions.ROLES_BEGIN,
+    };
+  },
+
+  rolesSuccess: (data) => {
+    return {
+      type: actions.ROLES_SUCCESS,
+      data,
+    };
+  },
+
+  moduleSelection: (data) => {
+    return {
+      type: actions.MODULE_SELECTION,
+      data,
+    };
+  },
+
+  rolesErr: (err) => {
+    return {
+      type: actions.ROLES_ERR,
       err,
     };
   },

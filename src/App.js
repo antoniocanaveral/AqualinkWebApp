@@ -10,7 +10,12 @@ import config from './config/config';
 import store from './redux/store';
 
 import Admin from './routes/admin';
+import Farm from './routes/farm';
+import Lab from './routes/lab';
+import Custody from './routes/custody';
+import Control from './routes/control';
 import Auth from './routes/auth';
+import Ecosystem from './routes/ecosystem';
 import './static/css/style.css';
 
 const NotFound = lazy(() => import('./container/pages/404'));
@@ -18,14 +23,20 @@ const NotFound = lazy(() => import('./container/pages/404'));
 const { themeColor } = config;
 
 function ProviderConfig() {
-  const { rtl, isLoggedIn, topMenu, mainContent } = useSelector((state) => {
+  const { rtl, isLoggedIn, topMenu, mainContent, selectedModule, selectedRoleId, withFarms, withLabs, withCustody, withControl } = useSelector((state) => {
     //TODO: FIX LOGIN
-    state.auth.login=true;
+    //state.auth.login=true;
     return {
       rtl: state.ChangeLayoutMode.rtlData,
       topMenu: state.ChangeLayoutMode.topMenu,
       mainContent: state.ChangeLayoutMode.mode,
       isLoggedIn: state.auth.login,
+      selectedModule: state.auth.selectedModule,
+      selectedRoleId: state.auth.selectedRoleId,
+      withFarms: state.auth.withFarms,
+      withLabs: state.auth.withLabs,
+      withCustody: state.auth.withCustody,
+      withControl: state.auth.withControl,
     };
   });
 
@@ -46,20 +57,27 @@ function ProviderConfig() {
       <ThemeProvider theme={{ ...themeColor, rtl, topMenu, mainContent }}>
         <>
           <Router basename={process.env.PUBLIC_URL}>
-            {!isLoggedIn ? (
+            {!isLoggedIn || !selectedRoleId ? (
               <Routes>
                 <Route path="/*" element={<Auth />} />{' '}
               </Routes>
             ) : (
-              <Routes>
-                <Route path="/admin/*" element={<ProtectedRoute path="/*" Component={Admin} />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            )}
-            {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
-              <Routes>
-                <Route path="/" element={<Navigate to="/admin" />} />
-              </Routes>
+              <>
+              {!selectedModule ? (
+                <Routes>
+                  <Route path="/*" element={<ProtectedRoute path="/*" Component={Ecosystem} />} />
+                </Routes>
+              ):(
+                <Routes>
+                  { selectedModule === "FARM" && <Route path="/farm" element={<ProtectedRoute path="/*" Component={Farm} />} /> }
+                  { selectedModule === "LAB" && <Route path="/lab" element={<ProtectedRoute path="/*" Component={Lab} />} /> }
+                  { selectedModule === "CUSTODY" && <Route path="/custody" element={<ProtectedRoute path="/*" Component={Custody} />} /> }
+                  { selectedModule === "CONTROL" && <Route path="/control" element={<ProtectedRoute path="/*" Component={Control} />} /> }
+                  <Route path="/*" element={<ProtectedRoute path="/*" Component={Ecosystem} />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              )}
+              </>
             )}
           </Router>
         </>

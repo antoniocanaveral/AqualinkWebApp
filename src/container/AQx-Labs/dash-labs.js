@@ -11,10 +11,10 @@ const SalesByLocation = lazy(() => import('../dashboard/overview/index/SalesByLo
 const TopSellingProduct = lazy(() => import('../dashboard/overview/index/TopSellingProducts'));
 const BrowserState = lazy(() => import('../dashboard/overview/index/BrowserState'));
 
-function DashboardFarms() {
+function DashboardLabs() {
   const PageRoutes = [
     {
-      path: '/admin',
+      path: '/lab',
       breadcrumbName: 'AquaLink',
     },
     {
@@ -24,7 +24,7 @@ function DashboardFarms() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Aqualink Camaroneras Control Panel" routes={PageRoutes} />
+      <PageHeader className="ninjadash-page-header-main" title="Aqualink Laboratorios Control Panel" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>
@@ -102,4 +102,4 @@ function DashboardFarms() {
   );
 }
 
-export default DashboardFarms;
+export default DashboardLabs;

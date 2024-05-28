@@ -1,6 +1,7 @@
 import UilFacebook from '@iconscout/react-unicons/icons/uil-facebook-f';
 import UilGithub from '@iconscout/react-unicons/icons/uil-github';
 import UilTwitter from '@iconscout/react-unicons/icons/uil-twitter';
+import Alert from '../../../../components/alerts/alerts';
 import { Button, Col, Form, Input, Row } from 'antd';
 //import { Auth0Lock } from 'auth0-lock';
 import React, { useCallback, useState } from 'react';
@@ -25,38 +26,41 @@ function SignIn() {
   const [state, setState] = useState({
     checked: null,
   });
+  const [withError, setWithError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   //const lock = new Auth0Lock(clientId, domain, auth0options);
 
   const handleSubmit = useCallback(
     (values) => {
-      dispatch(login(values, () => navigate('/admin')));
+      dispatch(login(values, (isCompleted, error) => {
+        if(error) {
+          console.log( JSON.stringify(error) );
+          setWithError(true);
+          if(error.invalidTokenError) {
+            setErrorMsg("Usuario y/o contraseña incorrectos.");
+          } else if(error.networkError) {
+            setErrorMsg("No es posible conectar con el servidor.");
+          } else {
+            setErrorMsg("Ocurrió un error desconocido");
+          }
+        } else {
+          if(isCompleted) {
+            navigate('/ecosystem');
+          } else {
+            navigate('/roles');
+          }
+        }
+      }));
     },
     [navigate, dispatch],
   );
 
-/*  const handleAuthOSubmit = useCallback(
-    (values) => {
-      dispatch(authOLogin(values, () => navigate('/admin')));
-    },
-    [navigate, dispatch],
-  );*/
 
   const onChange = (checked) => {
     setState({ ...state, checked });
   };
 
-  /*
-  lock.on('authenticated', (authResult) => {
-    lock.getUserInfo(authResult.accessToken, (error) => {
-      if (error) {
-        return;
-      }
-      handleAuthOSubmit(authResult);
-      lock.hide();
-    });
-  });
-*/
   return (
     <Row justify="center">
       <Col xxl={6} xl={8} md={12} sm={18} xs={24}>
@@ -66,8 +70,15 @@ function SignIn() {
           </div>
           <div className="ninjadash-authentication-content">
             <Form name="login" form={form} onFinish={handleSubmit} layout="vertical">
+
+              {
+                withError && (<div style={{marginBottom: 15}}>
+                  <Alert message="Error" description={errorMsg} type="error" />
+                </div> )
+              }
+
               <Form.Item
-                name="email"
+                name="userName"
                 rules={[{ message: 'Por favor ingrese su usuario o correo electrónico!', required: true }]}
                 initialValue=""
                 label=""

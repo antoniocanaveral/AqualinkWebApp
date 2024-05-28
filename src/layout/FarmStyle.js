@@ -703,20 +703,7 @@ const LayoutContainer = Styled.div`
         }
 
     }
-    .atbd-main-onepage-layout{
-        ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: ${({ theme }) => '0px'};
-        margin-top: 74px;
-        transition: 0.3s ease;
-        
-        @media only screen and (max-width: 1150px){
-            ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: auto !important;
-        }
-        @media print {
-            width: 100%;
-            margin-left: 0;
-            margin-right: 0;
-        }
-    }
+
     .atbd-main-layout{
         ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: ${({ theme }) =>
   theme.topMenu ? 0 : '280px'};
