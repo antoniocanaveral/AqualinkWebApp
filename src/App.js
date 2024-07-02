@@ -70,9 +70,10 @@ function ProviderConfig() {
               ):(
                 <Routes>
                   { selectedModule === "FARM" && <Route path="/farm" element={<ProtectedRoute path="/*" Component={Farm} />} /> }
-                  { selectedModule === "LAB" && <Route path="/lab" element={<ProtectedRoute path="/*" Component={Lab} />} /> }
-                  { selectedModule === "CUSTODY" && <Route path="/custody" element={<ProtectedRoute path="/*" Component={Custody} />} /> }
+                  { selectedModule === "LAB" && <Route path="/lab/*" element={<ProtectedRoute path="/*" Component={Lab} />} /> }
+                  { selectedModule === "CUSTODY" && <Route path="/custody/*" element={<ProtectedRoute path="/*" Component={Custody} />} /> }
                   { selectedModule === "CONTROL" && <Route path="/control" element={<ProtectedRoute path="/*" Component={Control} />} /> }
+                  <Route path="/admin/*" element={<ProtectedRoute path="/*" Component={Admin} />} />
                   <Route path="/*" element={<ProtectedRoute path="/*" Component={Ecosystem} />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

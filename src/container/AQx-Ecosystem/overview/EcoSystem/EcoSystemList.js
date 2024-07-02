@@ -1,95 +1,32 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Row, Col } from 'antd';
 import SystemCard from '../../../../components/cards/SystemCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {useNavigate } from 'react-router-dom';
-import { selectModule, logOut} from '../../../../redux/authentication/actionCreator';
+import { selectModule, loadUserAccess} from '../../../../redux/authentication/actionCreator';
 
 const OverviewDataList = React.memo(() => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { withFarms, withLabs, withCustody, withControl } = useSelector((state) => {
-    return {
-      withFarms: state.auth.withFarms && state.auth.withFarms === 'true',
-      withLabs: state.auth.withLabs && state.auth.withLabs === 'true',
-      withCustody: state.auth.withCustody && state.auth.withCustody === 'true',
-      withControl: state.auth.withControl && state.auth.withControl === 'true'
-    };
-  });
+  useEffect(() => {
+    dispatch(loadUserAccess());
+  }, [dispatch]);
 
-  const [labApp, setLabApp] = useState({
-    id: 1,
-    icon: "biomasa.svg",
-    label: "AquaLink - Laboratorios",
-    canAccess: withLabs
-  });
-  const [farmApp, setFarmApp] = useState({
-    id: 2,
-    icon: "biomasa.svg",
-    label: "AquaLink - Camaroneras",
-    canAccess: withFarms
-  });
-  const [custodyApp, setCustodyApp] = useState({
-    id: 3,
-    icon: "biomasa.svg",
-    label: "AquaLink - Custodia",
-    canAccess: withCustody
-  });
-  const [controlApp, setControlApp] = useState({
-    id: 4,
-    icon: "biomasa.svg",
-    label: "AquaLink - Control",
-    canAccess: withControl
-  });
+  const withFarms = useSelector((state) => state.auth.withFarms);
+  const farmsOrgs = useSelector((state) => state.auth.farmsOrgs);
+  const withLabs = useSelector((state) => state.auth.withLabs);
+  const labsOrgs = useSelector((state) => state.auth.labsOrgs);
+  const withCustody = useSelector((state) => state.auth.withCustody);
+  const custodyOrgs = useSelector((state) => state.auth.custodyOrgs);
+  const withControl = useSelector((state) => state.auth.withControl);
+  const controlsOrgs = useSelector((state) => state.auth.controlsOrgs);
 
-  console.log(withControl);
-  console.log(controlApp);
-
-  
-
-  const handleSubmit = useCallback(
-    (values) => {
-      console.log(values);
-      /* dispatch(logOut(values, () => {
-        console.log( values );
-      })); */
-    },
-    [navigate, dispatch],
-  );
-
-  const goToLab = useCallback(
-    (values) => {
-      dispatch(selectModule("LAB", () => {
-        navigate('/lab');
-      }));
-    },
-    [navigate, dispatch],
-  );
-
-  const goToFarms = useCallback(
-    (values) => {
-      dispatch(selectModule("FARM", () => {
-        navigate('/farm');
-      }));
-    },
-    [navigate, dispatch],
-  );
-
-  const goToCustody = useCallback(
-    (values) => {
-      dispatch(selectModule("CUSTODY", () => {
-        navigate('/custody');
-      }));
-    },
-    [navigate, dispatch],
-  );
-
-  const goToControl = useCallback(
-    (values) => {
-      dispatch(selectModule("CONTROL", () => {
-        navigate('/control');
+  const gotModule = useCallback(
+    (moduleKey, orgInfo, url) => {
+     dispatch(selectModule(moduleKey, orgInfo, () => {
+        navigate(url);
       }));
     },
     [navigate, dispatch],
@@ -101,16 +38,20 @@ const OverviewDataList = React.memo(() => {
           <h1>AquaLink EcoSystem</h1>
         </Col>
         <Col xl={6} xs={24}>
-          <SystemCard data={labApp} onPress={goToLab}/>
+          <SystemCard data={{id: 'labs', icon: "biomasa.svg", label: "AquaLink - Laboratorios", 
+            canAccess: withLabs, accessItems: labsOrgs}} onPress={(orgId, orgName, orgEmail) => gotModule('LAB', { orgId, orgName, orgEmail }, '/lab')} />
         </Col>
         <Col xl={6} xs={24}>
-          <SystemCard data={farmApp} onPress={goToFarms}/>
+          <SystemCard data={{id: 'farms', icon: "biomasa.svg", label: "AquaLink - Camaroneras", 
+            canAccess: withFarms, accessItems: farmsOrgs}} onPress={(orgId, orgName, orgEmail) => gotModule('FARM', { orgId, orgName, orgEmail }, '/farm')} />
         </Col>
         <Col xl={6} xs={24}>
-          <SystemCard data={custodyApp} onPress={goToCustody}/>
+          <SystemCard data={{id: 'custody', icon: "biomasa.svg", label: "AquaLink - Custodia", 
+            canAccess: withCustody, accessItems: custodyOrgs}} onPress={(orgId, orgName, orgEmail) => gotModule('CUSTODY', { orgId, orgName, orgEmail }, '/custody')} />
         </Col>
         <Col xl={6} xs={24}>
-          <SystemCard data={controlApp} onPress={goToControl}/>
+          <SystemCard data={{id: 'control', icon: "biomasa.svg", label: "AquaLink - Control", 
+            canAccess: withControl, accessItems: controlsOrgs}} onPress={(orgId, orgName, orgEmail) => gotModule('CONTROL', { orgId, orgName, orgEmail }, '/control')} />
         </Col>
       
     </Row>

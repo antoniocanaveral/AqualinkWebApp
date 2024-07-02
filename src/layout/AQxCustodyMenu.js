@@ -168,6 +168,22 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
+    getItem(
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('logistica')}</NavTitle>,
+      'submenu-logistica',
+      null,
+      null,
+      'group',
+    ),
+    getItem(t('Coordinación'), 'coord-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/coords`}>
+          {t('Ver')} {t('Coordinaciones')}
+        </NavLink>,
+        'light',
+        null,
+      )
+    ]),
     getItem(t('Visualización'), 'layout', !topMenu && <UilWindowSection />, [
       getItem(
         <NavLink

@@ -7,14 +7,14 @@ import { HeaderWrapper, PageHeaderStyle } from './style';
 function PageHeader(props) {
   const { title, subTitle, routes, buttons, ghost, bgColor, className } = props;
   const breadcrumb = routes ? (
-    <Breadcrumb separator={<span className="ninjadash-seperator" />}>
+    <Breadcrumb separator={<span className="ninjadash-seperator" />} >
       {routes.map((route, index) =>
         index + 1 === routes.length ? (
           <Breadcrumb.Item key={index}>{route.breadcrumbName}</Breadcrumb.Item>
         ) : (
           <Breadcrumb.Item key={index}>
-            <img src={require(`../../static/img/AQx-IMG/shrimp16.svg`).default} /> {' '}
-            <Link to={route.path}>{route.breadcrumbName}</Link>
+            <img src={require(`../../static/img/AQx-IMG/shrimp16.svg`).default} style={{marginRight: 10}}/> {' '}
+            <Link to={route.path} style={{display: "contents"}}>{route.breadcrumbName}</Link>
           </Breadcrumb.Item>
         ),
       )}

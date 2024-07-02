@@ -7,6 +7,8 @@ const actions = {
   ROLES_SUCCESS: 'ROLES_SUCCESS',
   ROLES_ERR: 'ROLES_ERR',
 
+  LOAD_ACCESS: 'LOAD_ACCESS',
+
   MODULE_SELECTION: 'MODULE_SELECTION',
 
   LOGOUT_BEGIN: 'LOGOUT_BEGIN',
@@ -80,6 +82,12 @@ const actions = {
       err,
     };
   },
+  loadAccess: (data) => {
+    return {
+      type: actions.LOAD_ACCESS,
+      data,
+    };
+  }
 };
 
 export default actions;

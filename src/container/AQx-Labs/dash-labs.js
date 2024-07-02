@@ -3,6 +3,7 @@ import { Row, Col, Skeleton } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
+import Cookies from 'js-cookie';
 
 const OverviewDataList = lazy(() => import('../dashboard/overview/demoFarm/OverviewDataList'));
 const SalesReport = lazy(() => import('../dashboard/overview/index/SalesReport'));
@@ -15,7 +16,7 @@ function DashboardLabs() {
   const PageRoutes = [
     {
       path: '/lab',
-      breadcrumbName: 'AquaLink',
+      breadcrumbName: Cookies.get('orgName'),
     },
     {
       path: 'first',
@@ -24,7 +25,7 @@ function DashboardLabs() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Aqualink Laboratorios Control Panel" routes={PageRoutes} />
+      <PageHeader className="ninjadash-page-header-main" title="Panel de Control" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>

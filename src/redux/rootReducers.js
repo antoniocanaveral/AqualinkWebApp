@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 import { firestoreReducer } from 'redux-firestore';
 import authReducer from './authentication/reducers';
+import labReducer from './lab/reducers';
+import custodyReducer from './custody/reducers';
 import Calender from './calendar/reducers';
 import cartData from './cart/reducers';
 import { chatReducer, groupChatReducer, SingleChatGroupReducer, SingleChatReducer } from './chat/reducers';
@@ -46,6 +48,8 @@ const rootReducers = combineReducers({
   userGroup: userGroupReducer,
   team: teamReducer,
   auth: authReducer,
+  lab: labReducer,
+  custody: custodyReducer,
   gallery: galleryReducer,
   email: emailReducer,
   emailSingle: SingleEmailReducer,

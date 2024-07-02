@@ -9,7 +9,7 @@ import { Scrollbars } from '@pezhmanparsaee/react-custom-scrollbars';
 import { connect } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import MenueItems from './MenueItems';
+import MenueItems from './MenueItems2';
 import { FooterStyle, LayoutContainer, SmallScreenAuthInfo, TopMenuSearch } from './Style';
 import TopMenu from './TopMenu';
 import Search from '../components/utilities/auth-info/Search';

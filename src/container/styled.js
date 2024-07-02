@@ -1,5 +1,11 @@
 import Styled from 'styled-components';
 
+const Action = Styled.div`
+  .active{
+    color: #FA8B0C;
+  }
+`;
+
 const Main = Styled.div`
     padding: 0px 30px 20px;
     min-height: 715px;
@@ -2765,7 +2771,7 @@ const TableWrapper = Styled.div`
         }
         .table-actions{
             text-align: ${({ theme }) => (theme.rtl ? 'left' : 'right')};
-            min-width: 150px !important;
+            min-width: 50px !important;
             button{
                 height: 40px;
                 padding: 0 11px;
@@ -2831,13 +2837,88 @@ const TableWrapper = Styled.div`
             color: ${({ theme }) => theme['success-color']};
             background-color: ${({ theme }) => theme['success-color']}15;
         }
+        &.ninjadash-status-CONFIRMADO{
+            color: ${({ theme }) => theme['success-color']};
+            background-color: ${({ theme }) => theme['success-color']}15;
+        }
         &.ninjadash-status-deactiveted{
+            color: ${({ theme }) => theme['warning-color']};
+            background-color: ${({ theme }) => theme['warning-color']}15;
+        }
+        &.ninjadash-status-rejected{
+            color: ${({ theme }) => "#b3b3b3"};
+            background-color: ${({ theme }) => "#636363"}15;
+        }
+        &.ninjadash-status-POR_COORDINAR{
             color: ${({ theme }) => theme['warning-color']};
             background-color: ${({ theme }) => theme['warning-color']}15;
         }
         &.ninjadash-status-blocked{
             color: ${({ theme }) => theme['danger-color']};
             background-color: ${({ theme }) => theme['danger-color']}15;
+        }
+        &.ninjadash-status-none{
+            color: ${({ theme }) => theme['danger-color']};
+            background-color: ${({ theme }) => theme['danger-color']}15;
+        }
+        &.ninjadash-status-waiting{
+            color: ${({ theme }) => "#c9ac4b"};
+            background-color: ${({ theme }) => "#c47616"}15;
+        }
+        &.ninjadash-status-asigned{
+            color: ${({ theme }) => theme['success-color']};
+            background-color: ${({ theme }) => theme['success-color']}15;
+        }
+    }
+`;
+
+const CoordStatusWrapper = Styled.div`
+    .ninjadash-status{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        text-transform: capitalize;
+        font-weight: 500;
+        padding: 0 12px;
+        min-height: 24px;
+        border-radius: 15px;
+        margin: 12px 0px;
+        &.ninjadash-status-active{
+            color: ${({ theme }) => theme['success-color']};
+            background-color: ${({ theme }) => theme['success-color']}15;
+        }
+        &.ninjadash-status-CONFIRMADO{
+            color: ${({ theme }) => theme['success-color']};
+            background-color: ${({ theme }) => theme['success-color']}15;
+        }
+        &.ninjadash-status-deactiveted{
+            color: ${({ theme }) => theme['warning-color']};
+            background-color: ${({ theme }) => theme['warning-color']}15;
+        }
+        &.ninjadash-status-rejected{
+            color: ${({ theme }) => "#b3b3b3"};
+            background-color: ${({ theme }) => "#636363"}15;
+        }
+        &.ninjadash-status-POR_COORDINAR{
+            color: ${({ theme }) => theme['warning-color']};
+            background-color: ${({ theme }) => theme['warning-color']}15;
+        }
+        &.ninjadash-status-blocked{
+            color: ${({ theme }) => theme['danger-color']};
+            background-color: ${({ theme }) => theme['danger-color']}15;
+        }
+        &.ninjadash-status-none{
+            color: ${({ theme }) => theme['danger-color']};
+            background-color: ${({ theme }) => theme['danger-color']}15;
+        }
+        &.ninjadash-status-waiting{
+            color: ${({ theme }) => "#c9ac4b"};
+            background-color: ${({ theme }) => "#c47616"}15;
+        }
+        &.ninjadash-status-asigned{
+            color: ${({ theme }) => theme['success-color']};
+            background-color: ${({ theme }) => theme['success-color']}15;
         }
     }
 `;
@@ -3383,6 +3464,1126 @@ const TopToolBox = Styled.div`
     }
 `;
 
+const FormComponentsWrap = Styled.div`
+    .sDash_datepicker-list{
+        .ant-picker.ant-picker-range{
+            width: 100%;
+        }
+    }
+    .sDash_editor{
+        border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-secondary']};
+        border-radius: 4px;
+        .EditorToolbar__root___3_Aqz{
+            padding: 12px 20px 0;
+        }
+        .DraftEditor-root{
+            min-height: 100px;
+            .public-DraftEditorPlaceholder-root{
+                padding: 12px 20px 0;
+            }
+        }
+        select{
+            margin-top: -4px;
+        }
+        .Dropdown__value___34Py9{
+            &:after,
+            &:before{
+                ${({ theme }) => (theme.rtl ? 'right' : 'left')}: auto;
+                ${({ theme }) => (theme.rtl ? 'left' : 'right')}: 10px;
+            }
+        }
+    }
+    .sDash_slider-list{
+        margin: -25px 0;
+        .ant-slider{
+            margin: 25px 0;
+        }
+    }
+`;
+
+const FormValidationWrap = Styled.div`
+    .ant-card-body{
+        padding: 30px 25px 50px 25px !important;
+    }
+    .ant-form-item-has-error{
+        .ant-form-item-explain{
+            font-size: 13px;
+        }
+    }
+    .ant-form-item{
+        .ant-form-item-label{
+            >label{
+                color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+            }
+        }
+    }
+    .sDash_agree-check{
+        .ant-form-item-control-input{
+            min-height: auto;
+        }
+        .ant-form-item-has-error{
+            .ant-checkbox-wrapper{
+                span{
+                    font-size: 13px;
+                    color: ${({ theme }) => theme['danger-color']};
+                }
+                .ant-checkbox{
+                    border-color: ${({ theme }) => theme['danger-color']}30;
+                    &.ant-checkbox-checked{
+                        border-color: ${({ theme }) => theme['danger-color']}30;
+                        &:after{
+                            border-color: ${({ theme }) => theme['danger-color']}30;
+                        }
+                        .ant-checkbox-inner{
+                            &:after{
+                                border-color: ${({ theme }) => theme['danger-color']};
+                            }
+                        }
+                    }
+                    .ant-checkbox-inner{
+                        border-color: ${({ theme }) => theme['danger-color']}30;
+                        background-color: ${({ theme }) => theme['danger-color']}30;
+                    }
+                }
+            }
+        }
+        .ant-form-item-explain{
+            margin-left: 25px;
+            font-size: 13px;
+        }
+    }
+    .ninjadash-form-action{
+        button{
+            border-radius: 4px;
+            padding: 6.4px 29.2px;
+            height: 44px;
+        }
+    }
+    .ant-input-status-error:not(.ant-input-disabled):not(.ant-input-borderless).ant-input, 
+    .ant-input-status-error:not(.ant-input-disabled):not(.ant-input-borderless).ant-input:hover{
+        background-color: ${({ theme }) => theme[theme.mainContent]['input-bg']};
+    }
+`;
+
+const DropDownListComponents = Styled.div`
+    .ninjadash_dropdown-list{
+        .ant-dropdown-trigger{
+            font-size: 14px;
+            font-weight: 400;
+            color: #9299B8;
+            width: 100%;
+            justify-content: flex-start;
+            &:not(:last-child){
+                margin-bottom: 25px;
+            }
+        }
+    }
+`;
+
+const HorizontalFormStyleWrap = Styled.div`
+    .ant-card{
+        margin-bottom: 25px
+    }
+    .ant-form-horizontal{
+        label{
+            display: inline-block;
+            font-weight: 500;
+            margin-bottom: 24px;
+            @media only screen and (max-width: 767px) {
+                margin-bottom: 12px;
+            }
+        }
+        .ant-form-item{
+            margin-bottom: 25px !important;
+        }
+        .ant-input-affix-wrapper > input.ant-input{
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+        .ant-input-affix-wrapper .ant-input-prefix svg{
+            width: 16px;
+            height: 16px;
+            color: ${({ theme }) => theme[theme.mainContent]['extra-light-text']};
+        }
+        .ninjadash-form-action{
+            margin: -7.5px;
+            button{
+                font-size: 14px;
+                font-weight: 500;
+                border-radius: 4px;
+                margin: 7.5px;
+                padding: 6.4px 19px;
+                &.ant-btn-light{
+                    height: 44px;
+                    color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+                    background-color: ${({ theme }) => theme[theme.mainContent]['border-color-default']};
+                    border-color: ${({ theme }) => theme[theme.mainContent]['border-color-default']};
+                }
+            }
+            .ant-btn-light{
+                background-color: ${({ theme }) => theme[theme.mainContent]['main-background-light']};
+            }
+        }
+    }
+    &.sDash_input-form{
+        .ant-picker{
+            width: 100%;
+            &:focus{
+                outline: none;
+                box-shadow: 0 0;
+            }
+        }
+    }
+    ant-picker-input{
+        &::placeholder{
+            color: #9299B8 !important;
+        }
+    }
+`;
+
+const WizardBlock = Styled.div`
+    
+    >.ant-card{
+        .ant-card-body{
+            padding: 50px 0 !important;
+        }
+        .steps-content{
+            .ant-card-body{
+                padding: 25px !important;
+                @media only screen and (max-width: 575px) {
+                    padding: 15px !important;
+                }
+            }
+        }
+    }
+    
+`;
+
+const InvoiceAction = Styled.div`
+    text-align: ${({ theme }) => (theme.rtl ? 'left' : 'right')};
+    margin: 90px -5px 10px;
+    @media only screen and (max-width: 991px){
+        margin-top: 50px;
+    }
+    @media only screen and (max-width: 479px){
+        text-align: center;
+        margin-top: 30px;
+    }
+    .ant-btn-default{
+        color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+        background: ${({ theme }) => theme['bg-color-light']};
+        border: 1px solid ${({ theme }) => theme['border-color-light']};
+    }
+    button{
+        padding: 0 25px !important;
+        margin: 5px;
+        @media only screen and (max-width: 479px){
+            margin-bottom 10px;
+        }
+        svg,
+        i{
+            color: ${({ theme }) => theme[theme.mainContent]['light-text']};
+        }
+        .feather-download{
+            color: #fff;
+        }
+        svg +span{
+            ${({ theme }) => (theme.rtl ? 'margin-right' : 'margin-left')}: 6px;
+        }
+    }
+`;
+
+const WizardWrapper = Styled.div`
+    color:#eee;
+    &.ninjadash-wizard-page{
+        padding: 25px 0;
+    }
+    &.bordered-wizard{
+        padding: 0;
+    }
+    .steps-action button.btn-next svg {
+        ${({ theme }) => (theme.rtl ? 'margin-right' : 'margin-left')}: 10px;
+        transform: rotateY(${({ theme }) => (theme.rtl ? '180deg' : '0deg')})
+    }
+    .steps-action button.btn-prev svg {
+        ${({ theme }) => (!theme.rtl ? 'margin-right' : 'margin-left')}: 10px;
+        transform: rotateY(${({ theme }) => (theme.rtl ? '180deg' : '0deg')})
+    }
+    .ant-steps-vertical > .ant-steps-item:not(:last-child) > .ant-steps-item-container > .ant-steps-item-tail{
+        @media only screen and (max-width: 575px) {
+            display: none;
+        }
+    }
+    .ant-steps {
+        @media only screen and (max-width: 767px) {
+            flex-flow: column;
+            align-items: center;
+        }
+    }
+    .ant-steps-item-container{
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        width: 50%;
+        ${({ theme }) => (!theme.rtl ? 'padding-left' : 'padding-right')}: 15px;
+        @media only screen and (max-width: 991px) {
+            width: 100%;
+            ${({ theme }) => (!theme.rtl ? 'padding-left' : 'padding-right')}: 0;
+        }
+        @media only screen and (max-width: 767px) {
+            font-size: 15px;
+        }
+        .ant-steps-item-tail{
+            @media only screen and (max-width: 480px) {
+                background: #C5CAE1;
+                top: 35px !important;
+                padding: 20px 0 8px !important;
+            }
+        }
+        .ant-steps-item-content{
+            @media only screen and (max-width: 480px) {
+                min-height: auto !important;
+            }
+        }
+    }
+    .steps-content{
+        margin-top: 72px !important;
+        @media only screen and (max-width: 1599px) {
+            min-height: 252px !important;
+        }
+        @media only screen and (max-width: 1199px) {
+            margin-top: 45px !important;
+        }
+        @media only screen and (max-width: 575px) {
+            margin-top: 30px !important;
+        }
+    }
+    .ant-steps-item-container{
+        position: relative;
+        &:after{
+            position: absolute;
+            ${({ theme }) => (!theme.rtl ? 'left' : 'right')}: 100%;
+            top: 35px;
+            color: #333;
+            background-image: url(${require('../static/img/progress.png')});
+            width: 110%;
+            height: 6px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: transparent !important;
+            content: '';
+            @media only screen and (max-width: 1399px) {
+                width: 120%;
+            }
+            @media only screen and (max-width: 991px) {
+                display: none;
+            }
+        }
+        .ant-steps-item-tail{
+            &:after{
+                height: 80%;
+            }
+        }
+    }
+    .wizard-step-item{
+        .ant-steps-item-container{
+            &:after{
+                background-image: url(${require('../static/img/progress.png')});
+            }
+        }
+    }
+    .wizard-steps-item-active{
+        .ant-steps-item-container{
+            &:after{
+                background-image: url(${require('../static/img/progress-active.png')});
+            }
+        }
+    }
+    .success-step-item,
+    .ant-steps-item-finish{
+        .ant-steps-item-container{
+            &:after{
+                background-image: url(${require('../static/img/progress-success.png')});
+            }
+        }
+    }
+    .ant-steps-item{
+        padding: ${({ theme }) => (theme.rtl ? '0 0 0 25px !important' : '0 25px 0 0 !important')} ;
+        @media only screen and (max-width: 767px) {
+            padding: 0 !important;
+            &:not(:last-child){
+                margin-bottom: 20px;
+            }
+        }
+        &:last-child{
+            ${({ theme }) => (!theme.rtl ? 'padding-left' : 'padding-right')}: 15px !important;
+            @media only screen and (max-width: 767px) {
+                padding: 0 !important;
+            }
+            .ant-steps-item-container{
+                &:after{
+                    display: none;
+                }
+            }
+        }
+        &:last-child{
+            @media only screen and (max-width: 991px) {
+                flex: 1 1;
+            }
+        }
+        .ant-steps-item-title{
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 8px;
+            padding: ${({ theme }) => (theme.rtl ? '0 10px 0 0' : '0 0 0 10px')};
+            
+            color: ${({ theme }) => theme['gray-solid']} !important;
+            @media only screen and (max-width: 1210px) {
+                padding: ${({ theme }) => (!theme.rtl ? '0 0 0 20px' : '0 20px 0 0')};
+            }
+            @media only screen and (max-width: 767px) {
+                padding: 0;
+            }
+            &:after{
+                display: none;
+                @media only screen and (max-width: 991px) {
+                    display: none;
+                }
+            }
+        }
+        .ant-steps-item-icon{
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            border: 0 none;
+            background-color: ${({ theme }) => theme[theme.mainContent]['input-bg']};
+            box-shadow: 10px 0 20px ${({ theme }) => theme[theme.mainContent]['gray-text']}15;
+            @media only screen and (max-width: 767px) {
+                ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 0;
+                width: 35px;
+                height: 35px;
+                line-height: 35px;
+            }
+            .ant-steps-icon{
+                font-size: 16px;
+                font-weight: 500;
+                color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+                @media only screen and (max-width: 767px) {
+                    font-size: 15px;
+                }
+            }
+        }
+        &.ant-steps-item-active{
+            .ant-steps-item-icon{
+                background-color: ${({ theme }) => theme['primary-color']};
+                .ant-steps-icon{
+                    color: #fff;
+                }
+                svg{
+                    color: #fff;
+                }
+            }
+            .ant-steps-item-title{
+                color: ${({ theme }) => theme[theme.mainContent]['dark-text']} !important;
+            }
+            &.ant-steps-item-finish{
+                .ant-steps-item-title{
+                    color: ${({ theme }) => theme[theme.mainContent]['light-text']}; !important;
+                }
+            }
+        }
+        &.ant-steps-item-finish{
+            .ant-steps-item-icon{
+                background: ${({ theme }) => theme['success-color']} !important;
+                .ant-steps-icon{
+                    color: #fff;
+                }
+                .ant-steps-finish-icon{
+                    svg{
+                        color: #fff;
+                    }
+                }
+                
+            }
+        }
+    }
+    .basic-form-inner{
+        width: 580px;
+        @media only screen and (max-width: 575px){
+            width: 100%
+        }
+        .ant-form-item{
+            .ant-input-password.ant-input-affix-wrapper{
+                background-color: ${({ theme }) => theme[theme.mainContent]['input-bg']};
+                border-color: ${({ theme }) => theme[theme.mainContent]['border-color-secondary']};
+                ${({ theme }) => (!theme.rtl ? 'padding-left' : 'padding-right')}: 0;
+            }
+        }
+        .ant-form-item-label{
+            label{
+                font-weight: 400;
+                color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+            }
+        }
+        .ant-form-item-control-input{
+            .ant-input{
+                padding: 12px 20px;
+            }
+        }
+    }
+    .steps-action{
+        .btn-next{
+            &:focus{
+                background-color: ${({ theme }) => theme['primary-color']};
+            }
+        }
+        button.ant-btn-light{
+            color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+            &:hover{
+                color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+                border-color: ${({ theme }) => theme[theme.mainContent]['border-color-secondary']};
+            }
+        }
+    }
+    .atbd-form-checkout{
+        .ant-input-affix-wrapper-rtl{
+            input[type="password"]{
+                ${({ theme }) => (theme.rtl ? 'padding-left' : 'padding-right')}: 15px;
+            }
+        }
+       h1{
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 46px;
+            color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+            @media only screen and (max-width: 991px){
+                font-size: 18px;
+                margin-bottom: 22px;
+            }
+            @media only screen and (max-width: 479px){
+                font-size: 16px;
+            }
+       }
+       .ant-form-item-label{
+           label{
+               font-size: 15px;
+           }
+       }
+       input::placeholder{
+        color: ${({ theme }) => theme[theme.mainContent]['extra-light-text']};
+       }
+       .input-message{
+           margin-top: -6px;
+           display: inline-block;
+           font-size: 13px;
+           color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+       }
+
+       .shipping-selection{
+           > .ant-card{
+               .ant-card-body{
+                    border: 1px solid ${({ theme }) => theme['border-color-light']};
+               }
+           }
+           .ant-card{
+               .ant-card{
+                   margin-bottom: 0 !important;
+               }
+           }
+           .ant-radio-group {
+               .ant-radio-wrapper{
+                    display: flex;
+                    align-items: flex-start;
+                    span + span{
+                        width: 100%;
+                        min-height: 60px;
+                    }
+                   .ant-radio{
+                        ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 15px;
+                    }
+               }
+           }
+           .ant-form-item-control-input-content{
+                input{
+                    @media only screen and (max-width: 479px) {
+                        width: 100% !important;
+                        margin-bottom: 6px;
+                    }
+                }
+               .input-leftText{
+                   ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: 10px;
+                   @media only screen and (max-width: 479px) {
+                        display: block;
+                        ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: 0px;
+                    }
+               }
+           }
+           .shipping-selection__card{
+               .shipping-selection__card--inner{
+                   background-color: ${({ theme }) => theme[theme.mainContent]['main-background-light']};
+                   border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-secondary']};
+               }
+               .ant-card .ant-card{
+                   border: 0 none;
+                   border-radius: 20px;
+                   box-shadow: 0 10px 30px ${({ theme }) => theme[theme.mainContent]['light-text']}10;
+               }
+               .ant-radio-wrapper{
+                    .ant-radio{
+                        margin-top: 30px;
+                    }
+                    span + span{
+                        padding: 0;
+                    }
+               }
+               .cvv-wrap{
+                   input{
+                       max-width: 120px;
+                   }
+                   .input-leftText{
+                       color: ${({ theme }) => theme['color-info']};
+                   }
+               }
+            }
+           .shipping-selection__paypal{
+               margin-bottom: 20px;
+               .ant-radio-wrapper{
+                   span + span{
+                       display: flex;
+                       justify-content: space-between;
+                       @media only screen and (max-width: 375px){
+                            img{
+                                display: none;
+                            }
+                        }
+                   }
+               }
+           }
+           .shipping-selection__paypal,
+           .shipping-selection__cash{
+                .ant-radio-wrapper{
+                    align-items: center;
+                    span + span{
+                        font-size: 15px;
+                        font-weight: 500;
+                        padding: 0 25px;
+                        display: flex;
+                        align-items: center;
+                        border-radius: 10px;
+                        color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+                        border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-secondary']};
+                    }
+                }
+           }
+           .supported-card{
+               align-items: center;
+               justify-content: space-between;
+               margin-bottom: 20px;
+                @media only screen and (max-width: 479px) {
+                    flex-flow: column;
+                }
+                span{
+                    color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+                }
+               .supported-card_logos{
+                    @media only screen and (max-width: 479px) {
+                        margin-top: 12px;
+                    }
+                   img + img{
+                       ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: 15px;
+                   }
+               }
+           }
+       }
+   }
+   .profile-hints{
+       p{
+        color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+           font-size: 15px;
+           span{
+               color: ${({ theme }) => theme[theme.mainContent]['extra-light-text']};
+           }
+       }
+   }
+   .atbd-finish-order{
+       max-width: 540px;
+       margin: 0 auto;
+       padding: 30px;
+       min-height: 248px;
+       border-radius: 6px;
+       border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-secondary']};
+       h1,
+       h2,
+       h3,
+       h4,
+       h5,
+       h6{
+            margin-bottom: 16px;
+            color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+       }
+       .ant-checkbox{
+           &:hover{
+               .ant-checkbox-inner{
+                    border-color: ${({ theme }) => theme['success-color']};
+               }
+           }
+       }
+       .ant-checkbox-checked{
+           &:after{
+                border-color: ${({ theme }) => theme['success-color']};
+           }
+           .ant-checkbox-inner{
+                background-color: ${({ theme }) => theme['success-color']};
+                border-color: ${({ theme }) => theme['success-color']};
+           }
+       }
+       .ant-checkbox-input{
+           &:focus + .ant-checkbox-inner{
+            border-color: ${({ theme }) => theme['success-color']};
+           }
+       }
+       .checkbox-label{
+            ${({ theme }) => (theme.rtl ? 'margin-right' : 'margin-left')}: 10px;
+            font-size: 15px;
+            color: ${({ theme }) => theme[theme.mainContent]['extra-light-text']};
+       }
+   }
+   .atbd-review-order{
+       > .ant-card{
+           > .ant-card-body{
+               border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-default']};
+           }
+       }
+       h1{
+           font-size: 20px;
+           font-weight: 500;
+           margin-bottom: 45px;
+           color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+           @media only screen and (max-width: 479px) {
+                font-size: 16px;
+                margin-bottom: 25px;
+            }
+       }
+
+       .atbd-review-order__single{
+           .ant-card{
+               .ant-card-body{
+                   background-color: ${({ theme }) => theme[theme.mainContent]['main-background-light']};
+               }
+           }
+           .ant-radio-wrapper{
+                display: flex;
+                align-items: flex-start;
+            }
+            .ant-card{
+                .ant-card-body{
+                    padding: 25px !important;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 30px ${({ theme }) => theme['gray-solid']}10;
+                }
+            }
+            h1{
+                font-size: 18px;
+                font-weight: 400;
+                margin-bottom: 30px;
+            }
+            .method-info{
+                margin-top: -2px;
+                font-weight: 500;
+                color: color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+                img{
+                    margin-top: -4px;
+                    max-width: 40px;
+                }
+            }
+            .btn-addCard{
+                font-weight: 500
+                display: inline-block;
+                font-size: 13px;
+                margin-top: 20px;
+                color: ${({ theme }) => theme['info-color']};
+            }
+
+            .table-cart{
+                border-bottom: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-default']};
+                .cart-single-t-price{
+                    color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+                }
+                .ant-table{
+                    background-color: ${({ theme }) => theme[theme.mainContent]['main-background-light']};
+                }
+                .ant-table-content{
+                    padding-bottom: 10px;
+                }
+                thead{
+                    display: none;
+                }
+                .ant-table-tbody{
+                    .ant-table-row{
+                        &:hover{
+                            box-shadow: 0 0;
+                            td{
+                                background-color: ${({ theme }) =>
+                                  theme[theme.mainContent]['main-background-light']} !important;
+                            }
+                        }
+                    }
+                    >tr >td{
+                        padding: 8px 15px;
+                        &:first-child{
+                            ${({ theme }) => (!theme.rtl ? 'padding-left' : 'padding-right')}: 0px;
+                        }
+                        &:last-child{
+                            ${({ theme }) => (!theme.rtl ? 'padding-left' : 'padding-right')}: 0px;
+                            text-align: ${({ theme }) => (theme.rtl ? 'left' : 'right')};
+                        }
+                    }
+                }
+            }
+            .cart-single{
+                .cart-single__info{
+                    h1{
+                        color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+                        margin-bottom: 8px;
+                    }
+                }
+            }
+       }
+
+        .atbd-review-order__shippingTitle{
+            h1{
+                display: flex;
+                margin-bottom: 30px;
+                justify-content: space-between;
+                color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+                @media only screen and (max-width: 479px) {
+                    flex-flow: column;
+                }
+                a{
+                    font-size: 14px;
+                    display: inline-flex;
+                    align-items: center;
+                    @media only screen and (max-width: 479px) {
+                        margin-top: 12px;
+                    }
+                    svg{
+                        width: 14px;
+                        height: 14px;
+                        ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 4px;
+                    }
+                }
+            }
+        }
+
+        .atbd-review-order__shippingInfo{
+            .shipping-info-text{
+                margin: -4px 12px 0;
+                h1{
+                    font-size: 15px;
+                    font-weight: 500;
+                    margin-bottom: 8px;
+                }
+                p{
+                    font-size: 15px;
+                    color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+                }
+            }
+            .btn-addNew{
+                font-size: 13px;
+                font-weight: 500;
+                color: ${({ theme }) => theme['info-color']};
+            }
+        }
+   }
+   .invoice-summary-inner{
+        .summary-total{
+            margin-bottom: 0;
+        }
+   }
+   .summary-list{
+        margin: 20px 0 10px !important;
+        .summary-list-text{
+            font-size: 15px;
+            color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+        }
+        li{
+            &:not(:last-child){
+                margin-bottom: 10px;
+            }
+        }
+   }
+
+   .checkout-successful{
+       text-align: center;
+        > .ant-card{
+            > .ant-card-body{
+                background-color: ${({ theme }) => theme[theme.mainContent]['main-background-light']};
+                border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-default']};
+            }
+        }
+        .ant-card {
+            box-shadow: 0 10px 30px ${({ theme }) => theme[theme.mainContent]['light-text']}10;
+            .ant-card{
+                padding: 25px;
+                    margin-bottom: 0 !important;
+            }
+        }
+        .icon-success{
+            width: 34px;
+            height: 34px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background: ${({ theme }) => theme['success-color']};
+            svg{
+                width: 18px;
+            }
+        }
+        h1{
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+        }
+        p{
+            margin-bottom: 0;
+            color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+        }
+   }
+`;
+
+const OrderSummary = Styled.div`
+    max-width: 650px;
+    margin: 0 auto;
+    .ant-card{
+        margin-bottom: 0 !important;
+    }
+    .ant-card-body{
+        box-shadow: 0 10px 30px ${({ theme }) => theme[theme.mainContent]['dark-text']}10;
+    }
+    .ant-form-item{
+        margin-bottom: 0;
+    }
+
+    .summary-table-title{
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 25px;
+        color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+    }
+    .order-summary-inner{
+        padding-bottom: 5px;
+        @media only screen and (max-width: 1599px){
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .ant-select{
+            .ant-select-selection-item{
+                font-weight: 500;
+            }
+        }
+    }
+    .invoice-summary-inner{
+        .summary-list{
+            margin: 22px 0;
+            li{
+                &:not(:last-child){
+                    margin-bottom: 12px;
+                }
+            }
+        }
+        .summary-total-amount{
+            color: ${({ theme }) => theme['primary-color']} !important;
+        }
+    }
+
+    .summary-list{
+        li{
+            display: flex;
+            justify-content: space-between;
+            &:not(:last-child){
+                margin-bottom: 18px;
+            }
+            span{
+                font-weight: 500;
+            }
+            .summary-list-title{
+                color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+            }
+            .summary-list-text{
+                color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+            }
+        }
+    }
+    .ant-select-focused.ant-select-single{
+        .ant-select-selector{
+            box-shadow: 0 0 !important;
+        }
+    }
+    .ant-select-single{
+        margin-top: 18px;
+        .ant-select-selection-search-input{
+            height: fit-content;
+        }
+        .ant-select-selector{
+            padding: 0 !important;
+            border: 0 none !important;
+            color: ${({ theme }) => theme['success-color']};
+        }
+        .ant-select-arrow{
+            ${({ theme }) => (theme.rtl ? 'left' : 'right')}: 0;
+        }
+    }
+    .promo-apply-form{
+        display: flex;
+        align-items: flex-end;
+        margin: 5px 0 18px;
+        @media only screen and (max-width: 479px){
+            flex-flow: column;
+            align-items: flex-start;
+        }
+        .ant-form-item{
+            margin-bottom: 0;
+        }
+        .ant-row{
+            flex: auto;
+            flex-flow: column;
+        }
+        .ant-form-item-label{
+            text-align: ${({ theme }) => (!theme.rtl ? 'left' : 'right')};
+            label{
+                font-weight: 400;
+                margin-bottom: 4px;
+                height: fit-content;
+                color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
+            }
+        }
+        .ant-form-item-control-input-content{
+            display: flex;
+            @media only screen and (max-width: 479px){
+                flex-flow: column;
+            }
+            input{
+                margin: ${({ theme }) => (theme.rtl ? '0 0 0px 6px' : '0 6px 0px 0')};
+                height: 40px;
+                @media only screen and (max-width: 479px){
+                    margin: ${({ theme }) => (theme.rtl ? '0 0 10px 6px' : '0 6px 10px 0')};
+                    width: 100% !important;
+                }
+            }
+            button{
+                height: 40px;
+            }
+        }
+    }
+    .summary-total{
+        display: inline-flex;
+        justify-content: space-between;
+        width: 100%;
+        .summary-total-label{
+            font-size: 16px;
+            font-weight: 500;
+            color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
+        }
+        .summary-total-amount{
+            font-size: 18px;
+            font-weight: 600;
+            color: ${({ theme }) => theme['primary-color']};
+        }
+    }
+    .btn-proceed{
+        font-size: 15px;
+        font-weight: 500;
+        width: 100%;
+        height: 50px;
+        border-radius: 8px;
+        margin-top: 22px;
+        @media only screen and (max-width: 575px){
+            font-size: 13px;
+        }
+        a{
+            display: flex;
+            align-items: center;
+        }
+        i,
+        svg{
+            ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: 6px;
+        }
+    }
+`;
+
+const WizardTwo = Styled.div`
+    .ant-steps:not(.ant-steps-vertical) .ant-steps-item-custom .ant-steps-item-icon {
+        width: 60px;  
+        box-shadow: none;
+        svg{
+            width: 60px;
+            height: 60px;
+            color: ${({ theme }) => theme[theme.mainContent]['light-text']} !important;
+        } 
+    }    
+    .ant-steps-item-icon .ant-steps-icon span{
+        color: #000;
+        font-size: 20px;
+    }
+    .ant-steps-item {
+        &.ant-steps-item-active{
+            .ant-steps-item-icon{
+                background-color: transparent;
+                .ant-steps-icon{
+                    background-color: transparent;
+                    svg path,
+                    i{
+                        fill: ${({ theme }) => theme['primary-color']};
+                        color: ${({ theme }) => theme['primary-color']};
+                    }
+                }
+            }
+        }
+        &.ant-steps-item-finish {
+            .ant-steps-item-icon{
+                background-color: transparent !important;
+                .ant-steps-icon{
+                    svg path,
+                    i{
+                        fill: ${({ theme }) => theme['success-color']};
+                        color: ${({ theme }) => theme['success-color']};
+                    }
+                }
+            }
+        }
+        .ant-steps-item-container{
+            .ant-steps-item-tail{
+                @media only screen and (max-width: 479px) {
+                    display: none !important;
+                }
+            }
+            .ant-steps-item-icon{
+                margin-bottom: 15px;
+                svg,
+                img{
+                    @media only screen and (max-width: 479px) {
+                        width: 40px;
+                    }
+                }
+            }
+        }
+    }
+`;
+
+const FigureWizards = Styled.figure`
+
+    display: inline-flex;
+    img {
+        ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 15px;
+    }
+`;
+
+
 export {
   Main,
   BorderLessHeading,
@@ -3411,4 +4612,15 @@ export {
   ChartPointHorizontal,
   CollapseStyleWrap,
   TopToolBox,
+  Action,
+  FormValidationWrap,
+  FormComponentsWrap,
+  DropDownListComponents,
+  HorizontalFormStyleWrap,
+  WizardBlock,
+  WizardWrapper,
+  OrderSummary,
+  WizardTwo,
+  FigureWizards,
+  CoordStatusWrapper
 };

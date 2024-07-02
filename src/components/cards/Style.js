@@ -552,6 +552,7 @@ const SystemCardWrap = Styled.div`
         .ant-card{
             border-radius: 0px;
             box-shadow: 0 0;
+            margin: 6px;
             background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
             .ant-card-body{
                 @media only screen and (max-width: 1599px){

@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import actions from './actions';
 
-const { LOGIN_BEGIN, LOGIN_SUCCESS, LOGIN_ERR, LOGOUT_BEGIN, LOGOUT_SUCCESS, LOGOUT_ERR, ROLES_SUCCESS, MODULE_SELECTION } = actions;
+const { LOGIN_BEGIN, LOGIN_SUCCESS, LOGIN_ERR, LOGOUT_BEGIN, LOGOUT_SUCCESS, LOGOUT_ERR, ROLES_SUCCESS, MODULE_SELECTION, LOAD_ACCESS } = actions;
 
 const initState = {
   login: Cookies.get('logedIn'),
@@ -10,10 +10,16 @@ const initState = {
   selectedRoleId: Cookies.get('selectedRoleId'),
   selectedClientId: Cookies.get('selectedClientId'),
   roles: Cookies.get('roles'),
-  withFarms: Cookies.get('withFarms'),
-  withLabs: Cookies.get('withLabs'),
-  withCustody: Cookies.get('withCustody'),
-  withControl: Cookies.get('withControl'),
+  accessDataLoadded: false,
+  withFarms: false,
+  withLabs: false,
+  withCustody: false,
+  withControl: false,
+  labsOrgs: [],
+  custodyOrgs: [],
+  farmsOrgs: [],
+  controlsOrgs: [],
+  orgId: Cookies.get('orgId'),
   error: null,
 };
 
@@ -41,11 +47,7 @@ const AuthReducer = (state = initState, action) => {
     case ROLES_SUCCESS:
         return {
           ...state,
-          selectedRoleId: data.selectedRoleId,
-          withFarms: data.withFarms, 
-          withControl: data.withControl,
-          withLabs: data.withLabs,
-          withCustody: data.withCustody
+          selectedRoleId: data.selectedRoleId
         };
     case LOGIN_ERR:
       return {
@@ -53,6 +55,19 @@ const AuthReducer = (state = initState, action) => {
         error: err,
         loading: false,
       };
+    case LOAD_ACCESS:
+        return {
+          ...state,
+          withFarms: data.withFarms, 
+          withControl: data.withControl,
+          withLabs: data.withLabs,
+          withCustody: data.withCustody,
+          labsOrgs: data.labsOrgs,
+          custodyOrgs: data.custodyOrgs,
+          farmsOrgs: data.farmsOrgs,
+          controlsOrgs: data.controlsOrgs,
+          accessDataLoadded: true
+        };
     case LOGOUT_BEGIN:
       return {
         ...state,
@@ -72,6 +87,7 @@ const AuthReducer = (state = initState, action) => {
       return {
         ...state,
         selectedModule: data.selectedModule,
+        orgId: data.orgId
       };
     case LOGOUT_ERR:
       return {

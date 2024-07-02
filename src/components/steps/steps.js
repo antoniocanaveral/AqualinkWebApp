@@ -30,15 +30,21 @@ function Steps({
   });
 
   const next = () => {
-    const currents = state.currents + 1;
-    setState({ currents });
-    onNext(currents);
+    onNext().then(() => {
+      const currents = state.currents + 1;
+      setState({ currents });
+    }).catch(err => {
+    });
   };
 
   const prev = () => {
-    const currents = state.currents - 1;
-    setState({ currents });
-    onPrev(currents);
+    //const currents = state.currents - 1;
+    //setState({ currents });
+    onPrev().then(() => {
+      const currents = state.currents - 1;
+      setState({ currents });
+    }).catch(err => {
+    });
   };
 
   const { currents } = state;
@@ -100,20 +106,20 @@ function Steps({
                         {state.currents > 0 && (
                           <Button className="btn-prev" type="light" onClick={() => prev()}>
                             <UilArrowLeft />
-                            Previous
+                            Anterior 
                           </Button>
                         )}
 
                         {state.currents < steps.length - 1 && (
                           <Button className="btn-next" type="primary" onClick={() => next()}>
-                            Save & Next
+                             Siguiente
                             <UilArrowRight />
                           </Button>
                         )}
 
                         {state.currents === steps.length - 1 && (
                           <Button type="primary" onClick={onDone}>
-                            Done
+                            Enviar
                           </Button>
                         )}
                       </div>
@@ -143,20 +149,20 @@ function Steps({
                         {state.currents > 0 && (
                           <Button className="btn-prev" type="light" onClick={() => prev()}>
                             <UilArrowLeft />
-                            Previous
+                            Anterior
                           </Button>
                         )}
 
                         {state.currents < steps.length - 1 && (
                           <Button className="btn-next" type="primary" onClick={() => next()}>
-                            Save & Next
+                            Siguiente
                             <UilArrowRight />
                           </Button>
                         )}
 
                         {state.currents === steps.length - 1 && (
                           <Button type="primary" onClick={onDone}>
-                            Done
+                            Enviar
                           </Button>
                         )}
                       </div>

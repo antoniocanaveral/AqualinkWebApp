@@ -1,59 +1,9 @@
 import {
-  Uil500px,
-  UilAirplay,
-  UilArrowGrowth,
-  UilAt,
-  UilBagAlt,
-  UilBookAlt,
-  UilBookOpen,
-  UilBookReader,
-  UilBriefcaseAlt,
   UilCalendarAlt,
-  UilChart,
-  UilChartBar,
-  UilChartPieAlt,
-  UilChat,
-  UilCheckSquare,
-  UilCircle,
-  UilClipboardAlt,
-  UilClock,
   UilCloudDataConnection,
-  UilCompactDisc,
-  UilCreateDashboard,
-  UilDatabase,
-  UilDashboard,
   UilDesktop,
-  UilDocumentLayoutLeft,
-  UilEdit,
-  UilEnvelope,
-  UilEstate,
-  UilExchange,
-  UilExclamationOctagon,
-  // UilExpandArrowsAlt,
-  UilFlaskPotion,
-  UilFile,
-  UilFileCheckAlt,
-  UilFileShieldAlt,
-  UilHeadphones,
-  UilHeadphonesAlt,
-  UilIcons,
-  UilImages,
-  UilLayerGroup,
-  UilMap,
-  UilPresentation,
-  UilQrcodeScan,
-  UilQuestionCircle,
-  UilSearch,
-  UilServer,
-  UilSetting,
-  UilShoppingCart,
-  UilSquareFull,
-  UilTable,
-  UilUsdCircle,
-  UilUsersAlt,
-  UilWater,
-  UilWifi,
   UilWindowSection,
+  UilCalendarSlash
 } from '@iconscout/react-unicons';
 import { Menu } from 'antd';
 import React from 'react';
@@ -168,7 +118,23 @@ function AQxLabMenu({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
-    getItem(t('Visualización'), 'layout', !topMenu && <UilWindowSection />, [
+    getItem(
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('logistica')}</NavTitle>,
+      'submenu-logistica',
+      null,
+      null,
+      'group',
+    ),
+    getItem(t('Coordinación'), 'coord-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/coords`}>
+          {t('Ver')} {t('Coordinaciones')}
+        </NavLink>,
+        'light',
+        null,
+      )
+    ]),
+    getItem(t('Visualización'), 'visualizacion', !topMenu && <UilWindowSection />, [
       getItem(
         <NavLink
           onClick={() => {
