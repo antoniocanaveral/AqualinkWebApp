@@ -9,6 +9,7 @@ import DataTable from '../../components/table/DataTable';
 import { Link } from 'react-router-dom';
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
+import UilListOlAlt from '@iconscout/react-unicons/icons/uil-list-ol-alt';
 import moment from 'moment';
 import Cookies from 'js-cookie';
 
@@ -53,7 +54,7 @@ function CoordinationsLabs() {
         id: `${item.SM_FishingNotification}`,
         proveedor: <span>{item.org_name} - {item.pre_breeding_pool}</span>,
         location: <span>{item.City}, {item.Address1}, {item.Address2}</span>,
-        planting: <span>{moment(item.planned_date).format('YYYY-MM-DD HH:mm')}</span>,
+        planting: <span>{moment(item.planned_date).format('YYYY-MM-DD HH:mm A')}</span>,
         status: <span className={`ninjadash-status ninjadash-status-${itemStatus.className}`}>{itemStatus.statusName}</span>,
         action: (
           <div className="table-actions" style={{minWidth:"50px !important", textAlign: "center"}}>
@@ -62,6 +63,9 @@ function CoordinationsLabs() {
             </Link> }
             { itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}>
                <UilEdit /> 
+            </Link> }
+            { itemStatus.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}>
+               <UilListOlAlt /> 
             </Link> }
           </div>
         ),
@@ -86,7 +90,7 @@ function CoordinationsLabs() {
       key: 'location',
     },
     {
-      title: 'Fecha Plan.',
+      title: 'Fecha Solicitada',
       dataIndex: 'planting',
       key: 'planting',
     },

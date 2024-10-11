@@ -11,6 +11,7 @@ import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
 import moment from 'moment';
 import Cookies from 'js-cookie';
+import UilUpload from '@iconscout/react-unicons/icons/uil-upload';
 
 function CoordinationsCustody() {
   const PageRoutes = [
@@ -53,16 +54,26 @@ function CoordinationsCustody() {
         id: `${item.SM_FishingNotification}`,
         proveedor: <span>{item.org_name} - {item.warehouse_name}</span>,
         location: <span>{item.City}, {item.Address1}, {item.Address2}</span>,
-        planting: <span>{moment(item.planned_date).format('YYYY-MM-DD HH:mm')}</span>,
+        planting: <span>{moment(item.planned_date).format('YYYY-MM-DD hh:mm A')}</span>,
         status: <span className={`ninjadash-status ninjadash-status-${itemStatus.className}`}>{itemStatus.statusName}</span>,
         action: (
           <div className="table-actions" style={{minWidth:"50px !important", textAlign: "center"}}>
-            { !itemStatus.showEditFrom && <Link className="view" to={`./${item.id}/view`}>
+            { !itemStatus.showEditFrom && <Link className="view" title='Ver información' to={`./${item.id}/view`}>
               { <UilEye /> }
             </Link> }
-            { itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}>
+            { itemStatus.showEditFrom && <Link className="edit" title='Enviar Propuesta' to={`./${item.id}/edit`}>
                <UilEdit /> 
             </Link> }
+            {
+              itemStatus.showBinesForm && <Link className="edit" title='Cargar información de Bines' to={`./${item.id}/bines`}>
+              <UilUpload /> 
+           </Link>
+            }
+            {
+              itemStatus.showDrawersForm && <Link className="edit" title='Cargar información de Gavetas' to={`./${item.id}/drawers`}>
+              <UilUpload /> 
+           </Link>
+            }
           </div>
         ),
       });

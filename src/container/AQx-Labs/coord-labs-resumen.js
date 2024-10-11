@@ -10,6 +10,7 @@ import { loadLabCoord } from '../../redux/lab/actionCreator';
 import Cookies from 'js-cookie';
 import moment from 'moment';
 import {useNavigate } from 'react-router-dom';
+import { formatNumber } from '../../utility/utility';
 
 function CoordinationLabsResumen() {
   const PageRoutes = [
@@ -29,6 +30,8 @@ function CoordinationLabsResumen() {
   let { id } = useParams();
   const coordination = useSelector((state) => state.lab.coordination);
   const loading = useSelector((state) => state.lab.loading);
+
+  console.log( JSON.stringify(coordination) );
   
   const [form] = Form.useForm();
 
@@ -127,15 +130,23 @@ function CoordinationLabsResumen() {
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Fecha de Siembra Solicitada:</span>
-                                      <span className="summary-list-text">{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm") : "-"}</span>
+                                      <span className="summary-list-text">{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm A") : "-"}</span>
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Salinidad Solicitada:</span>
-                                      <span className="summary-list-text">{coordination  ? coordination.requested_salinity : "-"}</span>
+                                      <span className="summary-list-text">{coordination  ? `${coordination.requested_salinity} ppm` : "-"}</span>
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Cantidad Solicitada :</span>
-                                      <span className="summary-list-text">{coordination ? coordination.requested_quantity : "-"}</span>
+                                      <span className="summary-list-text">{coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}</span>
+                                    </li>
+                                    <li>
+                                      <span className="summary-list-title">Alcalinidad Piscina de Pre Cría:</span>
+                                      <span className="summary-list-text">{coordination && coordination.coord_alkalinity ? `${coordination.coord_alkalinity} ppm` : <span style={{color: "red"}}>PENDIENTE</span>}</span>
+                                    </li>
+                                    <li>
+                                      <span className="summary-list-title">PH Piscina de Pre Cría :</span>
+                                      <span className="summary-list-text">{coordination && coordination.coord_pre_breeding_pool_ph ? `${coordination.coord_pre_breeding_pool_ph} ppm` : <span style={{color: "red"}}>PENDIENTE</span>}</span>
                                     </li>
                                   </ul>
                                 </div>
@@ -153,7 +164,7 @@ function CoordinationLabsResumen() {
                                   <ul className="summary-list">
                                     <li>
                                       <span className="summary-list-title">Fecha :</span>
-                                      <span className="summary-list-text">{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm") : "-"}</span>
+                                      <span className="summary-list-text">{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm A") : "-"}</span>
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Módulo :</span>
@@ -165,11 +176,15 @@ function CoordinationLabsResumen() {
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Total Tanque :</span>
-                                      <span className="summary-list-text">{coordination ? coordination.tank_planting : "-"}</span>
+                                      <span className="summary-list-text">{coordination ? `${formatNumber(coordination.tank_planting)} larvas` : "-"}</span>
+                                    </li>
+                                    <li>
+                                      <span className="summary-list-title">Total Confirmado :</span>
+                                      <span className="summary-list-text">{coordination ? `${formatNumber(coordination.confirmed_total)} larvas` : "-"}</span>
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Conteo Preliminar Lab :</span>
-                                      <span className="summary-list-text">{coordination ? coordination.lab_count : "-"}</span>
+                                      <span className="summary-list-text">{coordination ? `${formatNumber(coordination.lab_count)} larvas/gramo` : "-"}</span>
                                     </li>
                                     <li>
                                       <span className="summary-list-title">PL :</span>
@@ -177,7 +192,7 @@ function CoordinationLabsResumen() {
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Salinidad :</span>
-                                      <span className="summary-list-text">{coordination ? coordination.confirmed_salinity : "-"}</span>
+                                      <span className="summary-list-text">{coordination ? `${coordination.confirmed_salinity} ppm` : "-"}</span>
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Método de Envío :</span>
@@ -185,7 +200,7 @@ function CoordinationLabsResumen() {
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Unidades por Empaque :</span>
-                                      <span className="summary-list-text">{coordination ? coordination.units_per_pack : "-"}</span>
+                                      <span className="summary-list-text">{coordination ? `${formatNumber(coordination.units_per_pack)} larvas` : "-"}</span>
                                     </li>
                                     <li>
                                       <span className="summary-list-title">Óxigeno en Camino :</span>
@@ -194,6 +209,14 @@ function CoordinationLabsResumen() {
                                     <li>
                                       <span className="summary-list-title">Comida en Camino :</span>
                                       <span className="summary-list-text">{coordination && coordination.food_on_the_go ? "Si" : "No"}</span>
+                                    </li>
+                                    <li>
+                                      <span className="summary-list-title">Alcalinidad Tanque de Origen:</span>
+                                      <span className="summary-list-text">{coordination && coordination.alkalinity ? `${coordination.alkalinity} ppm` : <span style={{color: "red"}}>PENDIENTE</span>}</span>
+                                    </li>
+                                    <li>
+                                      <span className="summary-list-title">PH Tanque de Origen :</span>
+                                      <span className="summary-list-text">{coordination && coordination.pre_breeding_pool_ph ? `${coordination.pre_breeding_pool_ph} ppm` : <span style={{color: "red"}}>PENDIENTE</span>}</span>
                                     </li>
                                   </ul>
                                 </div>

@@ -7,6 +7,10 @@ const actions = {
     CUSTODY_COORDINATION_LOAD: 'CUSTODY_COORDINATION_LOAD',
     CUSTODY_COORDINATION_SUBMIT: 'CUSTODY_COORDINATION_SUBMIT',
     CUSTODY_COORDINATION_CANCEL: 'CUSTODY_COORDINATION_CANCEL',
+
+    CUSTODY_BINES_LOAD: 'CUSTODY_BINES_LOAD',
+    CUSTODY_DRAWER_LOAD: 'CUSTODY_DRAWER_LOAD',
+    CUSTODY_DRAWER_STAMP_LOAD: 'CUSTODY_DRAWER_STAMP_LOAD',
   
     custodyCoordBegin: () => {
       return {
@@ -49,6 +53,24 @@ const actions = {
     custodyCoordCancel: (data) => {
       return {
         type: actions.CUSTODY_COORDINATION_CANCEL,
+        data,
+      };
+    },
+    custodyBinesLoad: (data) => {
+      return {
+        type: actions.CUSTODY_BINES_LOAD,
+        data,
+      };
+    },
+    custodyDrawerLoad: (data) => {
+      return {
+        type: actions.CUSTODY_DRAWER_LOAD,
+        data,
+      };
+    },
+    custodyDrawerStampLoad: (data) => {
+      return {
+        type: actions.CUSTODY_DRAWER_STAMP_LOAD,
         data,
       };
     }

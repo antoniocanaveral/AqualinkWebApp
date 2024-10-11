@@ -32,9 +32,16 @@ const getCoordStatus = (item) => {
     let statusName = "-";
     let className = "";
     let showEditFrom = false;
+    let showParamsFrom = false;
+
+    console.log(JSON.stringify(item));
+
     if(item.is_selected) {
       statusName = "Asignado";
       className = "asigned";
+      if(item.SM_CoordinationStatus.id == "ESPERA_PARAMS") {
+        showParamsFrom = true;
+      }
     } else {
       if(item.rejected) {
         statusName = "Rechazado";
@@ -51,7 +58,7 @@ const getCoordStatus = (item) => {
       }
     }
     console.log(`className ${className}, statusName ${statusName}`);
-    return {className, statusName, showEditFrom};
+    return {className, statusName, showEditFrom, showParamsFrom};
 }
 
 const loadLabCoord = (id, callback) => {
@@ -65,13 +72,31 @@ const loadLabCoord = (id, callback) => {
                 dispatch(labCoordLoad({
                     coordination: record
                 }));
-                callback(true);
+                callback(true, record);
             } else {
                 callback(false);
             }
         } catch(err) {
             dispatch(netWorkError(err));
             callback(false, err);
+        }
+    };
+};
+
+const enviarParamsLabCoord = (id, coordId, alkalinity, pre_breeding_pool_ph, callback) => {
+    return async (dispatch) => {
+        try {
+            await DataService.put(`/models/sm_coordinationclient/${id}`, {
+                "SM_Alkalinity": parseInt(alkalinity),
+                "SM_PreBreedingPH": parseInt(pre_breeding_pool_ph)
+            });
+            await DataService.put(`/models/sm_coordination/${coordId}`, {
+                "SM_CoordinationStatus": 'CONFIRMADO'
+            });
+            callback(true);
+        } catch(err) {
+            dispatch(netWorkError(err));
+            callback(false);
         }
     };
 };
@@ -110,7 +135,8 @@ const submitLabCoord = (id, form, callback) => {
                 "SM_ShippingMethod": form.methodName,
                 "UnitsPerPack": form.unitPerPack,
                 "SM_OxygenOnTheGo": form.oxygenOnTheGo,
-                "SM_FoodOnTheGo": form.foodOnTheGo
+                "SM_FoodOnTheGo": form.foodOnTheGo,
+                "SM_ConfirmedTotal": form.confirmedTotal
             });
             console.log( coordClientResponse );
             dispatch(labCoordSubmit({}));
@@ -123,4 +149,4 @@ const submitLabCoord = (id, form, callback) => {
     };
 };
 
-export { loadLabCoordinations, loadLabCoord, submitLabCoord, cancelLabCoord };
+export { loadLabCoordinations, loadLabCoord, submitLabCoord, cancelLabCoord, enviarParamsLabCoord };

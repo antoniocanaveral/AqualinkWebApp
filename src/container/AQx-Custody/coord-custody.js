@@ -116,7 +116,7 @@ function CoordinationCustody() {
   };
 
   const done = () => {
-    const confirm = window.confirm('Are you sure to submit order?');
+    const confirm = window.confirm('Confirma que desea enviar su respuesta a esta coordinación de pesca?');
     if (confirm) {
       dispatch(submitCustodyCoord(id, state.form, (success) => {
         if(success) {
@@ -198,8 +198,8 @@ function CoordinationCustody() {
                                               <Form.Item name="notification" label="Notificación">
                                                 {coordination ? coordination.SM_FishingNotification : "-"}
                                               </Form.Item>
-                                              <Form.Item name="plantingdate" label="Fecha de Pesca">
-                                                {coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm") : "-"}
+                                              <Form.Item name="plantingdate" label="Fecha de Pesca Solicitada">
+                                                {coordination ? moment(coordination.planned_date).format("DD-MM-YYYY hh:mm A") : "-"}
                                               </Form.Item>
                                               <Form.Item name="tipo_pesca" label="Tipo de Pesca">
                                                 {coordination  ? coordination.fishing_type : "-"}
@@ -208,7 +208,7 @@ function CoordinationCustody() {
                                                 {coordination  ? coordination.container_type : "-"}
                                               </Form.Item>
                                               <Form.Item name="volumen_pesca" label="Volumen de Pesca">
-                                                {coordination ? coordination.fishing_volume : "-"}
+                                                {coordination ? `${coordination.fishing_volume} lbs` : "-"}
                                               </Form.Item>
                                               <Form.Item name="clasificacion" label="Clasificación">
                                                 {coordination ? `${coordination.Classification}` : "-"}
@@ -320,7 +320,7 @@ function CoordinationCustody() {
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Fecha de Pesca Solicitada:</span>
-                                                          <span className="summary-list-text">{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm") : "-"}</span>
+                                                          <span className="summary-list-text">{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY hh:mm A") : "-"}</span>
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Tipo de Pesca:</span>
@@ -332,7 +332,7 @@ function CoordinationCustody() {
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Volumen de Pesca :</span>
-                                                          <span className="summary-list-text">{coordination ? coordination.fishing_volume : "-"}</span>
+                                                          <span className="summary-list-text">{coordination ? `${coordination.fishing_volume} lbs` : "-"}</span>
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Clasificación :</span>
@@ -357,8 +357,8 @@ function CoordinationCustody() {
                                                     <div className="invoice-summary-inner">
                                                       <ul className="summary-list">
                                                         <li>
-                                                          <span className="summary-list-title">Fecha :</span>
-                                                          <span className="summary-list-text">{moment(state.form.answeredDate).format("DD-MM-YYYY HH:mm")}</span>
+                                                          <span className="summary-list-title">Fecha y Hora propuesta:</span>
+                                                          <span className="summary-list-text">{moment(state.form.answeredDate).format("DD-MM-YYYY hh:mm A")}</span>
                                                         </li>
                                                       </ul>
                                                     </div>

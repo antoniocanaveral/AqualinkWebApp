@@ -51,6 +51,15 @@ class DataService {
       headers: { ...authHeader(useInitialToken, unSecure) },
     });
   }
+
+  static delete(path = '', data = {}, useInitialToken = false, unSecure = false) {
+    return client({
+      method: 'DELETE',
+      url: path,
+      data: JSON.stringify(data),
+      headers: { ...authHeader(useInitialToken, unSecure) },
+    });
+  }
 }
 
 /**

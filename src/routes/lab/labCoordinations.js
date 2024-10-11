@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 const CoordinationsLabs = lazy(() => import('../../container/AQx-Labs/coords-labs'));
 const CoordinationLabs = lazy(() => import('../../container/AQx-Labs/coord-labs'));
 const CoordinationLabsResumen = lazy(() => import('../../container/AQx-Labs/coord-labs-resumen'));
+const CoordinationLabsParams = lazy(() => import('../../container/AQx-Labs/coord-labs-params'));
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 function LabCoordinationsRoutes() {
@@ -14,6 +15,7 @@ function LabCoordinationsRoutes() {
       </Route>
       <Route path=":id/edit" element={<CoordinationLabs />} />
       <Route path=":id/view" element={<CoordinationLabsResumen />} />
+      <Route path=":id/params" element={<CoordinationLabsParams />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useState, useEffect, useLayoutEffect } from 'react';
 import { PageHeader } from '../../components/page-headers/page-headers';
-import { Row, Col, Form, Input, Select, Skeleton, message, Spin, DatePicker, TimePicker } from 'antd';
+import { Row, Col, Form, Input, Select, Skeleton, message, Spin, DatePicker, TimePicker, InputNumber } from 'antd';
 import { Button } from '../../components/buttons/buttons';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,10 +13,11 @@ import Heading from '../../components/heading/heading';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Checkbox } from '../../components/checkbox/checkbox';
 import { BasicFormWrapper, WizardWrapper, OrderSummary, WizardTwo, Main, WizardBlock } from '../styled';
-import { cancelCustodyCoord, loadCustodyCoord, submitCustodyCoord } from '../../redux/custody/actionCreator';
+import { cancelLabCoord, loadLabCoord, submitLabCoord } from '../../redux/lab/actionCreator';
 import Cookies from 'js-cookie';
 import moment from 'moment';
 import {useNavigate } from 'react-router-dom';
+import { formatNumber, inputFormatter, parserNumber } from '../../utility/utility';
 
 const { Option } = Select;
 
@@ -51,6 +52,7 @@ function CoordinationLabs() {
       module: coordination ? coordination.SM_Module : "",
       tank: coordination ? coordination.SM_Tank : "",
       tankTotal: coordination ? coordination.SM_TankTotalPlanting : "",
+      confirmedTotal: coordination ? coordination.confirmed_total : "",
       labCount: coordination ? coordination.SM_PreliminaryLaboratoryCount : "",
       pl: coordination ? coordination.SM_AnsweredPL : "",
       salinity: coordination ? coordination.SM_ConfirmedSalinity : "",
@@ -60,10 +62,13 @@ function CoordinationLabs() {
     }
   });
 
+  console.log("------->>>>>>>>>");
+  console.log( JSON.stringify(coordination) );
+
   const { status, isFinished, current } = state;
 
   useEffect(() => {
-    dispatch(loadCustodyCoord(id, () => {}));
+    dispatch(loadLabCoord(id, () => {}));
   }, [dispatch, id]);
 
   useLayoutEffect(() => {
@@ -127,9 +132,9 @@ function CoordinationLabs() {
   };
 
   const done = () => {
-    const confirm = window.confirm('Are you sure to submit order?');
+    const confirm = window.confirm('Confirma enviar la respuesta a esta solicitud de coordinación ?');
     if (confirm) {
-      dispatch(submitCustodyCoord(id, state.form, (success) => {
+      dispatch(submitLabCoord(id, state.form, (success) => {
         if(success) {
           setState({
             ...state,
@@ -148,11 +153,11 @@ function CoordinationLabs() {
   const onCancel = () => {
     const confirm = window.confirm('Estás seguro de querer rechazar esta coordinación ?');
     if (confirm) {
-      dispatch(cancelCustodyCoord(id, (success) => {
+      dispatch(cancelLabCoord(id, (success) => {
         console.log(success);
         if(success) {
           message.success('Coordinación Rechazada.');
-          navigate("/custody/coordinacion");
+          navigate("/lab/coordinacion");
         } else {
           message.error('Ocurrió un error.');
         }
@@ -209,17 +214,17 @@ function CoordinationLabs() {
                                               <Form.Item name="notification" label="Notificación">
                                                 {coordination ? coordination.SM_FishingNotification : "-"}
                                               </Form.Item>
-                                              <Form.Item name="plantingdate" label="Fecha de Siembra">
-                                                {coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm") : "-"}
+                                              <Form.Item name="plantingdate" label="Fecha de Siembra Solicitada">
+                                                {coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm A") : "-"}
                                               </Form.Item>
                                               <Form.Item name="requestedpl" label="PL Solicitado">
                                                 {coordination  ? coordination.requested_pl : "-"}
                                               </Form.Item>
                                               <Form.Item name="salinity" label="Salinidad Solicitada">
-                                                {coordination  ? coordination.requested_salinity : "-"}
+                                                {coordination  ? coordination.requested_salinity + " ppm" : "-"}
                                               </Form.Item>
                                               <Form.Item name="quantity" label="Cantidad Solicitada">
-                                                {coordination ? coordination.requested_quantity : "-"}
+                                                {coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}
                                               </Form.Item>
                                               <Form.Item name="waterripening" label="Días de Maduración del Agua">
                                                 {coordination ? `${coordination.water_ripening_days} días` : "-"}
@@ -266,6 +271,8 @@ function CoordinationLabs() {
                                                     });
                                                 }}/>
                                               </Form.Item>
+                                              <div style={{fontSize: "10px", top: "-20px", position: "relative"}}>[<span><strong>Solicitado:</strong> </span>{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY") : "-"}]</div>
+
                                               <Form.Item name="response-time" label="Hora Propuesta"  initialValue={  moment( state.form.answeredDate ? moment(state.form.answeredDate).format("HH:mm") : "00:00"  , 'HH:mm')  } rules={[{ required: true, message: 'Por favor seleccione una Hora' }]}>
                                                 <TimePicker value={ state.form.answeredDate } onChange={(value) => {
                                                     let current = moment(state.form.answeredDate);
@@ -280,6 +287,8 @@ function CoordinationLabs() {
                                                     });
                                                   }}/>
                                               </Form.Item>
+                                              <div style={{fontSize: "10px", top: "-20px", position: "relative"}}>[<span><strong>Solicitado:</strong> </span>{coordination ? moment(coordination.planned_date).format("HH:mm A") : "-"}]</div>
+
                                               <Form.Item name="module" label="Módulo" rules={[{ required: true, message: 'Por favor agregue un Módulo' }]}>
                                                 <Input
                                                   value={state.form.module}
@@ -308,21 +317,43 @@ function CoordinationLabs() {
                                                   }}
                                                 />
                                               </Form.Item>
-                                              <Form.Item name="tankTotal" label="Total Tanque" rules={[{ required: true, message: 'Por favor agregue el Total Tanque' }]}>
-                                                <Input
+                                              <Form.Item name="tankTotal" label="Total Tanque (Larvas)"  rules={[{ required: true, message: 'Por favor agregue el Total Tanque' }]}>
+                                                <InputNumber
                                                   value={state.form.tankTotal}
-                                                  onChange={(e) => {
+                                                  formatter={(value) => inputFormatter(value)}
+                                                  parser={(value) => parserNumber(value)}
+                                                  onChange={(value) => {
                                                     setState({
                                                       ...state,
                                                       form: {
                                                         ...state.form,
-                                                        tankTotal: e.target.value,
+                                                        tankTotal: value,
                                                       },
                                                     });
                                                   }}
                                                 />
                                               </Form.Item>
-                                              <Form.Item name="labCount" label="Conteo Preliminar Lab" rules={[{ required: true, message: 'Por favor agregue el Conteo Preliminar' }]}>
+                                              <div style={{fontSize: "10px", top: "-20px", position: "relative"}}>[<span><strong>Solicitado:</strong> </span>{coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]</div>
+                                                
+                                              <Form.Item name="confirmedTotal" label="Total Confirmado (Larvas)"  rules={[{ required: true, message: 'Por favor agregue el Total Confirmado' }]}>
+                                                <InputNumber
+                                                  value={state.form.confirmedTotal}
+                                                  formatter={(value) => inputFormatter(value)}
+                                                  parser={(value) => parserNumber(value)}
+                                                  onChange={(value) => {
+                                                    setState({
+                                                      ...state,
+                                                      form: {
+                                                        ...state.form,
+                                                        confirmedTotal: value,
+                                                      },
+                                                    });
+                                                  }}
+                                                />
+                                              </Form.Item>
+                                              <div style={{fontSize: "10px", top: "-20px", position: "relative"}}>[<span><strong>Solicitado:</strong> </span>{coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]</div>
+                                             
+                                              <Form.Item name="labCount" label="Conteo Preliminar Laboratorio (Larvas/gramo)" rules={[{ required: true, message: 'Por favor agregue el Conteo Preliminar' }]}>
                                                 <Input
                                                   value={state.form.labCount}
                                                   onChange={(e) => {
@@ -336,6 +367,8 @@ function CoordinationLabs() {
                                                   }}
                                                 />
                                               </Form.Item>
+                                              <div style={{fontSize: "10px", top: "-20px", position: "relative"}}>[<span><strong>Solicitado:</strong> </span>{coordination  ? coordination.requested_pl : "-"}]</div>
+
                                               <Form.Item name="pl" label="PL" initialValue={state.form.pl} rules={[{ required: true, message: 'Por favor agregue PL' }]}>
                                                 <Select
                                                   style={{ width: '100%' }}
@@ -358,10 +391,9 @@ function CoordinationLabs() {
                                                   <Option value="PL20">PL 20</Option>
                                                 </Select>
                                               </Form.Item>
+                                              <div style={{fontSize: "10px", top: "-20px", position: "relative"}}>[<span><strong>Solicitado:</strong> </span>{coordination  ? coordination.requested_pl : "-"}]</div>
 
-
-
-                                              <Form.Item name="salinity" label="Salinidad" rules={[{ required: true, message: 'Por favor agregue la Salinidad' }]}>
+                                              <Form.Item name="salinity" label="Salinidad (ppm)" rules={[{ required: true, message: 'Por favor agregue la Salinidad' }]}>
                                                 <Input
                                                   value={state.form.salinity}
                                                   onChange={(e) => {
@@ -375,6 +407,7 @@ function CoordinationLabs() {
                                                   }}
                                                 />
                                               </Form.Item>
+                                              <div style={{fontSize: "10px", top: "-20px", position: "relative"}}>[<span><strong>Solicitado:</strong> </span>{coordination  ? coordination.requested_salinity + " ppm" : "-"}]</div>
 
                                               <Form.Item name="methodName" initialValue={state.form.methodName} label="Método de Envío" rules={[{ required: true, message: 'Por favor seleccione un Método de Envío' }]}>
                                                 <Select
@@ -391,24 +424,28 @@ function CoordinationLabs() {
                                                 >
                                                   <Option value="">Seleccione</Option>
                                                   <Option value="FUNDAS">Fundas</Option>
-                                                  <Option value="TANQUES">Tanques</Option>
+                                                  <Option value="TANQUES">Tanques Transporte</Option>
                                                 </Select>
                                               </Form.Item>
 
                                               <Form.Item name="unitPerPack" label="Unidades por Empaque" rules={[{ required: true, message: 'Por favor agregue Unidades por Empaque' }]}>
-                                                <Input
+                                                <InputNumber
                                                   value={state.form.unitPerPack}
-                                                  onChange={(e) => {
+                                                  formatter={(value) => inputFormatter(value)}
+                                                  parser={(value) => parserNumber(value)}
+                                                  onChange={(value) => {
                                                     setState({
                                                       ...state,
                                                       form: {
                                                         ...state.form,
-                                                        unitPerPack: e.target.value,
+                                                        unitPerPack: value,
                                                       },
                                                     });
                                                   }}
                                                 />
                                               </Form.Item>
+                                              <div style={{fontSize: "10px", top: "-20px", position: "relative"}}>[<span><strong>Solicitado:</strong> </span>{coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]</div>
+
                                               <Form.Item name="oxygenOnTheGo">
                                                 <Checkbox
                                                   checked={state.form.oxygenOnTheGo}
@@ -484,15 +521,15 @@ function CoordinationLabs() {
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Fecha de Siembra Solicitada:</span>
-                                                          <span className="summary-list-text">{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm") : "-"}</span>
+                                                          <span className="summary-list-text">{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm A") : "-"}</span>
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Salinidad Solicitada:</span>
-                                                          <span className="summary-list-text">{coordination  ? coordination.requested_salinity : "-"}</span>
+                                                          <span className="summary-list-text">{coordination  ? coordination.requested_salinity + " ppm" : "-"}</span>
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Cantidad Solicitada :</span>
-                                                          <span className="summary-list-text">{coordination ? coordination.requested_quantity : "-"}</span>
+                                                          <span className="summary-list-text">{coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}</span>
                                                         </li>
                                                       </ul>
                                                     </div>
@@ -510,7 +547,7 @@ function CoordinationLabs() {
                                                       <ul className="summary-list">
                                                         <li>
                                                           <span className="summary-list-title">Fecha :</span>
-                                                          <span className="summary-list-text">{moment(state.form.answeredDate).format("DD-MM-YYYY HH:mm")}</span>
+                                                          <span className="summary-list-text">{moment(state.form.answeredDate).format("DD-MM-YYYY HH:mm A")}</span>
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Módulo :</span>
@@ -522,11 +559,15 @@ function CoordinationLabs() {
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Total Tanque :</span>
-                                                          <span className="summary-list-text">{state.form.tankTotal}</span>
+                                                          <span className="summary-list-text">{`${formatNumber(state.form.tankTotal)} larvas`}</span>
+                                                        </li>
+                                                        <li>
+                                                          <span className="summary-list-title">Total Confirmado :</span>
+                                                          <span className="summary-list-text">{`${formatNumber(state.form.confirmedTotal)} larvas`}</span>
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Conteo Preliminar Lab :</span>
-                                                          <span className="summary-list-text">{state.form.labCount}</span>
+                                                          <span className="summary-list-text">{`${formatNumber(state.form.labCount)} larvas/gramo`}</span>
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">PL :</span>
@@ -534,7 +575,7 @@ function CoordinationLabs() {
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Salinidad :</span>
-                                                          <span className="summary-list-text">{state.form.salinity}</span>
+                                                          <span className="summary-list-text">{`${state.form.salinity} ppm`}</span>
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Método de Envío :</span>
@@ -542,7 +583,7 @@ function CoordinationLabs() {
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Unidades por Empaque :</span>
-                                                          <span className="summary-list-text">{state.form.unitPerPack}</span>
+                                                          <span className="summary-list-text">{`${formatNumber(state.form.unitPerPack)} larvas`}</span>
                                                         </li>
                                                         <li>
                                                           <span className="summary-list-title">Óxigeno en Camino :</span>

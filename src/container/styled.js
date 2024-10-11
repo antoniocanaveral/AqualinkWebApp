@@ -4514,6 +4514,9 @@ const OrderSummary = Styled.div`
             ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: 6px;
         }
     }
+    .hBKXHL table thead tr th:last-child {
+        text-align: left !important;
+    }
 `;
 
 const WizardTwo = Styled.div`
@@ -4583,6 +4586,17 @@ const FigureWizards = Styled.figure`
     }
 `;
 
+const GridStyleGutter = Styled.div`
+    .ant-row .ant-col .gutter-box {
+        height: 50px;
+        background: ${({ theme }) => theme[theme.mainContent]['menu-active']};
+        text-align: center;        
+        margin-bottom: 15px;
+        line-height: 50px;
+        color: ${({ theme }) => theme[theme.mainContent]['white-text']};
+    }    
+`;
+
 
 export {
   Main,
@@ -4622,5 +4636,6 @@ export {
   OrderSummary,
   WizardTwo,
   FigureWizards,
-  CoordStatusWrapper
+  CoordStatusWrapper,
+  GridStyleGutter
 };
