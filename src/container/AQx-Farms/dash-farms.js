@@ -10,6 +10,7 @@ const SalesGrowth = lazy(() => import('../dashboard/overview/index/SalesGrowth')
 const SalesByLocation = lazy(() => import('../dashboard/overview/index/SalesByLocation'));
 const TopSellingProduct = lazy(() => import('../dashboard/overview/index/TopSellingProducts'));
 const BrowserState = lazy(() => import('../dashboard/overview/index/BrowserState'));
+const SalesOverview = lazy(() => import('../dashboard/overview/index/SalesOverview'));
 
 function DashboardFarms() {
   const PageRoutes = [
@@ -28,6 +29,17 @@ function DashboardFarms() {
 
       <Main>
         <Row gutter={25}>
+        <Col xxl={16} xs={24}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <SalesOverview />
+            </Suspense>
+          </Col>
           <Col xxl={12} xs={24}>
             <Suspense
               fallback={

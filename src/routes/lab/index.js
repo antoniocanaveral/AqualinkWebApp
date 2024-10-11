@@ -8,6 +8,7 @@ const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Lab = React.memo(() => {
   const { pathname } = useLocation();
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
@@ -20,7 +21,7 @@ const Lab = React.memo(() => {
       }
     >
       <Routes>
-        <Route index element={<Dashboard />} />
+        <Route index element={<LabCoordinations />} />
         <Route path="/coords/*" element={<LabCoordinations />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

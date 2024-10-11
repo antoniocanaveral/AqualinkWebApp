@@ -6,7 +6,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 function ProtectedRoute({ Component, path }) {
   const isLoggedIn = useSelector((state) => state.auth.login);
 
-  return isLoggedIn ? (
+  return !isLoggedIn ? (
     <Routes>
       {' '}
       <Route element={<Component />} path={path} />{' '}

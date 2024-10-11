@@ -7,6 +7,7 @@ const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Ecosystem = React.memo(() => {
   const { pathname } = useLocation();
+  console.log(pathname);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);

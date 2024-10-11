@@ -14,7 +14,8 @@ import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { LightBox } from 'react-lightbox-pack';
-import 'react-lightbox-pack/dist/index.css';
+import 'react-lightbox-pack/dist/style.css';
+
 import { AllPosts, BackShadowEmoji, Title } from './style';
 import { Cards } from '../../../../../components/cards/frame/cards-frame';
 import { Button } from '../../../../../components/buttons/buttons';
