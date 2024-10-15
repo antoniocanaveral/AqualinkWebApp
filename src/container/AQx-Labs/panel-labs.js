@@ -10,7 +10,7 @@ import { GoogleMaps } from '../../components/maps/google-maps';
 import ProjectionKgPanel from './panel/charts/projections-kg-panel';
 import ProjectionUsdPanel from './panel/charts/projections-kg-panel';
 import ProjectionPanel from './panel/charts/projection-usd-panel';
-import TaskLabTable from './task-lab';
+import TaskLabTable from './task/table/task-table-lab';
 
 const OverviewDataList = lazy(() => import('../dashboard/overview/demoFarm/OverviewDataList'));
 const SalesReport = lazy(() => import('../dashboard/overview/index/SalesReport'));
@@ -105,7 +105,7 @@ function PanelLabs() {
 
             </Suspense>
           </Col>
-          <Col xl={6} xs={24}>
+          <Col xl={12} xs={24}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -118,17 +118,7 @@ function PanelLabs() {
           </Col>
 
 
-          <Col xl={6} xs={24}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <ProjectionPanel />
-            </Suspense>
-          </Col>
+
 
 
         </Row>
@@ -142,8 +132,9 @@ function PanelLabs() {
                 </Cards>
               }
             >
-
-              <TaskLabTable />
+              <Cards title="Administrador de Tareas" size="large">
+                <TaskLabTable />
+              </Cards>
 
             </Suspense>
           </Col>

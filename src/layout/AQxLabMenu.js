@@ -107,6 +107,7 @@ function AQxLabMenu({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/panel`}>
         {t('Panel de Control')}
@@ -119,51 +120,434 @@ function AQxLabMenu({ toggleCollapsed }) {
       ),
     ),
     getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/analytics`}>
+        {t('Aqualink Analytics')}
+      </NavLink>,
+      'Aqualink Analytics',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/analytics`}>
+          <UilDesktop />
+        </NavLink>
+      ),
+    ),
+
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/planning`}>
+        {t('Aqualink Planning')}
+      </NavLink>,
+      'Aqualink Planning',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/planning`}>
+          <UilDesktop />
+        </NavLink>
+      ),
+    ),
+
+
+
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/task`}>
+        {t('Tareas')}
+      </NavLink>,
+      'Tareas',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/task`}>
+          <UilDesktop />
+        </NavLink>
+      ),
+    ),
+
+    getItem(
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('información')}</NavTitle>,
+      'submenu-informacion',
+      null,
+      null,
+      'group',
+    ),
+
+    getItem(t('Monitoreo'), 'monitoreo-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/monitoring/general-monitoring`}>
+          {t('Monitoreo')} {t('General')}
+        </NavLink>,
+        'genearl-monitoring',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/monitoring/product-monitoring`}>
+          {t('Monitoreo')} {t('Producto')}
+        </NavLink>,
+        'product-monitoring',
+
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/monitoring/feeding-monitoring`}>
+          {t('Monitoreo')} {t('Alimentación')}
+        </NavLink>,
+        'feeding-monitoring',
+
+        null,
+      ),
+
+    ]),
+
+    getItem(t('Parámetros'), 'parametros-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/parameters/all-parameters`}>
+          {t('Todos los')} {t('Parámetros')}
+        </NavLink>,
+        'all-parameters',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/parameters/dissolved-oxygens`}>
+          {t('Oxígenos ')} {t('Disueltos')}
+        </NavLink>,
+        'dissolved-oxygens',
+
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/parameters/temperature`}>
+          {t('Temperatura')}
+        </NavLink>,
+        'feeding-monitoring',
+
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/parameters/Salinity`}>
+          {t('Salinidad')}
+        </NavLink>,
+        'salinidad',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/parameters/ph`}>
+          {t('pH')}
+        </NavLink>,
+        'pH',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/parameters/alkalinity`}>
+          {t('Alcalinidad')}
+        </NavLink>,
+        'Alcalinidad',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/parameters/turbidity`}>
+          {t('Turbidez')}
+        </NavLink>,
+        'Turbidez',
+        null,
+      ),
+
+    ]),
+
+
+    // Menú de Tanques
+    getItem(t('Tanques'), 'tanques-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/tanks/see-tanks`}>
+          {t('Ver')} {t('Tanques')}
+        </NavLink>,
+        'see-tanks',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/tanks/tank-preparation`}>
+          {t('Preparación de Tanques')}
+        </NavLink>,
+        'tank-preparation',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/tanks/water-physicochemical`}>
+          {t('Físico Químico Agua')}
+        </NavLink>,
+        'water-physicochemical',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/tanks/air-supply`}>
+          {t('Suministro de Aire')}
+        </NavLink>,
+        'air-supply',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/tanks/water-flow`}>
+          {t('Flujo de Agua')}
+        </NavLink>,
+        'water-flow',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/tanks/water-exchange`}>
+          {t('Recambio de Agua')}
+        </NavLink>,
+        'water-exchange',
+        null,
+      ),
+    ]),
+
+    // Menú de Cultivo
+    getItem(t('Cultivo'), 'cultivo-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/view`}>
+          {t('Ver Cultivos')}
+        </NavLink>,
+        'view-cultivos',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/feeding`}>
+          {t('Alimentación')}
+        </NavLink>,
+        'feeding',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/algae`}>
+          {t('Algas')}
+        </NavLink>,
+        'algae',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/artemia`}>
+          {t('Artemia')}
+        </NavLink>,
+        'artemia',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/bacteria`}>
+          {t('Bacteria')}
+        </NavLink>,
+        'bacteria',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/fertilization`}>
+          {t('Fertilización')}
+        </NavLink>,
+        'fertilization',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/pathology`}>
+          {t('Patología')}
+        </NavLink>,
+        'pathology',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/weight-evolution`}>
+          {t('Evolución de Peso')}
+        </NavLink>,
+        'weight-evolution',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/population-evolution`}>
+          {t('Evolución de Población')}
+        </NavLink>,
+        'population-evolution',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/transfer`}>
+          {t('Transferencia')}
+        </NavLink>,
+        'transfer',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/cultivo/thinning-fishing`}>
+          {t('Raleo y Pesca')}
+        </NavLink>,
+        'thinning-fishing',
+        null,
+      ),
+    ]),
+
+    // Menú de IoT
+    getItem(t('IoT'), 'iot-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/iot/view-devices`}>
+          {t('Ver Dispositivos')}
+        </NavLink>,
+        'view-devices',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/iot/add-device`}>
+          {t('Añadir Dispositivos')}
+        </NavLink>,
+        'add-device',
+        null,
+      ),
+    ]),
+
+    getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('logistica')}</NavTitle>,
       'submenu-logistica',
       null,
       null,
       'group',
     ),
+
     getItem(t('Coordinación'), 'coord-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/seeding-notifications`}>
+          {t('Notificaciones de')} {t('Siembra')}
+        </NavLink>,
+        'seeding',
+        null,
+      ),
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/coords`}>
           {t('Ver')} {t('Coordinaciones')}
         </NavLink>,
-        'light',
+        'coords',
+
         null,
-      )
+      ),
+
     ]),
-    getItem(t('Visualización'), 'visualizacion', !topMenu && <UilWindowSection />, [
+
+
+    getItem(
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Inventario')}</NavTitle>,
+      'submenu-inventarios',
+      null,
+      null,
+      'group',
+    ),
+
+    // Menú de Inventario
+    getItem(t('Inventario'), 'inventario-main', !topMenu && <UilCalendarAlt />, [
       getItem(
-        <NavLink
-          onClick={() => {
-            toggleCollapsed();
-            darkmodeDiactivated();
-            changeLayout('lightMode');
-          }}
-          to="#"
-        >
-          {t('light')} {t('mode')}
+        <NavLink className="menuItem-icon" to={`${path}/inventory/view`}>
+          {t('Ver Inventario')}
         </NavLink>,
-        'light',
+        'view-inventory',
         null,
       ),
       getItem(
-        <NavLink
-          onClick={() => {
-            toggleCollapsed();
-            darkmodeActivated();
-            changeLayout('darkMode');
-          }}
-          to="#"
-        >
-          {t('dark')} {t('mode')}
+        <NavLink className="menuItem-icon" to={`${path}/inventory/add-products`}>
+          {t('Añadir Productos')}
         </NavLink>,
-        'dark',
+        'add-products',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/inventory/costs`}>
+          {t('Costos')}
+        </NavLink>,
+        'costs',
         null,
       ),
     ]),
+
+    // Menú de Nauplieras
+    getItem(t('Nauplieras'), 'nauplieras-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/nauplieras/view`}>
+          {t('Ver Nauplieras')}
+        </NavLink>,
+        'view-nauplieras',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/nauplieras/add-naupliera`}>
+          {t('Añadir Naupliera')}
+        </NavLink>,
+        'add-naupliera',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/nauplieras/request-nauplii`}>
+          {t('Solicitar Nauplios')}
+        </NavLink>,
+        'request-nauplii',
+        null,
+      ),
+    ]),
+
+    // Menú de Cosechas
+    getItem(t('Cosechas'), 'cosechas-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/harvest/reservations`}>
+          {t('Reservas')}
+        </NavLink>,
+        'reservations',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/harvest/orders`}>
+          {t('Pedidos')}
+        </NavLink>,
+        'orders',
+        null,
+      ),
+    ]),
+    getItem(
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Administración')}</NavTitle>,
+      'submenu-administracion',
+      null,
+      null,
+      'group',
+    ),
+
+    // Menú de Usuarios
+    getItem(t('Usuarios'), 'usuarios-main', !topMenu && <UilCalendarAlt />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/users/view`}>
+          {t('Ver Usuarios')}
+        </NavLink>,
+        'view-users',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/users/add`}>
+          {t('Añadir Usuarios')}
+        </NavLink>,
+        'add-users',
+        null,
+      ),
+    ]),
+
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/permissions`}>
+        {t('Permisos')}
+      </NavLink>,
+      'Permisos',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/permissions`}>
+          <UilDesktop />
+        </NavLink>
+      ),
+    ),
+
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/customer service`}>
+        {t('Atención al Cliente')}
+      </NavLink>,
+      'Atención al Cliente',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/customer service`}>
+          <UilDesktop />
+        </NavLink>
+      ),
+    ),
+
+
+    
   ];
 
   return (
@@ -175,10 +559,9 @@ function AQxLabMenu({ toggleCollapsed }) {
       defaultSelectedKeys={
         !topMenu
           ? [
-              `${
-                mainPathSplit.length === 1 ? 'home' : mainPathSplit.length === 2 ? mainPathSplit[1] : mainPathSplit[2]
-              }`,
-            ]
+            `${mainPathSplit.length === 1 ? 'home' : mainPathSplit.length === 2 ? mainPathSplit[1] : mainPathSplit[2]
+            }`,
+          ]
           : []
       }
       defaultOpenKeys={!topMenu ? [`${mainPathSplit.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : []}

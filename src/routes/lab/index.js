@@ -4,7 +4,9 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Dashboard from './dashboard';
 import LabCoordinations from './labCoordinations';
 import withLabLayout from '../../layout/withLabLayout';
-import PanelRoutes from './panel';
+import PanelRoutes from './labPanel';
+import TaskRoutes from './labTask';
+import LabNotificationsSeedingRoutes from './labSeedingNotifications';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Lab = React.memo(() => {
@@ -24,7 +26,9 @@ const Lab = React.memo(() => {
       <Routes>
         <Route index element={<LabCoordinations />} />
         <Route path="/panel/*" element={<PanelRoutes />} />
+        <Route path="/task/*" element={<TaskRoutes />} />
         <Route path="/coords/*" element={<LabCoordinations />} />
+        <Route path="/seeding-notifications/*" element={<LabNotificationsSeedingRoutes />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

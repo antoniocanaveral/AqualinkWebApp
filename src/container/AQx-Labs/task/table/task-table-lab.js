@@ -1,5 +1,5 @@
 import { Row, Table, Badge, Button, Space } from 'antd';
-import { Cards } from '../../components/cards/frame/cards-frame';
+import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { Link } from 'react-router-dom';
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
@@ -150,9 +150,8 @@ function TaskLabTable() {
     ];
 
     return (
-        <Cards title="Administrador de Tareas" size="large">
-            <Table columns={columns} dataSource={data} pagination={false} />
-        </Cards>
+        <Table columns={columns} dataSource={data} pagination={false} />
+
     );
 }
 
