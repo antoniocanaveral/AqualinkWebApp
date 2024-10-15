@@ -88,8 +88,8 @@ const OverviewCardWrap = Styled.div`
         .ninjadash-overview-card{
             .ninjadash-overview-card__top{
                 .ninjadash-overview-card__top--icon{
-                    width: 58px;
-                    height: 58px;
+                    width: 150px;
+                    height: 108px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -103,8 +103,8 @@ const OverviewCardWrap = Styled.div`
                     }
                     svg,
                     img{
-                        width: 24px;
-                        height: 24px;
+                        width: 150px;
+                        height: 150px;
                     }
                     &.ninjadash-primary{
                         background-color: ${({ theme }) => theme['primary-color']}15;
@@ -144,6 +144,7 @@ const OverviewCardWrap = Styled.div`
                 }
                 .ninjadash-overview-card__top--content{
                     .ninjadash-overview-total{
+                    text-align: center;
                         font-size: 30px;
                         line-height: 1.45;
                         font-weight: 600;
@@ -924,12 +925,12 @@ const CourseCardWrap = Styled.div`
                 &.bg-secondary{
                     color: ${({ theme }) => theme['secondary-color']};
                     background-color: ${({ theme }) =>
-                      theme.mainContent === 'lightMode' ? 'rgba(88,64,255,.15)' : '#fff'};
+        theme.mainContent === 'lightMode' ? 'rgba(88,64,255,.15)' : '#fff'};
                 }
                 &.bg-primary{
                     color: ${({ theme }) => theme['primary-color']};
                     background-color: ${({ theme }) =>
-                      theme.mainContent === 'lightMode' ? 'rgba(251,53,134,.15)' : '#fff'};
+        theme.mainContent === 'lightMode' ? 'rgba(251,53,134,.15)' : '#fff'};
                 }
                 span{
                     font-size: 13px;
@@ -1177,12 +1178,12 @@ const BlogCardStyleWrap = Styled.figure`
 `;
 
 export {
-  OverviewCardWrap,
-  OverviewCardMeshWrap,
-  InfoCardStyle,
-  NewsletterStyle,
-  CourseCardWrap,
-  BlogCardStyleWrap,
-  ProfileCardWrapper,
-  SystemCardWrap
+    OverviewCardWrap,
+    OverviewCardMeshWrap,
+    InfoCardStyle,
+    NewsletterStyle,
+    CourseCardWrap,
+    BlogCardStyleWrap,
+    ProfileCardWrapper,
+    SystemCardWrap
 };

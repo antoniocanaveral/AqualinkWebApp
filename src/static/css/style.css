@@ -136,7 +136,7 @@ ul {
 /* default card style */
 
 .ant-card {
-  box-shadow: 0 5px 20px rgba(173,181,217,.05);
+  box-shadow: 0 5px 20px rgba(173, 181, 217, .05);
 }
 
 .ant-card-body {
@@ -1732,6 +1732,7 @@ html[dir="rtl"] .ninjadash-upload-basic .ninjadash-upload-browse {
   flex-wrap: wrap;
 }
 
+
 .ant-menu .ant-menu-submenu .ant-menu-submenu-title {
   display: flex;
   align-items: center;
@@ -3119,4 +3120,73 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 .auth0-lock.auth0-lock .auth0-lock-name {
   font-size: 16px !important;
+}
+
+/**/
+
+.custom-table-row td:first-child {
+  font-weight: bold;
+  background-color: #f8f9fb !important
+    /* Sombreado para la primera columna */
+  ;
+}
+
+.ant-table-cell {
+  padding: 8px !important;
+  /* Reducir el padding de todas las celdas */
+}
+
+.custom-table .ant-table-cell {
+  padding: 3px !important
+}
+
+.custom-table_lab .ant-table-cell {
+  padding: 6px !important
+}
+
+
+.ninjadash-status {
+  margin: 0px !important;
+}
+
+
+.steps-icon {
+  font-size: 20px !important; /* Cambia a un tamaño más pequeño */
+}
+
+.ant-steps-item-container{
+  padding: 0px !important;
+  margin : 0px !important;
+}
+
+.ninjadash-wizard-page{
+  padding-left: 30px !important;
+  
+}
+.ant-steps-item-container svg{
+  width: 40px !important;
+  height: 40px !important;
+}
+
+/* Ajustar la alineación vertical entre el ícono y el label */
+.ant-steps-item-icon {
+  margin-bottom: -5px !important; /* Eliminar margen inferior del ícono */
+}
+
+.ant-steps-item-title {
+  margin-top: 10px !important; /* Eliminar margen superior del label */
+  padding-top: 0 !important; /* Ajustar el padding si es necesario */
+}
+
+
+
+
+/* Estilo para aumentar el espacio entre el contenedor del label y el campo */
+.ant-form-item {
+  margin-bottom: 20px !important; /* Espacio de 20px entre cada bloque del formulario */
+}
+
+/* Estilo para ajustar el espacio entre el label y el texto del mismo */
+.ant-form-item-label > label {
+  margin-bottom: -15px !important; /* Espacio de 5px entre el label y el texto */
 }

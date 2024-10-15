@@ -108,12 +108,12 @@ function AQxLabMenu({ toggleCollapsed }) {
       ),
     ),
     getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}`}>
+      <NavLink onClick={toggleCollapsed} to={`${path}/panel`}>
         {t('Panel de Control')}
       </NavLink>,
       'Panel de Control',
       !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}`}>
+        <NavLink className="menuItem-iocn" to={`${path}/panel`}>
           <UilDesktop />
         </NavLink>
       ),

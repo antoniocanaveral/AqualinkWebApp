@@ -1,19 +1,30 @@
-// import UilBriefcaseAlt from '@iconscout/react-unicons/icons/uil-briefcase-alt';
-// import UilAward from '@iconscout/react-unicons/icons/uil-award';
 import * as Unicons from '@iconscout/react-unicons';
 import propTypes from 'prop-types';
 import React from 'react';
 import { InfoCardStyle } from './Style';
 
-function InfoCard({ icon, text, counter, type }) {
+function InfoCard({ icon, text, counter, type, img }) {
   const IconTag = Unicons[icon];
+
   return (
     <InfoCardStyle type={type}>
       <span className="ninjadash-infocard-icon">
         <IconTag />
       </span>
-      <p className="ninjadash-infocard-text">{text}</p>
-      <h2 className="ninjadash-infocard-label">{counter}</h2>
+
+      {/* Si el type es 'solutions' mostrar la imagen, de lo contrario mostrar el texto y el contador */}
+      {type === 'solutions' ? (
+        <img
+          src={require(`../../static/img/AQx-IMG/${img}`)}
+          alt={img}
+          style={{ width: '50%', height: 'auto', marginTop: '-30px' }}
+        />
+      ) : (
+        <>
+          <p className="ninjadash-infocard-text">{text}</p>
+          <h2 className="ninjadash-infocard-label">{counter}</h2>
+        </>
+      )}
     </InfoCardStyle>
   );
 }
@@ -22,7 +33,8 @@ InfoCard.propTypes = {
   counter: propTypes.string,
   text: propTypes.string,
   icon: propTypes.string,
-  type: propTypes.oneOf(['primary', 'secondary']),
+  type: propTypes.oneOf(['primary', 'secondary', 'solutions']),
+  img: propTypes.string, // Nueva propiedad opcional para la imagen
 };
 
 InfoCard.defaultProps = {
@@ -30,6 +42,7 @@ InfoCard.defaultProps = {
   text: 'Total Products',
   icon: 'briefcase',
   type: 'primary',
+  img: '', // Valor por defecto para img
 };
 
 export default InfoCard;

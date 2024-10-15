@@ -9,6 +9,7 @@ import Heading from '../../heading/heading';
 function Cards(props) {
   const {
     title,
+    status, // Agregamos la prop `status`
     children,
     more,
     moreText,
@@ -22,12 +23,22 @@ function Cards(props) {
     bodypadding,
     className,
   } = props;
+
   return (
     <>
       {!headless ? (
         <CardFrame
           size={size}
-          title={title}
+          title={
+            <>
+              {title} {/* Título principal */}
+              {status && ( // Si existe el estado, lo renderizamos aquí
+                <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>
+                  {status}
+                </span>
+              )}
+            </>
+          }
           bodyStyle={bodyStyle && bodyStyle}
           headStyle={headStyle && headStyle}
           bordered={border}
@@ -74,6 +85,7 @@ Cards.defaultProps = {
 
 Cards.propTypes = {
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.node]),
+  status: PropTypes.string, // Definimos el prop status
   size: PropTypes.string,
   more: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.node]),
   bodyStyle: PropTypes.object,

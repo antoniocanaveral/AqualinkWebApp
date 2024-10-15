@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect } from 'react';
-import { Row, Col } from 'antd';
-import SystemCard from '../../../../components/cards/SystemCard';
+import { Row, Col, PageHeader } from 'antd';
+import OverviewCard from '../../../../components/cards/OverviewCard'; // Cambiamos a OverviewCard
 import { useDispatch, useSelector } from 'react-redux';
-import {useNavigate } from 'react-router-dom';
-import { selectModule, loadUserAccess} from '../../../../redux/authentication/actionCreator';
+import { useNavigate } from 'react-router-dom';
+import { selectModule, loadUserAccess } from '../../../../redux/authentication/actionCreator';
+import InfoCard from '../../../../components/cards/InfoCard';
+import Heading from '../../../../components/heading/heading';
 
 const OverviewDataList = React.memo(() => {
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -23,37 +24,116 @@ const OverviewDataList = React.memo(() => {
   const withControl = useSelector((state) => state.auth.withControl);
   const controlsOrgs = useSelector((state) => state.auth.controlsOrgs);
 
+  // Función para manejar la navegación cuando se hace clic en un módulo
   const gotModule = useCallback(
     (moduleKey, orgInfo, url) => {
-     dispatch(selectModule(moduleKey, orgInfo, () => {
-        navigate(url);
-      }));
+      dispatch(
+        selectModule(moduleKey, orgInfo, () => {
+          navigate(url); // Redirigir a la URL proporcionada
+        })
+      );
     },
-    [navigate, dispatch],
+    [navigate, dispatch]
   );
 
+  // Definir los datos para cada card de forma acorde a OverviewCard
+  const overviewCardData = [
+    {
+      id: 'labs',
+      img: 'Laboratorios.png',
+      icon: 'biomasa.svg',
+      label: 'AquaLink - Laboratorios',
+      total: labsOrgs.length,
+      type: 'secondary',
+      status: withLabs ? 'growth' : 'down',
+      canAccess: withLabs,
+      accessItems: labsOrgs,
+      onPress: () => gotModule('LAB', { orgId: labsOrgs[0]?.orgId, orgName: labsOrgs[0]?.orgName, orgEmail: labsOrgs[0]?.orgEmail }, '/lab'), // Lógica de navegación
+    },
+    {
+      id: 'farms',
+      img: 'Camaroneras.png',
+      icon: 'biomasa.svg',
+      label: 'AquaLink - Camaroneras',
+      total: farmsOrgs.length,
+      type: 'primary',
+      status: withFarms ? 'growth' : 'down',
+      canAccess: withFarms,
+      accessItems: farmsOrgs,
+      onPress: () => gotModule('FARM', { orgId: farmsOrgs[0]?.orgId, orgName: farmsOrgs[0]?.orgName, orgEmail: farmsOrgs[0]?.orgEmail }, '/farm'),
+    },
+    {
+      id: 'custody',
+      img: 'Empacadoras.png',
+      icon: 'biomasa.svg',
+      label: 'AquaLink - Custodia',
+      total: custodyOrgs.length,
+      type: 'info',
+      status: withCustody ? 'growth' : 'down',
+      canAccess: withCustody,
+      accessItems: custodyOrgs,
+      onPress: () => gotModule('CUSTODY', { orgId: custodyOrgs[0]?.orgId, orgName: custodyOrgs[0]?.orgName, orgEmail: custodyOrgs[0]?.orgEmail }, '/custody'),
+    },
+  ];
+
   return (
-    <Row>
-        <Col xl={24} xs={24}>
-          <h1>AquaLink EcoSystem</h1>
+    <Row gutter={24}>
+      <br></br>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw' }}>
+        <figure style={{ textAlign: 'center' }}>
+          <Heading as="h2">Hi</Heading>
+          <img src={require('../../../../static/img/AQx-IMG/avatar48b.png')} alt="" />
+          <figcaption>
+            <Heading as="h5">Esteban Gallegos</Heading>
+          </figcaption>
+          <p>Welcome to Aqualink</p>
+        </figure>
+      </div>
+
+
+
+      <Col xl={24} xs={24}>
+        <PageHeader className="ninjadash-page-header-main" title="AquaLink EcoSystem" />
+      </Col>
+      {overviewCardData.map((item) => (
+        <Col xl={8} xs={24} key={item.id}>
+          <OverviewCard
+            data={item}
+            bottomStatus
+            contentFirst
+            halfCircleIcon
+            onClick={item.onPress} // Añadir onClick para cada card
+          />
         </Col>
-        <Col xl={6} xs={24}>
-          <SystemCard data={{id: 'labs', icon: "biomasa.svg", label: "AquaLink - Laboratorios", 
-            canAccess: withLabs, accessItems: labsOrgs}} onPress={(orgId, orgName, orgEmail) => gotModule('LAB', { orgId, orgName, orgEmail }, '/lab')} />
-        </Col>
-        <Col xl={6} xs={24}>
-          <SystemCard data={{id: 'farms', icon: "biomasa.svg", label: "AquaLink - Camaroneras", 
-            canAccess: withFarms, accessItems: farmsOrgs}} onPress={(orgId, orgName, orgEmail) => gotModule('FARM', { orgId, orgName, orgEmail }, '/farm')} />
-        </Col>
-        <Col xl={6} xs={24}>
-          <SystemCard data={{id: 'custody', icon: "biomasa.svg", label: "AquaLink - Custodia", 
-            canAccess: withCustody, accessItems: custodyOrgs}} onPress={(orgId, orgName, orgEmail) => gotModule('CUSTODY', { orgId, orgName, orgEmail }, '/custody')} />
-        </Col>
-        <Col xl={6} xs={24}>
-          <SystemCard data={{id: 'control', icon: "biomasa.svg", label: "AquaLink - Control", 
-            canAccess: withControl, accessItems: controlsOrgs}} onPress={(orgId, orgName, orgEmail) => gotModule('CONTROL', { orgId, orgName, orgEmail }, '/control')} />
-        </Col>
-      
+      ))}
+
+      <Col xl={24} xs={24}>
+        <PageHeader className="ninjadash-page-header-main" im title="Solutions" />
+      </Col>
+      <Col xs={8}>
+        <InfoCard icon="UilAnalysis" img={"Analytics.png"} type={"solutions"} />
+      </Col>
+      <Col xs={8}>
+        <InfoCard icon="UilAnalysis" img={"Control.png"} type={"solutions"} />
+      </Col>
+
+      <Col xs={8}>
+        <InfoCard icon="UilAnalytics" img={"M&E.png"} type={"solutions"} />
+      </Col>
+      <Col xs={8}>
+        <InfoCard icon="UilBriefcaseAlt" img={"B2b.png"} type={"solutions"} />
+      </Col>
+
+      <Col xs={8}>
+        <InfoCard icon="UilBriefcaseAlt" img={"Network.png"} type={"solutions"} />
+      </Col>
+
+      <Col xl={24} >
+        <PageHeader className="ninjadash-page-header-main" title="Knowledge Center" />
+      </Col>
+      <Col xs={6}>
+        <InfoCard icon="UilBriefcaseAlt" img={"AquaDemia.png"} type={"solutions"} />
+      </Col>
     </Row>
   );
 });

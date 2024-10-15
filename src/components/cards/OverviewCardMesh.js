@@ -36,20 +36,23 @@ function OverviewCardMesh({ data, circleIcon }) {
                 <CountUp
                   start={0}
                   end={didViewCountUp ? totalNumber : 0}
-                  suffix={suffix}
                   prefix={prefix}
                   delay={0.5}
                   decimals={decimel}
-                  duration={2}
+                  duration={1}
                 />
+                {suffix && <span style={{ marginLeft: "3px" }}>{suffix}</span>}
               </h4>
-              <span className="ninjadahs-overview-label">{label}</span>
+              <span style={{ marginLeft: "5px" }} className="ninjadahs-overview-label">{label}</span>
             </div>
-            <span className={`ninjadash-overview-status ninjadash-status-${status}`}>
-              <span className="ninjadash-status-rate">
-                {status === 'growth' ? <UilUp /> : <UilDown />} {statusRate}%
+            {/*
+              <span className={`ninjadash-overview-status ninjadash-status-${status}`}>
+                <span className="ninjadash-status-rate">
+                  {status === 'growth' ? <UilUp /> : <UilDown />} {statusRate}%
+                </span>
               </span>
-            </span>
+              */
+            }
           </div>
         </div>
       </Card>

@@ -15,8 +15,7 @@ function DashboardEcosystem() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Aqualink" routes={PageRoutes} />
-
+     
       <Main>
         <Row gutter={25}>
           <Col xxl={12} xs={24}>

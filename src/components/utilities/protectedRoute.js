@@ -1,26 +1,21 @@
 import propTypes from 'prop-types';
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 function ProtectedRoute({ Component, path }) {
   const isLoggedIn = useSelector((state) => state.auth.login);
 
-  return !isLoggedIn ? (
+  return isLoggedIn ? (
     <Routes>
-      {' '}
-      <Route element={<Component />} path={path} />{' '}
+      <Route element={<Component />} path={path} />
     </Routes>
   ) : (
-    <Routes>
-      {' '}
-      <Route path="/ninjadash-react/admin" element={<Navigate to="/" />} />
-    </Routes>
+    <Navigate to="/" />
   );
 }
 
 ProtectedRoute.propTypes = {
-  Component: propTypes.object.isRequired,
+  Component: propTypes.elementType.isRequired,
   path: propTypes.string.isRequired,
 };
 

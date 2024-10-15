@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 import { ReactSVG } from 'react-svg';
 import { OverviewCardWrap } from './Style';
 
-function OverviewCard({ data, className, bottomStatus, contentFirst, halfCircleIcon }) {
+function OverviewCard({ data, className, bottomStatus, contentFirst, halfCircleIcon, onClick }) {
   const [didViewCountUp, setDidViewCountUp] = useState(false);
 
   const { pathname } = useLocation();
@@ -16,11 +16,17 @@ function OverviewCard({ data, className, bottomStatus, contentFirst, halfCircleI
     setDidViewCountUp(true);
   }, [pathname]);
 
-  const { type, icon, label, total, status, statusRate, dataPeriod, suffix, prefix, decimels, separator } = data;
+  const { type, icon, img, label, total, status, statusRate, dataPeriod, suffix, prefix, decimels, separator } = data;
   const totalNumber = Number(total);
+  
   return (
     <OverviewCardWrap className={className}>
-      <Card bordered={false} className={halfCircleIcon ? 'ninjadash-overview-halfCircle-card' : null}>
+      <Card
+        bordered={false}
+        className={halfCircleIcon ? 'ninjadash-overview-halfCircle-card' : null}
+        onClick={onClick} // Aquí añadimos el onClick para que la tarjeta sea interactiva
+        style={{ cursor: 'pointer' }} // Añadimos estilo de cursor para que se vea clicable
+      >
         <div className={`ninjadash-overview-card ninjadash-overview-card-${type}`}>
           <div
             className={
@@ -41,19 +47,11 @@ function OverviewCard({ data, className, bottomStatus, contentFirst, halfCircleI
             >
               {halfCircleIcon ? (
                 <>
-                  <span className="ninjadahs-overview-label">{label}</span>
-                  <h4 className="ninjadash-overview-total">
-                    <CountUp
-                      start={0}
-                      end={didViewCountUp ? totalNumber : 0}
-                      suffix={suffix}
-                      prefix={prefix}
-                      delay={0.5}
-                      decimals={decimels}
-                      separator={separator}
-                      duration={2}
-                    />
-                  </h4>
+                  {img ? (
+                    <img src={require(`../../static/img/AQx-IMG/${img}`)} alt={label} style={{ width: '220px' }} />
+                  ) : (
+                    <span className="ninjadahs-overview-label">{label}</span>
+                  )}
                 </>
               ) : (
                 <>
@@ -69,17 +67,21 @@ function OverviewCard({ data, className, bottomStatus, contentFirst, halfCircleI
                       duration={2}
                     />
                   </h4>
-                  <span className="ninjadahs-overview-label">{label}</span>
+                  {img ? (
+                    <img src={require(`../../static/img/AQx-IMG/${img}`)} alt={label} style={{ width: '100px' }} />
+                  ) : (
+                    <span className="ninjadahs-overview-label">{label}</span>
+                  )}
                 </>
               )}
             </div>
           </div>
           {bottomStatus ? (
             <div className="ninjadash-overview-card__bottom">
-              <span className={`ninjadash-overview-status ninjadash-status-${status}`}>
+              <span className={`ninjadash-overview-status `}>
                 <span className="ninjadash-status-rate">
                   {status === 'growth' ? <UilUp /> : <UilDown />}
-                  {statusRate}%
+                  {totalNumber} 
                 </span>
                 <span className="ninjadash-status-label">{dataPeriod}</span>
               </span>
@@ -92,6 +94,7 @@ function OverviewCard({ data, className, bottomStatus, contentFirst, halfCircleI
     </OverviewCardWrap>
   );
 }
+
 OverviewCard.defaultProps = {
   data: {},
   className: 'ninjadash-overview-card-box',
@@ -99,12 +102,14 @@ OverviewCard.defaultProps = {
   contentFirst: false,
   halfCircleIcon: false,
 };
+
 OverviewCard.propTypes = {
   data: propTypes.object,
   className: propTypes.string,
   bottomStatus: propTypes.bool,
   contentFirst: propTypes.bool,
   halfCircleIcon: propTypes.bool,
+  onClick: propTypes.func, // Aseguramos que onClick esté definido como función en las props
 };
 
 export default OverviewCard;
