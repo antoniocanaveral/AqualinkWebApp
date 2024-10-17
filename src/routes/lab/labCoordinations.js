@@ -1,10 +1,10 @@
 import React, { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import CoordinationLabsResumen from '../../container/AQx-Labs/coord-labs-resumen';
+import CoordinationsLabs from '../../container/AQx-Labs/coords-labs';
+import CoordinationLabs from '../../container/AQx-Labs/coord-labs';
+import CoordinationLabsParams from '../../container/AQx-Labs/coord-labs-params';
 
-const CoordinationsLabs = lazy(() => import('../../container/AQx-Labs/coords-labs'));
-const CoordinationLabs = lazy(() => import('../../container/AQx-Labs/coord-labs'));
-const CoordinationLabsResumen = lazy(() => import('../../container/AQx-Labs/coord-labs-resumen'));
-const CoordinationLabsParams = lazy(() => import('../../container/AQx-Labs/coord-labs-params'));
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 function LabCoordinationsRoutes() {

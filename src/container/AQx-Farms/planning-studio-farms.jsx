@@ -15,7 +15,7 @@ const TopSellingProduct = lazy(() => import('../dashboard/overview/index/TopSell
 const BrowserState = lazy(() => import('../dashboard/overview/index/BrowserState'));
 const SalesOverview = lazy(() => import('../dashboard/overview/index/SalesOverview'));
 
-function DashboardFarms() {
+function PlanningStudioFarms() {
   const [form] = Form.useForm();
   const [scenarios, setScenarios] = useState([]);
   const PageRoutes = [
@@ -329,4 +329,4 @@ function DashboardFarms() {
   );
 }
 
-export default DashboardFarms;
+export default PlanningStudioFarms;
