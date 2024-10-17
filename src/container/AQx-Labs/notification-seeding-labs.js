@@ -1,70 +1,123 @@
-import React, { Suspense, useLayoutEffect, useState, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { Suspense, useMemo } from 'react';
 import { Row, Col, Skeleton } from 'antd';
 import { Main, BorderLessHeading } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
-import { loadLabCoordinations } from '../../redux/lab/actionCreator';
 import DataTable from '../../components/table/DataTable';
 import { Link } from 'react-router-dom';
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
 import UilListOlAlt from '@iconscout/react-unicons/icons/uil-list-ol-alt';
 import moment from 'moment';
-import Cookies from 'js-cookie';
-
-
 
 function NotificationSeedingLabs() {
-  const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName')); // Organización seleccionada
-
   const PageRoutes = [
     {
       path: '/lab',
-      breadcrumbName: selectedOrg,
-    },
-    {
-      path: 'first',
       breadcrumbName: 'Coordinaciones',
     },
   ];
 
-  const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.lab.loading);
-  const coordinations = useSelector((state) => state.lab.coordinations);
-  const organizations = useSelector((state) => state.auth.labsOrgs); // Lista de organizaciones
-
-  useLayoutEffect(() => {
-    dispatch(loadLabCoordinations(selectedOrg, (isCompleted, error) => {
-      console.log(`loadLabCoordinations ${isCompleted} for organization: ${selectedOrg}`);
-    }));
-  }, [dispatch, selectedOrg]); // Carga coordinaciones cada vez que cambia la organización seleccionada
-
-  const handleOrgChange = (value, orgEmail) => {
-    setSelectedOrg(value); // Cambiar la organización seleccionada visualmente
-    Cookies.set('orgName', value); // Actualizar en cookies el nombre de la organización
-    Cookies.set('orgEmail', orgEmail); // Asegúrate de actualizar también el email de la organización en la cookie
-    dispatch(loadLabCoordinations()); // Recargar las coordinaciones para la nueva organización
-  };
-  
+  // Datos quemados
+  const coordinations = [
+    {
+      proveedor: 'EcSSA Manabí',
+      ubicacion: 'Chamanga',
+      categoria: 'Camaronera',
+      clasificacion: '30/40',
+      peso: '21,500',
+      procesamiento: '+18,000',
+      pesca: '23 febrero / 08:00',
+      cierre: '00d -02:52:13',
+      showEditFrom: false,
+      showParamsFrom: true,
+      id: 1,
+    },
+    {
+      proveedor: 'EcSSA Manabí',
+      ubicacion: 'Jama',
+      categoria: 'Camaronera',
+      clasificacion: '31/35',
+      peso: '5,100',
+      procesamiento: '+1,600',
+      pesca: '23 febrero / 09:00',
+      cierre: '00d -03:52:13',
+      showEditFrom: false,
+      showParamsFrom: true,
+      id: 2,
+    },
+    {
+      proveedor: 'EcSSA Manabí',
+      ubicacion: 'Cojimíes',
+      categoria: 'Camaronera',
+      clasificacion: '40/50',
+      peso: '25,600',
+      procesamiento: '+22,100',
+      pesca: '23 febrero / 10:00',
+      cierre: '00d -06:52:13',
+      showEditFrom: false,
+      showParamsFrom: true,
+      id: 3,
+    },
+    {
+      proveedor: 'EcSSA Manabí',
+      ubicacion: 'Chamanga',
+      categoria: 'Camaronera',
+      clasificacion: '31/35',
+      peso: '24,900',
+      procesamiento: 'DISPONIBLE',
+      pesca: '24 febrero / 08:00',
+      cierre: '01d -02:52:00',
+      showEditFrom: false,
+      showParamsFrom: true,
+      id: 4,
+    },
+    {
+      proveedor: 'EcSSA Manabí',
+      ubicacion: 'Cojimíes',
+      categoria: 'Camaronera',
+      clasificacion: '31/35',
+      peso: '20,500',
+      procesamiento: 'DISPONIBLE',
+      pesca: '24 febrero / 10:00',
+      cierre: '01d -04:52:00',
+      showEditFrom: false,
+      showParamsFrom: true,
+      id: 5,
+    },
+    {
+      proveedor: 'EcSSA Manabí',
+      ubicacion: 'Pedernales',
+      categoria: 'Comercial',
+      clasificacion: '50/60',
+      peso: '8,300',
+      procesamiento: 'DISPONIBLE',
+      pesca: '25 febrero / 12:00',
+      cierre: '02d -06:52:00',
+      showEditFrom: false,
+      showParamsFrom: true,
+      id: 6,
+    },
+  ];
 
   // Generar los datos de la tabla de manera reactiva usando useMemo
   const tableDataScource = useMemo(() => {
-    if (!coordinations || coordinations.length === 0) return [];
-
     return coordinations.map((item) => {
-      const itemStatus = item.statusWrapper;
       return {
-        id: `${item.SM_FishingNotification}`,
-        proveedor: <span>{item.org_name} - {item.pre_breeding_pool}</span>,
-        location: <span>{item.City}, {item.Address1}, {item.Address2}</span>,
-        planting: <span>{moment(item.planned_date).format('YYYY-MM-DD HH:mm A')}</span>,
-        status: <span className={`ninjadash-status ninjadash-status-asigned`}>{itemStatus.statusName}</span>,
+        id: item.id,
+        proveedor: item.proveedor,
+        ubicacion: item.ubicacion,
+        categoria: item.categoria,
+        clasificacion: item.clasificacion,
+        peso: item.peso,
+        procesamiento: item.procesamiento,
+        pesca: moment(item.pesca).format('DD MMMM / HH:mm'),
+        cierre: item.cierre,
         action: (
-          <div className="table-actions" style={{ minWidth: "50px !important", textAlign: "center" }}>
-            {!itemStatus.showEditFrom && <Link className="view" to={`./${item.id}/view`}><UilEye /></Link>}
-            {itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}><UilEdit /></Link>}
-            {itemStatus.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}><UilListOlAlt /></Link>}
+          <div className="table-actions" style={{ minWidth: '50px !important', textAlign: 'center' }}>
+            {!item.showEditFrom && <Link className="view" to={`./${item.id}/view`}><UilEye /></Link>}
+            {item.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}><UilEdit /></Link>}
+            {item.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}><UilListOlAlt /></Link>}
           </div>
         ),
       };
@@ -78,24 +131,44 @@ function NotificationSeedingLabs() {
       key: 'id',
     },
     {
-      title: 'Cliente',
+      title: 'Proveedor',
       dataIndex: 'proveedor',
       key: 'proveedor',
     },
     {
       title: 'Ubicación',
-      dataIndex: 'location',
-      key: 'location',
+      dataIndex: 'ubicacion',
+      key: 'ubicacion',
     },
     {
-      title: 'Fecha Solicitada',
-      dataIndex: 'planting',
-      key: 'planting',
+      title: 'Categoría',
+      dataIndex: 'categoria',
+      key: 'categoria',
     },
     {
-      title: 'Estado',
-      dataIndex: 'status',
-      key: 'status',
+      title: 'Clasificación',
+      dataIndex: 'clasificacion',
+      key: 'clasificacion',
+    },
+    {
+      title: 'Peso',
+      dataIndex: 'peso',
+      key: 'peso',
+    },
+    {
+      title: 'Procesamiento',
+      dataIndex: 'procesamiento',
+      key: 'procesamiento',
+    },
+    {
+      title: 'Pesca',
+      dataIndex: 'pesca',
+      key: 'pesca',
+    },
+    {
+      title: 'Cierre',
+      dataIndex: 'cierre',
+      key: 'cierre',
     },
     {
       title: 'Acciones',
@@ -111,14 +184,11 @@ function NotificationSeedingLabs() {
         className="ninjadash-page-header-main"
         title="Coordinaciones"
         routes={PageRoutes}
-        organizations={organizations} // Lista de organizaciones
-        selectedOrg={selectedOrg} // Organización seleccionada
-        handleOrgChange={handleOrgChange} // Función para manejar el cambio
       />
 
       <Main>
         <Row gutter={25}>
-          <Col xxl={12} xs={24}>
+          <Col xxl={24} xs={24}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -129,7 +199,6 @@ function NotificationSeedingLabs() {
               <BorderLessHeading>
                 <Cards title="Notificaciones de Siembra">
                   <DataTable
-                    key={selectedOrg} // Forzar el re-renderizado cuando cambie la organización seleccionada
                     tableData={tableDataScource}
                     columns={dataTableColumn}
                     rowSelection={false}

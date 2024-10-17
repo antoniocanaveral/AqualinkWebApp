@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect } from 'react';
 import { Row, Col, PageHeader } from 'antd';
 import OverviewCard from '../../../../components/cards/OverviewCard'; // Cambiamos a OverviewCard
@@ -6,6 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import { selectModule, loadUserAccess } from '../../../../redux/authentication/actionCreator';
 import InfoCard from '../../../../components/cards/InfoCard';
 import Heading from '../../../../components/heading/heading';
+
+import {
+  UilCloudDataConnection,
+  UilBrain,
+  UilDesktop,
+} from '@iconscout/react-unicons';
 
 const OverviewDataList = React.memo(() => {
   const navigate = useNavigate();
@@ -48,7 +55,7 @@ const OverviewDataList = React.memo(() => {
       status: withLabs ? 'growth' : 'down',
       canAccess: withLabs,
       accessItems: labsOrgs,
-      onPress: () => gotModule('LAB', { orgId: labsOrgs[0]?.orgId, orgName: labsOrgs[0]?.orgName, orgEmail: labsOrgs[0]?.orgEmail }, '/lab'), // Lógica de navegación
+      onPress: () => gotModule('LAB', { orgId: labsOrgs[0]?.orgId, orgName: labsOrgs[0]?.orgName, orgEmail: labsOrgs[0]?.orgEmail }, '/lab/panel'), // Lógica de navegación
     },
     {
       id: 'farms',
@@ -56,7 +63,7 @@ const OverviewDataList = React.memo(() => {
       icon: 'biomasa.svg',
       label: 'AquaLink - Camaroneras',
       total: farmsOrgs.length,
-      type: 'primary',
+      type: 'info',
       status: withFarms ? 'growth' : 'down',
       canAccess: withFarms,
       accessItems: farmsOrgs,
@@ -68,7 +75,7 @@ const OverviewDataList = React.memo(() => {
       icon: 'biomasa.svg',
       label: 'AquaLink - Custodia',
       total: custodyOrgs.length,
-      type: 'info',
+      type: 'success',
       status: withCustody ? 'growth' : 'down',
       canAccess: withCustody,
       accessItems: custodyOrgs,
@@ -93,7 +100,10 @@ const OverviewDataList = React.memo(() => {
 
 
       <Col xl={24} xs={24}>
-        <PageHeader className="ninjadash-page-header-main" title="AquaLink EcoSystem" />
+        <div className="flex_row">
+          <UilCloudDataConnection />
+          <PageHeader className="ninjadash-page-header-main" title="AquaLink EcoSystem" />
+        </div>
       </Col>
       {overviewCardData.map((item) => (
         <Col xl={8} xs={24} key={item.id}>
@@ -114,7 +124,7 @@ const OverviewDataList = React.memo(() => {
         <InfoCard icon="UilAnalysis" img={"Analytics.png"} type={"solutions"} />
       </Col>
       <Col xs={8}>
-        <InfoCard icon="UilAnalysis" img={"Control.png"} type={"solutions"} />
+        <InfoCard icon="UilMonitorHeartRate" img={"Control.png"} type={"solutions"} />
       </Col>
 
       <Col xs={8}>
@@ -125,15 +135,20 @@ const OverviewDataList = React.memo(() => {
       </Col>
 
       <Col xs={8}>
-        <InfoCard icon="UilBriefcaseAlt" img={"Network.png"} type={"solutions"} />
+        <InfoCard icon="UilWifiRouter" img={"Network.png"} type={"solutions"} />
+      </Col>
+
+      <Col xs={8}>
+        <InfoCard icon="UilSetting" img={"ERP.png"} type={"solutions"} />
       </Col>
 
       <Col xl={24} >
         <PageHeader className="ninjadash-page-header-main" title="Knowledge Center" />
       </Col>
-      <Col xs={6}>
-        <InfoCard icon="UilBriefcaseAlt" img={"AquaDemia.png"} type={"solutions"} />
+      <Col xs={8}>
+        <InfoCard icon="UilBrain" img={"AquaDemia.png"} type={"solutions"} />
       </Col>
+
     </Row>
   );
 });

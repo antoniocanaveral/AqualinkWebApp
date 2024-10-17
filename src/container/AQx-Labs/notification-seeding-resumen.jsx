@@ -1,73 +1,69 @@
-import React, { Suspense, useState, useEffect } from 'react';
-import { PageHeader } from '../../components/page-headers/page-headers';
-import { Row, Col, Form, Skeleton, Table } from 'antd';
-import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { Cards } from '../../components/cards/frame/cards-frame';
-import { BasicFormWrapper, CoordStatusWrapper, Main } from '../styled';
-import { loadLabCoord } from '../../redux/lab/actionCreator';
-import Cookies from 'js-cookie';
+import React from 'react';
+import { Row, Col, Table, Button } from 'antd';
+import { Main } from '../styled';
 import moment from 'moment';
-import { formatNumber } from '../../utility/utility';
-import { GoogleMaps } from '../../components/maps/google-maps';
-import { OverviewDataStyleWrap } from '../dashboard/Style';
-import OverviewCardMesh from '../../components/cards/OverviewCardMesh';
+import { Cards } from '../../components/cards/frame/cards-frame';
+import banco_pichincha_logo from '../../static/img/bank/banco-pichincha.jpg';
 
 function NotificationSeedingResumen() {
-  const PageRoutes = [
-    { path: 'index', breadcrumbName: Cookies.get('orgName') },
-    { path: 'first', breadcrumbName: 'Coordinación' },
-  ];
-
-  const dispatch = useDispatch();
-  let { id } = useParams();
-  const coordination = useSelector((state) => state.lab.coordination);
-
-  useEffect(() => {
-    dispatch(loadLabCoord(id, () => { }));
-  }, [dispatch, id]);
-
-  const coordData = [
-    { key: '1', label: 'Camaronera:', value: coordination?.org_name || 'EcSSA Manabí' },
-    { key: '2', label: 'Piscina:', value: coordination?.pre_breeding_pool || 'Pre Cria 1' },
-    { key: '3', label: 'Notificación de Siembra:', value: coordination?.SM_FishingNotification || 'AQ-ECSSA-004-P3-2024-00016-NS' },
-    { key: '4', label: 'Fecha de Siembra Solicitada:', value: coordination ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-' },
-    { key: '5', label: 'Salinidad Solicitada:', value: coordination ? `${coordination.requested_salinity} ppm` : '20 ppm' },
-    { key: '6', label: 'Cantidad Solicitada:', value: coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '1.000.000 larvas' },
-    { key: '7', label: 'Alcalinidad Piscina de Pre Cría:', value: coordination?.coord_alkalinity || '140 ppm' },
-    { key: '8', label: 'PH Piscina de Pre Cría:', value: coordination?.coord_pre_breeding_pool_ph || '5 ppm' },
-  ];
-
+  // Datos quemados para la tabla de procesamiento
   const labInfoData = [
-    { key: '4', label: 'Conteo Preliminar Lab:', value: coordination ? `${formatNumber(coordination.lab_count)} larvas/gramo` : '280 larvas/gramo' },
-    { key: '5', label: 'PL:', value: coordination?.answered_pl || 'PL10' },
-    { key: '6', label: 'Salinidad:', value: coordination ? `${coordination.confirmed_salinity} ppm` : '20 ppm' },
-    { key: '7', label: 'Método de Envío:', value: coordination?.shipping_method || 'FUNDAS' },
-    { key: '8', label: 'Unidades por Empaque:', value: coordination ? `${formatNumber(coordination.units_per_pack)} larvas` : '500.000 larvas' },
-    { key: '9', label: 'Óxigeno en Camino:', value: coordination?.oxygen_on_the_go ? 'Sí' : 'No' },
-    { key: '10', label: 'Comida en Camino:', value: coordination?.food_on_the_go ? 'Sí' : 'No' },
-    { key: '11', label: 'Alcalinidad Tanque de Origen:', value: coordination?.alkalinity || '145 ppm' },
-    { key: '12', label: 'PH Tanque de Origen:', value: coordination?.pre_breeding_pool_ph || '6 ppm' },
+    { key: '1', label: 'Disponibilidad de Procesamiento:', value: '45,860 lbs' },
+    { key: '2', label: 'Masa de Procesamiento (46.3%):', value: '21,500 lbs (aprox.)' },
+    { key: '3', label: 'Contenedor:', value: '18 BINES' },
+    { key: '4', label: 'Tipo de Siembra:', value: 'Siembra - Cosechadora' },
+    { key: '5', label: 'Tiempo de Siembra:', value: '2h 30m (estimado)' },
   ];
 
-  const overviewCardMeshData = [
+  // Datos quemados para la nueva tabla que deseas agregar (con los datos de la imagen proporcionada)
+  const productTableData = [
     {
-      id: 1,
-      type: 'primary',
-      icon: 'biomasa.svg',
-      label: 'Total Tanque',
-      total: coordination ? coordination.tank_planting : '0',
-      suffix: ' larvas',
-      dataPeriod: 'Tanque',
+      key: '1',
+      cantidad: '21,500',
+      producto: 'Camarón Blanco del Pacífico (Litopenaeus vannamei)',
+      lote: 'EC-0027-05-2022-52640',
+      clasificacion: '31/35',
+      cosecha: 'Fecha: 23 Febrero 2023\nHora: 08:00 AM\nCosecha: BINES',
+      proveedor: 'Factor Producto: 93/100\nSiembras Aceptadas: 25/AÑO (2023)\nTrazabilidad AquaLink: SI',
+    },
+  ];
+
+  const productTableColumns = [
+    {
+      title: 'Cant.',
+      dataIndex: 'cantidad',
+      key: 'cantidad',
     },
     {
-      id: 2,
-      type: 'primary',
-      icon: 'biomasa.svg',
-      label: 'Total Confirmado',
-      total: coordination ? coordination.confirmed_total : '0',
-      suffix: ' larvas',
-      dataPeriod: 'Confirmado',
+      title: 'Producto',
+      dataIndex: 'producto',
+      key: 'producto',
+    },
+    {
+      title: 'Lote #',
+      dataIndex: 'lote',
+      key: 'lote',
+    },
+    {
+      title: 'Clasificación',
+      dataIndex: 'clasificacion',
+      key: 'clasificacion',
+    },
+    {
+      title: 'Cosecha',
+      dataIndex: 'cosecha',
+      key: 'cosecha',
+      render: (text) => (
+        <span style={{ whiteSpace: 'pre-wrap' }}>{text}</span>
+      ),
+    },
+    {
+      title: 'Proveedor',
+      dataIndex: 'proveedor',
+      key: 'proveedor',
+      render: (text) => (
+        <span style={{ whiteSpace: 'pre-wrap' }}>{text}</span>
+      ),
     },
   ];
 
@@ -78,102 +74,110 @@ function NotificationSeedingResumen() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title={`Coordinación: ${coordination?.SM_FishingNotification || "-"}`} routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>
-            <Suspense fallback={
-              <Cards headless>
-                <Skeleton paragraph={{ rows: 20 }} active />
-              </Cards>
-            }>
-              <BasicFormWrapper className="mb-25">
-                <Row gutter={25}>
-                  <Col xl={10} xs={24}>
-                    <Suspense
-                      fallback={
-                        <Cards headless>
-                          <Skeleton active />
-                        </Cards>
-                      }
-                    >
-                      <Cards
-                        title="Coordinación"
-                        status={coordination?.statusWrapper && (
-                          <CoordStatusWrapper>
-                            <span className={`ninjadash-status ninjadash-status-${coordination.statusWrapper.className}`}>
-                              {coordination.statusWrapper.statusName}
-                            </span>
-                          </CoordStatusWrapper>
-                        )}
-                        size="large"
-                      >
-                        <Col xs={24} md={24} style={{ marginBottom: '18px', overflow: 'hidden' }}>
-                          <div style={{ height: '230px' }}>
-                            <GoogleMaps />
-                          </div>
-                        </Col>
+            <Cards title="Notificaciones de Siembra">
+              {/* Cabecera con logo y datos de contacto */}
+              <Row gutter={25}>
+                <Col span={18}>
+                  <img src={require("../../static/img/org/XSSA2.png")} alt="Logo" style={{ maxWidth: '150px' }} />
 
-                        <Col xs={24} md={24}>
-                          <Table
-                            className='custom-table'
-                            dataSource={coordData}
-                            columns={columns}
-                            pagination={false}
-                            showHeader={false}
-                            bordered
-                            rowClassName={() => 'custom-table-row'}
-                          />
-                        </Col>
-                      </Cards>
-                    </Suspense>
-                  </Col>
+                </Col>
+                <Col span={6}>
+                  {/* Para la fecha*/}
+                  <p>
+                    <strong>Siembra: {moment().format('DD MMM YYYY')} / 08:00AM</strong><br />
+                  </p>
+                </Col>
+              </Row>
+              <Row gutter={25}>
+                <Col xl={8} xs={24}>
+                  <p className='p_box_notification'>
+                    <strong>Productor - Camaronera</strong><br />
+                    EcSSA Farms (EcSSA Esmeraldas Cia Ltda)<br />
+                    Manta, Manabí ECUADOR<br />
+                    Teléfono: +593 98 499 4640<br />
+                    Email: info@aquamanagerec.com
+                  </p>
+                </Col>
+                <Col xl={8} xs={24}>
+                  <p className='p_box_notification'>
+                    <strong>Procedencia - Laboratorio</strong><br />
+                    EcSSA Labs (EcSSA Labs Cia Ltda)<br />
+                    Manta, Manabí ECUADOR<br />
+                    Teléfono: +593 98 499 4640<br />
+                    Email: info@aquamanagerec.com
+                  </p>
+                </Col>
+                <Col xl={8} xs={24}>
+                  <h2>Código de Siembra A365EC</h2>
+                  <p className='p_box_notification'>
+                    <strong>Textura:</strong> 91-95%<br />
+                    <strong>Días de Cultivo:</strong> 87<br />
+                    <strong>Punto de Siembra:</strong> COJIMÍES
+                  </p>
+                </Col>
+              </Row>
 
-                  <Col xl={14} xs={24}>
-                    <Suspense
-                      fallback={
-                        <Cards headless>
-                          <Skeleton active />
-                        </Cards>
-                      }
-                    >
-                      <Cards title="Información del Laboratorio" size="large">
-                        {/* Aquí agregamos el Módulo y Tanque antes del OverviewDataStyleWrap */}
-                        <Row gutter={16} style={{ marginBottom: '16px' }}>
-                          <Col span={8}>
-                            <strong>Fecha:</strong> {coordination?.planned_date ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-'}
-                          </Col>
-                          <Col span={8}>
-                            <strong>Módulo:</strong> {coordination?.lab_module || 'M1'}
-                          </Col>
-                          <Col span={8}>
-                            <strong>Tanque:</strong> {coordination?.tank || 'T1'}
-                          </Col>
+              {/* Tabla de productos */}
+              <Row gutter={25} style={{ marginTop: '20px' }}>
+                <Col span={24}>
+                  <Table
+                    className='custom-table_notification'
+                    dataSource={productTableData}
+                    columns={productTableColumns}
+                    pagination={false}
+                    bordered
+                    rowClassName={() => 'custom-table-row'}
+                  />
+                </Col>
+              </Row>
 
-                        </Row>
+              {/* Métodos de Pago */}
+              <Row gutter={20} style={{ marginTop: '30px' }}>
+                <Col span={12}>
+                  <h3>Métodos de Pago:</h3>
 
-                        <Col xs={24}>
-                          <OverviewDataStyleWrap className="card-mesh-wrap align-center-v">
-                            {overviewCardMeshData.map((item, i) => {
-                              return <OverviewCardMesh data={item} key={i} />;
-                            })}
-                          </OverviewDataStyleWrap>
-                        </Col>
-                        <Table
-                          className='custom-table_lab'
-                          dataSource={labInfoData}
-                          columns={columns}
-                          pagination={false}
-                          showHeader={false}
-                          bordered
-                          rowClassName={() => 'custom-table-row'}
-                        />
-                      </Cards>
-                    </Suspense>
-                  </Col>
-                </Row>
-              </BasicFormWrapper>
-            </Suspense>
+                  <Row>
+                    <Col xl={8} xs={24}>
+                      <img src={require("../../static/img/bank/banco-pichincha.jpg")} style={{ maxWidth: "150px" }} alt="Banco" />
+                    </Col>
+                    <Col xl={14} xs={24}>
+                      <p>
+                        Banco Pichincha: Cuenta Corriente #056897321<br />
+                        Titular: EcSSA Esmeraldas Cia Ltda<br />
+                        RUC: 1709568978001<br />
+                        Anticipo: 40% (volumen de entrada)<br />
+                        Pago 1: 30% Crédito a 15 días<br />
+                        Pago 2: 30% Crédito a 30 días (liquidación)
+                      </p>
+                    </Col>
+                  </Row>
+
+                </Col>
+
+                {/* Procesamiento */}
+                <Col span={12}>
+                  <h3>Procesamiento 23/02/2023</h3>
+                  <Table
+                    className='custom-table_notification'
+                    dataSource={labInfoData}
+                    columns={columns}
+                    pagination={false}
+                    showHeader={false}
+                    bordered
+                    rowClassName={() => 'custom-table-row'}
+                  />
+                </Col>
+              </Row>
+
+              {/* Botones de acción */}
+              <Row justify="center" style={{ marginTop: '30px' }}>
+                <Button type="danger" style={{ marginRight: '10px' }}>DESCARTAR</Button>
+                <Button type="primary">ACEPTAR Y COORDINAR</Button>
+              </Row>
+            </Cards>
           </Col>
         </Row>
       </Main>

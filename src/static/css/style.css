@@ -3151,31 +3151,36 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 
 .steps-icon {
-  font-size: 20px !important; /* Cambia a un tamaño más pequeño */
+  font-size: 20px !important;
+  /* Cambia a un tamaño más pequeño */
 }
 
-.ant-steps-item-container{
+.ant-steps-item-container {
   padding: 0px !important;
-  margin : 0px !important;
+  margin: 0px !important;
 }
 
-.ninjadash-wizard-page{
+.ninjadash-wizard-page {
   padding-left: 30px !important;
-  
+
 }
-.ant-steps-item-container svg{
+
+.ant-steps-item-container svg {
   width: 40px !important;
   height: 40px !important;
 }
 
 /* Ajustar la alineación vertical entre el ícono y el label */
 .ant-steps-item-icon {
-  margin-bottom: -5px !important; /* Eliminar margen inferior del ícono */
+  margin-bottom: -5px !important;
+  /* Eliminar margen inferior del ícono */
 }
 
 .ant-steps-item-title {
-  margin-top: 10px !important; /* Eliminar margen superior del label */
-  padding-top: 0 !important; /* Ajustar el padding si es necesario */
+  margin-top: 10px !important;
+  /* Eliminar margen superior del label */
+  padding-top: 0 !important;
+  /* Ajustar el padding si es necesario */
 }
 
 
@@ -3183,10 +3188,141 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 /* Estilo para aumentar el espacio entre el contenedor del label y el campo */
 .ant-form-item {
-  margin-bottom: 20px !important; /* Espacio de 20px entre cada bloque del formulario */
+  margin-bottom: 20px !important;
+  /* Espacio de 20px entre cada bloque del formulario */
 }
 
 /* Estilo para ajustar el espacio entre el label y el texto del mismo */
-.ant-form-item-label > label {
-  margin-bottom: -15px !important; /* Espacio de 5px entre el label y el texto */
+.ant-form-item-label>label {
+  margin-bottom: -15px !important;
+  /* Espacio de 5px entre el label y el texto */
+}
+
+
+.ant-menu,
+.ant-layout-sider,
+.ant-layout-sider-light
+{
+background-color: #0e3c63 !important;
+/* Cambia el color de fondo del menú principal */
+color: white !important;
+/* Cambia el color de texto en general */
+}
+
+.ant-menu-item,
+.ant-menu-submenu-title,
+.ant-menu-item a,
+.ant-menu-item span,
+.ant-menu-item li,
+.ant-menu-item ul,
+.ant-menu-item p {
+  color: white !important;
+  /* Cambia el color del texto en todos los elementos del menú */
+}
+
+.ant-menu-item:hover,
+.ant-menu-submenu-title:hover {
+  color: #0475d0 !important;
+  /* Cambia el color de fondo cuando se hace hover */
+
+}
+
+.ant-menu-item-selected {
+  background-color: #0475d0 !important;
+  /* Cambia el color de fondo del ítem seleccionado */
+  color: white !important;
+  /* Asegura que el ítem seleccionado también tenga el texto blanco */
+}
+
+.ant-menu-item a,
+.ant-menu-submenu-title a,
+.ant-menu-item span,
+.ant-menu-submenu-title span,
+.ant-menu-item ul,
+.ant-menu-submenu-title ul,
+.ant-menu-item li,
+.ant-menu-submenu-title li {
+  color: rgb(205, 200, 200) !important;
+  /* Asegura que los enlaces, span, y otros elementos dentro de los ítems sean blancos */
+}
+
+.ant-menu-item-group-title p {
+  color: white !important;
+  /* Asegura que el título de los grupos de ítems sea blanco */
+}
+
+
+
+.ant-menu-item-selected a {
+  color: #f4f4f4 !important;
+  /* Asegura que el enlace del ítem seleccionado sea blanco */
+}
+
+.ant-menu-item-selected svg,
+.ant-menu-item:hover svg {
+  fill: #f4f4f4 !important;
+  /* Cambia el color de los íconos a dorado cuando está seleccionado o en hover */
+}
+
+.header-collapsed {
+  background-color: white !important;
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: background-position 0.5s ease-out;
+}
+
+.header-not-collapsed {
+  background-color: #0e3c63 !important;
+  background-size: 200% 100%;
+  background-position: left bottom;
+  transition: background-position 0.5s ease-out;
+}
+
+
+.p_box_notification {
+  font-size: 14px !important;
+}
+
+.custom-table_notification .ant-table-cell {
+  font-size: 13px !important;
+  padding: 4px !important;
+
+}
+
+.ninjadash-animate-click {
+  background: linear-gradient(90deg, #e7e3ff, #e7e3ff, #e3f0ff, #e3f0ff, #ffffff, #ffffff, #ffffff);
+  /* Degradado hacia blanco con más colores */
+  background-size: 200% 100%;
+  /* El fondo es el doble del ancho para permitir el desplazamiento */
+  animation: gradientMove 0.5s ease-out forwards;
+  /* Animación hacia la derecha con duración y suavizado */
+}
+
+
+@keyframes gradientMoveReverse {
+  0% {
+    background-position: 100% 50%;
+    /* Empieza desde la derecha */
+  }
+
+  100% {
+    background-position: 0% 50%;
+    /* Se desplaza hacia la izquierda */
+  }
+}
+
+/* Asegúrate de que el contenedor tenga un background que se pueda animar */
+.ninjadash-overview-card__top--icon {
+  background-color: #003366;
+  /* Color de fondo */
+  transition: background-position 1s ease;
+  /* Transición suave del background */
+}
+
+
+
+.flex_row{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

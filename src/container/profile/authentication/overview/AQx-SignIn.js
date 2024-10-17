@@ -48,7 +48,7 @@ function SignIn() {
           if(isCompleted) {
             navigate('/ecosystem');
           } else {
-            navigate('/roles');
+            navigate('/roles')
           }
         }
       }));

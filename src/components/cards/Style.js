@@ -57,11 +57,12 @@ const OverviewCardWrap = Styled.div`
                             right: -48%;
                         }
                         svg{
-                            width: 40px;
+                            width: 50px;
                             @media only screen and (max-width: 767px){
                                 width: 30px;
                             }
                         }
+                        
                     }
                     .ninjadash-overview-card__top--content{
                         .ninjadahs-overview-label{
@@ -106,42 +107,86 @@ const OverviewCardWrap = Styled.div`
                         width: 150px;
                         height: 150px;
                     }
-                    &.ninjadash-primary{
-                        background-color: ${({ theme }) => theme['primary-color']}15;
-                        svg path,
-                        i{
-                            fill: ${({ theme }) => theme['primary-color']};
-                        }
-                    }
-                    &.ninjadash-secondary{
-                        background-color: ${({ theme }) => theme['secondary-color']}15;
-                        svg path,
-                        i{
-                            fill: ${({ theme }) => theme['secondary-color']};
-                        }
-                    }
-                    &.ninjadash-success{
-                        background-color: ${({ theme }) => theme['success-color']}15;
-                        svg path,
-                        i{
-                            fill: ${({ theme }) => theme['success-color']};
-                        }
-                    }
-                    &.ninjadash-warning{
-                        background-color: ${({ theme }) => theme['warning-color']}15;
-                        svg path,
-                        i{
-                            fill: ${({ theme }) => theme['warning-color']};
-                        }
-                    }
-                    &.ninjadash-info{
-                        background-color: ${({ theme }) => theme['info-color']}15;
-                        svg path,
-                        i{
-                            fill: ${({ theme }) => theme['info-color']};
-                        }
-                    }
+                   &.ninjadash-primary {
+  background-color: ${({ theme }) => theme['primary-color']}15;
+  svg path,
+  i {
+    fill: ${({ theme }) => theme['primary-color']};
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme['primary-color']}40;
+    svg path,
+  }
+}
+
+&.ninjadash-secondary {
+  background-color: ${({ theme }) => theme['secondary-color']}15;
+  svg path,
+  i {
+    fill: ${({ theme }) => theme['secondary-color']};
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme['secondary-color']}40;
+  }
+}
+
+&.ninjadash-success {
+  background-color: ${({ theme }) => theme['success-color']}15;
+  svg path,
+  i {
+    fill: ${({ theme }) => theme['success-color']};
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme['success-color']}40;
+  }
+}
+
+&.ninjadash-warning {
+  background-color: ${({ theme }) => theme['warning-color']}15;
+  svg path,
+  i {
+    fill: ${({ theme }) => theme['warning-color']};
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme['warning-color']}40;
+  }
+}
+
+&.ninjadash-info {
+  background-color: ${({ theme }) => theme['info-color']}40;
+  svg path,
+  i {
+    fill: ${({ theme }) => theme['info-color']};
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme['info-color']}40;
+  }
+}
+
                 }
+                    .ninjadash-overview-card__top--icon {
+  transition: background-color 0.3s ease;
+}
+
+
+
+.ninjadash-animate-click {
+  background-size: 200% 100%; /* Aumenta el tamaño del fondo para hacer visible el movimiento */
+  animation: backgroundMove 1s ease-out forwards; /* Definir la animación */
+}
+
+/* La animación de movimiento */
+@keyframes backgroundMove {
+  0% {
+    background-position: left; /* Comienza a la izquierda */
+  }
+  100% {
+    background-position: right; /* Se mueve hacia la derecha */
+  }
+}
+
+
+
                 .ninjadash-overview-card__top--content{
                     .ninjadash-overview-total{
                     text-align: center;
@@ -227,8 +272,8 @@ const OverviewCardMeshWrap = Styled.div`
         &:not(:last-child){
             &:after{
                 position: absolute;
-                width: 1px;
-                height: 70px;
+                width: 8px;
+                height: 92px;
                 right: -60px;
                 top: 50%;
                 transform: translateY(-50%);
@@ -483,7 +528,7 @@ const SystemCardWrap = Styled.div`
         &:not(:last-child){
             &:after{
                 position: absolute;
-                width: 1px;
+                width: 2px;
                 height: 70px;
                 right: -60px;
                 top: 50%;
@@ -757,6 +802,7 @@ const InfoCardStyle = Styled.article`
                 width: 34px;
                 height: 32px;
             }
+                
 
         }
 

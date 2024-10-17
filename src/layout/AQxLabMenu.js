@@ -1,10 +1,28 @@
 import {
-  UilCalendarAlt,
   UilCloudDataConnection,
   UilDesktop,
-  UilWindowSection,
-  UilCalendarSlash
 } from '@iconscout/react-unicons';
+
+import {
+  UilChartBar,
+  UilClipboardAlt,
+  UilListUl,
+  UilMonitorHeartRate,
+  UilChartPie,
+  UilCalendarAlt,
+  UilWater, // Para Tanques (flujo de agua o agua en general)
+  UilFlaskPotion,    // Para Cultivo (representa investigación y cultivo)
+  UilPlug,           // Para IoT (tecnología de conexión)
+  UilMapMarkerAlt,   // Para Coordinación
+  UilArchive,        // Para Inventario
+  UilBug,            // Para Nauplieras (representa organismos pequeños)
+  UilTrophy,         // Para Cosechas (reservas y pedidos)
+  UilUserCircle,     // Para Usuarios
+  UilKeySkeleton,    // Para Permisos
+  UilHeadphonesAlt,  // Para Atención al Cliente
+  UilSync
+} from '@iconscout/react-unicons';
+
 import { Menu } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +34,6 @@ import propTypes from 'prop-types';
 import { NavTitle } from './Style';
 import versions from '../demoData/changelog.json';
 import { changeDirectionMode, changeLayoutMode, changeMenuMode } from '../redux/themeLayout/actionCreator';
-import UilSync from '@iconscout/react-unicons/icons/uil-sync';
 
 function AQxLabMenu({ toggleCollapsed }) {
   const { t } = useTranslation();
@@ -126,11 +143,11 @@ function AQxLabMenu({ toggleCollapsed }) {
       'Aqualink Analytics',
       !topMenu && (
         <NavLink className="menuItem-iocn" to={`${path}/analytics`}>
-          <UilDesktop />
+          <UilChartBar /> {/* Ícono para Analytics */}
         </NavLink>
       ),
     ),
-
+    
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/planning`}>
         {t('Aqualink Planning')}
@@ -138,13 +155,11 @@ function AQxLabMenu({ toggleCollapsed }) {
       'Aqualink Planning',
       !topMenu && (
         <NavLink className="menuItem-iocn" to={`${path}/planning`}>
-          <UilDesktop />
+          <UilClipboardAlt /> {/* Ícono para Planificación */}
         </NavLink>
       ),
     ),
-
-
-
+    
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/task`}>
         {t('Tareas')}
@@ -152,11 +167,11 @@ function AQxLabMenu({ toggleCollapsed }) {
       'Tareas',
       !topMenu && (
         <NavLink className="menuItem-iocn" to={`${path}/task`}>
-          <UilDesktop />
+          <UilListUl /> {/* Ícono para Tareas */}
         </NavLink>
       ),
     ),
-
+    
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('información')}</NavTitle>,
       'submenu-informacion',
@@ -164,8 +179,8 @@ function AQxLabMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-
-    getItem(t('Monitoreo'), 'monitoreo-main', !topMenu && <UilCalendarAlt />, [
+    
+    getItem(t('Monitoreo'), 'monitoreo-main', !topMenu && <UilMonitorHeartRate />, [
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/monitoring/general-monitoring`}>
           {t('Monitoreo')} {t('General')}
@@ -178,7 +193,6 @@ function AQxLabMenu({ toggleCollapsed }) {
           {t('Monitoreo')} {t('Producto')}
         </NavLink>,
         'product-monitoring',
-
         null,
       ),
       getItem(
@@ -186,13 +200,11 @@ function AQxLabMenu({ toggleCollapsed }) {
           {t('Monitoreo')} {t('Alimentación')}
         </NavLink>,
         'feeding-monitoring',
-
         null,
       ),
-
     ]),
-
-    getItem(t('Parámetros'), 'parametros-main', !topMenu && <UilCalendarAlt />, [
+    
+    getItem(t('Parámetros'), 'parametros-main', !topMenu && <UilChartPie />, [
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/parameters/all-parameters`}>
           {t('Todos los')} {t('Parámetros')}
@@ -205,51 +217,47 @@ function AQxLabMenu({ toggleCollapsed }) {
           {t('Oxígenos ')} {t('Disueltos')}
         </NavLink>,
         'dissolved-oxygens',
-
         null,
       ),
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/parameters/temperature`}>
           {t('Temperatura')}
         </NavLink>,
-        'feeding-monitoring',
-
+        'temperature',
         null,
       ),
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/parameters/Salinity`}>
           {t('Salinidad')}
         </NavLink>,
-        'salinidad',
+        'salinity',
         null,
       ),
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/parameters/ph`}>
           {t('pH')}
         </NavLink>,
-        'pH',
+        'ph',
         null,
       ),
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/parameters/alkalinity`}>
           {t('Alcalinidad')}
         </NavLink>,
-        'Alcalinidad',
+        'alkalinity',
         null,
       ),
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/parameters/turbidity`}>
           {t('Turbidez')}
         </NavLink>,
-        'Turbidez',
+        'turbidity',
         null,
       ),
-
     ]),
-
-
+    
     // Menú de Tanques
-    getItem(t('Tanques'), 'tanques-main', !topMenu && <UilCalendarAlt />, [
+    getItem(t('Tanques'), 'tanques-main', !topMenu && <UilWater />, [
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/tanks/see-tanks`}>
           {t('Ver')} {t('Tanques')}
@@ -293,9 +301,9 @@ function AQxLabMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-
+    
     // Menú de Cultivo
-    getItem(t('Cultivo'), 'cultivo-main', !topMenu && <UilCalendarAlt />, [
+    getItem(t('Cultivo'), 'cultivo-main', !topMenu && <UilFlaskPotion />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/cultivo/view`}>
           {t('Ver Cultivos')}
@@ -374,9 +382,9 @@ function AQxLabMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-
+    
     // Menú de IoT
-    getItem(t('IoT'), 'iot-main', !topMenu && <UilCalendarAlt />, [
+    getItem(t('IoT'), 'iot-main', !topMenu && <UilPlug />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/iot/view-devices`}>
           {t('Ver Dispositivos')}
@@ -392,7 +400,7 @@ function AQxLabMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-
+    
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('logistica')}</NavTitle>,
       'submenu-logistica',
@@ -400,8 +408,8 @@ function AQxLabMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-
-    getItem(t('Coordinación'), 'coord-main', !topMenu && <UilCalendarAlt />, [
+    
+    getItem(t('Coordinación'), 'coord-main', !topMenu && <UilMapMarkerAlt />, [
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/seeding-notifications`}>
           {t('Notificaciones de')} {t('Siembra')}
@@ -414,13 +422,10 @@ function AQxLabMenu({ toggleCollapsed }) {
           {t('Ver')} {t('Coordinaciones')}
         </NavLink>,
         'coords',
-
         null,
       ),
-
     ]),
-
-
+    
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Inventario')}</NavTitle>,
       'submenu-inventarios',
@@ -428,9 +433,9 @@ function AQxLabMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-
+    
     // Menú de Inventario
-    getItem(t('Inventario'), 'inventario-main', !topMenu && <UilCalendarAlt />, [
+    getItem(t('Inventario'), 'inventario-main', !topMenu && <UilArchive />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/inventory/view`}>
           {t('Ver Inventario')}
@@ -453,9 +458,9 @@ function AQxLabMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-
+    
     // Menú de Nauplieras
-    getItem(t('Nauplieras'), 'nauplieras-main', !topMenu && <UilCalendarAlt />, [
+    getItem(t('Nauplieras'), 'nauplieras-main', !topMenu && <UilFlaskPotion />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/nauplieras/view`}>
           {t('Ver Nauplieras')}
@@ -478,9 +483,9 @@ function AQxLabMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-
+    
     // Menú de Cosechas
-    getItem(t('Cosechas'), 'cosechas-main', !topMenu && <UilCalendarAlt />, [
+    getItem(t('Cosechas'), 'cosechas-main', !topMenu && <UilSync />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/harvest/reservations`}>
           {t('Reservas')}
@@ -496,6 +501,7 @@ function AQxLabMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
+    
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Administración')}</NavTitle>,
       'submenu-administracion',
@@ -503,9 +509,9 @@ function AQxLabMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-
+    
     // Menú de Usuarios
-    getItem(t('Usuarios'), 'usuarios-main', !topMenu && <UilCalendarAlt />, [
+    getItem(t('Usuarios'), 'usuarios-main', !topMenu && <UilUserCircle />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/users/view`}>
           {t('Ver Usuarios')}
@@ -521,7 +527,7 @@ function AQxLabMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-
+    
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/permissions`}>
         {t('Permisos')}
@@ -529,11 +535,11 @@ function AQxLabMenu({ toggleCollapsed }) {
       'Permisos',
       !topMenu && (
         <NavLink className="menuItem-iocn" to={`${path}/permissions`}>
-          <UilDesktop />
+          <UilKeySkeleton /> {/* Ícono para Permisos */}
         </NavLink>
       ),
     ),
-
+    
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/customer service`}>
         {t('Atención al Cliente')}
@@ -541,13 +547,12 @@ function AQxLabMenu({ toggleCollapsed }) {
       'Atención al Cliente',
       !topMenu && (
         <NavLink className="menuItem-iocn" to={`${path}/customer service`}>
-          <UilDesktop />
+          <UilHeadphonesAlt /> {/* Ícono para Atención al Cliente */}
         </NavLink>
       ),
     ),
-
-
     
+
   ];
 
   return (

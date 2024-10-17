@@ -54,7 +54,21 @@ const ThemeLayout = (WrappedComponent) => {
         this.setState({
           collapsed: !collapsed,
         });
+      
+        const headerContent = document.querySelector('.ninjadash-header-content__left');
+        if (headerContent) {
+          if (collapsed) {
+            // Añade clase cuando está colapsado
+            headerContent.classList.remove('header-collapsed');
+            headerContent.classList.add('header-not-collapsed');
+          } else {
+            // Cambia el color cuando no está colapsado
+            headerContent.classList.remove('header-not-collapsed');
+            headerContent.classList.add('header-collapsed');
+          }
+        }
       };
+      
 
       const toggleCollapsedMobile = () => {
         if (window.innerWidth <= 990) {
@@ -128,8 +142,8 @@ const ThemeLayout = (WrappedComponent) => {
                       <img
                         src={
                           layoutMode === 'lightMode'
-                            ? require(`../static/img/AQx-IMG/aqualink-dark.svg`).default
-                            : require(`../static/img/AQx-IMG/aqualink-lite.svg`).default
+                            ?  require(`../static/img/AQx-IMG/aqualink-lite.svg`).default
+                            : require(`../static/img/AQx-IMG/aqualink-dark.svg`).default
                         }
                         alt=""
                       />
@@ -186,12 +200,12 @@ const ThemeLayout = (WrappedComponent) => {
             </div>
             <Layout>
               {!topMenu || window.innerWidth <= 991 ? (
-                <ThemeProvider theme={theme}>
+                <ThemeProvider theme={theme.darkMode}>
                   <Sider
                     width={280}
                     style={SideBarStyle}
                     collapsed={collapsed}
-                    theme={layoutMode === 'lightMode' ? 'light' : 'dark'}
+                    theme={layoutMode === 'lightMode' ? 'dark' : 'dark'}
                   >
                     <Scrollbars
                       className="custom-scrollbar"
