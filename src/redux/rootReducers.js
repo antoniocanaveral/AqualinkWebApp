@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import { firestoreReducer } from 'redux-firestore';
 import authReducer from './authentication/reducers';
 import labReducer from './lab/reducers';
 import custodyReducer from './custody/reducers';
@@ -34,7 +33,6 @@ import Todo from './todo/reducers';
 import { userGroupReducer, userReducer } from './users/reducers';
 
 const rootReducers = combineReducers({
-  fs: firestoreReducer,
   crud: fsCrudReducer,
   singleCrud: fsSingleCrudReducer,
   firebaseAuth,

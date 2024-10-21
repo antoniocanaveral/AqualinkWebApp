@@ -51,7 +51,7 @@ function OverviewCard({ data, className, bottomStatus, contentFirst, halfCircleI
               : 'ninjadash-overview-card__top d-flex justify-content-between'}
           >
             <div
-              className={`ninjadash-overview-card__top--icon ninjadash-${type}`}
+              className={`ninjadash-overview-card__top--icon  ninjadash-${type}`}
               onClick={handleImageClick} // Activar la animación en el clic
               style={{ cursor: 'pointer', transition: 'transform 0.3s ease' }}
               onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')} // Hover sobre la imagen

@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Row, Col, Skeleton, Typography, Badge, Space } from 'antd';
+import { Row, Col, Skeleton, Typography, Badge, Space, Table } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
@@ -8,18 +8,7 @@ import OverviewCardMeshOriginal from '../../components/cards/OverviewCardMeshOri
 import OverviewData from '../../demoData/overviewMeshData.json';
 import { GoogleMaps } from '../../components/maps/google-maps';
 import ProjectionKgPanel from './panel/charts/projections-kg-panel';
-import ProjectionUsdPanel from './panel/charts/projections-kg-panel';
-import ProjectionPanel from './panel/charts/projection-usd-panel';
-import TaskLabTable from './task/table/task-table-lab';
-
-const OverviewDataList = lazy(() => import('../dashboard/overview/demoFarm/OverviewDataList'));
-const SalesReport = lazy(() => import('../dashboard/overview/index/SalesReport'));
-const SalesGrowth = lazy(() => import('../dashboard/overview/index/SalesGrowth'));
-const SalesByLocation = lazy(() => import('../dashboard/overview/index/SalesByLocation'));
-const TopSellingProduct = lazy(() => import('../dashboard/overview/index/TopSellingProducts'));
-const BrowserState = lazy(() => import('../dashboard/overview/index/BrowserState'));
-const SalesOverview = lazy(() => import('../dashboard/overview/index/SalesOverview'));
-
+import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
 
 function PanelLabs() {
   const PageRoutes = [
@@ -32,9 +21,75 @@ function PanelLabs() {
       breadcrumbName: 'Panel de Control',
     },
   ];
+
+  // Datos de la tabla
+  const productData = [
+    {
+      key: '1',
+      producto: 'Ziegler',
+      ci: '45%',
+      hoy: '2.50 kg',
+      disp: '50 kg',
+    },
+    {
+      key: '2',
+      producto: 'Artemia',
+      ci: 'A',
+      hoy: '4.00 kg',
+      disp: '15 kg',
+    },
+    {
+      key: '3',
+      producto: 'Algas',
+      ci: 'A',
+      hoy: '0.7 kg',
+      disp: '12 kg',
+    },
+    {
+      key: '4',
+      producto: 'Flake',
+      ci: 'B',
+      hoy: '0.90 kg',
+      disp: '1.80 kg',
+    },
+    {
+      key: '5',
+      producto: 'Vitamina C',
+      ci: 'MF35',
+      hoy: '0.12 kg',
+      disp: '10.00 kg',
+    },
+  ];
+
+  // Definición de columnas
+  const columns = [
+    {
+      title: 'Producto',
+      dataIndex: 'producto',
+      key: 'producto',
+    },
+    {
+      title: 'CI',
+      dataIndex: 'ci',
+      key: 'ci',
+    },
+    {
+      title: 'Hoy',
+      dataIndex: 'hoy',
+      key: 'hoy',
+    },
+    {
+      title: 'Disp.',
+      dataIndex: 'disp',
+      key: 'disp',
+    },
+  ];
+
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Aqualink Camaroneras Control Panel" routes={PageRoutes} />
+      <PageHeader className="ninjadash-page-header-main"
+      highlightText="Aqualink Laboratorios"
+      title="Control Panel" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>
@@ -116,15 +171,10 @@ function PanelLabs() {
               <ProjectionKgPanel />
             </Suspense>
           </Col>
-
-
-
-
-
         </Row>
 
         <Row gutter={25}>
-          <Col xl={18} xs={24}>
+          <Col xl={14} xs={24}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -132,13 +182,13 @@ function PanelLabs() {
                 </Cards>
               }
             >
-              <Cards title="Administrador de Tareas" size="large">
-                <TaskLabTable />
+              <Cards title="Proyección de Costos" size="large">
+                <CostProjectionWrapLab />
               </Cards>
 
             </Suspense>
           </Col>
-          <Col xl={6} xs={24}>
+          <Col xl={10} xs={24}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -146,7 +196,10 @@ function PanelLabs() {
                 </Cards>
               }
             >
-              <ProjectionKgPanel />
+              <Cards title="Inventario de Productos" size="large">
+                {/* Tabla de productos */}
+                <Table dataSource={productData} columns={columns} pagination={false} />
+              </Cards>
             </Suspense>
           </Col>
         </Row>

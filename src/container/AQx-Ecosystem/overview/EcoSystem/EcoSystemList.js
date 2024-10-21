@@ -10,8 +10,8 @@ import Heading from '../../../../components/heading/heading';
 
 import {
   UilCloudDataConnection,
-  UilBrain,
-  UilDesktop,
+  UilBooks,
+  UilSlack,
 } from '@iconscout/react-unicons';
 
 const OverviewDataList = React.memo(() => {
@@ -118,7 +118,10 @@ const OverviewDataList = React.memo(() => {
       ))}
 
       <Col xl={24} xs={24}>
-        <PageHeader className="ninjadash-page-header-main" im title="Solutions" />
+        <div className="flex_row">
+          <UilSlack />
+          <PageHeader className="ninjadash-page-header-main" im title="Solutions" />
+        </div>
       </Col>
       <Col xs={8}>
         <InfoCard icon="UilAnalysis" img={"Analytics.png"} type={"solutions"} />
@@ -143,13 +146,17 @@ const OverviewDataList = React.memo(() => {
       </Col>
 
       <Col xl={24} >
-        <PageHeader className="ninjadash-page-header-main" title="Knowledge Center" />
+        <div className="flex_row">
+          <UilBooks />
+          <PageHeader className="ninjadash-page-header-main" title="Knowledge Center" />
+        </div>
       </Col>
       <Col xs={8}>
+
         <InfoCard icon="UilBrain" img={"AquaDemia.png"} type={"solutions"} />
       </Col>
 
-    </Row>
+    </Row >
   );
 });
 

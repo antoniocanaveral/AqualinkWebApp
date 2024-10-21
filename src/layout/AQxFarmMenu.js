@@ -227,7 +227,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/notificaciones`}>
+        <NavLink className="menuItem-icon" to={`${path}/fishing-notifications`}>
           {t('Notificaciones de Pesca')}
         </NavLink>,
         'notificaciones-pesca',

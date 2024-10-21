@@ -25,7 +25,7 @@ import {
   UilSync
 } from '@iconscout/react-unicons';
 
-function NotificationSeedingLabs() {
+function NotificationFishingCustody() {
   const PageRoutes = [
     {
       path: '/lab',
@@ -233,7 +233,7 @@ function NotificationSeedingLabs() {
               }
             >
               <BorderLessHeading>
-                <Cards icon={<UilFlaskPotion />}  title="Notificaciones de Siembra">
+                <Cards icon={<UilFlaskPotion />}  title="Notificaciones de Pesca">
                   <DataTable
                     tableData={tableDataScource}
                     columns={dataTableColumn}
@@ -250,4 +250,4 @@ function NotificationSeedingLabs() {
   );
 }
 
-export default NotificationSeedingLabs;
+export default NotificationFishingCustody;

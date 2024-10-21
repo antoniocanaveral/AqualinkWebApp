@@ -3124,11 +3124,47 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 /**/
 
+.custom-table_lab {
+  border-radius: 10px !important;
+  /* Redondear las esquinas de la tabla */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1) !important;
+  /* Aplicar una sombra suave */
+  overflow: hidden !important;
+  /* Asegura que el contenido no se salga del área redondeada */
+}
+
+.custom-table_lab .ant-table-cell,
+.custom-table_notification .ant-table-cell {
+  border-bottom: 1px solid #d9d9d9 !important;
+  /* Línea solo debajo de cada celda */
+  border-left: none !important;
+  /* Elimina el borde izquierdo */
+  border-right: none !important;
+  /* Elimina el borde derecho */
+  border-top: none !important;
+  /* Elimina el borde superior */
+  padding: 8px !important;
+  /* Ajustar el padding para una mejor presentación */
+  font-size: 13px !important;
+}
+
+.ant-table-thead .ant-table-cell {
+  font-weight: 700 !important; /* Negrita para el header */
+  font-size: 14px !important; /* Ajustar el tamaño de fuente */
+}
+
+.ant-table-cell{
+  padding: 8px !important;
+  /* Ajustar el padding para una mejor presentación */
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
 .custom-table-row td:first-child {
   font-weight: bold;
-  background-color: #f8f9fb !important
-    /* Sombreado para la primera columna */
-  ;
+  color: #606371 !important;
+  background-color: #f8f9fb !important;
+  /* Sombreado para la primera columna */
 }
 
 .ant-table-cell {
@@ -3137,11 +3173,11 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 }
 
 .custom-table .ant-table-cell {
-  padding: 3px !important
+  padding: 3px !important;
 }
 
 .custom-table_lab .ant-table-cell {
-  padding: 6px !important
+  padding: 6px !important;
 }
 
 
@@ -3201,12 +3237,11 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 .ant-menu,
 .ant-layout-sider,
-.ant-layout-sider-light
-{
-background-color: #0e3c63 !important;
-/* Cambia el color de fondo del menú principal */
-color: white !important;
-/* Cambia el color de texto en general */
+.ant-layout-sider-light {
+  background-color: #012E40 !important;
+  /* Cambia el color de fondo del menú principal */
+  color: white !important;
+  /* Cambia el color de texto en general */
 }
 
 .ant-menu-item,
@@ -3228,7 +3263,7 @@ color: white !important;
 }
 
 .ant-menu-item-selected {
-  background-color: #0475d0 !important;
+  background-color: #0372ce !important;
   /* Cambia el color de fondo del ítem seleccionado */
   color: white !important;
   /* Asegura que el ítem seleccionado también tenga el texto blanco */
@@ -3272,7 +3307,7 @@ color: white !important;
 }
 
 .header-not-collapsed {
-  background-color: #0e3c63 !important;
+  background-color: #012E40 !important;
   background-size: 200% 100%;
   background-position: left bottom;
   transition: background-position 0.5s ease-out;
@@ -3313,7 +3348,7 @@ color: white !important;
 
 /* Asegúrate de que el contenedor tenga un background que se pueda animar */
 .ninjadash-overview-card__top--icon {
-  background-color: #003366;
+  background-color: #012E40;
   /* Color de fondo */
   transition: background-position 1s ease;
   /* Transición suave del background */
@@ -3321,8 +3356,50 @@ color: white !important;
 
 
 
-.flex_row{
+.flex_row {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.p_box_notification {
+  line-height: 1.6;
+  /* Ajusta el espaciado entre líneas */
+}
+
+.icon {
+  width: 15px;
+  /* Asegura el tamaño del ícono */
+  height: 15px;
+  /* Asegura la altura del ícono */
+  vertical-align: middle;
+  /* Alinea el ícono al nivel del texto */
+  margin-right: 5px;
+  /* Añade un pequeño espacio después del ícono */
+}
+
+
+.flex_row_between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.card_custom {
+  border: 1px solid #ddd;
+  /* Borde gris claro */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Sombra sutil */
+  border-radius: 8px;
+  /* Opcional, añade esquinas redondeadas */
+}
+
+.ninjadash-overview-card__right--content {
+  padding: -10px;
+  /* Añade un espacio interno */
+}
+
+
+.ninjadash-overview-card {
+  margin: -8px !important;
 }

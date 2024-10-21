@@ -13,7 +13,20 @@ import UilListOlAlt from '@iconscout/react-unicons/icons/uil-list-ol-alt';
 import moment from 'moment';
 import Cookies from 'js-cookie';
 
-
+import {
+  UilArrowsResize,
+  UilWater, // Para Tanques (flujo de agua o agua en general)
+  UilFlaskPotion,    // Para Cultivo (representa investigación y cultivo)
+  UilPlug,           // Para IoT (tecnología de conexión)
+  UilMapMarkerAlt,   // Para Coordinación
+  UilArchive,        // Para Inventario
+  UilBug,            // Para Nauplieras (representa organismos pequeños)
+  UilTrophy,         // Para Cosechas (reservas y pedidos)
+  UilUserCircle,     // Para Usuarios
+  UilKeySkeleton,    // Para Permisos
+  UilHeadphonesAlt,  // Para Atención al Cliente
+  UilSync
+} from '@iconscout/react-unicons';
 
 function CoordinationsLabs() {
   const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName')); // Organización seleccionada
@@ -108,6 +121,7 @@ function CoordinationsLabs() {
   return (
     <>
       <PageHeader
+      highlightText="Aqualink"
         className="ninjadash-page-header-main"
         title="Coordinaciones"
         routes={PageRoutes}
@@ -127,7 +141,8 @@ function CoordinationsLabs() {
               }
             >
               <BorderLessHeading>
-                <Cards title="Coordinaciones de Siembra">
+                <Cards icon={<UilFlaskPotion />}  
+                title="Coordinaciones de Siembra">
                   <DataTable
                     key={selectedOrg} // Forzar el re-renderizado cuando cambie la organización seleccionada
                     tableData={tableDataScource}

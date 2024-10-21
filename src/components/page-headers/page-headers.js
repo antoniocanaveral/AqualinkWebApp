@@ -17,6 +17,8 @@ function PageHeader(props) {
     organizations, // Lista de organizaciones (opcional)
     selectedOrg, // Organización seleccionada
     handleOrgChange, // Función para manejar el cambio de organización
+    icon, // Icono pasado como prop para mostrar antes del título
+    highlightText, // Texto que se quiere renderizar como h1
   } = props;
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -83,7 +85,20 @@ function PageHeader(props) {
     <HeaderWrapper bgColor={bgColor}>
       <PageHeaderStyle
         className={className}
-        title={title}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* Mostrar el icono si está disponible */}
+            {icon && <span style={{ marginRight: 10 }}>{icon}</span>}
+            
+            {/* Renderizar el highlightText como h1 si está presente */}
+            {highlightText && (
+              <h1 style={{ fontSize: '1.5em', marginRight: '10px', fontWeight:"800" }}>{highlightText}</h1>
+            )}
+            
+            {/* Renderizar el título normal al lado del highlight */}
+            <span style={{ fontSize: '1.4em', fontWeight:"400"}}>{title}</span>
+          </div>
+        }
         subTitle={subTitle}
         breadcrumb={breadcrumb}
         extra={buttons}
@@ -104,6 +119,8 @@ PageHeader.propTypes = {
   organizations: PropTypes.arrayOf(PropTypes.object), // Lista de organizaciones (opcional)
   selectedOrg: PropTypes.string, // Organización seleccionada
   handleOrgChange: PropTypes.func, // Función para manejar el cambio de organización
+  icon: PropTypes.node, // Prop para pasar un ícono
+  highlightText: PropTypes.string, // Texto a destacar como h1
 };
 
 export { PageHeader };

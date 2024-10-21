@@ -39,7 +39,7 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
       // Aquí añadimos el cambio de estilo cuando el componente se monta
       const headerContent = document.querySelector('.ninjadash-header-content__left');
       if (headerContent) {
-        headerContent.style.backgroundColor = '#0e3c63';
+        headerContent.style.backgroundColor = '#012E40';
       }
     }
 

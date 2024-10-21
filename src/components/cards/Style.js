@@ -272,7 +272,7 @@ const OverviewCardMeshWrap = Styled.div`
         &:not(:last-child){
             &:after{
                 position: absolute;
-                width: 8px;
+                width: 1px;
                 height: 92px;
                 right: -60px;
                 top: 50%;
@@ -343,17 +343,37 @@ const OverviewCardMeshWrap = Styled.div`
             border-radius: 0px;
             box-shadow: 0 0;
             background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
-            .ant-card-body{
-                @media only screen and (max-width: 1599px){
-                    padding: 20px !important;
-                }
-                @media only screen and (max-width: 1399px){
-                    padding: 12px !important;
-                }
-                @media only screen and (max-width: 991px){
-                    padding: 15px !important;
-                }
-            }
+           .ant-card-body {
+  border: 1px solid #ddd; /* Borde gris claro */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  border-radius: 8px; /* Opcional, añade esquinas redondeadas */
+
+  @media only screen and (max-width: 1599px) {
+    padding: 20px !important;
+  }
+  @media only screen and (max-width: 1399px) {
+    padding: 12px !important;
+  }
+  @media only screen and (max-width: 991px) {
+    padding: 15px !important;
+  }
+}
+  .ant-card-body_1 {
+  border: 1px solid #ddd; /* Borde gris claro */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  border-radius: 8px; /* Opcional, añade esquinas redondeadas */
+
+  @media only screen and (max-width: 1599px) {
+    padding: 5px !important;
+  }
+  @media only screen and (max-width: 1399px) {
+    padding: 5px !important;
+  }
+  @media only screen and (max-width: 991px) {
+    padding: 5px !important;
+  }
+}
+
         }
         &:first-child{
             .ant-card{
@@ -526,26 +546,7 @@ const SystemCardWrap = Styled.div`
         position: relative;
         margin-bottom: 25px;
         &:not(:last-child){
-            &:after{
-                position: absolute;
-                width: 2px;
-                height: 70px;
-                right: -60px;
-                top: 50%;
-                transform: translateY(-50%);
-                content: '';
-                z-index: 10;
-                background-color: ${({ theme }) => theme[theme.mainContent]['light-border']};
-                @media only screen and (max-width: 1799px){
-                    right: -30px;
-                }
-                @media only screen and (max-width: 1599px){
-                    right: 0px;
-                }
-                @media only screen and (max-width: 1199px){
-                    display: none;
-                }
-            }
+           
         }
         &.ninjadash-icon-circle{
             .ninjadash-overview-card__left{

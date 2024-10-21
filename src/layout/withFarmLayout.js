@@ -20,11 +20,13 @@ const { theme } = require('../config/theme/themeVariables');
 const { Header, Sider, Content } = Layout;
 
 const ThemeLayout = (WrappedComponent) => {
+const { darkMode } = theme; // Accedemos directamente a darkMode
+
   class LayoutComponent extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        collapsed: false,
+        collapsed: true,
         hide: true,
       };
       this.updateDimensions = this.updateDimensions.bind(this);
@@ -33,6 +35,12 @@ const ThemeLayout = (WrappedComponent) => {
     componentDidMount() {
       window.addEventListener('resize', this.updateDimensions);
       this.updateDimensions();
+
+      // Aquí añadimos el cambio de estilo cuando el componente se monta
+      const headerContent = document.querySelector('.ninjadash-header-content__left');
+      if (headerContent) {
+        headerContent.style.backgroundColor = '#012E40';
+      }
     }
 
     componentWillUnmount() {
@@ -54,7 +62,7 @@ const ThemeLayout = (WrappedComponent) => {
         this.setState({
           collapsed: !collapsed,
         });
-      
+
         const headerContent = document.querySelector('.ninjadash-header-content__left');
         if (headerContent) {
           if (collapsed) {
@@ -68,7 +76,6 @@ const ThemeLayout = (WrappedComponent) => {
           }
         }
       };
-      
 
       const toggleCollapsedMobile = () => {
         if (window.innerWidth <= 990) {
@@ -137,13 +144,13 @@ const ThemeLayout = (WrappedComponent) => {
                   <div className="navbar-brand align-cener-v">
                     <Link
                       className={topMenu && window.innerWidth > 991 ? 'ninjadash-logo top-menu' : 'ninjadash-logo'}
-                      to="/farm"
+                      to="/lab"
                     >
                       <img
                         src={
-                          layoutMode === 'lightMode'
-                            ?  require(`../static/img/AQx-IMG/aqualink-lite.svg`).default
-                            : require(`../static/img/AQx-IMG/aqualink-dark.svg`).default
+                          collapsed
+                            ? require(`../static/img/AQx-IMG/aqualink-dark.svg`).default
+                            : require(`../static/img/AQx-IMG/aqualink-lite.svg`).default
                         }
                         alt=""
                       />
@@ -200,12 +207,12 @@ const ThemeLayout = (WrappedComponent) => {
             </div>
             <Layout>
               {!topMenu || window.innerWidth <= 991 ? (
-                <ThemeProvider theme={theme.darkMode}>
+                <ThemeProvider theme={darkMode}>
                   <Sider
                     width={280}
                     style={SideBarStyle}
                     collapsed={collapsed}
-                    theme={layoutMode === 'lightMode' ? 'dark' : 'dark'}
+                    theme={darkMode}
                   >
                     <Scrollbars
                       className="custom-scrollbar"

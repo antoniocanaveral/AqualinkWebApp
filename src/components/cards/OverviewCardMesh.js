@@ -23,7 +23,7 @@ function OverviewCardMesh({ data, circleIcon }) {
     <OverviewCardMeshWrap
       className={circleIcon ? 'ninjadash-overview-card-single ninjadash-icon-circle' : 'ninjadash-overview-card-single'}
     >
-      <Card bordered={false}>
+      <Card bordered={false} >
         <div className={`ninjadash-overview-card ninjadash-overview-card-${type}`}>
           <div className="ninjadash-overview-card__left d-flex justify-content-between">
             <div className={`ninjadash-overview-card__left--icon ninjadash-${type}`}>
@@ -45,14 +45,6 @@ function OverviewCardMesh({ data, circleIcon }) {
               </h4>
               <span style={{ marginLeft: "5px" }} className="ninjadahs-overview-label">{label}</span>
             </div>
-            {/*
-              <span className={`ninjadash-overview-status ninjadash-status-${status}`}>
-                <span className="ninjadash-status-rate">
-                  {status === 'growth' ? <UilUp /> : <UilDown />} {statusRate}%
-                </span>
-              </span>
-              */
-            }
           </div>
         </div>
       </Card>

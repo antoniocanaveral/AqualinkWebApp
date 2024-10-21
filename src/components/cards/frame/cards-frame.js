@@ -9,6 +9,7 @@ import Heading from '../../heading/heading';
 function Cards(props) {
   const {
     title,
+    icon,
     status, // Agregamos la prop `status`
     children,
     more,
@@ -31,7 +32,11 @@ function Cards(props) {
           size={size}
           title={
             <>
-              {title} {/* Título principal */}
+              {/* Mostrar el ícono si se proporciona */}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {icon && <span style={{ marginRight: 5, marginLeft:"-3px" }}>{icon}</span>}
+                {title} {/* Título principal */}
+              </div>
               {status && ( // Si existe el estado, lo renderizamos aquí
                 <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>
                   {status}
@@ -84,6 +89,7 @@ Cards.defaultProps = {
 };
 
 Cards.propTypes = {
+  icon: PropTypes.node,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.node]),
   status: PropTypes.string, // Definimos el prop status
   size: PropTypes.string,
