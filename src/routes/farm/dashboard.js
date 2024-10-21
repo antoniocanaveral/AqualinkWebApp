@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 const DashboardFarms = lazy(() => import('../../container/AQx-Farms/dash-farms'));
 const NotFound = lazy(() => import('../../container/pages/404'));
 
-function DashboardRoutes() {
+function DashboardFarmRoutes() {
   return (
     <Routes>
       <Route index element={<DashboardFarms />} />
@@ -13,4 +13,4 @@ function DashboardRoutes() {
   );
 }
 
-export default DashboardRoutes;
+export default DashboardFarmRoutes;

@@ -156,7 +156,19 @@ function AQxFarmMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-    
+
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`/`}>
+        {t('Ecosistema')}
+      </NavLink>,
+      'Ecosistema',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/`}>
+          <UilCloudDataConnection />
+        </NavLink>
+      ),
+    ),
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/dashboard`}>
         {t('Panel de Control')}
@@ -168,7 +180,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
-    
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/analytics`}>
         {t('AquaLink Analytics')}
@@ -180,7 +192,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
-    
+
     getItem(t('AquaLink Planning'), 'aqualink-planning', !topMenu && <UilClipboardAlt />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/planning-studio`}>
@@ -197,7 +209,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/tasks`}>
         {t('Tareas')}
@@ -242,7 +254,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       )
 
     ]),
-    
+
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Información')}</NavTitle>,
       'submenu-informacion',
@@ -250,7 +262,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-    
+
     getItem(t('Monitoreo'), 'monitoreo', !topMenu && <UilChart />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/monitoreo-general`}>
@@ -274,7 +286,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(t('Parámetros'), 'parametros', !topMenu && <UilChart />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/parametros`}>
@@ -326,7 +338,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(t('Piscina'), 'piscina', !topMenu && <UilWater />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/piscinas`}>
@@ -371,7 +383,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(t('Cultivo'), 'cultivo', !topMenu && <UilAirplay />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/cultivos`}>
@@ -444,7 +456,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(t('IoT'), 'iot', !topMenu && <UilWifiRouter />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/dispositivos`}>
@@ -461,7 +473,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Ingresos')}</NavTitle>,
       'submenu-ingresos',
@@ -469,7 +481,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-    
+
     getItem(t('Inventario y Costos'), 'inventario-costos', !topMenu && <UilArchive />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/inventario`}>
@@ -514,7 +526,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(t('Laboratorios'), 'laboratorios', !topMenu && <UilFlaskPotion />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/laboratorios`}>
@@ -538,7 +550,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(t('Clientes'), 'clientes', !topMenu && <UilUsersAlt />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/clientes`}>
@@ -562,7 +574,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Administración')}</NavTitle>,
       'submenu-administracion',
@@ -570,7 +582,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-    
+
     getItem(t('Usuarios'), 'usuarios', !topMenu && <UilUserCircle />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/users`}>
@@ -587,7 +599,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/permisos`}>
         {t('Permisos')}
@@ -599,7 +611,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
-    
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/customer-service`}>
         {t('Atención al Cliente')}
@@ -611,29 +623,26 @@ function AQxFarmMenu({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
-    
-    
+
+
   ];
 
   return (
     <Menu
+      selectedKeys={[
+        mainPathSplit.length === 1
+          ? 'home'
+          : mainPathSplit.length === 2
+            ? mainPathSplit[1]
+            : mainPathSplit[2],
+      ]}
+      openKeys={openKeys}
       onOpenChange={onOpenChange}
       onClick={onClick}
       mode={!topMenu || window.innerWidth <= 991 ? 'inline' : 'horizontal'}
-      // // eslint-disable-next-line no-nested-ternary
-      defaultSelectedKeys={
-        !topMenu
-          ? [
-            `${mainPathSplit.length === 1 ? 'home' : mainPathSplit.length === 2 ? mainPathSplit[1] : mainPathSplit[2]
-            }`,
-          ]
-          : []
-      }
-      defaultOpenKeys={!topMenu ? [`${mainPathSplit.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : []}
-      overflowedIndicator={<UilEllipsisV />}
-      openKeys={openKeys}
       items={items}
     />
+
   );
 }
 

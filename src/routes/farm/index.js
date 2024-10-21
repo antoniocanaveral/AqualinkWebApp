@@ -5,7 +5,6 @@ import Dashboard from './dashboard';
 import withFarmLayout from '../../layout/withFarmLayout';
 import CustodyNotificationsSeedingRoutes from '../custody/custodySeedingNotifications';
 import LabCoordinationsRoutes from '../lab/labCoordinations';
-import PlanningStudioFarms from '../../container/AQx-Farms/planning-studio-farms';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -22,7 +21,7 @@ const Farm = React.memo(() => {
       }
     >
       <Routes>
-        <Route index path="/*" element={<PlanningStudioFarms />} />        
+        <Route index path="/*" element={<Dashboard />} />        
         <Route path="/coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/fishing-notifications/*" element={<CustodyNotificationsSeedingRoutes />} />
         <Route path="*" element={<NotFound />} />
