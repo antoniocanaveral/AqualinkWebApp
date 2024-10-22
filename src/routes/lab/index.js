@@ -7,6 +7,7 @@ import withLabLayout from '../../layout/withLabLayout';
 import PanelRoutes from './labPanel';
 import TaskRoutes from './labTask';
 import LabNotificationsSeedingRoutes from './labSeedingNotifications';
+import CustodyCoordinationsRoutes from '../custody/custodyCoordinations';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Lab = React.memo(() => {
@@ -27,8 +28,11 @@ const Lab = React.memo(() => {
         <Route index element={<LabCoordinations />} />
         <Route path="/panel/*" element={<PanelRoutes />} />
         <Route path="/task/*" element={<TaskRoutes />} />
-        <Route path="/coords/*" element={<LabCoordinations />} />
+        
+        <Route path="/seeding-coords/*" element={<LabCoordinations />} />
         <Route path="/seeding-notifications/*" element={<LabNotificationsSeedingRoutes />} />
+
+        <Route path="/fishing-coords/*" element={<CustodyCoordinationsRoutes />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

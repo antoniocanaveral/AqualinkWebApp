@@ -6,6 +6,7 @@ import CustodyCoordinations from './custodyCoordinations';
 import withCustodyLayout from '../../layout/withCustodyLayout';
 import LabNotificationsSeedingRoutes from '../lab/labSeedingNotifications';
 import CustodyNotificationsSeedingRoutes from './custodySeedingNotifications';
+import CustodyFarmRoutes from './custodyPanel';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Custody = React.memo(() => {
@@ -22,7 +23,8 @@ const Custody = React.memo(() => {
       }
     >
       <Routes>
-        <Route index path="/*" element={<Dashboard />} />
+        <Route index path="/*" element={<CustodyFarmRoutes />} />
+        <Route path="/panel" element={<CustodyFarmRoutes/>} />
         <Route path="/coords/*" element={<CustodyCoordinations />} />
         <Route path="/fishing-notifications/*" element={<CustodyNotificationsSeedingRoutes />} />
         <Route path="*" element={<NotFound />} />

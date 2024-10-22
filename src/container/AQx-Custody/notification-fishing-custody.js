@@ -218,7 +218,7 @@ function NotificationFishingCustody() {
       <PageHeader
         className="ninjadash-page-header-main"
         highlightText="Aqualink"
-        title="Coordinaciones"
+        title="Notificaciones Pesca"
         routes={PageRoutes}
       />
 

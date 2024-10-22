@@ -1,4 +1,4 @@
-import React, { Suspense, useLayoutEffect } from 'react';
+import React, { Suspense, useLayoutEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Skeleton } from 'antd';
 import { Main, BorderLessHeading } from '../styled';
@@ -14,10 +14,14 @@ import Cookies from 'js-cookie';
 import UilUpload from '@iconscout/react-unicons/icons/uil-upload';
 
 function CoordinationsCustody() {
+  // Estado para la organización seleccionada
+  const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName')); // Organización seleccionada
+
+  // Breadcrumbs con la organización seleccionada
   const PageRoutes = [
     {
       path: '/custody',
-      breadcrumbName: Cookies.get('orgName'),
+      breadcrumbName: selectedOrg,
     },
     {
       path: 'first',
@@ -28,57 +32,58 @@ function CoordinationsCustody() {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.custody.loading);
   const coordinations = useSelector((state) => state.custody.coordinations);
-  const error = useSelector((state) => state.custody.error);
+  const organizations = useSelector((state) => state.auth.custodyOrgs); // Lista de organizaciones
 
+  // Cargar coordinaciones según la organización seleccionada
   useLayoutEffect(() => {
-    dispatch(loadCustodyCoordinations((isCompleted, error) => {
-      console.log(`loadCustodyCoordinations ${isCompleted}`);
+    dispatch(loadCustodyCoordinations(selectedOrg, (isCompleted, error) => {
+      console.log(`loadCustodyCoordinations ${isCompleted} for organization: ${selectedOrg}`);
     }));
-    return () => {
-    }
-  }, [dispatch]);
+  }, [dispatch, selectedOrg]);
 
-  const { TableData } = useSelector((states) => {
-    return {
-      TableData: states.dataTable.tableData,
-    };
-  });
+  // Manejar el cambio de organización
+  const handleOrgChange = (value, orgEmail) => {
+    setSelectedOrg(value); // Cambiar la organización seleccionada
+    Cookies.set('orgName', value); // Actualizar la cookie de organización
+    Cookies.set('orgEmail', orgEmail); // Actualizar el email de la organización en cookies
+    dispatch(loadCustodyCoordinations()); // Recargar las coordinaciones para la nueva organización
+  };
 
-  const tableDataScource = [];
+  // Generar los datos de la tabla de manera reactiva usando useMemo
+  const tableDataScource = useMemo(() => {
+    if (!coordinations || coordinations.length === 0) return [];
 
-  if (coordinations && coordinations.length > 0) {
-    console.log( JSON.stringify(coordinations) );
-    coordinations.map((item, index) => {//YYYY-MM-DDTHH:mm:ss
+    return coordinations.map((item) => {
       const itemStatus = item.statusWrapper;
-      return tableDataScource.push({
+      return {
         id: `${item.SM_FishingNotification}`,
         proveedor: <span>{item.org_name} - {item.warehouse_name}</span>,
         location: <span>{item.City}, {item.Address1}, {item.Address2}</span>,
         planting: <span>{moment(item.planned_date).format('YYYY-MM-DD hh:mm A')}</span>,
         status: <span className={`ninjadash-status ninjadash-status-${itemStatus.className}`}>{itemStatus.statusName}</span>,
         action: (
-          <div className="table-actions" style={{minWidth:"50px !important", textAlign: "center"}}>
-            { !itemStatus.showEditFrom && <Link className="view" title='Ver información' to={`./${item.id}/view`}>
-              { <UilEye /> }
-            </Link> }
-            { itemStatus.showEditFrom && <Link className="edit" title='Enviar Propuesta' to={`./${item.id}/edit`}>
-               <UilEdit /> 
-            </Link> }
+          <div className="table-actions" style={{ minWidth: "50px !important", textAlign: "center" }}>
+            {!itemStatus.showEditFrom && <Link className="view" title='Ver información' to={`./${item.id}/view`}>
+              {<UilEye />}
+            </Link>}
+            {itemStatus.showEditFrom && <Link className="edit" title='Enviar Propuesta' to={`./${item.id}/edit`}>
+              <UilEdit />
+            </Link>}
             {
               itemStatus.showBinesForm && <Link className="edit" title='Cargar información de Bines' to={`./${item.id}/bines`}>
-              <UilUpload /> 
-           </Link>
+                <UilUpload />
+              </Link>
             }
             {
               itemStatus.showDrawersForm && <Link className="edit" title='Cargar información de Gavetas' to={`./${item.id}/drawers`}>
-              <UilUpload /> 
-           </Link>
+                <UilUpload />
+              </Link>
             }
           </div>
         ),
-      });
+      };
     });
-  }
+  }, [coordinations]);
 
   const dataTableColumn = [
     {
@@ -114,11 +119,17 @@ function CoordinationsCustody() {
     },
   ];
 
-
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Coordinaciones" routes={PageRoutes} />
-
+      <PageHeader
+        className="ninjadash-page-header-main"
+        highlightText="Aqualink"
+        title="Coordinaciones Pesca"
+        routes={PageRoutes}
+        organizations={organizations} // Lista de organizaciones
+        selectedOrg={selectedOrg} // Organización seleccionada
+        handleOrgChange={handleOrgChange} // Función para manejar el cambio
+      />
       <Main>
         <Row gutter={25}>
           <Col xxl={12} xs={24}>
@@ -129,15 +140,14 @@ function CoordinationsCustody() {
                 </Cards>
               }
             >
-                <BorderLessHeading>
-                  <Cards title="Coordinaciones de Pesca">
-                    <DataTable
-                      tableData={tableDataScource}
-                      columns={dataTableColumn}
-                      key="id"
-                      rowSelection={false}
-                    />
-                  </Cards>
+              <BorderLessHeading>
+                <Cards title="Coordinaciones de Pesca">
+                  <DataTable
+                    tableData={tableDataScource}
+                    columns={dataTableColumn}
+                    rowSelection={false}
+                  />
+                </Cards>
               </BorderLessHeading>
             </Suspense>
           </Col>

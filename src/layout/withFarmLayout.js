@@ -9,11 +9,11 @@ import { Scrollbars } from '@pezhmanparsaee/react-custom-scrollbars';
 import { connect } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import AQxFarmMenu from './AQxFarmMenu';
 import { FooterStyle, LayoutContainer, SmallScreenAuthInfo, TopMenuSearch } from './Style';
 import TopMenu from './TopMenu';
 import Search from '../components/utilities/auth-info/Search';
 import AuthInfo from '../components/utilities/auth-info/info';
+import AQxFarmMenu from './AQxFarmMenu';
 
 const { theme } = require('../config/theme/themeVariables');
 
@@ -144,7 +144,7 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
                   <div className="navbar-brand align-cener-v">
                     <Link
                       className={topMenu && window.innerWidth > 991 ? 'ninjadash-logo top-menu' : 'ninjadash-logo'}
-                      to="/lab"
+                      to="/"
                     >
                       <img
                         src={

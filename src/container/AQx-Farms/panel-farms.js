@@ -9,8 +9,9 @@ import OverviewData from '../../demoData/overviewMeshData.json';
 import { GoogleMaps } from '../../components/maps/google-maps';
 import ProjectionKgPanel from './panel/charts/projections-kg-panel';
 import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
+import ProjectionPanel from './panel/charts/projection-usd-panel';
 
-function PanelLabs() {
+function PanelFarms() {
   const PageRoutes = [
     {
       path: '/admin',
@@ -88,7 +89,7 @@ function PanelLabs() {
   return (
     <>
       <PageHeader className="ninjadash-page-header-main"
-        highlightText="Aqualink Laboratorios"
+        highlightText="Aqualink Camaroneras"
         title="Control Panel" routes={PageRoutes} />
 
       <Main>
@@ -173,8 +174,21 @@ function PanelLabs() {
           </Col>
         </Row>
 
+
+
         <Row gutter={25} equal-heights >
-          <Col xl={14} xs={24} style={{ display: 'flex' }}>
+          <Col xl={12} xs={24} style={{ display: 'flex' }}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <ProjectionPanel />
+            </Suspense>
+          </Col>
+          <Col xl={12} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -188,7 +202,7 @@ function PanelLabs() {
 
             </Suspense>
           </Col>
-          <Col xl={10} xs={24} style={{ display: 'flex' }}>
+          <Col xl={24} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -197,7 +211,7 @@ function PanelLabs() {
               }
             >
               <Cards title="Inventario de Productos" size="large"
-                >
+              >
                 {/* Tabla de productos */}
                 <Table dataSource={productData} columns={columns} pagination={false} />
               </Cards>
@@ -209,4 +223,4 @@ function PanelLabs() {
   );
 }
 
-export default PanelLabs;
+export default PanelFarms;

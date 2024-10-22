@@ -218,7 +218,7 @@ function NotificationSeedingLabs() {
       <PageHeader
         className="ninjadash-page-header-main"
         highlightText="Aqualink"
-        title="Coordinaciones"
+        title="Notificaciones Siembra"
         routes={PageRoutes}
       />
 

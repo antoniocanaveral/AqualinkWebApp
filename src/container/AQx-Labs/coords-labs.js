@@ -59,7 +59,7 @@ function CoordinationsLabs() {
     Cookies.set('orgEmail', orgEmail); // Asegúrate de actualizar también el email de la organización en la cookie
     dispatch(loadLabCoordinations()); // Recargar las coordinaciones para la nueva organización
   };
-  
+
 
   // Generar los datos de la tabla de manera reactiva usando useMemo
   const tableDataScource = useMemo(() => {
@@ -121,9 +121,9 @@ function CoordinationsLabs() {
   return (
     <>
       <PageHeader
-      highlightText="Aqualink"
+        highlightText="Aqualink"
         className="ninjadash-page-header-main"
-        title="Coordinaciones"
+        title="Coordinaciones Siembra"
         routes={PageRoutes}
         organizations={organizations} // Lista de organizaciones
         selectedOrg={selectedOrg} // Organización seleccionada
@@ -141,8 +141,8 @@ function CoordinationsLabs() {
               }
             >
               <BorderLessHeading>
-                <Cards icon={<UilFlaskPotion />}  
-                title="Coordinaciones de Siembra">
+                <Cards icon={<UilFlaskPotion />}
+                  title="Coordinaciones de Siembra">
                   <DataTable
                     key={selectedOrg} // Forzar el re-renderizado cuando cambie la organización seleccionada
                     tableData={tableDataScource}

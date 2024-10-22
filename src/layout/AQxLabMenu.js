@@ -71,6 +71,7 @@ function AQxLabMenu({ toggleCollapsed }) {
   };
 
   const onClick = (item) => {
+    console.log('Item clicked:', item); 
     if (item.keyPath.length === 1) setOpenKeys([]);
   };
 
@@ -418,7 +419,7 @@ function AQxLabMenu({ toggleCollapsed }) {
         null,
       ),
       getItem(
-        <NavLink className="menuItem-iocn" to={`${path}/coords`}>
+        <NavLink className="menuItem-iocn" to={`${path}/seeding-coords`}>
           {t('Ver')} {t('Coordinaciones')}
         </NavLink>,
         'coords',

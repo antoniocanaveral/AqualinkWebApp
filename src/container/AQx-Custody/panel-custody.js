@@ -10,7 +10,7 @@ import { GoogleMaps } from '../../components/maps/google-maps';
 import ProjectionKgPanel from './panel/charts/projections-kg-panel';
 import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
 
-function PanelLabs() {
+function PanelCustody() {
   const PageRoutes = [
     {
       path: '/admin',
@@ -88,7 +88,7 @@ function PanelLabs() {
   return (
     <>
       <PageHeader className="ninjadash-page-header-main"
-        highlightText="Aqualink Laboratorios"
+        highlightText="Aqualink Empacadoras"
         title="Control Panel" routes={PageRoutes} />
 
       <Main>
@@ -209,4 +209,4 @@ function PanelLabs() {
   );
 }
 
-export default PanelLabs;
+export default PanelCustody;

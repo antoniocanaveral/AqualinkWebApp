@@ -144,7 +144,7 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
                   <div className="navbar-brand align-cener-v">
                     <Link
                       className={topMenu && window.innerWidth > 991 ? 'ninjadash-logo top-menu' : 'ninjadash-logo'}
-                      to="/lab"
+                      to="/"
                     >
                       <img
                         src={

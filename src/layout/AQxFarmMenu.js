@@ -170,12 +170,12 @@ function AQxFarmMenu({ toggleCollapsed }) {
     ),
 
     getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/dashboard`}>
+      <NavLink onClick={toggleCollapsed} to={`${path}/panel`}>
         {t('Panel de Control')}
       </NavLink>,
       'panel-control',
       !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/dashboard`}>
+        <NavLink className="menuItem-iocn" to={`${path}/panel`}>
           <UilDesktop />
         </NavLink>
       ),
@@ -246,12 +246,20 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
       getItem(
-        <NavLink className="menuItem-iocn" to={`${path}/coords`}>
-          {t('Ver')} {t('Coordinaciones')}
+        <NavLink className="menuItem-iocn" to={`${path}/seeding-coords`}>
+          {t('Coordinaciones de Siembra')}
         </NavLink>,
-        'light',
+        'seeding-coords',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/fishing-coords`}>
+          {t('Coordinaciones de Pesca')}
+        </NavLink>,
+        'fishing-coords',
         null,
       )
+
 
     ]),
 
@@ -629,17 +637,21 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
   return (
     <Menu
-      selectedKeys={[
-        mainPathSplit.length === 1
-          ? 'home'
-          : mainPathSplit.length === 2
-            ? mainPathSplit[1]
-            : mainPathSplit[2],
-      ]}
-      openKeys={openKeys}
       onOpenChange={onOpenChange}
       onClick={onClick}
       mode={!topMenu || window.innerWidth <= 991 ? 'inline' : 'horizontal'}
+      // // eslint-disable-next-line no-nested-ternary
+      defaultSelectedKeys={
+        !topMenu
+          ? [
+            `${mainPathSplit.length === 1 ? 'home' : mainPathSplit.length === 2 ? mainPathSplit[1] : mainPathSplit[2]
+            }`,
+          ]
+          : []
+      }
+      defaultOpenKeys={!topMenu ? [`${mainPathSplit.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : []}
+      overflowedIndicator={<UilEllipsisV />}
+      openKeys={openKeys}
       items={items}
     />
 
