@@ -86,7 +86,8 @@ const OverviewDataList = React.memo(() => {
   return (
     <Row gutter={24}>
       <br></br>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw' }}>
+
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', zIndex: 2 }}>
         <figure style={{ textAlign: 'center' }}>
           <Heading as="h2">Hi</Heading>
           <img src={require('../../../../static/img/AQx-IMG/avatar48b.png')} alt="" />
@@ -95,6 +96,20 @@ const OverviewDataList = React.memo(() => {
           </figcaption>
           <p>Welcome to Aqualink</p>
         </figure>
+      </div>
+      <div class="background">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
 
 

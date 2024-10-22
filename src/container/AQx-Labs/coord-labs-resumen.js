@@ -65,6 +65,8 @@ function CoordinationLabsResumen() {
   const labInfoData = [
     { key: '0', label: 'Módulo:', value: coordination?.lab_module || 'M1' },
     { key: '1', label: 'Tanque:', value: coordination?.tank || 'T1' },
+    { key: '2', label: 'Código:', value: coordination?.SM_FishingNotification || 'PL10' },
+    { key: '2', label: 'Origen de Nauplio:', value: coordination?.origen || '' },
     { key: '5', label: 'PL:', value: coordination?.answered_pl || 'PL10' },
     { key: '4', label: 'Conteo Preliminar Lab:', value: coordination ? `${formatNumber(coordination.lab_count)} larvas/gramo` : '280 larvas/gramo' },
     { key: '6', label: 'Salinidad:', value: coordination ? `${coordination.confirmed_salinity} ppm` : '20 ppm' },
