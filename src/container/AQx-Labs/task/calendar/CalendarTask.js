@@ -55,13 +55,15 @@ function CalendarTask() {
   });
 
   const onSelectEvent = (selectedData) => {
+    console.log('Selected event data:', selectedData);  // Asegúrate de que aquí se están obteniendo datos correctos
     setState({
       ...state,
       isEventModalVisible: true,
       isFormModalVisible: false,
-      selectedEvent: selectedData,
+      selectedEvent: selectedData,  // Aquí es donde se establece el evento seleccionado
     });
   };
+
 
   const onSelectSlot = () => {
     setState({
@@ -134,12 +136,23 @@ function CalendarTask() {
       message: 'New Event Added',
     });
   };
+  const updateEvent = (updatedEvent) => {
+    const updatedEvents = events.map((event) => (event.id === updatedEvent.id ? updatedEvent : event));
+    dispatch(addNewEvents(updatedEvents));
+    setState({
+      ...state,
+      isFormModalVisible: false,
+    });
+    notification.open({
+      message: 'Event Updated Successfully',
+    });
+  };
+
   return (
     <>
       <Main>
         <CalendarWrapper className="ninjadash-calendar-wrap">
           <Row gutter={25}>
-
             <Col xxl={24} xl={24} xs={24}>
               <Modal
                 className="ninjadash-event-form"
@@ -149,9 +162,17 @@ function CalendarTask() {
                 visible={isFormModalVisible}
                 onCancel={handleCancel}
               >
-                <eventContext.Provider value={selectedEvent}>
-                  <EventForm eventData={selectedEvent} onHandleAddEvent={addNew} />
-                </eventContext.Provider>
+                {selectedEvent && (
+                  <eventContext.Provider value={selectedEvent}>
+                    <EventForm
+                      eventData={selectedEvent}
+                      onHandleAddEvent={addNew}
+                      onHandleUpdateEvent={updateEvent}
+                    />
+                  </eventContext.Provider>
+                )}
+
+
               </Modal>
               <Modal
                 title={selectedEvent.title}
@@ -193,8 +214,8 @@ function CalendarTask() {
                       <li className="ninjadash-event-description">
                         <UilSubject />
                         <span className="ninjadash-event-text">
-                          Lorem ipsum dolor sit amet consetetur sadipscing elitr sed diam consetetur sadipscing elitr
-                          sed diam
+                          Lorem ipsum dolor sit amet consetetur sadipscing elitr sed diam consetetur sadipscing elitr sed
+                          diam
                         </span>
                       </li>
                     </ul>
