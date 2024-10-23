@@ -9,6 +9,7 @@ import OverviewData from '../../demoData/overviewMeshData.json';
 import { GoogleMaps } from '../../components/maps/google-maps';
 import ProjectionKgPanel from './panel/charts/projections-kg-panel';
 import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
+import AvailableFishingChart from './charts/AvailableFishingChart';
 
 function PanelCustody() {
   const PageRoutes = [
@@ -199,7 +200,7 @@ function PanelCustody() {
               <Cards title="Inventario de Productos" size="large"
                 >
                 {/* Tabla de productos */}
-                <Table dataSource={productData} columns={columns} pagination={false} />
+                <AvailableFishingChart />
               </Cards>
             </Suspense>
           </Col>

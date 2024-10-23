@@ -145,39 +145,8 @@ function Calendars() {
       <Main>
         <CalendarWrapper className="ninjadash-calendar-wrap">
           <Row gutter={25}>
-            <Col xxl={6} xl={9} xs={24}>
-              <Aside>
-                <Button onClick={onSelectSlot} className="btn-create" size="large" type="primary">
-                  <UilPlus /> Create New Event
-                </Button>
-                <div className="calendar-display">
-                  <CalenDar next2Label={null} prev2Label={null} onChange={onChange} value={state.date} />
-                </div>
-                <br />
-                <Cards headless>
-                  <h3 className="listHeader">
-                    My Calendars
-                    <Link onClick={onHandleVisible} className="add-label" to="#">
-                      <UilPlus />
-                    </Link>
-                  </h3>
-                  <ul className="event-list">
-                    {events.map((event) => {
-                      const { id, title, label } = event;
-                      return (
-                        <li key={id}>
-                          <Link to="#">
-                            <span className={`bullet ${label}`} />
-                            {title}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </Cards>
-              </Aside>
-            </Col>
-            <Col xxl={18} xl={15} xs={24}>
+           
+            <Col xxl={24} xl={24} xs={24}>
               <Modal
                 className="ninjadash-event-form"
                 footer={null}

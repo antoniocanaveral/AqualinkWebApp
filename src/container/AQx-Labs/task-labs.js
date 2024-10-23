@@ -1,10 +1,9 @@
 import React, { lazy, Suspense } from 'react';
 import { Row, Col, Skeleton, Typography, Badge, Space } from 'antd';
-import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
-import TaskLabTable from './task/table/task-table-lab';
-import UpcomingEvents from '../dashboard/overview/demoFive/UpcomingEvents';
+import CalendarTask from './task/calendar/CalendarTask';
+import { PageHeader } from '../../components/page-headers/page-headers';
 
 function TaskLabs() {
     const PageRoutes = [
@@ -19,10 +18,7 @@ function TaskLabs() {
     ];
     return (
         <>
-            <PageHeader className="ninjadash-page-header-main" title="Administrador de Tareas" routes={PageRoutes} />
-
             <Main>
-
                 <Row gutter={[24, 24]}>
                     <Col xxl={12} xs={24}>
                         <Suspense
@@ -32,64 +28,13 @@ function TaskLabs() {
                                 </Cards>
                             }
                         >
+                            <PageHeader className="ninjadash-page-header-main"
+                                highlightText="Aqualink Laboratorios"
+                                title="Tareas" routes={PageRoutes} />
 
-                            <TaskLabTable />
-
+                            <CalendarTask />
                         </Suspense>
                     </Col>
-                    <Col xl={12} xs={24}>
-                        <Suspense
-                            fallback={
-                                <Cards headless>
-                                    <Skeleton active />
-                                </Cards>
-                            }
-                        >
-
-                            <UpcomingEvents />
-
-                        </Suspense>
-                    </Col>
-                    <Col xl={12} xs={24}>
-                        <Suspense
-                            fallback={
-                                <Cards headless>
-                                    <Skeleton active />
-                                </Cards>
-                            }
-                        >
-
-                            <UpcomingEvents />
-
-                        </Suspense>
-                    </Col>
-                    <Col xl={12} xs={24}>
-                        <Suspense
-                            fallback={
-                                <Cards headless>
-                                    <Skeleton active />
-                                </Cards>
-                            }
-                        >
-
-                            <UpcomingEvents />
-
-                        </Suspense>
-                    </Col>  
-                    <Col xl={12} xs={24}>
-                        <Suspense
-                            fallback={
-                                <Cards headless>
-                                    <Skeleton active />
-                                </Cards>
-                            }
-                        >
-
-                            <UpcomingEvents />
-
-                        </Suspense>
-                    </Col>
-
                 </Row>
             </Main>
         </>

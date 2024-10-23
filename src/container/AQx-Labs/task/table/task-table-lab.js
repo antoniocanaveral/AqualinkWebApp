@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
 import UilListOlAlt from '@iconscout/react-unicons/icons/uil-list-ol-alt';
+import Calendars from '../../../calendar/Calendar';
 
 function TaskLabTable() {
     const columns = [
@@ -150,7 +151,9 @@ function TaskLabTable() {
     ];
 
     return (
-        <Table columns={columns} dataSource={data} pagination={false} />
+        <div>
+            <Calendars />
+        </div>
 
     );
 }
