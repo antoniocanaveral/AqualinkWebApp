@@ -231,20 +231,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
     ),
 
     getItem(t('Coordinación'), 'coordinacion', !topMenu && <UilCalendarAlt />, [
-      getItem(
-        <NavLink className="menuItem-iocn" to={`${path}/seeding-notifications`}>
-          {t('Notificaciones de')} {t('Siembra')}
-        </NavLink>,
-        'seeding',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/fishing-notifications`}>
-          {t('Notificaciones de Pesca')}
-        </NavLink>,
-        'notificaciones-pesca',
-        null,
-      ),
+     
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/seeding-coords`}>
           {t('Coordinaciones de Siembra')}

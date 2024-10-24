@@ -11,16 +11,16 @@ import {
 } from 'recharts';
 
 const LineChartWithXAxisPadding = ({ data }) => {
-  const [responsive, setResponsive] = useState(0);
+  const [responsiveWidth, setResponsiveWidth] = useState(0);
+  const [responsiveHeight, setResponsiveHeight] = useState(0);
 
   useLayoutEffect(() => {
     function updateSize() {
       const element = document.querySelector('.recharts-wrapper');
-      const width =
-        element !== null
-          ? element.closest('.ant-card-body').clientWidth
-          : document.querySelector('.ant-card-body').clientWidth;
-      setResponsive(width);
+      const width = element ? element.closest('.ant-card-body')?.clientWidth || element.closest('div').clientWidth : document.querySelector('.ant-card-body').clientWidth;
+      const height = element ? element.closest('.ant-card-body')?.clientHeight || element.closest('div').clientHeight : 400; // Asegura que tenga una altura mínima de 400px
+      setResponsiveWidth(width);
+      setResponsiveHeight(height);
     }
     window.addEventListener('resize', updateSize);
     updateSize();
@@ -29,8 +29,8 @@ const LineChartWithXAxisPadding = ({ data }) => {
 
   return (
     <LineChart
-      width={responsive - (5 * responsive) / 100}
-      height={responsive * 0.75} 
+      width={responsiveWidth}  // Ancho dinámico basado en el contenedor
+      height={responsiveHeight} // Altura basada en el contenedor
       data={data}
       margin={{
         top: 20, 
@@ -44,7 +44,7 @@ const LineChartWithXAxisPadding = ({ data }) => {
       <YAxis />
       <Tooltip />
       <Legend />
-      <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
+      <Line type="monotone" dataKey="Available fishing (kilos)" stroke="#8884d8" activeDot={{ r: 8 }} />
       <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
     </LineChart>
   );

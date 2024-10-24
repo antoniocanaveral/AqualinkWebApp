@@ -1,11 +1,8 @@
 import { Spin } from 'antd';
 import React, { lazy, Suspense, useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import Dashboard from './dashboard';
 import CustodyCoordinations from './custodyCoordinations';
 import withCustodyLayout from '../../layout/withCustodyLayout';
-import LabNotificationsSeedingRoutes from '../lab/labSeedingNotifications';
-import CustodyNotificationsSeedingRoutes from './custodySeedingNotifications';
 import CustodyFarmRoutes from './custodyPanel';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
@@ -26,7 +23,6 @@ const Custody = React.memo(() => {
         <Route index path="/*" element={<CustodyFarmRoutes />} />
         <Route path="/panel" element={<CustodyFarmRoutes/>} />
         <Route path="/coords/*" element={<CustodyCoordinations />} />
-        <Route path="/fishing-notifications/*" element={<CustodyNotificationsSeedingRoutes />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

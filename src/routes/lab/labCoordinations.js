@@ -4,6 +4,7 @@ import CoordinationLabsResumen from '../../container/AQx-Labs/coord-labs-resumen
 import CoordinationsLabs from '../../container/AQx-Labs/coords-labs';
 import CoordinationLabs from '../../container/AQx-Labs/coord-labs';
 import CoordinationLabsParams from '../../container/AQx-Labs/coord-labs-params';
+import NotificationSeedingResumen from '../../container/AQx-Labs/notification-seeding-resumen';
 
 const NotFound = lazy(() => import('../../container/pages/404'));
 
@@ -14,6 +15,7 @@ function LabCoordinationsRoutes() {
         
       </Route>
       <Route path=":id/edit" element={<CoordinationLabs />} />
+      <Route path="/notification/:id/view" element={<NotificationSeedingResumen />} />
       <Route path=":id/view" element={<CoordinationLabsResumen />} />
       <Route path=":id/params" element={<CoordinationLabsParams />} />
       <Route path="*" element={<NotFound />} />

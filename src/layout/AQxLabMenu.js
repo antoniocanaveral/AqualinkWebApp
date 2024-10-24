@@ -411,13 +411,7 @@ function AQxLabMenu({ toggleCollapsed }) {
     ),
     
     getItem(t('Coordinación'), 'coord-main', !topMenu && <UilMapMarkerAlt />, [
-      getItem(
-        <NavLink className="menuItem-iocn" to={`${path}/seeding-notifications`}>
-          {t('Notificaciones de')} {t('Siembra')}
-        </NavLink>,
-        'seeding',
-        null,
-      ),
+      
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/seeding-coords`}>
           {t('Ver')} {t('Coordinaciones')}

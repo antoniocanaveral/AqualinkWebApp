@@ -229,13 +229,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
     ),
 
     getItem(t('Coordinación'), 'coordinacion', !topMenu && <UilCalendarAlt />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/fishing-notifications`}>
-          {t('Notificaciones de Pesca')}
-        </NavLink>,
-        'notificaciones-pesca',
-        null,
-      ),
+      
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/coords`}>
           {t('Ver')} {t('Coordinaciones')}

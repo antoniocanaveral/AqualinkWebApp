@@ -11,25 +11,15 @@ import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
 import UilListOlAlt from '@iconscout/react-unicons/icons/uil-list-ol-alt';
 import moment from 'moment';
-import Cookies from 'js-cookie';
 
 import {
-  UilArrowsResize,
-  UilWater, // Para Tanques (flujo de agua o agua en general)
-  UilFlaskPotion,    // Para Cultivo (representa investigación y cultivo)
-  UilPlug,           // Para IoT (tecnología de conexión)
-  UilMapMarkerAlt,   // Para Coordinación
-  UilArchive,        // Para Inventario
-  UilBug,            // Para Nauplieras (representa organismos pequeños)
-  UilTrophy,         // Para Cosechas (reservas y pedidos)
-  UilUserCircle,     // Para Usuarios
-  UilKeySkeleton,    // Para Permisos
-  UilHeadphonesAlt,  // Para Atención al Cliente
-  UilSync
+  UilBell, // Agrega este ícono para la notificación
 } from '@iconscout/react-unicons';
+import Cookies from 'js-cookie';
 
 function CoordinationsLabs() {
   const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName')); // Organización seleccionada
+  const selectedModule = useSelector((state) => state.auth.selectedModule); // Obtener el módulo seleccionado desde Redux
 
   const PageRoutes = [
     {
@@ -60,6 +50,26 @@ function CoordinationsLabs() {
     dispatch(loadLabCoordinations()); // Recargar las coordinaciones para la nueva organización
   };
 
+  // Función para determinar la clase de estado
+  const getStatusClass = (status) => {
+    switch (status.toLowerCase()) {
+      case 'confirmado':
+        return 'ninjadash-status-confirmed';
+      case 'asignado':
+        return 'ninjadash-status-asigned';
+      case 'por revisar':
+        return 'ninjadash-status-waiting';
+      case 'ejecutado':
+        return 'ninjadash-status-executed';
+      case 'despachado':
+        return 'ninjadash-status-despached';
+      default:
+        return 'ninjadash-status-undefined'; // Clase para estados indefinidos
+    }
+  };
+
+  // Determinar si se debe usar "Lab Seleccionado" o "Finca Seleccionada"
+  const labOrFarm = selectedModule !== 'FARM' ? 'Finca Seleccionada' : 'Lab Seleccionado';
 
   // Generar los datos de la tabla de manera reactiva usando useMemo
   const tableDataScource = useMemo(() => {
@@ -68,42 +78,86 @@ function CoordinationsLabs() {
     return coordinations.map((item) => {
       const itemStatus = item.statusWrapper;
       return {
-        id: `${item.SM_FishingNotification}`,
-        proveedor: <span>{item.org_name} - {item.pre_breeding_pool}</span>,
-        location: <span>{item.City}, {item.Address1}, {item.Address2}</span>,
-        planting: <span>{moment(item.planned_date).format('YYYY-MM-DD HH:mm A')}</span>,
-        status: <span className={`ninjadash-status ninjadash-status-asigned`}>{itemStatus.statusName}</span>,
+        id: `${item.SM_FishingNotification || 'Sin Lote ID'}`, // LOTE id
+        scheduledDate: moment(item.planned_date).format('YYYY-MM-DD HH:mm A') || 'Fecha no disponible', // FECHA PROGRAMADA DE SIEMBRA
+        systemType: item.system_type || 'Sin Sistema', // SISTEMA DE CULTIVO
+        preBreeding: item.pre_breeding_pool || 'No disponible', // PRE CRIA
+        growOut: item.grow_out_pool || 'No disponible', // PISCINA ENGORDE
+        cycleNumber: item.cycle_number || 'No disponible', // # CICLO
+        seedingVolume: item.seeding_volume || 'No definido', // volumen de siembra
+        pl: item.pl || 'No disponible', // PL
+        lab: item.lab_name || `Sin ${labOrFarm}`, // Lab Seleccionado o Finca Seleccionada
+        location: <span>{item.City || 'No Ciudad'}, {item.Address1 || 'No Dirección'}</span>, // UBICACIÓN
+        status: (
+          <span className={`ninjadash-status ${getStatusClass(itemStatus.statusName)}`}>
+            {itemStatus.statusName || 'Estado no definido'}
+          </span>
+        ), // ESTADO
         action: (
           <div className="table-actions" style={{ minWidth: "50px !important", textAlign: "center" }}>
             {!itemStatus.showEditFrom && <Link className="view" to={`./${item.id}/view`}><UilEye /></Link>}
             {itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}><UilEdit /></Link>}
             {itemStatus.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}><UilListOlAlt /></Link>}
+            <Link className="notification" to={`./notification/${item.id}/view`}>
+              <UilBell />
+            </Link> {/* Nuevo botón de notificación */}
           </div>
         ),
       };
     });
-  }, [coordinations]);
+  }, [coordinations, labOrFarm]); // Añadimos labOrFarm a las dependencias
 
+  // Definición de las columnas
   const dataTableColumn = [
     {
-      title: 'No.',
+      title: 'Fecha Programada de Siembra',
+      dataIndex: 'scheduledDate',
+      key: 'scheduledDate',
+    },
+    {
+      title: 'Sistema de Cultivo',
+      dataIndex: 'systemType',
+      key: 'systemType',
+    },
+    {
+      title: 'Pre Cría',
+      dataIndex: 'preBreeding',
+      key: 'preBreeding',
+    },
+    {
+      title: 'Piscina Engorde',
+      dataIndex: 'growOut',
+      key: 'growOut',
+    },
+    {
+      title: '# Ciclo',
+      dataIndex: 'cycleNumber',
+      key: 'cycleNumber',
+    },
+    {
+      title: 'Lote ID',
       dataIndex: 'id',
       key: 'id',
     },
     {
-      title: 'Cliente',
-      dataIndex: 'proveedor',
-      key: 'proveedor',
+      title: 'Volumen de Siembra',
+      dataIndex: 'seedingVolume',
+      key: 'seedingVolume',
+    },
+    {
+      title: 'PL',
+      dataIndex: 'pl',
+      key: 'pl',
+    },
+    {
+      title: labOrFarm, // Cambia dinámicamente entre "Lab Seleccionado" y "Finca Seleccionada"
+      dataIndex: 'lab',
+      key: 'lab',
     },
     {
       title: 'Ubicación',
       dataIndex: 'location',
       key: 'location',
-    },
-    {
-      title: 'Fecha Solicitada',
-      dataIndex: 'planting',
-      key: 'planting',
     },
     {
       title: 'Estado',
@@ -141,8 +195,7 @@ function CoordinationsLabs() {
               }
             >
               <BorderLessHeading>
-                <Cards icon={<UilFlaskPotion />}
-                  title="Coordinaciones de Siembra">
+                <Cards title="Coordinaciones de Siembra">
                   <DataTable
                     key={selectedOrg} // Forzar el re-renderizado cuando cambie la organización seleccionada
                     tableData={tableDataScource}
