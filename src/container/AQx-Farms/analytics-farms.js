@@ -10,6 +10,8 @@ import CropYieldChart from './analytics/charts/cropYieldChart';
 import ProductionSalesProjectionChart from './analytics/charts/ProductionSalesProjectionChart';
 import EvolutionParametersBarChart from './analytics/charts/EvolutionParametersBarChart';
 import WaterPhysicsDonutChart from './analytics/charts/donut/WaterPhysicsDonutChart';
+import SoilPhysicsDonutChart from './analytics/charts/donut/SoilPhysicsDonutChart';
+import BiomechanicalDonutChart from './analytics/charts/donut/BiomechanicalDonutChart';
 
 function AnalyticsFarms() {
   const PageRoutes = [
@@ -142,13 +144,13 @@ function AnalyticsFarms() {
                 </Cards>
               }
             >
-              <Cards title="Rendimiento de Cultivo (%)" size="large" style={{ width: '100%', height: '100%' }}> {/* Asegúrate de que el Cards también ocupe toda la altura */}
+              <Cards title="Rendimiento de Cultivo (%)" size="large" style={{ width: '100%', height: '100%' }}>
                 <CropYieldChart />
               </Cards>
             </Suspense>
           </Col>
 
-          <Col xl={24} xs={24} style={{ display: 'flex' }}> {/* Establece una altura fija */}
+          <Col xl={24} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -156,15 +158,27 @@ function AnalyticsFarms() {
                 </Cards>
               }
             >
-              <Cards title="Relación de Parámetros Semanal " size="large" style={{ width: '100%', height: '100%' }}> {/* Asegúrate de que el Cards también ocupe toda la altura */}
-                <div style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
-                  <div style={{ width: "30%" }}>
+              <Cards title="Relación de Parámetros Semanal " size="large" style={{ width: '100%', height: '100%' }}>
+                <center>
+                  <Typography.Text strong style={{ fontSize: "1.2rem" }}>Evolución de Parámetros</Typography.Text>
+                </center>
+                <br />
+                <br />
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div style={{ width: "26%" }}>
                     <EvolutionParametersBarChart />
                   </div>
-                  <div>
+                  <div style={{ display: "flex", flexDirection: "row", width: "70%" }}>
                     <div>
-                      <WaterPhysicsDonutChart/>
+                      <WaterPhysicsDonutChart />
                     </div>
+                    <div>
+                      <SoilPhysicsDonutChart />
+                    </div>
+                    <div>
+                      <BiomechanicalDonutChart />
+                    </div>
+
 
                   </div>
                 </div>

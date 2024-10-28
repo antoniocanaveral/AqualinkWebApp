@@ -1,12 +1,44 @@
-/* eslint-disable react/default-props-match-prop-types */
-/* eslint-disable react/destructuring-assignment */
 import PropTypes from 'prop-types';
-import React from 'react';
-import DashboardChart from './DashboardChart';
+import React, { useEffect, useRef } from 'react';
+import Chart from 'chart.js/auto';
 
 function DoughnutChart({ datasets, tooltip, ...props }) {
+  const chartRef = useRef(null); // Referencia para el canvas
+  const chartInstance = useRef(null); // Referencia para la instancia del gráfico
+
+  useEffect(() => {
+    if (chartInstance.current) {
+      chartInstance.current.destroy(); // Destruye la instancia anterior del gráfico si existe
+    }
+
+    // Crea una nueva instancia del gráfico
+    chartInstance.current = new Chart(chartRef.current, {
+      type: 'doughnut',
+      data: {
+        labels: props.labels,
+        datasets,
+      },
+      options: {
+        ...props.option,
+        maintainAspectRatio: false, // Permite que el gráfico ocupe el 100% del contenedor
+        responsive: true,
+        plugins: {
+          legend: props.legend,
+          tooltip,
+        },
+      },
+    });
+
+    // Limpia la instancia al desmontar o actualizar el componente
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, [datasets, props.labels, tooltip, props.option, props.legend]); // Vuelve a renderizar solo si cambian estas props
+
   return (
-    <div className="doughnutchart-inner">
+    <div className="doughnutchart-inner" style={{ position: 'relative', width: '100%', height: '100%' }}>
       <div className="doughnutchart-inner-text">
         {datasets[0].centerText === '' ? (
           <span className="doughnutchart-inner-content">
@@ -17,15 +49,14 @@ function DoughnutChart({ datasets, tooltip, ...props }) {
         )}
         <span className="doughnutchart-inner-label">{datasets[0].centerTextLabel}</span>
       </div>
-
-      <DashboardChart tooltip={tooltip} type="doughnut" datasets={datasets} {...props} />
+      <canvas ref={chartRef} id={props.id} style={{ width: '100%', height: '100%' }}></canvas>
     </div>
   );
 }
 
 DoughnutChart.defaultProps = {
-  height: 479,
-  width: 250,
+  height: 500,
+  width: 300,
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   datasets: [
     {

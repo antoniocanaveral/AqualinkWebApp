@@ -1,90 +1,62 @@
-import React, { lazy, Suspense, useState } from 'react';
-import { Row, Col, Skeleton, Typography, Badge, Space, Form, Input, DatePicker, TimePicker, Select, Button, Divider } from 'antd';
+import React, { Suspense, useState } from 'react';
+import axios from 'axios';
+import { Row, Col, Skeleton, Typography, Badge, Space, Form, Input, DatePicker, Select, Button, Divider } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { BasicFormWrapper, HorizontalFormStyleWrap, Main } from '../styled';
 import { GoogleMaps } from '../../components/maps/google-maps';
-import FormElements from '../forms/FormElements';
-import { Option } from 'antd/lib/mentions';
-
-const OverviewDataList = lazy(() => import('../dashboard/overview/demoFarm/OverviewDataList'));
-const SalesReport = lazy(() => import('../dashboard/overview/index/SalesReport'));
-const SalesGrowth = lazy(() => import('../dashboard/overview/index/SalesGrowth'));
-const SalesByLocation = lazy(() => import('../dashboard/overview/index/SalesByLocation'));
-const TopSellingProduct = lazy(() => import('../dashboard/overview/index/TopSellingProducts'));
-const BrowserState = lazy(() => import('../dashboard/overview/index/BrowserState'));
-const SalesOverview = lazy(() => import('../dashboard/overview/index/SalesOverview'));
 
 function PlanningStudioFarms() {
   const [form] = Form.useForm();
   const [scenarios, setScenarios] = useState([]);
   const PageRoutes = [
-    {
-      path: '/admin',
-      breadcrumbName: 'AquaLink',
-    },
-    {
-      path: 'first',
-      breadcrumbName: 'Panel de Control',
-    },
+    { path: '/admin', breadcrumbName: 'AquaLink' },
+    { path: 'first', breadcrumbName: 'Panel de Control' },
   ];
 
+  // Opciones para los selects
   const larvaOptions = [
-    { value: 1, weight: '0.25-0.35', label: '0.25-0.35 g' },
-    { value: 2, weight: '0.36-0.50', label: '0.36-0.50 g' },
-    { value: 3, weight: '0.51-0.75', label: '0.51-0.75 g' },
-    { value: 4, weight: '0.75-1.00', label: '0.75-1.00 g' },
+    { value: 1, weight: 0.3, label: '0.25-0.35 g' }, // Cambia "weight" a un valor promedio o específico
+    { value: 2, weight: 0.4, label: '0.36-0.50 g' },
+    { value: 3, weight: 0.6, label: '0.51-0.75 g' },
+    { value: 4, weight: 0.9, label: '0.75-1.00 g' },
   ];
 
-  const weekOptions = [
-    { value: 9, label: '9 semanas' },
-    { value: 10, label: '10 semanas' },
-    { value: 11, label: '11 semanas' },
-    { value: 12, label: '12 semanas' },
-    { value: 13, label: '13 semanas' },
-    { value: 14, label: '14 semanas' },
-  ];
+  const onAddScenario = async () => {
+    try {
+      const values = await form.validateFields();
+      const dataToSend = {
+        shrimp_pool_hec: values.shrimp_pool_hec,
+        density: values.density,
+        stimated_weight: larvaOptions.find(opt => opt.value === values.larva_weight).weight,
+        stimated_survival: values.survival_rate / 100,
+        days_to_harvest: values.harvest_days,
+        stimated_fca: values.stimated_fca,
+        stimated_performance: values.stimated_performance,
+        selling_price: values.selling_price,
+        pre_breeding_weeks: values.pre_breeding_weeks,
+        dayly_inditect_cost: values.dayly_inditect_cost,
+        food_price: values.food_price,
+        breeding_cost: values.breeding_cost,
+      };
 
-  const survivalRateOptions = [
-    { value: 60, label: '60%' },
-    { value: 65, label: '65%' },
-    { value: 70, label: '70%' },
-    { value: 75, label: '75%' },
-    { value: 80, label: '80%' },
-    { value: 85, label: '85%' },
-  ];
-
-  const fishingWeightOptions = [
-    { value: '15-17', label: '15-17 g' },
-    { value: '17-19', label: '17-19 g' },
-    { value: '19-21', label: '19-21 g' },
-    { value: '21-23', label: '21-23 g' },
-    { value: '23-26', label: '23-26 g' },
-  ];
-
-  const onAddScenario = () => {
-    form.validateFields().then((values) => {
-      setScenarios([...scenarios, values]);
+      const response = await axios.post('https://aqualink-simulation.onrender.com/planning_scenarios', dataToSend);
+      console.log("dataToSend:", dataToSend);
+      console.log("Escenario añadido:", response.data);
+      setScenarios(response.data);
       form.resetFields();
-    });
+    } catch (error) {
+      console.error("Error al añadir el escenario:", error);
+    }
   };
-
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Aqualink Planning Studio®" routes={PageRoutes} />
-
+      <PageHeader className="ninjadash-page-header-main" highlightText={"AquaLink Camaronera"} title="Planning Studio®" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xl={12} xs={24}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-
+            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Studio Planning: Segmento P3" size="large">
                 <Row gutter={[25, 25]} align="top">
                   <Col xs={24} md={15}>
@@ -92,26 +64,18 @@ function PlanningStudioFarms() {
                   </Col>
                   <Col xs={24} md={9}>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px" }}>
-                      <Badge
-                        color="#1890ff"
-                        dot
-                        style={{ marginRight: 8 }}
-                      />
+                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
                       <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
                     </div>
                     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-
-
                       <div className="content-block">
                         <Typography.Title level={5}>Camaroneras 1</Typography.Title>
                         <Typography.Text>Área: 307.35 ha</Typography.Text>
                       </div>
-
                       <div className="content-block">
                         <Typography.Title level={5}>Piscina 3</Typography.Title>
                         <Typography.Text>Área: 5.35 ha</Typography.Text>
                       </div>
-
                       <div className="content-block">
                         <Typography.Title level={5}>Pre Cría 3</Typography.Title>
                         <Typography.Text>Área: 1.35 ha</Typography.Text>
@@ -120,75 +84,48 @@ function PlanningStudioFarms() {
                   </Col>
                 </Row>
               </Cards>
-
             </Suspense>
           </Col>
           <Col xl={12} xs={24}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
+            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Planificación: Ingreso de Datos para Escenarios" size="large">
                 <BasicFormWrapper>
                   <HorizontalFormStyleWrap className="sDash_input-form">
                     <Form form={form} layout="horizontal">
-                      {/* Densidad */}
-                      <Row align="middle">
-                        <Col md={6} xs={24}>
-                          <label htmlFor="input-number">Densidad</label>
-                        </Col>
-                        <Col md={18} xs={24}>
-                          <Form.Item name="input-number" rules={[{ required: true, message: 'Campo requerido' }]}>
-                            <Input placeholder="00.000" size="small" />
-                          </Form.Item>
-                        </Col>
-                      </Row>
+                      {/* Campos de entrada */}
+                      {[
+                        { label: "Área de piscina", name: "shrimp_pool_hec", placeholder: "hectáreas", type: "number" },
+                        { label: "Densidad", name: "density", placeholder: "00.000", type: "number" },
+                        { label: "FCA estimado", name: "stimated_fca", placeholder: "FCA", type: "number" },
+                        { label: "Desempeño estimado", name: "stimated_performance", placeholder: "Desempeño", type: "number" },
+                        { label: "Precio de venta", name: "selling_price", placeholder: "$ por libra", type: "number" },
+                        { label: "Semanas pre-cría", name: "pre_breeding_weeks", placeholder: "Semanas", type: "number" },
+                        { label: "Costo indirecto diario", name: "dayly_inditect_cost", placeholder: "$", type: "number" },
+                        { label: "Precio del alimento", name: "food_price", placeholder: "$", type: "number" },
+                        { label: "Costo de cría", name: "breeding_cost", placeholder: "$", type: "number" },
+                      ].map(field => (
+                        <Row align="middle" key={field.name}>
+                          <Col md={6} xs={24}>
+                            <label htmlFor={field.name}>{field.label}</label>
+                          </Col>
+                          <Col md={18} xs={24}>
+                            <Form.Item name={field.name} rules={[{ required: true, message: 'Campo requerido' }]}>
+                              <Input placeholder={field.placeholder} size="small" type={field.type} />
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                      ))}
 
                       {/* Peso Larva */}
                       <Row align="middle">
                         <Col md={6} xs={24}>
-                          <label htmlFor="basic-select">Peso Larva</label>
+                          <label htmlFor="larva_weight">Peso Larva</label>
                         </Col>
                         <Col md={18} xs={24}>
-                          <Form.Item name="basic-select" rules={[{ required: true, message: 'Campo requerido' }]}>
+                          <Form.Item name="larva_weight" rules={[{ required: true, message: 'Campo requerido' }]}>
                             <Select size="small" placeholder="Seleccione el peso estimado de su larva">
                               {larvaOptions.map(option => (
-                                <Select.Option key={option.value} value={option.value}>
-                                  {option.label}
-                                </Select.Option>
-                              ))}
-                            </Select>
-                          </Form.Item>
-                        </Col>
-                      </Row>
-
-                      {/* Fecha Siembra */}
-                      <Row align="middle">
-                        <Col md={6} xs={24}>
-                          <label htmlFor="input-date">Fecha Siembra</label>
-                        </Col>
-                        <Col md={18} xs={24}>
-                          <Form.Item name="input-date" rules={[{ required: true, message: 'Campo requerido' }]}>
-                            <DatePicker size="small" style={{ width: '100%' }} />
-                          </Form.Item>
-                        </Col>
-                      </Row>
-
-                      {/* Número de Semanas */}
-                      <Row align="middle">
-                        <Col md={6} xs={24}>
-                          <label htmlFor="week-select">Nª Semanas</label>
-                        </Col>
-                        <Col md={18} xs={24}>
-                          <Form.Item name="week-select" rules={[{ required: true, message: 'Campo requerido' }]}>
-                            <Select size="small" placeholder="Seleccione el número de semanas">
-                              {weekOptions.map(option => (
-                                <Select.Option key={option.value} value={option.value}>
-                                  {option.label}
-                                </Select.Option>
+                                <Select.Option key={option.value} value={option.value}>{option.label}</Select.Option>
                               ))}
                             </Select>
                           </Form.Item>
@@ -198,35 +135,23 @@ function PlanningStudioFarms() {
                       {/* Supervivencia */}
                       <Row align="middle">
                         <Col md={6} xs={24}>
-                          <label htmlFor="survival-select">Supervivencia</label>
+                          <label htmlFor="survival_rate">Supervivencia</label>
                         </Col>
                         <Col md={18} xs={24}>
-                          <Form.Item name="survival-select" rules={[{ required: true, message: 'Campo requerido' }]}>
-                            <Select size="small" placeholder="Seleccione el porcentaje estimado de supervivencia">
-                              {survivalRateOptions.map(option => (
-                                <Select.Option key={option.value} value={option.value}>
-                                  {option.label}
-                                </Select.Option>
-                              ))}
-                            </Select>
+                          <Form.Item name="survival_rate" rules={[{ required: true, message: 'Campo requerido' }]}>
+                            <Input placeholder="Porcentaje" size="small" type="number" />
                           </Form.Item>
                         </Col>
                       </Row>
 
-                      {/* Peso a pesca */}
+                      {/* Días hasta la cosecha */}
                       <Row align="middle">
                         <Col md={6} xs={24}>
-                          <label htmlFor="fishing-weight-select">Peso a pesca</label>
+                          <label htmlFor="harvest_days">Días hasta la cosecha</label>
                         </Col>
                         <Col md={18} xs={24}>
-                          <Form.Item name="fishing-weight-select" rules={[{ required: true, message: 'Campo requerido' }]}>
-                            <Select size="small" placeholder="Seleccione el peso estimado a pesca">
-                              {fishingWeightOptions.map(option => (
-                                <Select.Option key={option.value} value={option.value}>
-                                  {option.label}
-                                </Select.Option>
-                              ))}
-                            </Select>
+                          <Form.Item name="harvest_days" rules={[{ required: true, message: 'Campo requerido' }]}>
+                            <Input placeholder="Días" size="small" type="number" />
                           </Form.Item>
                         </Col>
                       </Row>
@@ -234,99 +159,45 @@ function PlanningStudioFarms() {
                       {/* Botones */}
                       <Row justify="end" gutter={10}>
                         <Col>
-                          <Button onClick={() => form.resetFields()} type="default">
-                            Borrar
-                          </Button>
+                          <Button onClick={() => form.resetFields()} type="default">Borrar</Button>
                         </Col>
                         <Col>
-                          <Button onClick={onAddScenario} type="primary">
-                            Añadir Escenario
-                          </Button>
+                          <Button onClick={onAddScenario} type="primary">Añadir Escenario</Button>
                         </Col>
                       </Row>
                     </Form>
                   </HorizontalFormStyleWrap>
                 </BasicFormWrapper>
               </Cards>
-
-
-
             </Suspense>
           </Col>
         </Row>
 
         {/* Mostrar escenarios añadidos */}
         <Row gutter={25}>
-          {scenarios.length > 0 && (
+          {scenarios.length > 0 && scenarios.map((scenario, index) => (
+            <Col xl={6} xs={12} key={index}>
+              <Cards title={`Escenario ${index + 1}`} size="large">
+                <div style={{ marginBottom: '15px' }}>
+                  <Row gutter={[16, 16]}>
+                    <Col span={12}><Typography.Text strong>Producción Estimada (lb):</Typography.Text></Col>
+                    <Col span={12}><Typography.Text>{scenario.stimated_production_lb.toFixed(2)}</Typography.Text></Col>
 
-            scenarios.map((scenario, index) => (
-              <Col xl={6} xs={12}>
-                <Cards title={`Escenario ${index + 1}`} size="large">
-                  <div key={index} style={{ marginBottom: '15px' }}>
-                    <Row gutter={[16, 16]}>
-                      <Col span={12}>
-                        <Typography.Text strong>Densidad:</Typography.Text>
-                      </Col>
-                      <Col span={12}>
-                        <Typography.Text style={{ fontSize: '12px', textAlign: 'left' }}>{scenario['input-number']}</Typography.Text>
-                      </Col>
+                    <Col span={12}><Typography.Text strong>Ingreso Total:</Typography.Text></Col>
+                    <Col span={12}><Typography.Text>${scenario.total_income.toFixed(2)}</Typography.Text></Col>
 
-                      <Divider style={{padding:"0px"}} />
-                      <Col span={12}>
-                        <Typography.Text strong>Peso Larva:</Typography.Text>
-                      </Col>
-                      <Col span={12}>
-                        <Typography.Text style={{ fontSize: '12px', textAlign: 'left' }}>
-                          {larvaOptions.find(opt => opt.value === scenario['basic-select']).label}
-                        </Typography.Text>
-                      </Col>
-
-                      <Col span={12}>
-                        <Typography.Text strong>Fecha Siembra:</Typography.Text>
-                      </Col>
-                      <Col span={12}>
-                        <Typography.Text style={{ fontSize: '12px', textAlign: 'left' }}>{scenario['input-date'].format('YYYY-MM-DD')}</Typography.Text>
-                      </Col>
-
-                      <Col span={12}>
-                        <Typography.Text strong>N Semanas:</Typography.Text>
-                      </Col>
-                      <Col span={12}>
-                        <Typography.Text style={{ fontSize: '12px', textAlign: 'left' }}>
-                          {weekOptions.find(opt => opt.value === scenario['week-select']).label}
-                        </Typography.Text>
-                      </Col>
-
-                      <Col span={12}>
-                        <Typography.Text strong>Supervivencia:</Typography.Text>
-                      </Col>
-                      <Col span={12}>
-                        <Typography.Text style={{ fontSize: '12px', textAlign: 'left' }}>
-                          {survivalRateOptions.find(opt => opt.value === scenario['survival-select']).label}
-                        </Typography.Text>
-                      </Col>
-
-                      <Col span={12}>
-                        <Typography.Text strong>Peso a pesca:</Typography.Text>
-                      </Col>
-                      <Col span={12}>
-                        <Typography.Text style={{ fontSize: '12px', textAlign: 'left' }}>
-                          {fishingWeightOptions.find(opt => opt.value === scenario['fishing-weight-select']).label}
-                        </Typography.Text>
-                      </Col>
-                    </Row>
-                  </div>
-                </Cards>
-              </Col>
-            ))
-
-          )}
+                    <Col span={12}><Typography.Text strong>Costo Total:</Typography.Text></Col>
+                    <Col span={12}><Typography.Text>${scenario.total_cost.toFixed(2)}</Typography.Text></Col>
+                  </Row>
+                </div>
+              </Cards>
+            </Col>
+          ))}
         </Row>
-
-
-      </Main >
+      </Main>
     </>
   );
 }
 
 export default PlanningStudioFarms;
+

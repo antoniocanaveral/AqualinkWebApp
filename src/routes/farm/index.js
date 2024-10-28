@@ -8,6 +8,7 @@ import CustodyCoordinationsRoutes from '../custody/custodyCoordinations';
 import PanelFarmRoutes from './farmPanel';
 import TaskFarms from '../../container/AQx-Farms/task-farms';
 import AnalyticsFarms from '../../container/AQx-Farms/analytics-farms';
+import PlanningStudioFarms from '../../container/AQx-Farms/planning-studio-farms';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -27,6 +28,7 @@ const Farm = React.memo(() => {
         <Route index element={<PanelFarmRoutes />} />     
         <Route path="/panel/*" element={<PanelFarmRoutes />} />  
         <Route path="/analytics/*" element={<AnalyticsFarms />} />  
+        <Route path="/planning-studio/*" element={<PlanningStudioFarms />} />
         <Route path="/tasks/*" element={<TaskFarms />} />
         <Route path="/coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/seeding-coords/*" element={<LabCoordinationsRoutes />} />

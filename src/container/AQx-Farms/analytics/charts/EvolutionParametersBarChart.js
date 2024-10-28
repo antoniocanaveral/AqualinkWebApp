@@ -67,9 +67,7 @@ function EvolutionParametersBarChart() {
     };
 
     return (
-        <Cards title="Evolución de Parámetros" size="large">
-            <DashboardChart {...barChart} type="bar" id={`bChart-${Math.random()}`} className="foo" style={{ marginBottom: '20px' }} />
-        </Cards>
+        <DashboardChart {...barChart} type="bar" id={`bChart-${Math.random()}`} className="foo" style={{ marginBottom: '20px' }} />
 
     )
 }

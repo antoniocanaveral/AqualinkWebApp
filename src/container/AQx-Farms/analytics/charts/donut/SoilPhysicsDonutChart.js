@@ -6,7 +6,7 @@ import { Typography } from "antd";
 
 
 
-function WaterPhysicsDonutChart() {
+function SoilPhysicsDonutChart() {
     const { mainContent } = useSelector((state) => {
         return {
             mainContent: state.ChangeLayoutMode.mode,
@@ -14,9 +14,8 @@ function WaterPhysicsDonutChart() {
     });
     const { themeColor } = config;
     const chartjsDonutChart = {
-        height: 250,
-        with: 250,
-        labels: ['O2', 'Temperatura', 'Salinidad', 'Ph', 'Salinidad'],
+        height: 150,
+        labels: ['Ja', 'Feb', 'Mar', 'Apr', 'May'],
         datasets: [
             {
                 data: [20, 20, 30, 5, 25],
@@ -47,11 +46,11 @@ function WaterPhysicsDonutChart() {
         <div>
             <DoughnutChart {...chartjsDonutChart} />
             <center>
-                <Typography.Text>Parámetros Físicos del Agua</Typography.Text>
+                <Typography.Text>Parámetros Físicos del Suelo</Typography.Text>
             </center>
         </div>
 
     )
 }
 
-export default WaterPhysicsDonutChart
+export default SoilPhysicsDonutChart
