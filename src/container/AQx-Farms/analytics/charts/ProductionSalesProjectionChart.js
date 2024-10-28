@@ -1,5 +1,5 @@
 import React from 'react';
-import LineChartWithXAxisPadding from '../../../components/charts/line/LineChartWithXAxisPadding';
+import LineChartWithXAxisPadding from '../../../../components/charts/line/LineChartWithXAxisPadding';
 
 function ProductionSalesProjectionChart() {
   const exampleData = [
@@ -18,7 +18,7 @@ function ProductionSalesProjectionChart() {
   ];
 
   return (
-    <div style={{ width: '100%'}}> {/* Asegura que el contenedor tenga el ancho completo */}
+    <div style={{ width: "100%", height: "100%" }}> {/* Asegura que el contenedor tenga el ancho y alto completo */}
       <LineChartWithXAxisPadding data={exampleData} />
     </div>
   );

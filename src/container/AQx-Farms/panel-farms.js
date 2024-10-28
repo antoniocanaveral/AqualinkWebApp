@@ -86,11 +86,108 @@ function PanelFarms() {
     },
   ];
 
+  // Datos de la tabla de Coordinación de Cosechas
+  const harvestData = [
+    { key: '1', cliente: 'EcSSA Manabí', tipo: 'Reserva', larva: 'PL10', cantidad: '1.5 M', fecha: '04 Diciembre 2023', asignacion: 'Tanque 1' },
+    { key: '2', cliente: 'Camarones Premium SA', tipo: 'Reserva', larva: 'PL10', cantidad: '500,000', fecha: '04 Diciembre 2023', asignacion: 'Tanque 9' },
+    { key: '3', cliente: 'Palo Alto Cia Ltda', tipo: 'Pedido', larva: 'PL10', cantidad: '800,000', fecha: '05 Diciembre 2023', asignacion: 'Tanque 6' },
+    { key: '4', cliente: 'Aquamar', tipo: 'Reserva', larva: 'PL12', cantidad: '900,000', fecha: '05 Diciembre 2023', asignacion: 'Tanque 4' },
+    { key: '5', cliente: 'Pacifiqa del Sur', tipo: 'Reserva', larva: 'PL10', cantidad: '1 M', fecha: '05 Diciembre 2023', asignacion: 'Tanque 2' },
+    { key: '6', cliente: 'EcSSA Manabí', tipo: 'Reserva', larva: 'PL12', cantidad: '500,000', fecha: '06 Diciembre 2023', asignacion: 'Tanque 8' },
+    { key: '7', cliente: 'Unirsa', tipo: 'Reserva', larva: 'PL12', cantidad: '500,000', fecha: '06 Diciembre 2023', asignacion: 'Tanque 7' },
+    { key: '8', cliente: 'Acuirsa', tipo: 'Reserva', larva: 'PL10', cantidad: '1.5 M', fecha: '07 Diciembre 2023', asignacion: 'Tanque 6' },
+    { key: '9', cliente: 'Grupo Acuícola', tipo: 'Reserva', larva: 'PL12', cantidad: '800,000', fecha: '08 Diciembre 2023', asignacion: 'Tanque 5' },
+    { key: '10', cliente: 'Shrimp Global', tipo: 'Reserva', larva: 'PL10', cantidad: '1 M', fecha: '08 Diciembre 2023', asignacion: 'Tanque 1' },
+  ];
+
+
+  // Definición de columnas para la tabla de Coordinación de Cosechas
+  const harvestColumns = [
+    { title: 'Cliente', dataIndex: 'cliente', key: 'cliente' },
+    { title: 'Tipo', dataIndex: 'tipo', key: 'tipo' },
+    { title: 'Larva', dataIndex: 'larva', key: 'larva' },
+    { title: 'Cantidad', dataIndex: 'cantidad', key: 'cantidad' },
+    { title: 'Fecha', dataIndex: 'fecha', key: 'fecha' },
+    { title: 'Asignación', dataIndex: 'asignacion', key: 'asignacion' },
+  ];
+
+
+  const tankData = [
+    {
+      id: 1,
+      modulo: 'Módulo 1',
+      tanque: 'Tanque 1',
+      porcentaje: 60,
+      inicioCultivo: '05 Noviembre',
+      finCultivo: '05 Diciembre',
+      poblacionFinal: '3 MILLONES',
+      supervivencia: '90%',
+      estadoEntrega: 'PL12',
+      animalesPorGramo: 280,
+      reservado: '60% - 1.8 MILLONES',
+      disponible: '40% - 1.2 MILLONES',
+    },
+    {
+      id: 2,
+      modulo: 'Módulo 1',
+      tanque: 'Tanque 2',
+      porcentaje: 60,
+      inicioCultivo: '05 Noviembre',
+      finCultivo: '05 Diciembre',
+      poblacionFinal: '3 MILLONES',
+      supervivencia: '90%',
+      estadoEntrega: 'PL12',
+      animalesPorGramo: 280,
+      reservado: '60% - 1.8 MILLONES',
+      disponible: '40% - 1.2 MILLONES',
+    },
+  ];
+
+
+
+  const TankCard = ({ data }) => (
+    <div headless
+      style={{
+        border: '2px solid #e3e3e3',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+        padding: '20px',
+      }}>
+      <Typography.Title level={5}>{data.modulo}</Typography.Title>
+      <Typography.Title level={4} style={{ color: '#0372ce' }}>
+        {data.tanque} · {data.porcentaje}%
+      </Typography.Title>
+      <div style={{ marginBottom: '16px' }}>
+        <Typography.Text>Inicio Cultivo: {data.inicioCultivo}</Typography.Text><br />
+        <Typography.Text>Fin Cultivo: {data.finCultivo}</Typography.Text><br />
+        <Typography.Text>Población final: {data.poblacionFinal}</Typography.Text><br />
+        <Typography.Text>Supervivencia: {data.supervivencia}</Typography.Text><br />
+        <Typography.Text>Estado de Entrega: {data.estadoEntrega}</Typography.Text><br />
+        <Typography.Text>Animales/g: {data.animalesPorGramo}</Typography.Text><br />
+        <Typography.Text style={{ color: 'red', fontWeight: 'bold' }}>
+          RESERVADO: {data.reservado}
+        </Typography.Text><br />
+        <Typography.Text style={{ color: 'green', fontWeight: 'bold' }}>
+          DISPONIBLE: {data.disponible}
+        </Typography.Text>
+      </div>
+      <button style={{ backgroundColor: '#0372ce', color: 'white', padding: '5px 10px', borderRadius: '5px', border: 'none' }}>
+        Ver tanque
+      </button>
+    </div>
+  );
+
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
-        highlightText="Aqualink Camaroneras"
-        title="Control Panel" routes={PageRoutes} />
+      <PageHeader
+        title="Control Panel"
+        highlightText="Aqualink Camaronera"
+        selectOptions={[
+          ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
+          ["Sector 1", "Sector 2", "Sector 3"],
+          ["Piscina 1", "Piscina 2", "Piscina 3"]
+        ]}
+      />
 
       <Main>
         <Row gutter={25}>
@@ -175,34 +272,37 @@ function PanelFarms() {
         </Row>
 
 
+        <Row gutter={25} equal-heights>
+          <Col xl={15} xs={24} style={{ display: 'flex' }}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              {/* Tabla de Coordinación de Cosechas */}
+              <Cards title="Coordinación de Cosechas" size="large">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div>
+                    <Table dataSource={harvestData} columns={harvestColumns} pagination={{ pageSize: 5 }} />
+                  </div>
 
-        <Row gutter={25} equal-heights >
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <ProjectionPanel />
-            </Suspense>
-          </Col>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <Cards title="Proyección de Costos" size="large">
-                <CostProjectionWrapLab />
+                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "20px" }}>
+                    {tankData.map((tank) => (
+                      <TankCard data={tank} />
+                    ))}
+                  </div>
+                </div>
               </Cards>
 
+
+
             </Suspense>
           </Col>
-          <Col xl={24} xs={24} style={{ display: 'flex' }}>
+
+          <Col xl={9} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* Gráfico de Proyección de Costos */}
             <Suspense
               fallback={
                 <Cards headless>
@@ -210,14 +310,27 @@ function PanelFarms() {
                 </Cards>
               }
             >
-              <Cards title="Inventario de Productos" size="large"
-              >
+              <Cards title="Proyección de Costos" size="large" style={{ flex: 1 }}>
+                <CostProjectionWrapLab />
+              </Cards>
+            </Suspense>
+
+            {/* Tabla de Inventario de Productos */}
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <Cards title="Inventario de Productos" size="large" style={{ flex: 1 }}>
                 {/* Tabla de productos */}
                 <Table dataSource={productData} columns={columns} pagination={false} />
               </Cards>
             </Suspense>
           </Col>
         </Row>
+
       </Main>
     </>
   );

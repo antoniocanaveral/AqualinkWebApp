@@ -1,9 +1,11 @@
-import { Breadcrumb, Dropdown, Menu } from 'antd';
+import React, { useState } from 'react';
+import { Breadcrumb, Dropdown, Menu, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { HeaderWrapper, PageHeaderStyle } from './style';
 import { DownOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+
+const { Option } = Select;
 
 function PageHeader(props) {
   const {
@@ -14,39 +16,36 @@ function PageHeader(props) {
     ghost,
     bgColor,
     className,
-    organizations, // Lista de organizaciones (opcional)
-    selectedOrg, // Organización seleccionada
-    handleOrgChange, // Función para manejar el cambio de organización
-    icon, // Icono pasado como prop para mostrar antes del título
-    highlightText, // Texto que se quiere renderizar como h1
+    organizations,
+    selectedOrg,
+    handleOrgChange,
+    icon,
+    highlightText,
+    selectOptions,
   } = props;
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  // Función que maneja el cambio de organización a través del menú
   const handleMenuClick = (e) => {
-    const orgName = e.key; // Obtener el nombre de la organización
-    const orgEmail = e.item.props.orgEmail; // Obtener el email de la organización desde el prop
-    handleOrgChange(orgName, orgEmail); // Cambia la organización seleccionada y su email
-    setDropdownVisible(false); // Oculta el dropdown
+    const orgName = e.key;
+    const orgEmail = e.item.props.orgEmail;
+    handleOrgChange(orgName, orgEmail);
+    setDropdownVisible(false);
   };
 
-  // Condicional para mostrar el menú de organizaciones solo si existen
   const menu = organizations && organizations.length > 0 ? (
     <Menu onClick={handleMenuClick}>
       {organizations.map((org) => (
-        <Menu.Item key={org.orgName} orgEmail={org.orgEmail}> {/* Aquí pasamos orgEmail como prop */}
+        <Menu.Item key={org.orgName} orgEmail={org.orgEmail}>
           {org.orgName}
         </Menu.Item>
       ))}
     </Menu>
-  ) : null; // Si no hay organizaciones, el menú no se muestra
+  ) : null;
 
-  // Construcción del breadcrumb
   const breadcrumb = routes ? (
     <Breadcrumb separator={<span className="ninjadash-seperator" />}>
       {routes.map((route, index) =>
-        // Si es el último breadcrumb, mostrar solo el dropdown (sin duplicar el texto)
         index + 1 === routes.length ? (
           <Breadcrumb.Item key={index}>
             {menu && (
@@ -68,7 +67,7 @@ function PageHeader(props) {
               <img
                 src={require(`../../static/img/AQx-IMG/shrimp16.svg`).default}
                 style={{ marginRight: 10 }}
-              />{' '}
+              />
               <Link to={route.path} style={{ display: 'contents' }}>
                 {route.breadcrumbName}
               </Link>
@@ -81,27 +80,53 @@ function PageHeader(props) {
     ''
   );
 
+  const renderSelectOptions = () => {
+    if (!selectOptions || selectOptions.length === 0) return null;
+
+    return (
+      <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+        {selectOptions.map((options, index) => (
+          <Select
+            key={index}
+            placeholder={`Seleccione ${["Camaronera", "Sector", "Piscina"][index] || `Opción ${index + 1}`}`}
+            style={{ width: 180 }}
+          >
+            {options.map((option) => (
+              <Option key={option} value={option}>{option}</Option>
+            ))}
+          </Select>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <HeaderWrapper bgColor={bgColor}>
       <PageHeaderStyle
         className={className}
         title={
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {/* Mostrar el icono si está disponible */}
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
             {icon && <span style={{ marginRight: 10 }}>{icon}</span>}
-            
-            {/* Renderizar el highlightText como h1 si está presente */}
+
             {highlightText && (
-              <h1 style={{ fontSize: '1.5em', marginRight: '10px', fontWeight:"800" }}>{highlightText}</h1>
+              <h1 style={{ fontSize: '1.5em', marginRight: '10px', fontWeight: "800", marginBottom: 0 }}>
+                {highlightText}
+              </h1>
             )}
-            
-            {/* Renderizar el título normal al lado del highlight */}
-            <span style={{ fontSize: '1.4em', fontWeight:"400"}}>{title}</span>
+
+            <span style={{ fontSize: '1.4em', fontWeight: "400", marginBottom: 0 }}>
+              {title}
+            </span>
           </div>
         }
         subTitle={subTitle}
         breadcrumb={breadcrumb}
-        extra={buttons}
+        extra={
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+            {buttons}
+            {renderSelectOptions()}
+          </div>
+        }
         ghost={ghost}
       />
     </HeaderWrapper>
@@ -116,11 +141,12 @@ PageHeader.propTypes = {
   routes: PropTypes.arrayOf(PropTypes.object),
   buttons: PropTypes.array,
   ghost: PropTypes.bool,
-  organizations: PropTypes.arrayOf(PropTypes.object), // Lista de organizaciones (opcional)
-  selectedOrg: PropTypes.string, // Organización seleccionada
-  handleOrgChange: PropTypes.func, // Función para manejar el cambio de organización
-  icon: PropTypes.node, // Prop para pasar un ícono
-  highlightText: PropTypes.string, // Texto a destacar como h1
+  organizations: PropTypes.arrayOf(PropTypes.object),
+  selectedOrg: PropTypes.string,
+  handleOrgChange: PropTypes.func,
+  icon: PropTypes.node,
+  highlightText: PropTypes.string,
+  selectOptions: PropTypes.arrayOf(PropTypes.array),
 };
 
 export { PageHeader };

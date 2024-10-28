@@ -6,11 +6,10 @@ import { Main } from '../styled';
 import { OverviewDataStyleWrap } from '../dashboard/Style';
 import OverviewCardMeshOriginal from '../../components/cards/OverviewCardMeshOriginal';
 import OverviewData from '../../demoData/overviewMeshData.json';
-import { GoogleMaps } from '../../components/maps/google-maps';
-import ProjectionKgPanel from './panel/charts/projections-kg-panel';
-import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
-import ProjectionPanel from './panel/charts/projection-usd-panel';
-import ProductionSalesProjectionChart from './charts/ProductionSalesProjectionChart';
+import CropYieldChart from './analytics/charts/cropYieldChart';
+import ProductionSalesProjectionChart from './analytics/charts/ProductionSalesProjectionChart';
+import EvolutionParametersBarChart from './analytics/charts/EvolutionParametersBarChart';
+import WaterPhysicsDonutChart from './analytics/charts/donut/WaterPhysicsDonutChart';
 
 function AnalyticsFarms() {
   const PageRoutes = [
@@ -91,12 +90,17 @@ function AnalyticsFarms() {
     <>
       <PageHeader className="ninjadash-page-header-main"
         highlightText="Aqualink Camaroneras"
-        title="Analytics" routes={PageRoutes} />
-
+        title="Analytics"
+        selectOptions={[
+          ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
+          ["Sector 1", "Sector 2", "Sector 3"],
+          ["Piscina 1", "Piscina 2", "Piscina 3"]
+        ]}
+      />
       <Main>
         <Row gutter={25}>
 
-          <Col xxl={12} xs={24}>
+          <Col xxl={12} xs={24} >
             <Suspense
               fallback={
                 <Cards headless>
@@ -117,7 +121,7 @@ function AnalyticsFarms() {
 
 
         <Row gutter={25}>
-          <Col xl={18} xs={24} style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '400px' }}> {/* Establece una altura fija */}
+          <Col xl={15} xs={24} style={{ display: 'flex' }}> {/* Establece una altura fija */}
             <Suspense
               fallback={
                 <Cards headless>
@@ -130,6 +134,45 @@ function AnalyticsFarms() {
               </Cards>
             </Suspense>
           </Col>
+          <Col xl={9} xs={24} style={{ display: 'flex' }}> {/* Establece una altura fija */}
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <Cards title="Rendimiento de Cultivo (%)" size="large" style={{ width: '100%', height: '100%' }}> {/* Asegúrate de que el Cards también ocupe toda la altura */}
+                <CropYieldChart />
+              </Cards>
+            </Suspense>
+          </Col>
+
+          <Col xl={24} xs={24} style={{ display: 'flex' }}> {/* Establece una altura fija */}
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <Cards title="Relación de Parámetros Semanal " size="large" style={{ width: '100%', height: '100%' }}> {/* Asegúrate de que el Cards también ocupe toda la altura */}
+                <div style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
+                  <div style={{ width: "30%" }}>
+                    <EvolutionParametersBarChart />
+                  </div>
+                  <div>
+                    <div>
+                      <WaterPhysicsDonutChart/>
+                    </div>
+
+                  </div>
+                </div>
+              </Cards>
+            </Suspense>
+          </Col>
+
+
         </Row>
 
 

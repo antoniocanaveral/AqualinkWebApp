@@ -1180,7 +1180,7 @@ const SalesOverviewStyleWrap2 = Styled.div`
         .ninjadash-overview-box-item{
             text-align: center;
             h4{
-                font-size: 18px;
+                font-size: 12px;
                 line-height: 1;
                 font-weight: 600;
                 margin-bottom: 6px;
@@ -1188,7 +1188,7 @@ const SalesOverviewStyleWrap2 = Styled.div`
             }
             p{
                 margin-bottom: 0;
-                font-size: 15px;
+                font-size: 10px;
                 line-height: 1.25;
                 color: ${({ theme }) => theme[theme.mainContent]['gray-text']};
             }

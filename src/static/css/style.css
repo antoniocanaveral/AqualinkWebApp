@@ -3514,3 +3514,14 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   transform-origin: -23vw 12vh;
   box-shadow: -2vmin 0 0.40458676674901284vmin currentColor;
 }
+
+
+
+
+
+
+/* Estilo para el segundo nivel de submenú */
+.ant-menu-submenu >  .ant-menu-sub {
+  margin-left: 15px; /* Ajuste de margen para el segundo nivel */
+  font-size: 0.9rem; /* Ajuste opcional para el tamaño de letra */
+}

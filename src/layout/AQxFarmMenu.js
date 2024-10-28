@@ -1,34 +1,14 @@
 import {
   Uil500px,
+  UilUser,
   UilAirplay,
-  UilArrowGrowth,
-  UilAt,
-  UilBagAlt,
-  UilBookAlt,
-  UilBookOpen,
-  UilBookReader,
-  UilBriefcaseAlt,
+  UilMoneyBill,
   UilCalendarAlt,
   UilChart,
   UilChartBar,
-  UilChartPieAlt,
-  UilChat,
-  UilCheckSquare,
-  UilCircle,
   UilClipboardAlt,
-  UilClock,
   UilCloudDataConnection,
-  UilCompactDisc,
-  UilCreateDashboard,
-  UilDatabase,
-  UilDashboard,
   UilDesktop,
-  UilDocumentLayoutLeft,
-  UilEdit,
-  UilEnvelope,
-  UilEstate,
-  UilExchange,
-  UilExclamationOctagon,
   // UilExpandArrowsAlt,
   UilFlaskPotion,
   UilFile,
@@ -110,12 +90,16 @@ function AQxFarmMenu({ toggleCollapsed }) {
   );
 
   const onOpenChange = (keys) => {
-    setOpenKeys(keys[keys.length - 1] !== 'recharts' ? [keys.length && keys[keys.length - 1]] : keys);
+    // Aseguramos que los menús padres permanezcan abiertos cuando seleccionamos un submenú
+    const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
+    setOpenKeys(latestOpenKey ? [...openKeys, latestOpenKey] : keys);
   };
 
   const onClick = (item) => {
+    // Ajustamos para que no se cierren los menús padres
     if (item.keyPath.length === 1) setOpenKeys([]);
   };
+
 
   const changeLayout = (mode) => {
     dispatch(changeLayoutMode(mode));
@@ -222,6 +206,232 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ),
     ),
 
+
+    getItem(
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Recursos de Producción')}</NavTitle>,
+      'submenu-informacion',
+      null,
+      null,
+      'group',
+    ),
+
+    // MONITOREO
+    getItem(
+      t('Monitoreo'),
+      'monitoreo',
+      !topMenu && <UilChart />,
+      [
+        getItem(
+          <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/monitoreo-general`}>
+            {t('Monitoreo General')}
+          </NavLink>,
+          'monitoreo-general',
+          null,
+        ),
+        getItem(
+          t('Alimentación'),
+          'monitoreo-alimentacion',
+          <div style={{ marginLeft: "5px" }}>
+          </div>,
+          [
+            getItem(
+              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/alimentacion-real-vs-proyectada`}>
+                {t('Real vs Proyectada')}
+              </NavLink>,
+              'alimentacion-real-vs-proyectada',
+              null,
+            ),
+            getItem(
+              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/alimentacion-proteina`}>
+                {t('Por % de Proteína')}
+              </NavLink>,
+              'alimentacion-proteina',
+              null,
+            ),
+            getItem(
+              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/alimentacion-muestreo-platos`}>
+                {t('Muestreo de Platos')}
+              </NavLink>,
+              'alimentacion-muestreo-platos',
+              null,
+            ),
+          ]
+        ),
+      ]
+    ),
+
+    // PARAMETROS
+    getItem(
+      t('Parámetros'),
+      'parametros',
+      !topMenu && <UilChart />,
+      [
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/parametros-od-temp`}>{t('OD y Temp')}</NavLink>
+          </div>,
+          'parametros-od-temp',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/parametros-calidad-agua`}>{t('Calidad de Agua')}</NavLink>
+          </div>,
+          'parametros-calidad-agua',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/parametros-calidad-suelo`}>{t('Calidad de Suelo')}</NavLink>
+          </div>,
+          'parametros-calidad-suelo',
+          null,
+        ),
+      ]
+    ),
+
+    // CULTIVO
+    getItem(
+      t('Cultivo'),
+      'cultivo',
+      !topMenu && <UilAirplay />,
+      [
+        getItem(
+          <div className="menu-item-level-1">{t('Patología')}</div>,
+          'cultivo-patologia',
+          <div style={{ marginLeft: "5px" }}>
+          </div>,
+          [
+            getItem(
+              <div className="menu-item-level-2">
+                <NavLink to={`${path}/cultivo-patologia-general`}>{t('General')}</NavLink>
+              </div>,
+              'patologia-general',
+              null,
+            ),
+            getItem(
+              <div className="menu-item-level-2">
+                <NavLink to={`${path}/cultivo-plan-veterinario`}>{t('Plan Veterinario')}</NavLink>
+              </div>,
+              'plan-veterinario',
+              null,
+            ),
+          ]
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cultivo-siembras`}>{t('Siembra')}</NavLink>
+          </div>,
+          'cultivo-siembras',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cultivo-transferencia`}>{t('Transferencia')}</NavLink>
+          </div>,
+          'cultivo-transferencia',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cultivo-poblacion-biomasa`}>{t('Población / Biomasa')}</NavLink>
+          </div>,
+          'cultivo-poblacion-biomasa',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cultivo-textura`}>{t('Textura')}</NavLink>
+          </div>,
+          'cultivo-textura',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cultivo-clasificacion`}>{t('Clasificación')}</NavLink>
+          </div>,
+          'cultivo-clasificacion',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cultivo-raleo`}>{t('Raleo')}</NavLink>
+          </div>,
+          'cultivo-raleo',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cultivo-cosecha`}>{t('Cosecha')}</NavLink>
+          </div>,
+          'cultivo-cosecha',
+          null,
+        ),
+      ]
+    ),
+
+    // MEDIO DE CULTIVO
+    getItem(
+      t('Medio de Cultivo'),
+      'medio-cultivo',
+      !topMenu && <UilWater />,
+      [
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/medio-cultivo-flujo-agua`}>{t('Flujo de Agua')}</NavLink>
+          </div>,
+          'medio-cultivo-flujo-agua',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/medio-cultivo-recambio-agua`}>{t('Recambio de Agua')}</NavLink>
+          </div>,
+          'medio-cultivo-recambio-agua',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/medio-cultivo-fertilizacion`}>{t('Fertilización')}</NavLink>
+          </div>,
+          'medio-cultivo-fertilizacion',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/medio-cultivo-bacterias`}>{t('Bacterias')}</NavLink>
+          </div>,
+          'medio-cultivo-bacterias',
+          null,
+        ),
+      ]
+    ),
+
+    // PISCINA
+    getItem(
+      t('Piscina'),
+      'piscina',
+      !topMenu && <UilWater />,
+      [
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/piscina-preparacion`}>{t('Preparación')}</NavLink>
+          </div>,
+          'piscina-preparacion',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/piscina-bioremediacion`}>{t('Bioremediación')}</NavLink>
+          </div>,
+          'piscina-bioremediacion',
+          null,
+        ),
+      ]
+    ),
+
+
+
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Logística')}</NavTitle>,
       'submenu-logistica',
@@ -231,7 +441,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
     ),
 
     getItem(t('Coordinación'), 'coordinacion', !topMenu && <UilCalendarAlt />, [
-     
+
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/seeding-coords`}>
           {t('Coordinaciones de Siembra')}
@@ -248,279 +458,9 @@ function AQxFarmMenu({ toggleCollapsed }) {
       )
 
 
+
     ]),
 
-    getItem(
-      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Información')}</NavTitle>,
-      'submenu-informacion',
-      null,
-      null,
-      'group',
-    ),
-
-    getItem(t('Monitoreo'), 'monitoreo', !topMenu && <UilChart />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/monitoreo-general`}>
-          {t('Monitoreo General')}
-        </NavLink>,
-        'monitoreo-general',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/monitoreo-producto`}>
-          {t('Monitoreo Producto')}
-        </NavLink>,
-        'monitoreo-producto',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/monitoreo-alimentacion`}>
-          {t('Monitoreo Alimentación')}
-        </NavLink>,
-        'monitoreo-alimentacion',
-        null,
-      ),
-    ]),
-
-    getItem(t('Parámetros'), 'parametros', !topMenu && <UilChart />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/parametros`}>
-          {t('Todos los Parámetros')}
-        </NavLink>,
-        'todos-parametros',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/oxigeno-disuelto`}>
-          {t('Oxígeno Disuelto')}
-        </NavLink>,
-        'oxigeno-disuelto',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/temperatura`}>
-          {t('Temperatura')}
-        </NavLink>,
-        'temperatura',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/salinidad`}>
-          {t('Salinidad')}
-        </NavLink>,
-        'salinidad',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/ph`}>
-          {t('pH')}
-        </NavLink>,
-        'ph',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/alcalinidad`}>
-          {t('Alcalinidad')}
-        </NavLink>,
-        'alcalinidad',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/turbidez`}>
-          {t('Turbidez')}
-        </NavLink>,
-        'turbidez',
-        null,
-      ),
-    ]),
-
-    getItem(t('Piscina'), 'piscina', !topMenu && <UilWater />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/piscinas`}>
-          {t('Ver Piscinas')}
-        </NavLink>,
-        'ver-piscinas',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/piscinas-preparacion`}>
-          {t('Preparación de Piscinas')}
-        </NavLink>,
-        'preparacion-piscinas',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/piscinas-agua`}>
-          {t('Físico Químico Agua')}
-        </NavLink>,
-        'piscinas-agua',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/piscinas-suelo`}>
-          {t('Físico Químico Suelo')}
-        </NavLink>,
-        'piscinas-suelo',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/piscinas-fondo`}>
-          {t('Recambio de Fondo')}
-        </NavLink>,
-        'piscinas-fondo',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/piscinas-flujo-agua`}>
-          {t('Flujo de Agua')}
-        </NavLink>,
-        'piscinas-flujo-agua',
-        null,
-      ),
-    ]),
-
-    getItem(t('Cultivo'), 'cultivo', !topMenu && <UilAirplay />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos`}>
-          {t('Ver Cultivos')}
-        </NavLink>,
-        'ver-cultivos',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos-alimentacion`}>
-          {t('Alimentación')}
-        </NavLink>,
-        'alimentacion',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos-bacteria`}>
-          {t('Bacteria')}
-        </NavLink>,
-        'bacteria',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos-fertilizacion`}>
-          {t('Fertilización')}
-        </NavLink>,
-        'fertilizacion',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos-patologia`}>
-          {t('Patología')}
-        </NavLink>,
-        'patologia',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos-evolucion-peso`}>
-          {t('Evolución de Peso')}
-        </NavLink>,
-        'evolucion-peso',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos-evolucion-poblacion`}>
-          {t('Evolución de Población')}
-        </NavLink>,
-        'evolucion-poblacion',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos-transferencias`}>
-          {t('Transferencias')}
-        </NavLink>,
-        'transferencias',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos-texturas`}>
-          {t('Texturas')}
-        </NavLink>,
-        'texturas',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/cultivos-raleo-pesca`}>
-          {t('Raleo y Pesca')}
-        </NavLink>,
-        'raleo-pesca',
-        null,
-      ),
-    ]),
-
-    getItem(t('IoT'), 'iot', !topMenu && <UilWifiRouter />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/dispositivos`}>
-          {t('Ver Dispositivos')}
-        </NavLink>,
-        'ver-dispositivos',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/dispositivos-add`}>
-          {t('Añadir Dispositivos')}
-        </NavLink>,
-        'add-dispositivos',
-        null,
-      ),
-    ]),
-
-    getItem(
-      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Ingresos')}</NavTitle>,
-      'submenu-ingresos',
-      null,
-      null,
-      'group',
-    ),
-
-    getItem(t('Inventario y Costos'), 'inventario-costos', !topMenu && <UilArchive />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/inventario`}>
-          {t('Ver Inventario')}
-        </NavLink>,
-        'ver-inventario',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/productos`}>
-          {t('Añadir Suministros')}
-        </NavLink>,
-        'add-suministros',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/costos`}>
-          {t('Costos Producción')}
-        </NavLink>,
-        'costos-produccion',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/control`}>
-          {t('Registro de Costos Indirectos')}
-        </NavLink>,
-        'registro-costos-indirectos',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/indirectos`}>
-          {t('Añadir Costos Indirectos')}
-        </NavLink>,
-        'add-costos-indirectos',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/logistica`}>
-          {t('Costos Logísticos')}
-        </NavLink>,
-        'costos-logisticos',
-        null,
-      ),
-    ]),
 
     getItem(t('Laboratorios'), 'laboratorios', !topMenu && <UilFlaskPotion />, [
       getItem(
@@ -537,38 +477,88 @@ function AQxFarmMenu({ toggleCollapsed }) {
         'add-laboratorio',
         null,
       ),
+    ]),
+
+
+    getItem(t('Empacadoras'), 'Empacadoras', !topMenu && <UilFlaskPotion />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/laboratorios-solicitud`}>
-          {t('Solicitar Larvas')}
+        <NavLink className="menuItem-icon" to={`${path}/empacadoras`}>
+          {t('Ver Empacadora')}
         </NavLink>,
-        'solicitar-larvas',
+        'ver-empacadora',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/empacadora-add`}>
+          {t('Añadir Empacadora')}
+        </NavLink>,
+        'add-empacadora',
         null,
       ),
     ]),
 
-    getItem(t('Clientes'), 'clientes', !topMenu && <UilUsersAlt />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/clientes`}>
-          {t('Ver Clientes')}
-        </NavLink>,
-        'ver-clientes',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/clientes-add`}>
-          {t('Añadir Cliente')}
-        </NavLink>,
-        'add-cliente',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/clientes-notificaciones`}>
-          {t('Notificar Pesca')}
-        </NavLink>,
-        'notificar-pesca',
-        null,
-      ),
-    ]),
+
+    getItem(
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Ingresos')}</NavTitle>,
+      'submenu-ingresos',
+      null,
+      null,
+      'group',
+    ),
+
+    getItem(
+      t('Inventario'),
+      'inventario',
+      !topMenu && <UilArchive />,
+      [
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/inventario-ver`}>{t('Ver Inventario')}</NavLink>
+          </div>,
+          'inventario-ver',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/inventario-add`}>{t('Añadir Inventario')}</NavLink>
+          </div>,
+          'inventario-add',
+          null,
+        ),
+      ]
+    ),
+
+    // COSTOS
+    getItem(
+      t('Costos'),
+      'costos',
+      !topMenu && <UilMoneyBill />,
+      [
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/costos-ver`}>{t('Ver Costos')}</NavLink>
+          </div>,
+          'costos-ver',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/centro-costos-ver`}>{t('Ver Centro de Costos')}</NavLink>
+          </div>,
+          'centro-costos-ver',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/costo-indirecto-add`}>{t('Añadir Costo Indirecto Ha/día')}</NavLink>
+          </div>,
+          'costo-indirecto-add',
+          null,
+        ),
+      ]
+    ),
+
+
 
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Administración')}</NavTitle>,
@@ -596,28 +586,52 @@ function AQxFarmMenu({ toggleCollapsed }) {
     ]),
 
     getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/permisos`}>
-        {t('Permisos')}
-      </NavLink>,
-      'permisos',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/permisos`}>
-          <UilKeySkeleton /> {/* Ícono para Permisos */}
-        </NavLink>
-      ),
+      t('Cliente'),
+      'cliente',
+      !topMenu && <UilUser />,
+      [
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cliente-ficha`}>{t('Ficha Cliente')}</NavLink>
+          </div>,
+          'cliente-ficha',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cliente-usuarios`}>{t('Usuarios')}</NavLink>
+          </div>,
+          'cliente-usuarios',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/cliente-permisos`}>{t('Permisos')}</NavLink>
+          </div>,
+          'cliente-permisos',
+          null,
+        ),
+      ]
     ),
-
+  
+    // FAQ
     getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/customer-service`}>
-        {t('Atención al Cliente')}
+      <NavLink to={`${path}/faq`}>
+        {t('FAQ')}
       </NavLink>,
-      'atencion-al-cliente',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/customer-service`}>
-          <UilHeadphonesAlt /> {/* Ícono para Atención al Cliente */}
-        </NavLink>
-      ),
+      'faq',
+      !topMenu && <UilQuestionCircle />,
     ),
+  
+    // SOPORTE
+    getItem(
+      <NavLink to={`${path}/soporte`}>
+        {t('Soporte')}
+      </NavLink>,
+      'soporte',
+      !topMenu && <UilHeadphones />,
+    ),
+    
 
 
   ];
