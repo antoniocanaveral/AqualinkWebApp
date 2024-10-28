@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 
 const LineChartWithXAxisPadding = ({ data }) => {
-  const [chartWidth, setChartWidth] = useState(500); // Valor inicial de ancho
+  const [chartWidth, setChartWidth] = useState(550); // Valor inicial de ancho
   const [chartHeight, setChartHeight] = useState(300); // Valor inicial de altura
 
   useLayoutEffect(() => {
@@ -29,7 +29,7 @@ const LineChartWithXAxisPadding = ({ data }) => {
   }, []);
 
   return (
-    <div className="chart-container" style={{ width: '100%' }}>
+    <div className="chart-container" style={{ width: '110%' }}>
       <LineChart
         width={chartWidth}
         height={chartHeight}
@@ -46,7 +46,7 @@ const LineChartWithXAxisPadding = ({ data }) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="Available fishing (kilos)" stroke="#8884d8" activeDot={{ r: 8 }} />
+        <Line type="monotone" dataKey="A" stroke="#8884d8" activeDot={{ r: 8 }} />
         <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
       </LineChart>
     </div>

@@ -335,10 +335,7 @@ export class CustomToolbar extends Toolbar {
               </Link>
             </li>
           </ul>
-          <Link to="#" onClick={this.view.bind(null, 'agenda')} className="schedule-list">
-            <UilListUl />
-            Agenda
-          </Link>
+          
         </div>
       </div>
     );

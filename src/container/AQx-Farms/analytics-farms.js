@@ -14,79 +14,7 @@ import SoilPhysicsDonutChart from './analytics/charts/donut/SoilPhysicsDonutChar
 import BiomechanicalDonutChart from './analytics/charts/donut/BiomechanicalDonutChart';
 
 function AnalyticsFarms() {
-  const PageRoutes = [
-    {
-      path: '/admin',
-      breadcrumbName: 'AquaLink',
-    },
-    {
-      path: 'first',
-      breadcrumbName: 'Panel de Control',
-    },
-  ];
-
-  // Datos de la tabla
-  const productData = [
-    {
-      key: '1',
-      producto: 'Ziegler',
-      ci: '45%',
-      hoy: '2.50 kg',
-      disp: '50 kg',
-    },
-    {
-      key: '2',
-      producto: 'Artemia',
-      ci: 'A',
-      hoy: '4.00 kg',
-      disp: '15 kg',
-    },
-    {
-      key: '3',
-      producto: 'Algas',
-      ci: 'A',
-      hoy: '0.7 kg',
-      disp: '12 kg',
-    },
-    {
-      key: '4',
-      producto: 'Flake',
-      ci: 'B',
-      hoy: '0.90 kg',
-      disp: '1.80 kg',
-    },
-    {
-      key: '5',
-      producto: 'Vitamina C',
-      ci: 'MF35',
-      hoy: '0.12 kg',
-      disp: '10.00 kg',
-    },
-  ];
-
-  // Definición de columnas
-  const columns = [
-    {
-      title: 'Producto',
-      dataIndex: 'producto',
-      key: 'producto',
-    },
-    {
-      title: 'CI',
-      dataIndex: 'ci',
-      key: 'ci',
-    },
-    {
-      title: 'Hoy',
-      dataIndex: 'hoy',
-      key: 'hoy',
-    },
-    {
-      title: 'Disp.',
-      dataIndex: 'disp',
-      key: 'disp',
-    },
-  ];
+ 
 
   return (
     <>
@@ -123,7 +51,7 @@ function AnalyticsFarms() {
 
 
         <Row gutter={25}>
-          <Col xl={15} xs={24} style={{ display: 'flex' }}> {/* Establece una altura fija */}
+          <Col xl={15} xs={24} style={{ display: 'flex' }}> 
             <Suspense
               fallback={
                 <Cards headless>
@@ -131,12 +59,12 @@ function AnalyticsFarms() {
                 </Cards>
               }
             >
-              <Cards title="Proyección Producción Ventas" size="large" style={{ width: '100%', height: '100%' }}> {/* Asegúrate de que el Cards también ocupe toda la altura */}
+              <Cards title="Proyección Producción Ventas" size="large" style={{ width: '100%', height: '100%' }}> 
                 <ProductionSalesProjectionChart />
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={9} xs={24} style={{ display: 'flex' }}> {/* Establece una altura fija */}
+          <Col xl={9} xs={24} style={{ display: 'flex' }}> 
             <Suspense
               fallback={
                 <Cards headless>
@@ -178,18 +106,12 @@ function AnalyticsFarms() {
                     <div>
                       <BiomechanicalDonutChart />
                     </div>
-
-
                   </div>
                 </div>
               </Cards>
             </Suspense>
           </Col>
-
-
         </Row>
-
-
       </Main>
     </>
   );

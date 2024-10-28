@@ -30,8 +30,13 @@ function TaskFarms() {
                         >
                             <PageHeader className="ninjadash-page-header-main"
                                 highlightText="Aqualink Camaronera"
-                                title="Tareas" routes={PageRoutes} />
-
+                                title="Tareas"
+                                selectOptions={[
+                                    ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
+                                    ["Sector 1", "Sector 2", "Sector 3"],
+                                    ["Piscina 1", "Piscina 2", "Piscina 3"]
+                                ]}
+                            />
                             <CalendarTask />
                         </Suspense>
                     </Col>
