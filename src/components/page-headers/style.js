@@ -221,6 +221,9 @@ const PageHeaderStyle = Styled(PageHeader)`
     }
 
     .ant-page-header-heading{
+    background-color: #ffff;
+    padding: 10px;
+    border-radius: 5px;
       margin: 4px  0;
       flex: 1;
       .ant-page-header-heading-left{

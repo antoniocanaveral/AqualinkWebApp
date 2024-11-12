@@ -11,7 +11,7 @@ const ConsumptionSuppliesChart = React.memo(() => {
   }));
   const { themeColor } = config;
 
-  const labels = ['Balanceado', 'Ácidos Orgánicos', 'Bacteria', 'Balanceado', 'Balanceado'];
+  const labels = ['Balanceado', 'A. Orgánicos', 'Bacteria', 'Balanceado', 'Balanceado'];
   const datasets = [
     {
       data: [58, 17, 11, 4, 7],

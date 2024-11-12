@@ -96,11 +96,8 @@ const AuthInfo = React.memo(() => {
 
   return (
     <InfoWraper>
-      <Search />
       <Message />
       <Notification />
-      <Settings />
-
       <div className="ninjadash-nav-actions__item ninjadash-nav-actions__language">
         <Dropdown placement="bottomRight" content={country} trigger="click">
           <Link to="#" className="ninjadash-nav-action-link">

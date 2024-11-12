@@ -220,7 +220,7 @@ function PanelFarms() {
               }
             >
 
-              <Cards title="Studio Planning: Segmento P3" size="large">
+              <Cards title="Geolocalización" size="large">
                 <Row gutter={[25, 25]} align="top">
                   <Col xs={20} md={15}>
                     <GoogleMaps />

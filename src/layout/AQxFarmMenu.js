@@ -141,17 +141,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       'group',
     ),
 
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={`/`}>
-        {t('Ecosistema')}
-      </NavLink>,
-      'Ecosistema',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/`}>
-          <UilCloudDataConnection />
-        </NavLink>
-      ),
-    ),
+   
 
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/panel`}>
@@ -235,21 +225,21 @@ function AQxFarmMenu({ toggleCollapsed }) {
           </div>,
           [
             getItem(
-              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/alimentacion-real-vs-proyectada`}>
+              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/actual-projected`}>
                 {t('Real vs Proyectada')}
               </NavLink>,
               'alimentacion-real-vs-proyectada',
               null,
             ),
             getItem(
-              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/alimentacion-proteina`}>
+              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/protein-percentage`}>
                 {t('Por % de Proteína')}
               </NavLink>,
               'alimentacion-proteina',
               null,
             ),
             getItem(
-              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/alimentacion-muestreo-platos`}>
+              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/plate-sampling`}>
                 {t('Muestreo de Platos')}
               </NavLink>,
               'alimentacion-muestreo-platos',
@@ -268,21 +258,21 @@ function AQxFarmMenu({ toggleCollapsed }) {
       [
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/parametros-od-temp`}>{t('OD y Temp')}</NavLink>
+            <NavLink to={`${path}/parameters/od-temp`}>{t('OD y Temp')}</NavLink>
           </div>,
           'parametros-od-temp',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/parametros-calidad-agua`}>{t('Calidad de Agua')}</NavLink>
+            <NavLink to={`${path}/parameters/water-quality`}>{t('Calidad de Agua')}</NavLink>
           </div>,
           'parametros-calidad-agua',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/parametros-calidad-suelo`}>{t('Calidad de Suelo')}</NavLink>
+            <NavLink to={`${path}/parameters/soil-quality`}>{t('Calidad de Suelo')}</NavLink>
           </div>,
           'parametros-calidad-suelo',
           null,
@@ -296,27 +286,13 @@ function AQxFarmMenu({ toggleCollapsed }) {
       'cultivo',
       !topMenu && <UilAirplay />,
       [
+        
         getItem(
-          <div className="menu-item-level-1">{t('Patología')}</div>,
-          'cultivo-patologia',
-          <div style={{ marginLeft: "5px" }}>
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/crop/general-pathology`}>{t('Patología')}</NavLink>
           </div>,
-          [
-            getItem(
-              <div className="menu-item-level-2">
-                <NavLink to={`${path}/cultivo-patologia-general`}>{t('General')}</NavLink>
-              </div>,
-              'patologia-general',
-              null,
-            ),
-            getItem(
-              <div className="menu-item-level-2">
-                <NavLink to={`${path}/cultivo-plan-veterinario`}>{t('Plan Veterinario')}</NavLink>
-              </div>,
-              'plan-veterinario',
-              null,
-            ),
-          ]
+          'patologia-general',
+          null,
         ),
         getItem(
           <div className="menu-item-level-1">
@@ -513,14 +489,14 @@ function AQxFarmMenu({ toggleCollapsed }) {
       [
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/inventario-ver`}>{t('Ver Inventario')}</NavLink>
+            <NavLink to={`${path}/inventory/view`}>{t('Ver Inventario')}</NavLink>
           </div>,
           'inventario-ver',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/inventario-add`}>{t('Añadir Inventario')}</NavLink>
+            <NavLink to={`${path}/inventory/add`}>{t('Añadir Inventario')}</NavLink>
           </div>,
           'inventario-add',
           null,

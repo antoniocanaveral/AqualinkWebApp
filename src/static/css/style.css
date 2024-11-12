@@ -3525,3 +3525,103 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   margin-left: 15px; /* Ajuste de margen para el segundo nivel */
   font-size: 0.9rem; /* Ajuste opcional para el tamaño de letra */
 }
+/* Estilo del Modal */
+.modal-content {
+  padding: 20px;
+}
+
+/* Contenedor en fila para la tabla y las cards */
+.content-row {
+  display: flex;
+  gap: 20px;
+}
+
+/* Tabla de información principal */
+.main-info-table {
+  flex: 2; /* Aumenta el ancho de la tabla en relación a las cards */
+}
+
+.main-info-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.main-info-table td {
+  padding: 10px 15px;
+  border: 1px solid #d9d9d9;
+}
+
+.main-info-table td:first-child {
+  font-weight: bold;
+  background-color: #f1f1f1;
+}
+
+.card-mesh-wrap{
+  background-color: #f8f9fb !important;
+}
+
+/* Estilo de "cards" */
+.information-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Mantiene dos columnas para organización */
+  gap: 15px;
+  flex: 1; /* Reduce el espacio ocupado por las cards en comparación con la tabla */
+  width: 100%;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: #fff;
+  border-left: 4px solid #1890ff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-label {
+  font-weight: bold;
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.badge {
+  display: inline-block;
+  border-radius: 12px;
+  font-size: 12px;
+  color: white;
+  text-align: center;
+  width: 60px;
+}
+
+.badge-green {
+  background-color: #17c964;
+  color: black;
+
+}
+
+.badge-yellow {
+  color: black;
+  background-color: #f5a524;
+
+}
+
+.badge-red {
+  
+  background-color: #f31260;
+}

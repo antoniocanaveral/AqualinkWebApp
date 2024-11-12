@@ -9,7 +9,16 @@ import PanelFarmRoutes from './farmPanel';
 import TaskFarms from '../../container/AQx-Farms/task-farms';
 import AnalyticsFarms from '../../container/AQx-Farms/analytics-farms';
 import PlanningStudioFarms from '../../container/AQx-Farms/planning-studio-farms';
-import GeneralMonitoringFarm from '../../container/AQx-Farms/general-monitoring-farms';
+import ODParametersFarms from '../../container/AQx-Farms/parameters/od-parameters-farms';
+import WaterAqualityFarms from '../../container/AQx-Farms/parameters/water-quality-parameters';
+import GeneralMonitoringFarm from '../../container/AQx-Farms/monitoring/general-monitoring-farms';
+import PlateSamplingFarm from '../../container/AQx-Farms/monitoring/plate-sampling-farms';
+import AddInventoryFarms from '../../container/AQx-Farms/inventory/add-inventory-farms';
+import InventoryTable from '../../container/AQx-Farms/inventory/view-inventory-farms';
+import SoilQualityFarm from '../../container/AQx-Farms/parameters/soil-quality-parameters';
+import RealAndProjectedFeeding from '../../container/AQx-Farms/monitoring/real-vs-projected-feeding-farms';
+import ProteinPercentageFarm from '../../container/AQx-Farms/monitoring/protein-percentage-farms';
+import CropRoutesFarm from './farmCrop';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -31,6 +40,17 @@ const Farm = React.memo(() => {
         <Route path="/analytics/*" element={<AnalyticsFarms />} />  
         <Route path="/planning-studio/*" element={<PlanningStudioFarms />} />
         <Route path="/monitoreo-general/*" element={<GeneralMonitoringFarm />} />
+        <Route path="/monitoring/actual-projected/*" element={<RealAndProjectedFeeding />} />
+        <Route path="/monitoring/protein-percentage/*" element={<ProteinPercentageFarm />} />
+        <Route path="/monitoring/plate-sampling/*" element={<PlateSamplingFarm />} />
+
+        <Route path="/crop/*" element={<CropRoutesFarm />} />
+
+        <Route path="/inventory/add/*" element={<AddInventoryFarms />} />
+        <Route path="/inventory/view/*" element={<InventoryTable />} />
+        <Route path="/parameters/od-temp/*" element={<ODParametersFarms />} />
+        <Route path="/parameters/soil-quality/*" element={<SoilQualityFarm />} />
+        <Route path="/parameters/water-quality/*" element={<WaterAqualityFarms />} />
         <Route path="/tasks/*" element={<TaskFarms />} />
         <Route path="/coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/seeding-coords/*" element={<LabCoordinationsRoutes />} />

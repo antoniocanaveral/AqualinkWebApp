@@ -1,6 +1,6 @@
 
 import React, { useCallback, useEffect } from 'react';
-import { Row, Col, PageHeader } from 'antd';
+import { Row, Col, PageHeader, Avatar } from 'antd';
 import OverviewCard from '../../../../components/cards/OverviewCard'; // Cambiamos a OverviewCard
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -90,7 +90,7 @@ const OverviewDataList = React.memo(() => {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', zIndex: 2 }}>
         <figure style={{ textAlign: 'center' }}>
           <Heading as="h2">Hi</Heading>
-          <img src={require('../../../../static/img/AQx-IMG/avatar48b.png')} alt="" />
+          <Avatar size={70} >EG</Avatar>
           <figcaption>
             <Heading as="h5">Esteban Gallegos</Heading>
           </figcaption>
@@ -117,7 +117,7 @@ const OverviewDataList = React.memo(() => {
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilCloudDataConnection />
-          <PageHeader className="ninjadash-page-header-main" title="AquaLink EcoSystem" />
+          <PageHeader className="ninjadash-page-header-main" title="AquaLink Smart AquaLink EcoSystem" />
         </div>
       </Col>
       {overviewCardData.map((item) => (

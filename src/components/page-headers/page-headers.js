@@ -84,15 +84,19 @@ function PageHeader(props) {
     if (!selectOptions || selectOptions.length === 0) return null;
 
     return (
-      <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+      <div style={{ display: 'flex', gap: '10px', marginTop: '20px', justifyContent: 'flex-end', width: "100px" }}>
         {selectOptions.map((options, index) => (
           <Select
             key={index}
+            defaultValue={options[0]} // Seleccionar la primera opción por defecto
             placeholder={`Seleccione ${["Camaronera", "Sector", "Piscina"][index] || `Opción ${index + 1}`}`}
-            style={{ width: 180 }}
+            style={{ width: 180, fontSize: '12px' }} // Reducir tamaño de letra
+            dropdownStyle={{ fontSize: '12px' }} // Reducir tamaño de letra en el dropdown
           >
             {options.map((option) => (
-              <Option key={option} value={option}>{option}</Option>
+              <Option key={option} value={option}>
+                {option}
+              </Option>
             ))}
           </Select>
         ))}
@@ -101,7 +105,7 @@ function PageHeader(props) {
   };
 
   return (
-    <HeaderWrapper bgColor={bgColor}>
+    <HeaderWrapper >
       <PageHeaderStyle
         className={className}
         title={

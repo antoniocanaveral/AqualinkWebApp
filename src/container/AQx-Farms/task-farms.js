@@ -4,6 +4,7 @@ import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
 import CalendarTask from './task/calendar/CalendarTask';
 import { PageHeader } from '../../components/page-headers/page-headers';
+import UpcomingEvents from '../dashboard/overview/demoFive/UpcomingEvents';
 
 function TaskFarms() {
     const PageRoutes = [
@@ -38,6 +39,42 @@ function TaskFarms() {
                                 ]}
                             />
                             <CalendarTask />
+                            <Row gutter={16} style={{ marginBottom: '20px' }}>
+                                <Col xl={8} lg={24} xs={24}>
+                                    <Suspense
+                                        fallback={
+                                            <Cards headless>
+                                                <Skeleton active />
+                                            </Cards>
+                                        }
+                                    >
+                                        <UpcomingEvents />
+                                    </Suspense>
+                                </Col>
+                                <Col xl={8} lg={24} xs={24}>
+                                    <Suspense
+                                        fallback={
+                                            <Cards headless>
+                                                <Skeleton active />
+                                            </Cards>
+                                        }
+                                    >
+                                        <UpcomingEvents />
+                                    </Suspense>
+                                </Col>
+                                <Col xl={8} lg={24} xs={24}>
+                                    <Suspense
+                                        fallback={
+                                            <Cards headless>
+                                                <Skeleton active />
+                                            </Cards>
+                                        }
+                                    >
+                                        <UpcomingEvents />
+                                    </Suspense>
+                                </Col>
+                               
+                            </Row>
                         </Suspense>
                     </Col>
                 </Row>

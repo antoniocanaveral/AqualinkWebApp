@@ -1713,7 +1713,7 @@ const EventFormStyleWrap = Styled.div`
       }
     }
     .ant-picker-input{
-        padding: 0 25px;
+        padding: 0 15px;
         position: relative;
         @media only screen and (max-width: 575px){
             padding: 0 20px 0 25px;

@@ -10,7 +10,8 @@ function Cards(props) {
   const {
     title,
     icon,
-    status, // Agregamos la prop `status`
+    image, // Nueva prop para la imagen
+    status,
     children,
     more,
     moreText,
@@ -32,12 +33,18 @@ function Cards(props) {
           size={size}
           title={
             <>
-              {/* Mostrar el ícono si se proporciona */}
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                {icon && <span style={{ marginRight: 5, marginLeft:"-3px" }}>{icon}</span>}
-                {title} {/* Título principal */}
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: "wrap" }}>
+                {/* Mostrar la imagen si está presente; si no, mostrar el ícono */}
+                {image ? (
+                  <img src={image} alt="Card icon" style={{ marginRight: 5, width: 24, height: 24 }} />
+                ) : (
+                  icon && <span style={{ marginRight: 5, marginLeft: "-3px" }}>{icon}</span>
+                )}
+                <p style={{ whiteSpace: 'normal', padding:"0px", margin:"0px", overflowWrap: 'break-word', flex: 1 }}>
+                  {title} {/* Título principal */}
+                </p>
               </div>
-              {status && ( // Si existe el estado, lo renderizamos aquí
+              {status && (
                 <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>
                   {status}
                 </span>
@@ -58,7 +65,6 @@ function Cards(props) {
                   </Link>
                 </Dropdown>
               )}
-
               {isbutton && isbutton}
             </>
           }
@@ -90,8 +96,9 @@ Cards.defaultProps = {
 
 Cards.propTypes = {
   icon: PropTypes.node,
+  image: PropTypes.string, // Nueva prop para la imagen
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.node]),
-  status: PropTypes.string, // Definimos el prop status
+  status: PropTypes.string,
   size: PropTypes.string,
   more: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.node]),
   bodyStyle: PropTypes.object,
