@@ -8,7 +8,19 @@ const apiKey = process.env.REACT_APP_GOOGLE_MAP_KEY;
 const GoogleMaps = GoogleApiWrapper({
   apiKey,
 })((property) => {
-  const { latitude, longitude, google, width, height, zoom, mapStyles, place, styles, infoWindow } = property;
+  const {
+    latitude,
+    longitude,
+    google,
+    width = '100%', // Valor predeterminado
+    height = '305px', // Valor predeterminado
+    zoom,
+    mapStyles,
+    place,
+    styles,
+    infoWindow,
+  } = property;
+
   const [state, setState] = useState({
     showingInfoWindow: false,
     activeMarker: {},
@@ -44,10 +56,9 @@ const GoogleMaps = GoogleApiWrapper({
         onClick={onMapClicked}
         styles={mapStyles}
         google={google}
-        style={styles}
+        style={{ ...styles, width, height }} // Sobrescribe width y height si se pasan como props
         center={{ lat: latitude, lng: longitude }}
         zoom={zoom}
-        height="400px"
       >
         {place !== undefined ? (
           place.map((item) => {

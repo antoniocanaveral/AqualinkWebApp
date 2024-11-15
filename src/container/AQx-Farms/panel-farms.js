@@ -295,9 +295,6 @@ function PanelFarms() {
                   </div>
                 </div>
               </Cards>
-
-
-
             </Suspense>
           </Col>
 

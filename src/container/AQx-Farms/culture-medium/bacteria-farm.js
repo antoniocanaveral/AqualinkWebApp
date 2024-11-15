@@ -1,15 +1,74 @@
-import React, { Suspense, useState } from 'react';
-import { Row, Col, Skeleton, Typography, Badge, Space, Table } from 'antd';
+import React, { Suspense } from 'react';
+import { Row, Col, Skeleton, Typography, Badge, Space, Table, Card } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { GoogleMaps } from '../../../components/maps/google-maps';
 import { Main } from '../../styled';
-import MagnesiumChart from './charts/MagnesiumChart';
-import ComparativeRunsBarChart from '../analytics/charts/ComparativeRunsBarChart';
+import BioremediationBarChart from './charts/BioremediationBarChart';
 
-function SoilQualityFarm() {
-  const [scenarios, setScenarios] = useState([]);
+function BacteriaFarm() {
+  // Datos de bacterias
+  const bacteriaReportData = [
+    {
+      tipo: "Bacillus subtilis",
+      presentacion: "Polvo",
+      estado: "Sólido",
+      sistemaAplicacion: "General",
+      aplicacionPrincipal: { cantidad: "5 kg", fecha: "2024-11-15" },
+      refuerzo: { cantidad: "2 kg", fecha: "2024-11-20" }
+    },
+    {
+      tipo: "Lactobacillus sp.",
+      presentacion: "Líquido",
+      estado: "Líquido",
+      sistemaAplicacion: "Localizado",
+      aplicacionPrincipal: { cantidad: "3kg", fecha: "2024-11-12" },
+      refuerzo: { cantidad: "1kg", fecha: "2024-11-18" }
+    },
+    {
+      tipo: "Pseudomonas sp.",
+      presentacion: "Polvo",
+      estado: "Sólido",
+      sistemaAplicacion: "General",
+      aplicacionPrincipal: { cantidad: "4 kg", fecha: "2024-11-10" },
+      refuerzo: { cantidad: "1.5 kg", fecha: "2024-11-14" }
+    },
+  ];
 
+  const bioremediationData = [
+    { semana: '2024-11-01', cantidadBacterias: 5 },
+    { semana: '2024-11-08', cantidadBacterias: 8 },
+    { semana: '2024-11-15', cantidadBacterias: 12 },
+    { semana: '2024-11-22', cantidadBacterias: 7 },
+    { semana: '2024-11-29', cantidadBacterias: 10 },
+    { semana: '2024-12-06', cantidadBacterias: 6 },
+  ];
+  const bacteriaColumns = [
+    { title: 'Tipo de Bacteria', dataIndex: 'tipo', key: 'tipo' },
+    { title: 'Presentación', dataIndex: 'presentacion', key: 'presentacion' },
+    { title: 'Estado', dataIndex: 'estado', key: 'estado' },
+    { title: 'S. de Aplicación', dataIndex: 'sistemaAplicacion', key: 'sistemaAplicacion' },
+    {
+      title: 'Aplicación Principal',
+      key: 'aplicacionPrincipal',
+      render: (text, record) => (
+        <>
+          <div>-Cantidad: {record.aplicacionPrincipal.cantidad} <br></br> -Fecha: {record.aplicacionPrincipal.fecha}</div>
+        </>
+      )
+    },
+    {
+      title: 'Refuerzo',
+      key: 'refuerzo',
+      render: (text, record) => (
+        <>
+          <div>-Cantidad: {record.refuerzo.cantidad}<br></br> -Fecha: {record.refuerzo.fecha}</div>
+        </>
+      )
+    },
+  ];
+
+  // Datos para la tabla de calidad de suelo
   const soilQualityColumns = [
     { title: 'DÍA', dataIndex: 'dia', key: 'dia' },
     { title: 'PH', dataIndex: 'ph', key: 'ph' },
@@ -31,25 +90,12 @@ function SoilQualityFarm() {
     { key: '9', dia: '8', ph: '8.0', alcalinidad: '145', amonio: '0.6', materiaOrganica: '2.3', redox: '-90', relacionCN: '12:1' },
   ];
 
-  const treatmentColumns = [
-    { title: 'BIOREMEDIACIÓN', dataIndex: 'bioremediacion', key: 'bioremediacion' },
-    { title: 'MINERAL', dataIndex: 'mineral', key: 'mineral' },
-    { title: 'ÁCIDOS ORGÁNICOS', dataIndex: 'acidosOrganicos', key: 'acidosOrganicos' },
-    { title: 'CANTIDAD', dataIndex: 'cantidad', key: 'cantidad' },
-    { title: '# DÍAS', dataIndex: 'dias', key: 'dias' },
-  ];
-
-  const treatmentData = [
-    { key: '1', bioremediacion: 'Probiotics', mineral: 'Cal Hidratada', acidosOrganicos: 'Ácido Láctico', cantidad: '50 kg', dias: 3 },
-    { key: '2', bioremediacion: 'Enzimas', mineral: 'Dolomita', acidosOrganicos: 'Ácido Cítrico', cantidad: '30 kg', dias: 5 },
-    { key: '3', bioremediacion: 'Bacterias Beneficiosas', mineral: 'Zeolita', acidosOrganicos: 'Ácido Acético', cantidad: '20 kg', dias: 7 },
-    { key: '4', bioremediacion: 'Bioestimulantes', mineral: 'Magnesio', acidosOrganicos: 'Ácido Fúlvico', cantidad: '40 kg', dias: 2 },
-  ];
-
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" highlightText={"AquaLink Parámetros:"}
-        title="Calidad de Suelo"
+      <PageHeader
+        className="ninjadash-page-header-main"
+        highlightText="AquaLink Cultivo"
+        title="Calidad Medio de Cultivo"
         selectOptions={[
           ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
           ["Sector 1", "Sector 2", "Sector 3"],
@@ -58,7 +104,7 @@ function SoilQualityFarm() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={11} xs={24} style={{ display: "flex" }}>
+          <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Geolocalización" size="large">
                 <Row gutter={[25, 25]} align="top">
@@ -91,39 +137,43 @@ function SoilQualityFarm() {
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={13} xs={24} style={{ display: "flex" }}>
+          <Col xl={16} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <ComparativeRunsBarChart />
+              <Cards title="Reporte de Bacterias" size="large">
+                <Table
+                  dataSource={bacteriaReportData}
+                  columns={bacteriaColumns}
+                  pagination={{ pageSize: 8 }}
+                  rowKey="tipo"
+                />
+              </Cards>
             </Suspense>
           </Col>
-
         </Row>
 
         <Row gutter={25}>
-          <Col xl={11} xs={24} style={{ display: "flex" }}>
+          <Col xl={14} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Calidad de Suelo" size="large">
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "20px" }}>
-                  <div>
-                    Alc: Alcalinidad <br />
-                  </div>
-                  <div>
-                    M.O: Materia Orgánica <br />
-                  </div>
-                  <div>
-                    C:N: Relación C:N <br />
-                  </div>
-                </div>
-                <Table dataSource={soilQualityData} columns={soilQualityColumns} pagination={false} />
+                <Table dataSource={soilQualityData} columns={soilQualityColumns} pagination={{ pageSize: 8 }} />
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={13} xs={24} style={{ display: "flex" }}>
+          <Col xl={10} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Tratamiento Aplicado" size="large">
-                <Table dataSource={treatmentData} columns={treatmentColumns} pagination={false} />
-              </Cards>
+              <BioremediationBarChart height={400} data={bioremediationData} />
+
             </Suspense>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col xl={14} xs={24}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "20px" }}>
+              <div>Alc: Alcalinidad</div>
+              <div>M.O: Materia Orgánica</div>
+              <div>C:N: Relación C:N</div>
+            </div>
           </Col>
         </Row>
       </Main>
@@ -131,4 +181,4 @@ function SoilQualityFarm() {
   );
 }
 
-export default SoilQualityFarm;
+export default BacteriaFarm;

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
-function DoughnutChart({ datasets, tooltip, ...props }) {
+function DoughnutChart({ datasets, tooltip, centerTextSize, ...props }) {
   const chartRef = useRef(null); // Referencia para el canvas
   const chartInstance = useRef(null); // Referencia para la instancia del gráfico
 
@@ -41,11 +41,19 @@ function DoughnutChart({ datasets, tooltip, ...props }) {
     <div className="doughnutchart-inner" style={{ position: 'relative', width: '100%', height: '100%' }}>
       <div className="doughnutchart-inner-text">
         {datasets[0].centerText === '' ? (
-          <span className="doughnutchart-inner-content">
+          <span
+            className="doughnutchart-inner-content"
+            style={{ fontSize: centerTextSize || '16px' }} // Aplica el tamaño personalizado o 16px por defecto
+          >
             {Math.round((datasets[0].data[2] / datasets[0].data[1]) * 100)}%
           </span>
         ) : (
-          <span className="doughnutchart-inner-content">{datasets[0].centerText}</span>
+          <span
+            className="doughnutchart-inner-content"
+            style={{ fontSize: centerTextSize || '16px' }} // Aplica el tamaño personalizado o 16px por defecto
+          >
+            {datasets[0].centerText}
+          </span>
         )}
         <span className="doughnutchart-inner-label">{datasets[0].centerTextLabel}</span>
       </div>
@@ -92,7 +100,6 @@ DoughnutChart.defaultProps = {
       z: 5,
     },
   },
-
   scales: {
     y: {
       display: false,
@@ -101,11 +108,11 @@ DoughnutChart.defaultProps = {
       display: false,
     },
   },
-
   tooltip: {},
   option: {
     borderColor: ({ theme }) => theme[theme.mainContent]['white-background'],
   },
+  centerTextSize: '16px', // Tamaño de texto central por defecto
 };
 
 DoughnutChart.propTypes = {
@@ -119,6 +126,7 @@ DoughnutChart.propTypes = {
   scales: PropTypes.object,
   tooltip: PropTypes.object,
   option: PropTypes.object,
+  centerTextSize: PropTypes.string, // Añade la nueva prop para el tamaño del texto central
 };
 
 export default DoughnutChart;

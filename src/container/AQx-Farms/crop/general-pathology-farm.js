@@ -258,121 +258,121 @@ function GeneralPathologyFarm() {
         </Row>
 
         <Modal
-          title={`Detalles de Patología - ${selectedRecord?.semana}`}
-          visible={isModalVisible}
-          onCancel={handleCancel}
-          footer={null}
-          width={1200}
-        >
-          <Row gutter={[16, 16]}> {/* Añadido gutter para espacio vertical */}
-            {selectedRecord && (
-              <>
-                <Col span={8}>
-                  <Card title="Branquias" className="custom-card">
-                    <Table
-                      dataSource={selectedRecord.branquias.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
-                      columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
-                        { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
-                      ]}
-                      pagination={false}
-                      size="small"
-                    />
-                  </Card>
-                </Col>
-                <Col span={8}>
-                  <Card title="Hepatopancreas" className="custom-card">
-                    <Table
-                      dataSource={selectedRecord.hepatopancreas.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
-                      columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
-                         { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
-                      ]}
-                      pagination={false}
-                      size="small"
-                    />
-                  </Card>
-                </Col>
-                <Col span={8}>
-                  <Card title="Intestino" className="custom-card">
-                    <Table
-                      dataSource={selectedRecord.intestino.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
-                      columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
-                         { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
-                      ]}
-                      pagination={false}
-                      size="small"
-                    />
-                  </Card>
-                </Col>
-                <Col span={8}>
-                  <Card title="Biomecánicos" className="custom-card">
-                    <Table
-                      dataSource={selectedRecord.biomecanicos.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
-                      columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
-                         { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
-                      ]}
-                      pagination={false}
-                      size="small"
-                    />
-                  </Card>
-                </Col>
-                <Col span={8}>
-                  <Card title="Bacteriológico" className="custom-card">
-                    <Table
-                      dataSource={selectedRecord.bacteriologico.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
-                      columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
-                         { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
-                      ]}
-                      pagination={false}
-                      size="small"
-                    />
-                  </Card>
-                </Col>
-                <Col span={8}>
-                  <Card title="Viral" className="custom-card">
-                    <Table
-                      dataSource={selectedRecord.viral.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
-                      columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
-                         { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
-                      ]}
-                      pagination={false}
-                      size="small"
-                    />
-                  </Card>
-                </Col>
-              </>
-            )}
-          </Row>
-        </Modal>
+    title={`Detalles de Patología - ${selectedRecord?.semana}`}
+    visible={isModalVisible}
+    onCancel={handleCancel}
+    footer={null}
+    width={1200}
+  >
+    <Row gutter={[16, 16]} style={{ display: 'flex', flexWrap: 'wrap' }}>
+      {selectedRecord && (
+        <>
+          <Col span={8} style={{ display: 'flex' }}>
+            <Card title="Branquias" className="custom-card">
+              <Table
+                dataSource={selectedRecord.branquias.map((item, index) => ({
+                  key: index,
+                  observation: item.observation,
+                  level: item.level,
+                }))}
+                columns={[
+                  { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                  { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
+                ]}
+                pagination={false}
+                size="small"
+              />
+            </Card>
+          </Col>
+          <Col span={8} style={{ display: 'flex' }}>
+            <Card title="Hepatopancreas" className="custom-card">
+              <Table
+                dataSource={selectedRecord.hepatopancreas.map((item, index) => ({
+                  key: index,
+                  observation: item.observation,
+                  level: item.level,
+                }))}
+                columns={[
+                  { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                  { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
+                ]}
+                pagination={false}
+                size="small"
+              />
+            </Card>
+          </Col>
+          <Col span={8} style={{ display: 'flex' }}>
+            <Card title="Intestino" className="custom-card">
+              <Table
+                dataSource={selectedRecord.intestino.map((item, index) => ({
+                  key: index,
+                  observation: item.observation,
+                  level: item.level,
+                }))}
+                columns={[
+                  { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                  { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
+                ]}
+                pagination={false}
+                size="small"
+              />
+            </Card>
+          </Col>
+          <Col span={8} style={{ display: 'flex' }}>
+            <Card title="Biomecánicos" className="custom-card">
+              <Table
+                dataSource={selectedRecord.biomecanicos.map((item, index) => ({
+                  key: index,
+                  observation: item.observation,
+                  level: item.level,
+                }))}
+                columns={[
+                  { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                  { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
+                ]}
+                pagination={false}
+                size="small"
+              />
+            </Card>
+          </Col>
+          <Col span={8} style={{ display: 'flex' }}>
+            <Card title="Bacteriológico" className="custom-card">
+              <Table
+                dataSource={selectedRecord.bacteriologico.map((item, index) => ({
+                  key: index,
+                  observation: item.observation,
+                  level: item.level,
+                }))}
+                columns={[
+                  { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                  { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
+                ]}
+                pagination={false}
+                size="small"
+              />
+            </Card>
+          </Col>
+          <Col span={8} style={{ display: 'flex' }}>
+            <Card title="Viral" className="custom-card">
+              <Table
+                dataSource={selectedRecord.viral.map((item, index) => ({
+                  key: index,
+                  observation: item.observation,
+                  level: item.level,
+                }))}
+                columns={[
+                  { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                  { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
+                ]}
+                pagination={false}
+                size="small"
+              />
+            </Card>
+          </Col>
+        </>
+      )}
+    </Row>
+  </Modal>
 
         <Modal
           title={`Plan Veterinario - ${selectedVeterinaryPlan?.semana}`}

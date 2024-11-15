@@ -296,49 +296,43 @@ function AQxFarmMenu({ toggleCollapsed }) {
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/cultivo-siembras`}>{t('Siembra')}</NavLink>
+            <NavLink to={`${path}/crop/shrimp`}>{t('Siembra')}</NavLink>
           </div>,
           'cultivo-siembras',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/cultivo-transferencia`}>{t('Transferencia')}</NavLink>
+            <NavLink to={`${path}/crop/transfer`}>{t('Transferencia')}</NavLink>
           </div>,
           'cultivo-transferencia',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/cultivo-poblacion-biomasa`}>{t('Población / Biomasa')}</NavLink>
+            <NavLink to={`${path}/crop/population-biomass`}>{t('Población / Biomasa')}</NavLink>
           </div>,
           'cultivo-poblacion-biomasa',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/cultivo-textura`}>{t('Textura')}</NavLink>
+            <NavLink to={`${path}/crop/texture`}>{t('Textura')}</NavLink>
           </div>,
           'cultivo-textura',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/cultivo-clasificacion`}>{t('Clasificación')}</NavLink>
+            <NavLink to={`${path}/crop/classification`}>{t('Clasificación')}</NavLink>
           </div>,
           'cultivo-clasificacion',
           null,
         ),
+   
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/cultivo-raleo`}>{t('Raleo')}</NavLink>
-          </div>,
-          'cultivo-raleo',
-          null,
-        ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/cultivo-cosecha`}>{t('Cosecha')}</NavLink>
+            <NavLink to={`${path}/crop/harvest`}>{t('Cosecha/Raleo')}</NavLink>
           </div>,
           'cultivo-cosecha',
           null,
@@ -354,16 +348,9 @@ function AQxFarmMenu({ toggleCollapsed }) {
       [
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/medio-cultivo-flujo-agua`}>{t('Flujo de Agua')}</NavLink>
+            <NavLink to={`${path}/culture-medium/water-flow`}>{t('Flujo/Recambio de Agua')}</NavLink>
           </div>,
           'medio-cultivo-flujo-agua',
-          null,
-        ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/medio-cultivo-recambio-agua`}>{t('Recambio de Agua')}</NavLink>
-          </div>,
-          'medio-cultivo-recambio-agua',
           null,
         ),
         getItem(
@@ -375,7 +362,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/medio-cultivo-bacterias`}>{t('Bacterias')}</NavLink>
+            <NavLink to={`${path}/culture-medium/bacteria`}>{t('Calidad Medio de Cultivo')}</NavLink>
           </div>,
           'medio-cultivo-bacterias',
           null,
@@ -383,29 +370,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // PISCINA
-    getItem(
-      t('Piscina'),
-      'piscina',
-      !topMenu && <UilWater />,
-      [
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/piscina-preparacion`}>{t('Preparación')}</NavLink>
-          </div>,
-          'piscina-preparacion',
-          null,
-        ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/piscina-bioremediacion`}>{t('Bioremediación')}</NavLink>
-          </div>,
-          'piscina-bioremediacion',
-          null,
-        ),
-      ]
-    ),
-
+   
 
 
     getItem(
@@ -543,24 +508,6 @@ function AQxFarmMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-
-    getItem(t('Usuarios'), 'usuarios', !topMenu && <UilUserCircle />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/users`}>
-          {t('Ver Usuarios')}
-        </NavLink>,
-        'ver-usuarios',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/users-add`}>
-          {t('Añadir Usuarios')}
-        </NavLink>,
-        'add-usuarios',
-        null,
-      ),
-    ]),
-
     getItem(
       t('Cliente'),
       'cliente',
@@ -580,16 +527,27 @@ function AQxFarmMenu({ toggleCollapsed }) {
           'cliente-usuarios',
           null,
         ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/cliente-permisos`}>{t('Permisos')}</NavLink>
-          </div>,
-          'cliente-permisos',
-          null,
-        ),
       ]
     ),
   
+    getItem(t('Usuarios'), 'usuarios', !topMenu && <UilUserCircle />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/users`}>
+          {t('Ver Usuarios')}
+        </NavLink>,
+        'ver-usuarios',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/users-add`}>
+          {t('Añadir Usuarios')}
+        </NavLink>,
+        'add-usuarios',
+        null,
+      ),
+    ]),
+
+ 
     // FAQ
     getItem(
       <NavLink to={`${path}/faq`}>

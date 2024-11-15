@@ -19,6 +19,7 @@ import SoilQualityFarm from '../../container/AQx-Farms/parameters/soil-quality-p
 import RealAndProjectedFeeding from '../../container/AQx-Farms/monitoring/real-vs-projected-feeding-farms';
 import ProteinPercentageFarm from '../../container/AQx-Farms/monitoring/protein-percentage-farms';
 import CropRoutesFarm from './farmCrop';
+import CultureMediumRoutesFarm from './cultureMedium';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -45,6 +46,7 @@ const Farm = React.memo(() => {
         <Route path="/monitoring/plate-sampling/*" element={<PlateSamplingFarm />} />
 
         <Route path="/crop/*" element={<CropRoutesFarm />} />
+        <Route path="/culture-medium/*" element={<CultureMediumRoutesFarm />} />
 
         <Route path="/inventory/add/*" element={<AddInventoryFarms />} />
         <Route path="/inventory/view/*" element={<InventoryTable />} />

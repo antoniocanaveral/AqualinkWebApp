@@ -53,14 +53,14 @@ function InventoryTable() {
             width: '10%'
         },
         {
-            title: 'Disponibilidad U.',
+            title: 'Unidades',
             dataIndex: 'disponibilidad_unidad',
             key: 'disponibilidad_unidad',
             render: (text) => text || 'N/A', // Valor por defecto si no está disponible
             width: '10%'
         },
         {
-            title: 'Disponibilidad (lb)',
+            title: 'Volumen',
             dataIndex: 'volumen_disponibilidad',
             key: 'volumen_disponibilidad',
             render: (text) => text || 'N/A', // Valor por defecto si no está disponible
