@@ -20,25 +20,25 @@ function AddInventoryFarms() {
   // Datos de la tabla: basado en el item seleccionado y filtrar solo los campos deseados
   const dataSource = selectedSubCategory
     ? Object.entries(
-        options
-          .find(option => option.categoria === selectedCategory)
-          ?.items.find(item => item.codigo === selectedSubCategory) || {}
-      )
-        .filter(([key]) => [
-          'codigo', 
-          'nombre', 
-          'descripcion', 
-          'info_adicional', 
-          'nota_doc', 
-          'peso_total_presentacion', 
-          'unidad_medida', 
-          'SKU'
-        ].includes(key))
-        .map(([key, value], index) => ({
-          key: index,
-          field: key.replace(/_/g, ' ').toUpperCase(),
-          value: value || 'N/A',
-        }))
+      options
+        .find(option => option.categoria === selectedCategory)
+        ?.items.find(item => item.codigo === selectedSubCategory) || {}
+    )
+      .filter(([key]) => [
+        'codigo',
+        'nombre',
+        'descripcion',
+        'info_adicional',
+        'nota_doc',
+        'peso_total_presentacion',
+        'unidad_medida',
+        'SKU'
+      ].includes(key))
+      .map(([key, value], index) => ({
+        key: index,
+        field: key.replace(/_/g, ' ').toUpperCase(),
+        value: value || 'N/A',
+      }))
     : [];
 
   // Columnas de la tabla
@@ -186,6 +186,15 @@ function AddInventoryFarms() {
                               <Input placeholder="Precio Lista" type="number" />
                             </Form.Item>
                           </div>
+                        </div>
+                        <div style={{ width: "50%" }}>
+                          <Form.Item
+                            label="Cantidad"
+                            name="cantidad"
+                            rules={[{ required: true, message: 'Ingrese la cantidad' }]}
+                          >
+                            <Input placeholder="Cantidad" type="number" />
+                          </Form.Item>
                         </div>
                       </div>
                     </div>

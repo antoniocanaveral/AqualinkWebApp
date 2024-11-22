@@ -33,7 +33,7 @@ const LineChartWithXAxisPadding = ({ data }) => {
     : [];
 
   // Array de colores para las líneas
-  const colors = ['#0372CE', '#00AAFF', '#FA8B0C', '#FF5733', '#33FF57', '#3357FF', '#FF33A2'];
+  const colors = ['#0372CE', '#00AAFF', '#FA8B0C', '#FF5733', '#64ae78', '#3357FF', '#FF33A2'];
 
   // Genera un color aleatorio si el array de colores es menor que la cantidad de líneas
   const getColor = (index) => colors[index % colors.length];

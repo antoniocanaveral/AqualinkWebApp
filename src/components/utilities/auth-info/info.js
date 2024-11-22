@@ -91,6 +91,10 @@ const AuthInfo = React.memo(() => {
         <img src={require('../../../static/img/AQx-IMG/esp.png')} alt="" />
         <span>Español</span>
       </Link>
+      <Link onClick={(e) => onFlagChangeHandle('esp', e)} to="#">
+        <img src={require('../../../static/img/AQx-IMG/esp.png')} alt="" />
+        <span>Potugués</span>
+      </Link>
     </NavAuth>
   );
 

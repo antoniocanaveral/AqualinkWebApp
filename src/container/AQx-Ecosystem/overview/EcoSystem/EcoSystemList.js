@@ -89,12 +89,12 @@ const OverviewDataList = React.memo(() => {
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', zIndex: 2 }}>
         <figure style={{ textAlign: 'center' }}>
-          <Heading as="h2">Hi</Heading>
+          <Heading as="h2">Hola!</Heading>
           <Avatar size={70} >EG</Avatar>
           <figcaption>
             <Heading as="h5">Esteban Gallegos</Heading>
           </figcaption>
-          <p>Welcome to Aqualink</p>
+          <p>Bienvenido a Aqualink</p>
         </figure>
       </div>
       <div class="background">
@@ -117,7 +117,7 @@ const OverviewDataList = React.memo(() => {
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilCloudDataConnection />
-          <PageHeader className="ninjadash-page-header-main" title="AquaLink Smart AquaLink EcoSystem" />
+          <PageHeader className="ninjadash-page-header-main" title="Smart AquaCulture EcoSystem" />
         </div>
       </Col>
       {overviewCardData.map((item) => (

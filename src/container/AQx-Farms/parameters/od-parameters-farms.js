@@ -6,9 +6,9 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 import { GoogleMaps } from '../../../components/maps/google-maps';
 import { BasicFormWrapper, HorizontalFormStyleWrap, Main } from '../../styled';
 import DissolvedOxygenBehaviorChart from './charts/DissolvedOxygenBehaviorChart';
-import DissolvedOxygenAMChart from './charts/PhChart';
 import DissolvedOxygenPMChart from './charts/DissolvedOxygenPMChart';
 import DissolvedOxygenHalfDayChart from './charts/DissolvedOxygenHalfDayChart';
+import DissolvedOxygenAMDayChart from './charts/DissolvedOxygenAMDayChart';
 
 function ODParametersFarms() {
   const [form] = Form.useForm();
@@ -81,7 +81,7 @@ function ODParametersFarms() {
         <Row gutter={25}>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Cards title="Oxígeno Disuelto AM" size="large">
-              <DissolvedOxygenAMChart />
+              <DissolvedOxygenAMDayChart />
             </Cards>
           </Col>
           <Col xl={8} xs={24} style={{ display: "flex"}}>

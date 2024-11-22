@@ -36,7 +36,7 @@ function TexturePercentageChart() {
   ];
 
   return (
-    <div style={{ width: "110%", height: "100%" }}> {/* Asegura que el contenedor tenga el ancho y alto completo */}
+    <div style={{ width: "110%", height: "10%" }}> {/* Asegura que el contenedor tenga el ancho y alto completo */}
       <LineChartWithXAxisPadding data={data} />
     </div>
   );

@@ -44,7 +44,7 @@ function PageHeader(props) {
   ) : null;
 
   const breadcrumb = routes ? (
-    <Breadcrumb separator={<span className="ninjadash-seperator" />}>
+    <Breadcrumb separator={<span />}>
       {routes.map((route, index) =>
         index + 1 === routes.length ? (
           <Breadcrumb.Item key={index}>
@@ -105,7 +105,7 @@ function PageHeader(props) {
   };
 
   return (
-    <HeaderWrapper >
+    <HeaderWrapper style={{ backgroundColor: "#ffffff" || '#f0f2f5', padding: '0px' }}>
       <PageHeaderStyle
         className={className}
         title={
@@ -124,15 +124,18 @@ function PageHeader(props) {
           </div>
         }
         subTitle={subTitle}
-        breadcrumb={breadcrumb}
         extra={
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
-            {buttons}
-            {renderSelectOptions()}
-          </div>
+          <>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+              {buttons}
+              {renderSelectOptions()}
+            </div>
+            {breadcrumb}
+          </>
         }
         ghost={ghost}
       />
+
     </HeaderWrapper>
   );
 }

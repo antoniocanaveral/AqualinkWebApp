@@ -110,14 +110,9 @@ function CoordinationsLabs() {
   // Definición de las columnas
   const dataTableColumn = [
     {
-      title: 'Fecha Programada de Siembra',
+      title: 'Fecha de Siembra',
       dataIndex: 'scheduledDate',
       key: 'scheduledDate',
-    },
-    {
-      title: 'Sistema de Cultivo',
-      dataIndex: 'systemType',
-      key: 'systemType',
     },
     {
       title: 'Pre Cría',
@@ -125,14 +120,9 @@ function CoordinationsLabs() {
       key: 'preBreeding',
     },
     {
-      title: 'Piscina Engorde',
+      title: 'Piscina ',
       dataIndex: 'growOut',
       key: 'growOut',
-    },
-    {
-      title: '# Ciclo',
-      dataIndex: 'cycleNumber',
-      key: 'cycleNumber',
     },
     {
       title: 'Lote ID',
@@ -140,7 +130,7 @@ function CoordinationsLabs() {
       key: 'id',
     },
     {
-      title: 'Volumen de Siembra',
+      title: 'Volumen',
       dataIndex: 'seedingVolume',
       key: 'seedingVolume',
     },
@@ -153,11 +143,6 @@ function CoordinationsLabs() {
       title: labOrFarm, // Cambia dinámicamente entre "Lab Seleccionado" y "Finca Seleccionada"
       dataIndex: 'lab',
       key: 'lab',
-    },
-    {
-      title: 'Ubicación',
-      dataIndex: 'location',
-      key: 'location',
     },
     {
       title: 'Estado',

@@ -114,24 +114,14 @@ function CoordinationsCustody() {
   // Definición de las columnas
   const dataTableColumn = [
     {
-      title: 'Fecha Programada de Cosecha / Raleo',
+      title: 'Fecha de Pesca',
       dataIndex: 'harvestDate',
       key: 'harvestDate',
     },
     {
-      title: 'Tipo de Cosecha',
-      dataIndex: 'harvestType',
-      key: 'harvestType',
-    },
-    {
-      title: 'Piscina Engorde',
+      title: 'Piscina',
       dataIndex: 'growOut',
       key: 'growOut',
-    },
-    {
-      title: '# Ciclo',
-      dataIndex: 'cycleNumber',
-      key: 'cycleNumber',
     },
     {
       title: 'Lote ID',
@@ -139,7 +129,7 @@ function CoordinationsCustody() {
       key: 'id',
     },
     {
-      title: 'Volumen de Pesca',
+      title: 'Volumen',
       dataIndex: 'seedingVolume',
       key: 'seedingVolume',
     },
@@ -158,16 +148,8 @@ function CoordinationsCustody() {
       dataIndex: 'classificationT',
       key: 'classificationT',
     },
-    {
-      title: packerOrFarm, // Aquí cambia dinámicamente entre Empacadora Seleccionada o Finca Seleccionada
-      dataIndex: 'packer',
-      key: 'packer',
-    },
-    {
-      title: 'Ubicación',
-      dataIndex: 'location',
-      key: 'location',
-    },
+   
+
     {
       title: 'Estado',
       dataIndex: 'status',

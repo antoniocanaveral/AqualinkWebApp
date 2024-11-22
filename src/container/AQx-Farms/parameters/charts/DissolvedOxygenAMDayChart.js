@@ -1,27 +1,26 @@
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { Typography } from "antd";
 
-function DissolvedOxygenPMChart() {
+function DissolvedOxygenAMDayChart() {
     const data = [
-        { "x": 0, "y3": 4.5, "y2": 6, "y1": 4.5 },
-        { "x": 3, "y3": 4.5, "y2": 6, "y1": 5.2 },
-        { "x": 6, "y3": 4.5, "y2": 6, "y1": 4.8 },
-        { "x": 9, "y3": 4.5, "y2": 6, "y1": 5.9 },
-        { "x": 12, "y3": 4.5, "y2": 6, "y1": 5.6 },
-        { "x": 15, "y3": 4.5, "y2": 6, "y1": 5.4 },
-        { "x": 18, "y3": 4.5, "y2": 6, "y1": 5.7 },
-        { "x": 21, "y3": 4.5, "y2": 6, "y1": 5.5 },
-        { "x": 24, "y3": 4.5, "y2": 6, "y1": 5.1 },
-        { "x": 27, "y3": 4.5, "y2": 6, "y1": 4.7 },
-        { "x": 30, "y3": 4.5, "y2": 6, "y1": 4.3 },
-        { "x": 33, "y3": 4.5, "y2": 6, "y1": 5.4 },
-        { "x": 36, "y3": 4.5, "y2": 6, "y1": 4.8 },
-        { "x": 39, "y3": 4.5, "y2": 6, "y1": 4.2 },
-        { "x": 42, "y3": 4.5, "y2": 6, "y1": 4.9 },
-        { "x": 45, "y3": 4.5, "y2": 6, "y1": 5.3 },
-        { "x": 48, "y3": 4.5, "y2": 6, "y1": 4.6 }
+        { "x": 0, "y3": 2.5, "y2": 4, "y1": 12 },
+        { "x": 3, "y3": 2.5, "y2": 4, "y1": 13.5 },
+        { "x": 6, "y3": 2.5, "y2": 4, "y1": 14 },
+        { "x": 9, "y3": 2.5, "y2": 4, "y1": 12.8 },
+        { "x": 12, "y3": 2.5, "y2": 4, "y1": 15.2 },
+        { "x": 15, "y3": 2.5, "y2": 4, "y1": 13.7 },
+        { "x": 18, "y3": 2.5, "y2": 4, "y1": 14.5 },
+        { "x": 21, "y3": 2.5, "y2": 4, "y1": 12.4 },
+        { "x": 24, "y3": 2.5, "y2": 4, "y1": 16 },
+        { "x": 27, "y3": 2.5, "y2": 4, "y1": 13.2 },
+        { "x": 30, "y3": 2.5, "y2": 4, "y1": 14.8 },
+        { "x": 33, "y3": 2.5, "y2": 4, "y1": 15.4 },
+        { "x": 36, "y3": 2.5, "y2": 4, "y1": 12.5 },
+        { "x": 39, "y3": 2.5, "y2": 4, "y1": 14.7 },
+        { "x": 42, "y3": 2.5, "y2": 4, "y1": 13 },
+        { "x": 45, "y3": 2.5, "y2": 4, "y1": 16 },
+        { "x": 48, "y3": 2.5, "y2": 4, "y1": 12.3 }
     ];
-    
 
     return (
         <div>
@@ -50,7 +49,7 @@ function DissolvedOxygenPMChart() {
                         stroke="#26b99a"
                         fill="#66cdb7"
                         strokeWidth={2}
-                        dot={{ fill: "white", stroke: "#66ccb6", r: 3 }} 
+                        dot={{ fill: "white", stroke: "#66ccb6", r: 3 }}
                     />
                     <Area
                         type="monotone"
@@ -59,7 +58,7 @@ function DissolvedOxygenPMChart() {
                         stroke="#a5aeb5"
                         fill="#427078"
                         strokeWidth={2}
-                        dot={{ fill: "white", stroke: "#a5aeb5", r: 3 }} 
+                        dot={{ fill: "white", stroke: "#a5aeb5", r: 3 }}
                     />
                     <Area
                         type="monotone"
@@ -67,9 +66,9 @@ function DissolvedOxygenPMChart() {
                         name="Rango Crítico"
                         stroke="#ff4d4f"
                         fill="#ff4d4f"
-                        fillOpacity={0.6}  
+                        fillOpacity={0.6}
                         strokeWidth={2}
-                        dot={{ fill: "white", stroke: "#ff4d4f", r: 3 }} 
+                        dot={{ fill: "white", stroke: "#ff4d4f", r: 3 }}
                     />
                 </AreaChart>
             </ResponsiveContainer>
@@ -77,4 +76,4 @@ function DissolvedOxygenPMChart() {
     );
 }
 
-export default DissolvedOxygenPMChart;
+export default DissolvedOxygenAMDayChart;

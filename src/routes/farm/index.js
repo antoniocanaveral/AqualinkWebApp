@@ -1,7 +1,6 @@
 import { Spin } from 'antd';
 import React, { lazy, Suspense, useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import Dashboard from './dashboard';
 import withFarmLayout from '../../layout/withFarmLayout';
 import LabCoordinationsRoutes from '../lab/labCoordinations';
 import CustodyCoordinationsRoutes from '../custody/custodyCoordinations';
@@ -19,7 +18,10 @@ import SoilQualityFarm from '../../container/AQx-Farms/parameters/soil-quality-p
 import RealAndProjectedFeeding from '../../container/AQx-Farms/monitoring/real-vs-projected-feeding-farms';
 import ProteinPercentageFarm from '../../container/AQx-Farms/monitoring/protein-percentage-farms';
 import CropRoutesFarm from './farmCrop';
-import CultureMediumRoutesFarm from './cultureMedium';
+import CultureMediumRoutesFarm from './farmCultureMedium';
+import LaboratoryFarm from './farmLaboratory';
+import PackingRouteFarm from './farmPacking';
+import CostRouteFarm from './farmCost';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -47,6 +49,9 @@ const Farm = React.memo(() => {
 
         <Route path="/crop/*" element={<CropRoutesFarm />} />
         <Route path="/culture-medium/*" element={<CultureMediumRoutesFarm />} />
+        <Route path="/laboratory/*" element={<LaboratoryFarm/>} />
+        <Route path="/packing/*" element={<PackingRouteFarm />} />
+        <Route path='/costs/*' element={<CostRouteFarm />} />
 
         <Route path="/inventory/add/*" element={<AddInventoryFarms />} />
         <Route path="/inventory/view/*" element={<InventoryTable />} />

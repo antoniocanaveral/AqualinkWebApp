@@ -163,7 +163,7 @@ function TextureFarm() {
                 </Cards>
               }
             >
-              <Cards title="Textura Pre Cría" size="large">
+              <Cards title="Textura Pre Cosecha" size="large">
                 <div style={{ width: "75%", margin: "0 auto" }}>
                   <TexturePreFishingDonutChart />
                 </div>

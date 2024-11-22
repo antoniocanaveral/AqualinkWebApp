@@ -17,17 +17,7 @@ import { ReactSVG } from 'react-svg';
 
 import {
   UilArrowsResize,
-  UilWater, // Para Tanques (flujo de agua o agua en general)
   UilFlaskPotion,    // Para Cultivo (representa investigación y cultivo)
-  UilPlug,           // Para IoT (tecnología de conexión)
-  UilMapMarkerAlt,   // Para Coordinación
-  UilArchive,        // Para Inventario
-  UilBug,            // Para Nauplieras (representa organismos pequeños)
-  UilTrophy,         // Para Cosechas (reservas y pedidos)
-  UilUserCircle,     // Para Usuarios
-  UilKeySkeleton,    // Para Permisos
-  UilHeadphonesAlt,  // Para Atención al Cliente
-  UilSync
 } from '@iconscout/react-unicons';
 import { generatePDF } from '../../utility/printPdf';
 

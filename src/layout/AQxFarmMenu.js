@@ -353,18 +353,13 @@ function AQxFarmMenu({ toggleCollapsed }) {
           'medio-cultivo-flujo-agua',
           null,
         ),
+     
+       
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/medio-cultivo-fertilizacion`}>{t('Fertilización')}</NavLink>
+            <NavLink to={`${path}/culture-medium/preparation-bioremediation`}>{t('Preparación de Suelo y Biorremediación')}</NavLink>
           </div>,
-          'medio-cultivo-fertilizacion',
-          null,
-        ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/culture-medium/bacteria`}>{t('Calidad Medio de Cultivo')}</NavLink>
-          </div>,
-          'medio-cultivo-bacterias',
+          'medio-cultivo-preparation',
           null,
         ),
       ]
@@ -405,14 +400,14 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
     getItem(t('Laboratorios'), 'laboratorios', !topMenu && <UilFlaskPotion />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/laboratorios`}>
+        <NavLink className="menuItem-icon" to={`${path}/laboratory/view`}>
           {t('Ver Laboratorios')}
         </NavLink>,
         'ver-laboratorios',
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/laboratorios-add`}>
+        <NavLink className="menuItem-icon" to={`${path}/laboratory/add`}>
           {t('Añadir Laboratorio')}
         </NavLink>,
         'add-laboratorio',
@@ -423,14 +418,14 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
     getItem(t('Empacadoras'), 'Empacadoras', !topMenu && <UilFlaskPotion />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/empacadoras`}>
+        <NavLink className="menuItem-icon" to={`${path}/packing/view`}>
           {t('Ver Empacadora')}
         </NavLink>,
         'ver-empacadora',
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/empacadora-add`}>
+        <NavLink className="menuItem-icon" to={`${path}/packing/add`}>
           {t('Añadir Empacadora')}
         </NavLink>,
         'add-empacadora',
@@ -440,7 +435,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
 
     getItem(
-      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Ingresos')}</NavTitle>,
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('RECURSOS PRODUCCIÓN')}</NavTitle>,
       'submenu-ingresos',
       null,
       null,
@@ -477,21 +472,21 @@ function AQxFarmMenu({ toggleCollapsed }) {
       [
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/costos-ver`}>{t('Ver Costos')}</NavLink>
+            <NavLink to={`${path}/costs/view`}>{t('Ver Costos')}</NavLink>
           </div>,
           'costos-ver',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/centro-costos-ver`}>{t('Ver Centro de Costos')}</NavLink>
+            <NavLink to={`${path}/costs/cost-center`}>{t('Ver Centro de Costos')}</NavLink>
           </div>,
           'centro-costos-ver',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/costo-indirecto-add`}>{t('Añadir Costo Indirecto Ha/día')}</NavLink>
+            <NavLink to={`${path}/costs/indirect-add`}>{t('Añadir Costo Indirecto Ha/día')}</NavLink>
           </div>,
           'costo-indirecto-add',
           null,

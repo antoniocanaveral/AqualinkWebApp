@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useState, useEffect, useLayoutEffect } from 'react';
 import { PageHeader } from '../../components/page-headers/page-headers';
-import { Row, Col, Form, Input, Select, Skeleton, message, Spin, DatePicker, TimePicker, InputNumber } from 'antd';
+import { Row, Col, Form, Input, Select, Skeleton, message, Spin, DatePicker, TimePicker, InputNumber, Table, Typography, Avatar } from 'antd';
 import { Button } from '../../components/buttons/buttons';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +18,9 @@ import Cookies from 'js-cookie';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { formatNumber, inputFormatter, parserNumber } from '../../utility/utility';
+import { GoogleMaps } from '../../components/maps/google-maps';
+import { ReactSVG } from 'react-svg';
+import OverviewCardMesh from '../../components/cards/OverviewCardMesh';
 
 const { Option } = Select;
 
@@ -165,6 +168,81 @@ function CoordinationLabs() {
     }
   }
 
+  const coordData = [
+    { key: '4', label: 'Fecha de Siembra Solicitada:', value: coordination ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-' },
+    { key: '5', label: 'Salinidad Solicitada:', value: coordination ? `${coordination.requested_salinity} ppm` : '20 ppm' },
+    { key: '6', label: 'Cantidad Solicitada:', value: coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '1.000.000 larvas' },
+    { key: '7', label: 'Alcalinidad Piscina Pre Cría:', value: coordination?.coord_alkalinity || '140 ppm' },
+    { key: '8', label: 'PH Piscina de Pre Cría:', value: coordination?.coord_pre_breeding_pool_ph || '5 ppm' },
+  ];
+
+  const columns = [
+    {
+      title: '', dataIndex: 'label', key: 'label', width: '55%', render: (text) => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span
+            style={{
+              height: '5px',
+              width: '5px',
+              backgroundColor: '#012e40', // Elige el color del dot
+              borderRadius: '50%',
+              display: 'inline-block',
+              marginRight: '8px', // Espacio entre el dot y el texto
+            }}
+          />
+          <span>{text}</span>
+        </div>
+      ),
+    },
+    { title: '', dataIndex: 'value', key: 'value', width: '45%' },
+  ];
+
+
+  const labInfoData = [
+    { key: '0', label: 'Módulo:', value: coordination?.lab_module || '' },
+    { key: '1', label: 'Tanque:', value: coordination?.tank || '' },
+    { key: '2', label: 'Código:', value: coordination?.SM_FishingNotification || '' },
+    { key: '2', label: 'Origen de Nauplio:', value: coordination?.origen || '' },
+    { key: '5', label: 'PL:', value: coordination?.answered_pl || '' },
+    { key: '4', label: 'Conteo Preliminar Lab:', value: coordination ? `${formatNumber(coordination.lab_count)} larvas/gramo` : '280 larvas/gramo' },
+    { key: '6', label: 'Salinidad:', value: coordination ? `${coordination.confirmed_salinity} ppm` : '' },
+    { key: '7', label: 'Método de Envío:', value: coordination?.shipping_method || '' },
+    { key: '11', label: 'Alcalinidad Tanque de Origen:', value: coordination?.alkalinity || '' },
+    { key: '12', label: 'PH Tanque de Origen:', value: coordination?.pre_breeding_pool_ph || '' },
+  ];
+
+  // Valores binarios para usar checkbox
+  const binaryFields = [
+    { key: '9', label: 'Óxigeno en Camino', icon: 'food.svg', value: coordination?.oxygen_on_the_go ? true : false },
+    { key: '10', label: 'Comida en Camino', icon: 'food.svg', value: coordination?.food_on_the_go ? true : false },
+  ];
+  const overviewCardMeshData = [
+    {
+      id: 1,
+      type: 'primary',
+      icon: 'biomasa.svg',
+      label: 'Total Tanque',
+      total: coordination ? coordination.tank_planting : '0',
+      dataPeriod: 'Tanque',
+    },
+    {
+      id: 2,
+      type: 'secondary',
+      icon: 'biomasa.svg',
+      label: 'Total Confirmado',
+      total: coordination ? coordination.confirmed_total : '0',
+      dataPeriod: 'Confirmado',
+    },
+
+    {
+      id: 2,
+      type: 'success',
+      icon: 'biomasa.svg',
+      label: 'Unidad x Empaque',
+      total: coordination ? coordination.confirmed_total : '0',
+      dataPeriod: 'Confirmado',
+    },
+  ];
 
   return (
     <>
@@ -203,64 +281,153 @@ function CoordinationLabs() {
                                             <Heading as="h4">1. Datos de la Coordinación {loading && <Spin />}</Heading>
                                             <Form form={form} name="account" style={{ marginTop: '-10px' }} layout="vertical">
                                               {/* Primera fila de tres columnas de datos */}
-                                              <Row gutter={16}>
-                                                <Col xs={24} sm={8}>
-                                                  <Form.Item name="farm" label="Camaronera">
-                                                    {coordination ? coordination.org_name : '-'}
-                                                  </Form.Item>
-                                                </Col>
-                                                <Col xs={24} sm={8}>
-                                                  <Form.Item name="poll" label="Piscina">
-                                                    {coordination ? coordination.pre_breeding_pool : '-'}
-                                                  </Form.Item>
-                                                </Col>
-                                                <Col xs={24} sm={8}>
-                                                  <Form.Item name="address" label="Dirección">
-                                                    {coordination ? `${coordination.City} ${coordination.Address1},${coordination.Address2}` : '-'}
-                                                  </Form.Item>
+                                              <Row gutter={25}>
+                                                <Col sm={24} xs={24}>
+                                                  <Suspense fallback={
+                                                    <Cards headless>
+                                                      <Skeleton paragraph={{ rows: 20 }} active />
+                                                    </Cards>
+                                                  }>
+                                                    <BasicFormWrapper className="mb-25">
+                                                      <div >
+                                                        <Row gutter={25}>
+                                                          <Col xl={10} xs={24}>
+                                                            <Suspense
+                                                              fallback={
+                                                                <Cards headless>
+                                                                  <Skeleton active />
+                                                                </Cards>
+                                                              }
+                                                            >
+                                                              <Cards
+                                                                title={`Coordinación `}
+                                                                size="large"
+                                                              >
+                                                                <div style={{ display: 'flex', flexDirection: "column", alignItems: 'center', textAlign: "center" }}>
+                                                                  <Avatar style={{ backgroundColor: '#0e92e7', marginRight: '10px' }}>
+                                                                    {coordination?.org_name?.[0] || 'E'}
+                                                                  </Avatar>
+                                                                  <Typography.Title level={5}>{coordination?.org_name || 'EcSSA Manabí'}</Typography.Title>
+                                                                  {coordination?.pre_breeding_pool || 'Pre Cria 1'}
+                                                                </div>
+                                                                <br />
+                                                                <Col xs={24} md={24} style={{ marginBottom: '18px', overflow: 'hidden' }}>
+                                                                  <div style={{ height: '200px' }}>
+                                                                    <GoogleMaps />
+                                                                  </div>
+                                                                </Col>
+
+                                                                <Col xs={24} md={24}>
+                                                                  <Table
+                                                                    className='custom-table_lab'
+                                                                    dataSource={coordData}
+                                                                    columns={columns}
+                                                                    pagination={false}
+                                                                    showHeader={false}
+                                                                    bordered
+                                                                    rowClassName={() => 'custom-table-row'}
+                                                                  />
+                                                                </Col>
+                                                              </Cards>
+                                                            </Suspense>
+                                                          </Col>
+
+                                                          <Col xl={14} xs={24}>
+                                                            <Suspense
+                                                              fallback={
+                                                                <Cards headless>
+                                                                  <Skeleton active />
+                                                                </Cards>
+                                                              }
+                                                            >
+                                                              <Cards  title="Información del Laboratorio" size="large">
+                                                                {/* Detalles del laboratorio */}
+                                                                <Row gutter={16} style={{ marginBottom: '16px' }}>
+                                                                  <Col span={10}>
+                                                                    <strong>Fecha:</strong> {coordination?.planned_date ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-'}
+                                                                  </Col>
+                                                                  <Col span={10}>
+                                                                    <strong>Módulo:</strong> {coordination?.lab_module || 'M1'}
+                                                                  </Col>
+                                                                  <Col span={4}>
+                                                                    <strong>Tanque:</strong> {coordination?.tank || 'T1'}
+                                                                  </Col>
+                                                                </Row>
+                                                                <br />
+                                                                <br />
+
+                                                                <Row gutter={16} style={{ marginBottom: '16px' }}>
+                                                                  <Col xs={24} sm={24} md={24} lg={10}>
+                                                                    {/* Secciones en Cards para información clave */}
+                                                                    <div style={{ maxWidth: '100%' }}>
+                                                                      {overviewCardMeshData.map((item, i) => (
+                                                                        <OverviewCardMesh data={item} key={i} />
+                                                                      ))}
+                                                                    </div>
+                                                                  </Col>
+                                                                  <Col xs={24} sm={24} md={24} lg={14}>
+                                                                    {/* Tabla estilizada de información de laboratorio */}
+                                                                    <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
+                                                                      <Table
+                                                                        className='custom-table_lab'
+                                                                        dataSource={labInfoData}
+                                                                        columns={[
+                                                                          { title: '', dataIndex: 'label', key: 'label', width: '60%' }, // 60% para la primera columna
+                                                                          { title: '', dataIndex: 'value', key: 'value', width: '40%' }, // 40% para la segunda columna
+                                                                        ]}
+                                                                        pagination={false}
+                                                                        showHeader={false}
+                                                                        bordered
+                                                                        rowClassName={() => 'custom-table-row'}
+                                                                        style={{ width: '100%' }} // Asegura que la tabla se ajuste al 100% del contenedor
+                                                                      />
+                                                                    </div>
+                                                                  </Col>
+                                                                </Row>
+                                                                <br />
+
+                                                                <Row gutter={16} style={{ marginBottom: '16px' }}>
+                                                                  <Col span={24} style={{ textAlign: 'center' }}>
+                                                                    <div
+                                                                      style={{
+                                                                        display: 'flex',
+                                                                        flexDirection: 'row',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'center', // Alinea el contenido al centro
+                                                                        gap: "50px", // Ajusta el espacio entre los elementos
+                                                                        width: "100%"
+                                                                      }}>
+                                                                      {binaryFields.map((field, index) => (
+                                                                        <div key={index} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                                          <div style={{ width: "50px" }}>
+                                                                            <ReactSVG src={require(`../../static/img/AQx-IMG/${field.icon}`)} />
+                                                                          </div>
+                                                                          <div style={{ marginLeft: "10px" }}>
+                                                                            <strong>{field.label}</strong>
+                                                                          </div>
+                                                                          <div style={{ marginLeft: "10px" }}>
+                                                                            <Checkbox checked={field.value} disabled>
+                                                                              {field.value ? 'Sí' : 'No'}
+                                                                            </Checkbox>
+                                                                          </div>
+                                                                        </div>
+                                                                      ))}
+                                                                    </div>
+                                                                  </Col>
+                                                                </Row>
+                                                              </Cards>
+                                                            </Suspense>
+                                                          </Col>
+
+                                                        </Row>
+                                                      </div>
+
+                                                    </BasicFormWrapper>
+                                                  </Suspense>
                                                 </Col>
                                               </Row>
-
-                                              {/* Segunda fila de tres columnas de datos */}
                                               <Row gutter={16}>
-                                                <Col xs={24} sm={8}>
-                                                  <Form.Item name="notification" label="Notificación">
-                                                    {coordination ? coordination.SM_FishingNotification : '-'}
-                                                  </Form.Item>
-                                                </Col>
-                                                <Col xs={24} sm={8}>
-                                                  <Form.Item name="plantingdate" label="Fecha de Siembra Solicitada">
-                                                    {coordination ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-'}
-                                                  </Form.Item>
-                                                </Col>
-                                                <Col xs={24} sm={8}>
-                                                  <Form.Item name="requestedpl" label="PL Solicitado">
-                                                    {coordination ? coordination.requested_pl : '-'}
-                                                  </Form.Item>
-                                                </Col>
-                                              </Row>
 
-                                              {/* Tercera fila de tres columnas de datos */}
-                                              <Row gutter={16}>
-                                                <Col xs={24} sm={8}>
-                                                  <Form.Item name="salinity" label="Salinidad Solicitada">
-                                                    {coordination ? coordination.requested_salinity + ' ppm' : '-'}
-                                                  </Form.Item>
-                                                </Col>
-                                                <Col xs={24} sm={8}>
-                                                  <Form.Item name="quantity" label="Cantidad Solicitada">
-                                                    {coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '-'}
-                                                  </Form.Item>
-                                                </Col>
-                                                <Col xs={24} sm={8}>
-                                                  <Form.Item name="waterripening" label="Días de Maduración del Agua">
-                                                    {coordination ? `${coordination.water_ripening_days} días` : '-'}
-                                                  </Form.Item>
-                                                </Col>
-                                              </Row>
-
-                                              {/* Fila del botón en la cuarta columna */}
-                                              <Row gutter={16}>
                                                 <Col xs={24} sm={18}></Col> {/* Espacio en blanco ocupando tres cuartos de ancho */}
                                                 <Col xs={24} sm={6} style={{ textAlign: 'right', marginTop: '20px' }}>
                                                   <Button size="default" type="danger" onClick={() => onCancel()}>

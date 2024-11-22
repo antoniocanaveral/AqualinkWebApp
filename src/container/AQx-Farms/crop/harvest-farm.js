@@ -8,6 +8,9 @@ import ProjectedSuggestedFeedingChart from '../monitoring/feeding/ProjectedSugge
 import BiomassEvolutionChart from './biomass/BiomassEvolutionChart';
 import HarvestFinalYieldChart from './biomass/HarvestFinalYieldChart';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
+import CoordModalHarvest from './modals/CoordModalHarvest';
+import HarvestModalHarvest from './modals/HarvestModalHarvest';
+import PackingModalHarvest from './modals/PackingModalHarvest';
 
 function HarvestFarm() {
 
@@ -17,6 +20,14 @@ function HarvestFarm() {
   const [updatedValue, setUpdatedValue] = useState("");
   const [updatedObservation, setUpdatedObservation] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
+
+  //Modales
+  const [modalCoord, setModalCoord] = useState(false);
+  const [modalHarvest, setModalHarvest] = useState(false);
+  const [modalPacking, setModalPacking] = useState(false);
+
+
+
 
   const showModal = (record) => {
     setEditingRecord(record);
@@ -69,8 +80,11 @@ function HarvestFarm() {
       mudados: "4",
     },
     tempProceso: "-6°C",
-    tipoPesca: "Manual o Automática",
+    tipoPesca: "Manual ",
     binesProgramados: "40 bines",
+    biomasaCosechada: "44,000 lbs",
+    tempPromedio: "-6",
+    binesEntregados: "38"
   };
 
 
@@ -93,7 +107,7 @@ function HarvestFarm() {
       key: 'rendimientoPlanta',
       render: (text, record) => (
         <span onClick={() => showModal(record)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-          {text} 
+          {text}
           <UilEdit size={16} style={{ fontSize: '14px', marginLeft: '5px' }} /> {/* Ajuste de tamaño y espaciado */}
         </span>
       ),
@@ -103,8 +117,8 @@ function HarvestFarm() {
       dataIndex: 'observaciones',
       key: 'observaciones',
       render: (text, record) => (
-        <span onClick={() => showObservationModal(record)} style={{ cursor: 'pointer', display: 'flex', justifyContent:"space-between" }}>
-          {text} 
+        <span onClick={() => showObservationModal(record)} style={{ cursor: 'pointer', display: 'flex', justifyContent: "space-between" }}>
+          {text}
           <UilEdit size={16} style={{ fontSize: '12px', marginLeft: '5px' }} /> {/* Ajuste de tamaño y espaciado */}
         </span>
       ),
@@ -159,11 +173,30 @@ function HarvestFarm() {
           <Col xl={13} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
 
-            <Cards title="Reporte de Pesca" size="large">
+              <Cards title="Reporte de Pesca" size="large">
                 {/* Tipo */}
                 <div className="harvest-report-section">
-                  <span className="label">Tipo</span>
-                  <span>{fishingReportData.tipo}</span>
+                  <div>
+                    <span className="label">Tipo: </span>
+                    <span>{fishingReportData.tipo}</span>
+                  </div>
+                  <div className='flex-row' style={{ gap: 10 }}>
+                    <span className="label">Detalles: </span>
+                    <div className='flex-row'>
+                      <Button onClick={() => setModalCoord(true)}>
+                        Coordinación
+                      </Button>
+                      <Button onClick={() => setModalHarvest(true)}>
+                        Cosecha
+                      </Button>
+                      <Button onClick={() => setModalPacking(true)}>
+                        Empacadora
+                      </Button>
+                    </div>
+
+
+                  </div>
+
                 </div>
                 <div className="harvest-report-divider" />
 
@@ -227,25 +260,53 @@ function HarvestFarm() {
 
                 <div className="harvest-report-divider" />
 
-                {/* Tipo de Pesca y Bines Programados */}
-                <div className="flex-row">
-                  <span className="label">Tipo de Pesca</span>
-                  <span>{fishingReportData.tipoPesca}</span>
+                <div style={{ display: "flex", gap: 50 }}>
+                  <div style={{ width: "50%" }}>
+                    {/* Tipo de Pesca y Bines Programados */}
+                    <div className="flex-row">
+                      <span className="label">Proceso</span>
+                      <span>{fishingReportData.tipoPesca}</span>
 
+                    </div>
+                    <div className="harvest-report-divider" />
+
+                    <div className="flex-row" >
+                      <span className="label">Tiempo de Proceso</span>
+                      <span>{fishingReportData.tiempoProceso}</span>
+                    </div>
+
+                    <div className="harvest-report-divider" />
+
+                    <div className="flex-row">
+                      <span className="label">Bines Programados</span>
+                      <span>{fishingReportData.binesProgramados}</span>
+                    </div>
+
+                  </div>
+                  <div style={{ width: "50%" }}>
+                    {/* Tipo de Pesca y Bines Programados */}
+                    <div className="flex-row">
+                      <span className="label">Biomasa Cosechada</span>
+                      <span>{fishingReportData.biomasaCosechada}</span>
+
+                    </div>
+                    <div className="harvest-report-divider" />
+
+                    <div className="flex-row" >
+                      <span className="label">Temperatura Promedio</span>
+                      <span>{fishingReportData.tempPromedio}</span>
+                    </div>
+
+                    <div className="harvest-report-divider" />
+
+                    <div className="flex-row">
+                      <span className="label">Bines Entregados</span>
+                      <span>{fishingReportData.binesEntregados}</span>
+                    </div>
+
+                  </div>
                 </div>
-                <div className="harvest-report-divider" />
 
-                <div className="flex-row" >
-                  <span className="label">Tiempo de Proceso</span>
-                  <span>{fishingReportData.tiempoProceso}</span>
-                </div>
-
-                <div className="harvest-report-divider" />
-
-                <div className="flex-row">
-                  <span className="label">Bines Programados</span>
-                  <span>{fishingReportData.binesProgramados}</span>
-                </div>
 
 
               </Cards>
@@ -296,6 +357,27 @@ function HarvestFarm() {
 
         <Modal title="Editar Rendimiento de Planta" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
           <Input value={updatedValue} onChange={(e) => setUpdatedValue(e.target.value)} />
+        </Modal>
+
+        <Modal
+          style={{ maxHeight: '400px' }} // Cambia a la altura deseada
+          bodyStyle={{ overflowY: 'auto', padding: '16px', maxHeight: '500px' }} // Controla el contenido interno
+          title="Detalle de Coordinación" visible={modalCoord} onOk={() => setModalCoord(false)} onCancel={() => setModalCoord(false)}>
+          <CoordModalHarvest />
+        </Modal>
+
+        <Modal
+          style={{ maxHeight: '400px' }} // Cambia a la altura deseada
+          bodyStyle={{ overflowY: 'auto', padding: '16px', maxHeight: '500px' }} // Controla el contenido interno
+          title="Detalle de Cosecha" visible={modalHarvest} onOk={() => setModalHarvest(false)} onCancel={() => setModalHarvest(false)}>
+          <HarvestModalHarvest />
+        </Modal>
+
+        <Modal
+          style={{ maxHeight: '400px' }} // Cambia a la altura deseada
+          bodyStyle={{ overflowY: 'auto', padding: '16px', maxHeight: '500px' }} // Controla el contenido interno
+          title="Detalle de Empacadora" visible={modalPacking} onOk={() => setModalPacking(false)} onCancel={() => setModalPacking(false)}>
+          <PackingModalHarvest />
         </Modal>
 
         <Modal title="Editar Observaciones" visible={isObservationModalVisible} onOk={handleObservationOk} onCancel={handleCancel}>
