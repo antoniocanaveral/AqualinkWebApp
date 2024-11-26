@@ -10,7 +10,7 @@ import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { PerfomanceOverviewStyle } from '../../../dashboard/Style';
 import { BorderLessHeading } from '../../../styled';
 // Sample data
-const labels = ['Target', 'Completed', 'In Progress'];
+const labels = ['Objetivo', 'Completo', 'En Curso'];
 const dataSets = {
   series: [90, 80, 70],
   options: {
@@ -101,7 +101,7 @@ const CostPerformanceRadial = React.memo(() => {
   return (
     <BorderLessHeading>
       <PerfomanceOverviewStyle className="ninjadash-chartpoint-vertical">
-        <Chart options={dataSets.options} series={dataSets.series} type="radialBar" width={320} />
+        <Chart options={dataSets.options} series={dataSets.series} type="radialBar" width={300} />
         <div className="ninjadash-chartpoint">
           {dataSets.series.map((value, index) => {
             return (

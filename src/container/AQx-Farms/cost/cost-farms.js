@@ -7,6 +7,7 @@ import WeeklyGroupedBarChart from './charts/WeeklyGroupBarChart';
 import CostPerformanceRadial from './charts/CostPerformance';
 import { ChartContainer, SalesRevenueWrapper } from '../../dashboard/Style';
 import { BorderLessHeading } from '../../styled';
+import WeeklyCombinedChart from './charts/WeeklyCombinedChart';
 
 function CostFarm() {
   // Columnas de la tabla
@@ -524,14 +525,15 @@ function CostFarm() {
         </Col>
         <Col xl={8} xs={24} style={{ display: "flex" }}>
           <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-            <Cards title="" size="large">
+            <Cards title="Balanceado Semanal y Promedio" size="large">
+              <WeeklyCombinedChart dataSource={dataSource} />
             </Cards>
-
           </Suspense>
         </Col>
         <Col xl={8} xs={24} style={{ display: "flex" }}>
           <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-            <Cards title="" size="large">
+            <Cards title="Engorde Semanal y Promedio" size="large">
+              <WeeklyCombinedChart dataSource={dataSource} />
             </Cards>
 
           </Suspense>
@@ -542,11 +544,11 @@ function CostFarm() {
           <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
             <div className='flex-row'>
               <Cards >
-                <div className='flex-row'>
+                <div  style={{display:"flex", flexDirection:"row"}}>
                   <div>
                     <WeeklyGroupedBarChart dataSource={dataSource} />
                   </div>
-                  <div className='flex-row' style={{gap: 20}}>
+                  <div className='flex-row' style={{ gap: 20 }}>
                     <div>
                       <CostPerformanceRadial />
 
@@ -554,7 +556,7 @@ function CostFarm() {
                     <div className='ninjadash-sales-inner' style={{ width: "50%", margin: "0 auto" }}>
                       <Progress
                         type="circle"
-                        width={230}
+                        width={200}
                         percent={75}
                         strokeColor="#0372CE"
                         trailColor={'#E6D5F6'}
@@ -566,15 +568,15 @@ function CostFarm() {
                           <ChartContainer>
                             <div className="ninjadash-chart-top" style={{ display: "flex", flexDirection: "column" }}>
                               <div className="ninjadash-chart-top__item ">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="16.803" viewBox="0 0 28 16.803" class="injected-svg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="36.803" viewBox="0 0 28 16.803" class="injected-svg">
                                   <path id="arrow-growth-25" d="M29.882,6.868A1.421,1.421,0,0,0,28.595,6h-7a1.4,1.4,0,1,0,0,2.8h3.625L17.4,16.623,12.793,12a1.4,1.4,0,0,0-1.987,0l-8.4,8.4A1.405,1.405,0,1,0,4.4,22.389l7.4-7.418,4.6,4.619a1.4,1.4,0,0,0,1.987,0l8.8-8.817V14.4a1.4,1.4,0,1,0,2.8,0v-7A1.4,1.4,0,0,0,29.882,6.868Z" transform="translate(-1.994 -6)" fill="#fb3586"></path>
                                 </svg>
-                                <span className="ninjadash-chart-top__item--amount">$8,550</span>
+                                <span style={{fontSize:"30px"}} className="ninjadash-chart-top__item--amount">$8,550</span>
                                 <span className="ninjadash-chart-top__item--status status-growth">
                                   25%
                                 </span>
                               </div>
-                              <span className="ninjadash-chart-top__item--text">Growth</span>
+                              <span className="ninjadash-chart-top__item--text">Crecimiento</span>
                             </div>
                           </ChartContainer>
                         </BorderLessHeading>

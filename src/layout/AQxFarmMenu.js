@@ -510,14 +510,14 @@ function AQxFarmMenu({ toggleCollapsed }) {
       [
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/cliente-ficha`}>{t('Ficha Cliente')}</NavLink>
+            <NavLink to={`${path}/client/view`}>{t('Ficha Cliente')}</NavLink>
           </div>,
           'cliente-ficha',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/cliente-usuarios`}>{t('Usuarios')}</NavLink>
+            <NavLink to={`${path}/client/add`}>{t('Añadir Cliente')}</NavLink>
           </div>,
           'cliente-usuarios',
           null,

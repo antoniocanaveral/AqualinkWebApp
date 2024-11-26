@@ -8,6 +8,7 @@ import { GoogleMaps } from '../../../components/maps/google-maps';
 
 function CostAddFarm() {
   const [speedometerValue, setSpeedometerValue] = useState(25.89); // Valor inicial del Speedometer
+  const [speedometerStaticValue, setSpeedometerStaticValue] = useState(25.89); // Valor del input
   const [inputValue, setInputValue] = useState(''); // Valor del input
 
   const handleUpdateSpeedometer = () => {
@@ -32,13 +33,13 @@ function CostAddFarm() {
       <Main>
         <Row gutter={25}>
           {/* Columna de la Geolocalización */}
-          <Col xl={10} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+          <Col xl={12} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Geolocalización" size="large" style={{ marginBottom: 0 }}>
                 <Row gutter={[5, 5]} align="top">
                   <Col xs={24} md={24}>
                     <div>
-                      <GoogleMaps height={"350px"} />
+                      <GoogleMaps height={"220px"} />
                     </div>
                   </Col>
                   <Col xs={24} md={24}>
@@ -65,10 +66,28 @@ function CostAddFarm() {
           </Col>
 
           {/* Columna del Speedometer */}
-          <Col xl={14} xs={24} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Col xl={12} xs={24} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title={"Costo de Producción Hectárea/Día"} style={{ display: 'flex', alignItems: 'center' }}>
+              <Cards title={"Costo Indirecto Hectárea/Día"} style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ flex: 1 }}>
+                  <Space direction="vertical" style={{ width: '100%' }}>
+                    <Typography.Text style={{ fontSize: '14px' }}>Costo Indirecto Ha/Día/ Proyectado:</Typography.Text>
+                    <Input
+                      type="number"
+                      placeholder="USD 18"
+                      defaultValue={"18 USD"}
+                      disabled={true}
+                    />
+                  </Space>
+                  <Space direction="vertical" style={{ width: '100%' }}>
+                    <Typography.Text style={{ fontSize: '14px' }}>Costo Indirecto Ha/Día:</Typography.Text>
+                    <Input
+                      type="number"
+                      placeholder="USD 19"
+                      defaultValue={"19 USD"}
+                      disabled={true}
+                    />
+                  </Space>
                   {/* Input con label */}
                   <Space direction="vertical" style={{ width: '100%' }}>
                     <Typography.Text style={{ fontSize: '14px' }}>Costo Hectárea/Día:</Typography.Text>
@@ -84,12 +103,31 @@ function CostAddFarm() {
                   </Space>
                 </div>
                 {/* Speedometer */}
+
+              </Cards>
+            </Suspense>
+          </Col>
+        </Row>
+        <Row gutter={25}>
+          <Col xl={12} xs={24}>
+            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
+              <Cards title="" size="large">
+                <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                  <Speedometer value={speedometerStaticValue} />
+                </div>
+              </Cards>
+            </Suspense>
+          </Col>
+          <Col xl={12} xs={24}>
+            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
+              <Cards title="" size="large">
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
                   <Speedometer value={speedometerValue} />
                 </div>
               </Cards>
             </Suspense>
           </Col>
+
         </Row>
       </Main>
     </>

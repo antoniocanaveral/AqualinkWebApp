@@ -22,6 +22,7 @@ import CultureMediumRoutesFarm from './farmCultureMedium';
 import LaboratoryFarm from './farmLaboratory';
 import PackingRouteFarm from './farmPacking';
 import CostRouteFarm from './farmCost';
+import ClientRouteFarm from './farmClient';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -52,6 +53,7 @@ const Farm = React.memo(() => {
         <Route path="/laboratory/*" element={<LaboratoryFarm/>} />
         <Route path="/packing/*" element={<PackingRouteFarm />} />
         <Route path='/costs/*' element={<CostRouteFarm />} />
+        <Route path="/client/*" element={<ClientRouteFarm />} />
 
         <Route path="/inventory/add/*" element={<AddInventoryFarms />} />
         <Route path="/inventory/view/*" element={<InventoryTable />} />

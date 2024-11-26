@@ -17,12 +17,6 @@ function WizardsFour() {
     status: 'process',
     isFinished: false,
     current: 1,
-    profile: {
-      fname: '',
-      lname: '',
-      email: '',
-      address: '',
-    },
   });
 
   const { status, isFinished, current, profile } = state;

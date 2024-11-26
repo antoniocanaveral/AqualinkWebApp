@@ -103,12 +103,12 @@ function AddInventoryFarms() {
                   <Col span={12}>
                     {selectedCategory && (
                       <Form.Item
-                        label="Subcategoría"
-                        name="subCategory"
-                        rules={[{ required: true, message: 'Seleccione una subcategoría' }]}
+                        label="Producto"
+                        name="Producto"
+                        rules={[{ required: true, message: 'Seleccione un Producto' }]}
                       >
                         <Select
-                          placeholder="Seleccione una subcategoría"
+                          placeholder="Seleccione un Producto"
                           onChange={setSelectedSubCategory}
                         >
                           {options
