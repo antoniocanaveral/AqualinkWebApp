@@ -534,7 +534,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/users-add`}>
+        <NavLink className="menuItem-icon" to={`${path}/users/add`}>
           {t('Añadir Usuarios')}
         </NavLink>,
         'add-usuarios',

@@ -4055,3 +4055,16 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   font-weight: bold;
   margin-top: 5px;
 }
+
+
+.multi-row-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+}
+
+.multi-row-tabs .ant-tabs-tab {
+  flex: 1 1 auto !important;
+  white-space: nowrap !important;
+  text-align: center!important;
+}

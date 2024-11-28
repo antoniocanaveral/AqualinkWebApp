@@ -168,11 +168,12 @@ function PlanningStudioFarms() {
                       { label: "Supervivencia estimada", name: "survival_rate", placeholder: "Porcentaje", type: "number" },
                       { label: "Dias pre-cría", name: "pre_breeding_weeks", placeholder: "Días", type: "select" },
                       { label: "FCA estimado", name: "stimated_fca", placeholder: "FCA", type: "number" },
+                      { label: "Crecimiento estimado", name: "stimated_performance", placeholder: "Crecimiento", type: "number" },
+                      { label: "Fecha de inicio", name: "start_date", placeholder: "Fecha de inicio", type: "calendar" },
                       { label: "Costo est x Kg Alimento", name: "food_cost", placeholder: "Seleccione", type: "number" },
-                      { label: "Crecimiento est por Semana", name: "stimated_performance", placeholder: "Crecimiento", type: "number" },
                       { label: "Costo aditivos x Kg Alimento", name: "additives_cost", placeholder: "Seleccione", type: "number" },
                       { label: "Costo indirecto Ha/día", name: "dayly_inditect_cost", placeholder: "Costo indirecto", type: "number" },
-                      { label: "Fecha de inicio", name: "start_date", placeholder: "Fecha de inicio", type: "calendar" },
+
 
                     ].map(field => (
                       <div style={{ flex: '1 1 30%', maxWidth: "30%" }} key={field.name}>
