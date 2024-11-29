@@ -3,7 +3,7 @@
         "id": 1,
         "type": "primary",
         "icon": "ticket.svg",
-        "label": "Total Tickets",
+        "label": "Tickets Web App",
         "total": "30825",
         "suffix": "",
         "prefix": ""
@@ -12,7 +12,7 @@
         "id": 2,
         "type": "secondary",
         "icon": "ticket.svg",
-        "label": "Total Tickets",
+        "label": "Tickets App Campo",
         "total": "825",
         "suffix": "",
         "prefix": ""
@@ -21,7 +21,7 @@
         "id": 3,
         "type": "warning",
         "icon": "clock.svg",
-        "label": "Total Tickets",
+        "label": "Tickets en Proceso",
         "total": "350",
         "suffix": "",
         "prefix": ""
@@ -30,7 +30,7 @@
         "id": 4,
         "type": "success",
         "icon": "check-circle.svg",
-        "label": "Total Tickets",
+        "label": "Tickets Resueltos",
         "total": "30825",
         "suffix": "",
         "prefix": ""

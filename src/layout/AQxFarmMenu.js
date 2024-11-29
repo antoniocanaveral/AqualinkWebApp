@@ -245,6 +245,13 @@ function AQxFarmMenu({ toggleCollapsed }) {
               'alimentacion-muestreo-platos',
               null,
             ),
+            getItem(
+              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/plate-sampling`}>
+                {t('Tablas de Alimentación')}
+              </NavLink>,
+              'alimentacion-tabla',
+              null,
+            ),
           ]
         ),
       ]
@@ -554,7 +561,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
   
     // SOPORTE
     getItem(
-      <NavLink to={`${path}/soporte`}>
+      <NavLink to={`${path}/support`}>
         {t('Soporte')}
       </NavLink>,
       'soporte',

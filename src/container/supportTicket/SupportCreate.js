@@ -51,7 +51,17 @@ function SupportCreate({ visible, onCancel, handleSubmit }) {
                 },
               ]}
             >
-              <Input />
+              <Select style={{ width: '100%' }} defaultValue="Registro de datos AquaLink App">
+                <Option value="Registro de datos AquaLink App">Registro de datos AquaLink App</Option>
+                <Option value="Registro de inventario AquaLink Web App">Registro de inventario AquaLink Web App</Option>
+                <Option value="Registro de costo indirecto Ha/dia">Registro de costo indirecto Ha/dia</Option>
+                <Option value="Coordinación de Siembra Camaronera">Coordinación de Siembra Camaronera</Option>
+                <Option value="Coordinacion de Siembra Laboratorio">Coordinacion de Siembra Laboratorio</Option>
+                <Option value="Coordinación de Cosecha Camaronera">Coordinación de Cosecha Camaronera</Option>
+                <Option value="Coordinacion de Cosecha Empacadora">Coordinacion de Cosecha Empacadora</Option>
+                <Option value="Reporte de malfuniconamiento DO AquaLink">Reporte de malfuniconamiento DO AquaLink</Option>
+                <Option value="Reporte de malfuncionamiento de WaterLink">Reporte de malfuncionamiento de WaterLink</Option>
+              </Select>
             </Form.Item>
             <Form.Item name="priority" initialValue="high" label="Priority">
               <Select style={{ width: '100%' }}>

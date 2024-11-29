@@ -228,7 +228,9 @@ function SupportTicket() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Support Ticket" routes={PageRoutes} />
+      <PageHeader className="ninjadash-page-header-main"
+      highlightText="Aqualink Soporte"
+      title="Tickets" />
       <Main>
         <TicketBox>
           <Row justify="center">
@@ -248,9 +250,9 @@ function SupportTicket() {
             <Col sm={24} xs={24}>
               <Cards headless>
                 <div className="ninjadash-support-content-top">
-                  <Heading as="h4">All Support Ticket</Heading>
+                  <Heading as="h4">Todos los Tickets</Heading>
                   <Button onClick={showModal} size="default" type="primary">
-                    <UilPlus /> Add Ticket
+                    <UilPlus /> Crear Ticket
                   </Button>
                 </div>
                 <div className="ninjadash-support-content-filter">
