@@ -50,16 +50,44 @@ function AddClientFarm() {
             [index]: (prevState[index] || 1) + 1,
         }));
     };
-    
-    
+
+
+    const fieldsNaturalPerson = [
+        "nombre", "cc", "direccionFiscal", "correo", "telefonoConvencional", "telefonoCelular",
+        "tipoCliente", "nombreCamaronera", "provincia", "canton", "tipoCamaronera", "acuerdoMinisterial",
+        "sistemaCultivo", "protocoloProduccion", "extensionProductiva", "extensionPreCrias", "cantidadPreCrias",
+        "extensionPiscinasPreEngorde", "cantidadPiscinasPreEngorde", "extensionPiscinasEngorde", "cantidadPiscinasEngorde",
+        "extensionCanalesReservorio"
+    ];
+
+    const fieldsLegalPerson = [
+        "razonSocial", "ruc", "direccionFiscal", "representanteLegal", "ccRepresentante", "correoRepresentante",
+        "correoGeneral", "telefonoConvencional", "telefonoCelular",
+        "tipoCliente", "nombreCamaronera", "provincia", "canton", "tipoCamaronera", "acuerdoMinisterial",
+        "sistemaCultivo", "protocoloProduccion", "extensionProductiva", "extensionPreCrias", "cantidadPreCrias",
+        "extensionPiscinasPreEngorde", "cantidadPiscinasPreEngorde", "extensionPiscinasEngorde", "cantidadPiscinasEngorde",
+        "extensionCanalesReservorio"
+    ];
+
+
+    const getFirstTabFields = () => {
+        const perfil = form.getFieldValue("perfilJuridico");
+        if (perfil === "natural") {
+            return fieldsNaturalPerson;
+        }
+        if (perfil === "juridica") {
+            return fieldsLegalPerson;
+        }
+        return ["perfilJuridico"]; // Solo valida el perfil si aún no se selecciona
+    };
+
+
     const validateCurrentStep = async () => {
-        console.log(`Validando paso: ${currentStep}`);
-    
+
         // Paso 0: Registro Pre Crías
         if (currentStep === 0) {
-            console.log("Validando paso 0: Registro Pre Crías");
             const cantidadPreCrias = form.getFieldValue("cantidadPreCrias") || 0;
-    
+
             const camposPreCrias = Array.from({ length: cantidadPreCrias }, (_, index) => [
                 `piscinaPreCriaId-${index}`,
                 `extensionPreCria-${index}`,
@@ -69,7 +97,7 @@ function AddClientFarm() {
                 `aireacionMecanica-${index}`,
                 `metodoAlimentacion-${index}`,
             ]).flat();
-    
+
             const errorMessages = {
                 piscinaPreCriaId: "El campo 'Piscina Pre Cría' es obligatorio.",
                 extensionPreCria: "El campo 'Extensión Pre Cría' debe ser mayor a 0.",
@@ -79,7 +107,7 @@ function AddClientFarm() {
                 aireacionMecanica: "El campo 'Aireación Mecánica' debe ser mayor a 0.",
                 metodoAlimentacion: "Debes seleccionar un método de alimentación (Manual o Automático).",
             };
-    
+
             const camposConErrores = camposPreCrias.filter(campo => {
                 const valor = form.getFieldValue(campo);
                 const campoBase = campo.split('-')[0]; // Extraer nombre base
@@ -88,12 +116,11 @@ function AddClientFarm() {
                 }
                 return valor === undefined || valor <= 0;
             });
-    
+
             if (camposConErrores.length > 0) {
                 camposConErrores.forEach(campo => {
                     const campoBase = campo.split('-')[0];
                     const mensajeError = errorMessages[campoBase] || "Este campo es obligatorio.";
-                    console.warn(mensajeError);
                     message.error(mensajeError);
                 });
                 return false;
@@ -102,13 +129,12 @@ function AddClientFarm() {
                 return true;
             }
         }
-    
+
         // Paso 1: Registro Pre Engorde
         if (currentStep === 1) {
-            console.log("Validando paso 1: Registro Pre Engorde");
-    
-            const cantidadPreEngorde = form.getFieldValue("cantidadPreEngorde") || 0;
-    
+
+            const cantidadPreEngorde = form.getFieldValue("cantidadPiscinasPreEngorde") || 0;
+
             const camposPreEngorde = Array.from({ length: cantidadPreEngorde }, (_, index) => [
                 `piscinaPreEngordeId-${index}`,
                 `extensionPreEngorde-${index}`,
@@ -118,7 +144,7 @@ function AddClientFarm() {
                 `aireacionMecanicaPreEngorde-${index}`,
                 `metodoAlimentacionPreEngorde-${index}`,
             ]).flat();
-    
+
             const errorMessagesPaso1 = {
                 piscinaPreEngordeId: "El campo 'Piscina Pre Engorde' es obligatorio.",
                 extensionPreEngorde: "El campo 'Extensión Pre Engorde' debe ser mayor a 0.",
@@ -128,84 +154,36 @@ function AddClientFarm() {
                 aireacionMecanicaPreEngorde: "El campo 'Aireación Mecánica Pre Engorde' debe ser mayor a 0.",
                 metodoAlimentacionPreEngorde: "Debes seleccionar un método de alimentación (Manual o Automático).",
             };
-    
-            const camposConErroresPaso1 = camposPreEngorde.filter(campo => {
-                const valor = form.getFieldValue(campo);
-                const campoBase = campo.split('-')[0];
-                if (campoBase.includes("metodoAlimentacion")) {
-                    return valor === undefined || valor === "";
-                }
-                return valor === undefined || valor <= 0;
-            });
-    
-            if (camposConErroresPaso1.length > 0) {
-                camposConErroresPaso1.forEach(campo => {
-                    const campoBase = campo.split('-')[0];
-                    const mensajeError = errorMessagesPaso1[campoBase] || "Este campo es obligatorio.";
-                    console.warn(mensajeError);
-                    message.error(mensajeError);
-                });
-                return false;
-            } else {
-                setCurrentStep(currentStep + 1);
-                return true;
-            }
-        }
-    
-        // Paso 2: Registro Engorde
-        if (currentStep === 2) {
-            console.log("Validando paso 2: Registro Engorde");
-    
-            const cantidadEngorde = form.getFieldValue("cantidadEngorde") || 0;
-    
-            const camposEngorde = Array.from({ length: cantidadEngorde }, (_, index) => [
-                `piscinaEngordeId-${index}`,
-                `extensionEngorde-${index}`,
-                `profundidadOperativaEngorde-${index}`,
-                `profundidadTransferenciaEngorde-${index}`,
-                `diasCrecimientoEngorde-${index}`,
-                `cantidadAlimentoEngorde-${index}`,
-                `metodoAlimentacionEngorde-${index}`,
-            ]).flat();
-    
-            const errorMessagesPaso2 = {
-                piscinaEngordeId: "El campo 'Piscina Engorde' es obligatorio.",
-                extensionEngorde: "El campo 'Extensión Engorde' debe ser mayor a 0.",
-                profundidadOperativaEngorde: "La 'Profundidad Operativa Engorde' debe ser mayor a 0.",
-                profundidadTransferenciaEngorde: "La 'Profundidad Transferencia Engorde' debe ser mayor a 0.",
-                diasCrecimientoEngorde: "Los 'Días de Crecimiento' deben ser mayores a 0.",
-                cantidadAlimentoEngorde: "La 'Cantidad de Alimento' debe ser mayor a 0.",
-                metodoAlimentacionEngorde: "Debes seleccionar un método de alimentación (Manual o Automático).",
-            };
-    
-            const camposConErroresPaso2 = camposEngorde.filter(campo => {
-                const valor = form.getFieldValue(campo);
-                const campoBase = campo.split('-')[0];
-                if (campoBase.includes("metodoAlimentacion")) {
-                    return valor === undefined || valor === "";
-                }
-                return valor === undefined || valor <= 0;
-            });
-    
-            if (camposConErroresPaso2.length > 0) {
-                camposConErroresPaso2.forEach(campo => {
-                    const campoBase = campo.split('-')[0];
-                    const mensajeError = errorMessagesPaso2[campoBase] || "Este campo es obligatorio.";
-                    console.warn(mensajeError);
-                    message.error(mensajeError);
-                });
-                return false;
-            } else {
-                setCurrentStep(currentStep + 1);
-                return true;
-            }
-        }
-    };
-    
 
-    const handlePrevStep = async (currentStep) => {
-       
-        setCurrentStep(currentStep - 1);
+            const camposConErroresPaso1 = camposPreEngorde.filter((campo) => {
+                const valor = form.getFieldValue(campo);
+                const campoBase = campo.split("-")[0]; // Extraer el nombre base del campo
+                if (campoBase.includes("metodoAlimentacionPreEngorde")) {
+                    return valor === undefined || valor === "";
+                }
+                return valor === undefined || valor <= 0;
+            });
+
+            if (camposConErroresPaso1.length > 0) {
+                camposConErroresPaso1.forEach((campo) => {
+                    const campoBase = campo.split("-")[0];
+                    const mensajeError = errorMessagesPaso1[campoBase] || "Este campo es obligatorio.";
+                    message.error(mensajeError);
+                });
+                return false;
+            } else {
+                setCurrentStep(currentStep + 1);
+                return true;
+            }
+        }
+
+
+
+    };
+
+
+    const handlePrevStep = async () => {
+        setCurrentStep(prev => prev - 1);
         return Promise.resolve(); // Asegura que la función sea una promesa.
     };
 
@@ -328,7 +306,51 @@ function AddClientFarm() {
 
 
     const done = () => {
-        setActiveTab("3");
+        // Paso 2: Registro Engorde
+        if (currentStep === 2) {
+
+            const cantidadEngorde = form.getFieldValue("cantidadPiscinasEngorde") || 0;
+
+            const camposEngorde = Array.from({ length: cantidadEngorde }, (_, index) => [
+                `piscinaEngordeId-${index}`,
+                `extensionEngorde-${index}`,
+                `profundidadOperativaEngorde-${index}`,
+                `profundidadTransferenciaEngorde-${index}`,
+                `diasCrecimientoEngorde-${index}`,
+                `cantidadAlimentoEngorde-${index}`,
+                `metodoAlimentacionEngorde-${index}`,
+            ]).flat();
+
+            const errorMessagesPaso2 = {
+                piscinaEngordeId: "El campo 'Piscina Engorde' es obligatorio.",
+                extensionEngorde: "El campo 'Extensión Engorde' debe ser mayor a 0.",
+                profundidadOperativaEngorde: "La 'Profundidad Operativa Engorde' debe ser mayor a 0.",
+                profundidadTransferenciaEngorde: "La 'Profundidad Transferencia Engorde' debe ser mayor a 0.",
+                diasCrecimientoEngorde: "Los 'Días de Crecimiento' deben ser mayores a 0.",
+                cantidadAlimentoEngorde: "La 'Cantidad de Alimento' debe ser mayor a 0.",
+                metodoAlimentacionEngorde: "Debes seleccionar un método de alimentación (Manual o Automático).",
+            };
+
+            const camposConErroresPaso2 = camposEngorde.filter(campo => {
+                const valor = form.getFieldValue(campo);
+                const campoBase = campo.split('-')[0];
+                if (campoBase.includes("metodoAlimentacion")) {
+                    return valor === undefined || valor === "";
+                }
+                return valor === undefined || valor <= 0;
+            });
+
+            if (camposConErroresPaso2.length > 0) {
+                camposConErroresPaso2.forEach(campo => {
+                    const campoBase = campo.split('-')[0];
+                    const mensajeError = errorMessagesPaso2[campoBase] || "Este campo es obligatorio.";
+                    message.error(mensajeError);
+                });
+                return false;
+            } else {
+                setActiveTab("3");
+            }
+        }
     };
     return (
         <>
@@ -381,16 +403,18 @@ function AddClientFarm() {
                                         type="primary"
                                         onClick={async () => {
                                             try {
-                                                await form.validateFields();
-                                                await handleNextTab();
+                                                const fieldsToValidate = getFirstTabFields(); // Campos condicionales según el perfil
+                                                await form.validateFields(fieldsToValidate);
+                                                await handleNextTab(); // Cambia al siguiente tab
                                             } catch (error) {
-                                                console.error('Errores en el formulario:', error);
+                                                console.error("Errores en el formulario:", error);
                                             }
                                         }}
                                     >
                                         Siguiente
                                     </Button>
                                 </Form.Item>
+
                             </Cards>
                         </TabPane>
 
@@ -438,7 +462,10 @@ function AddClientFarm() {
 
                                 <Row justify="space-between" style={{ marginTop: "20px" }}>
                                     <Col>
-                                        <Button type="default" onClick={() => setActiveTab("1")}>
+                                        <Button type="default" onClick={() => {
+                                            setActiveTab("1")
+                                            setCurrentStep(0);
+                                        }}>
                                             Atrás
                                         </Button>
                                     </Col>
@@ -557,7 +584,10 @@ function AddClientFarm() {
 
                                 <Row justify="space-between" style={{ marginTop: "20px" }}>
                                     <Col>
-                                        <Button type="default" onClick={() => setActiveTab("2")}>
+                                        <Button type="default" onClick={() => {
+                                            setActiveTab("2");
+                                            setCurrentStep(2);
+                                        }}>
                                             Atrás
                                         </Button>
                                     </Col>

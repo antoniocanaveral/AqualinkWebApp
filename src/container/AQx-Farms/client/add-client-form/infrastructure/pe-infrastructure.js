@@ -8,17 +8,18 @@ export const PreEngordeInfrastructure = ({ index, alimentadores, handleAddAlimen
 
     // Registrar campos dinámicos en el formulario al montar el componente
     useEffect(() => {
+        // Registrar valores iniciales para todos los campos
         form.setFieldsValue({
-            [`piscinaPreEngordeId-${index}`]: form.getFieldValue(`piscinaPreEngordeId-${index}`) || 0,
-            [`extensionPreEngorde-${index}`]: form.getFieldValue(`extensionPreEngorde-${index}`) || 0.01,
-            [`profundidadOperativaPreEngorde-${index}`]: form.getFieldValue(`profundidadOperativaPreEngorde-${index}`) || 0.01,
-            [`profundidadSiembraPreEngorde-${index}`]: form.getFieldValue(`profundidadSiembraPreEngorde-${index}`) || 0.01,
-            [`profundidadTransferenciaPreEngorde-${index}`]: form.getFieldValue(`profundidadTransferenciaPreEngorde-${index}`) || 0.01,
-            [`aireacionMecanicaPreEngorde-${index}`]: form.getFieldValue(`aireacionMecanicaPreEngorde-${index}`) || 0,
-            [`metodoAlimentacionPreEngorde-${index}`]: form.getFieldValue(`metodoAlimentacionPreEngorde-${index}`) || "",
+            [`piscinaEngordeId-${index}`]: form.getFieldValue(`piscinaEngordeId-${index}`) || null,
+            [`extensionEngorde-${index}`]: form.getFieldValue(`extensionEngorde-${index}`) || 0.01,
+            [`profundidadOperativaEngorde-${index}`]: form.getFieldValue(`profundidadOperativaEngorde-${index}`) || 0.01,
+            [`profundidadTransferenciaEngorde-${index}`]: form.getFieldValue(`profundidadTransferenciaEngorde-${index}`) || 0.01,
+            [`diasCrecimientoEngorde-${index}`]: form.getFieldValue(`diasCrecimientoEngorde-${index}`) || 1,
+            [`cantidadAlimentoEngorde-${index}`]: form.getFieldValue(`cantidadAlimentoEngorde-${index}`) || 0.01,
+            [`metodoAlimentacionEngorde-${index}`]: form.getFieldValue(`metodoAlimentacionEngorde-${index}`) || "",
         });
     }, [form, index]);
-
+    
     return (
         <>
             {/* Identificador de Piscina */}
