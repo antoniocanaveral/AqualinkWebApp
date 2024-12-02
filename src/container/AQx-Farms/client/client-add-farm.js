@@ -366,9 +366,9 @@ function AddClientFarm() {
                         <TabPane tab="Información" key="1">
                             <Cards headless>
                                 {/* Contenido del primer tab */}
-                                <Form.Item label="Subir Imagen (opcional)" name="imagen">
+                                <Form.Item label="Subir Logo (opcional)" name="imagen">
                                     <Upload beforeUpload={() => false}>
-                                        <Button icon={<UploadOutlined />}>Subir Imagen</Button>
+                                        <Button icon={<UploadOutlined />}>Subir Logotipo</Button>
                                     </Upload>
                                 </Form.Item>
 

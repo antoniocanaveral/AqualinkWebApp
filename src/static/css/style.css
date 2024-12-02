@@ -3639,6 +3639,14 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   align-items: center;
   justify-content: space-between;
 }
+.flex-row_space-between {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
 
 .report-container {
   max-width: 600px;
@@ -4067,4 +4075,9 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   flex: 1 1 auto !important;
   white-space: nowrap !important;
   text-align: center!important;
+}
+
+
+.ant-picker{
+  min-width: auto !important;
 }
