@@ -10,7 +10,7 @@ import {
   Legend,
 } from 'recharts';
 
-const LineChartWithXAxisPadding = ({ data }) => {
+const LineChartWithXAxisPadding = ({ data, height: customHeight, width: customWidth }) => {
   const [chartWidth, setChartWidth] = useState(550);
   const [chartHeight, setChartHeight] = useState(300);
 
@@ -18,14 +18,16 @@ const LineChartWithXAxisPadding = ({ data }) => {
     function updateSize() {
       const containerWidth = document.querySelector('.chart-container')?.clientWidth || 500;
       setChartWidth(containerWidth * 0.9);
-      setChartHeight(containerWidth * 0.6);
+      if (!customHeight) { // Solo se ajusta el alto si no se pasó `height` como prop
+        setChartHeight(containerWidth * 0.6);
+      }
     }
 
     window.addEventListener('resize', updateSize);
     updateSize();
 
     return () => window.removeEventListener('resize', updateSize);
-  }, []);
+  }, [customHeight]); // Dependemos de customHeight para recalcular el alto
 
   // Filtra las claves numéricas del primer objeto en `data` para usar como líneas
   const lineKeys = data.length > 0 
@@ -39,10 +41,10 @@ const LineChartWithXAxisPadding = ({ data }) => {
   const getColor = (index) => colors[index % colors.length];
 
   return (
-    <div className="chart-container" style={{ width: '110%' }}>
+    <div className="chart-container" style={{ width: '100%' }}>
       <LineChart
         width={chartWidth}
-        height={chartHeight}
+        height={customHeight || chartHeight}  
         data={data}
         margin={{
           top: 20,
@@ -72,6 +74,8 @@ const LineChartWithXAxisPadding = ({ data }) => {
 
 LineChartWithXAxisPadding.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  height: PropTypes.number, // Propiedad opcional para altura personalizada
+  width: PropTypes.number, // Propiedad opcional para ancho personalizado
 };
 
 export default LineChartWithXAxisPadding;

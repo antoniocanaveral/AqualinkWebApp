@@ -19,7 +19,7 @@ function ProductionSalesProjectionChart() {
 
   return (
     <div style={{ width: "100%", height: "100%" }}> {/* Asegura que el contenedor tenga el ancho y alto completo */}
-      <LineChartWithXAxisPadding data={exampleData} />
+      <LineChartWithXAxisPadding data={exampleData} height={350} />
     </div>
   );
 }

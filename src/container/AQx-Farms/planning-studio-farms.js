@@ -15,26 +15,53 @@ function PlanningStudioFarms() {
   const [simulationType, setSimulationType] = useState("dinamico"); // Valor preseleccionado dinámico
   const [fixedOption, setFixedOption] = useState(null); // Valor inicial sin opción fija
 
+  const [fixedFieldNeedsValue, setFixedFieldNeedsValue] = useState(false);
+  const [fixedFieldDisabled, setFixedFieldDisabled] = useState(false);
+
+  // Mapeo de opciones fijas a nombres de campos reales
+  const fixedOptionFieldNames = {
+    densidad: 'density',
+    ciclo: 'days_to_harvest',
+    peso: 'stimated_weight',
+  }; // Maneja el cambio de tipo de simulación
   const handleSimulationTypeChange = (value) => {
     setSimulationType(value);
     if (value !== "fijo") {
-      setFixedOption(null); // Restablece la opción fija si no es "fijo"
-      form.resetFields(['fixedOption']); // Restablece el campo del formulario
+      setFixedOption(null);
+      form.resetFields(['fixedOption']);
     }
   };
 
+  // Maneja el cambio de opción fija
   const handleFixedOptionChange = (value) => {
     setFixedOption(value);
+    const fieldName = fixedOptionFieldNames[value];
+    if (fieldName) {
+      form.resetFields([fieldName]);
+    }
   };
 
+  // Obtiene el nombre del campo fijo
+  const fixedFieldName = fixedOption ? fixedOptionFieldNames[fixedOption] : '';
 
-  const isFieldDisabled = (fieldName) => {
-    if (simulationType !== "fijo") return false; // Solo deshabilitar en simulación fija
-    if (fixedOption === fieldName) return true; // Deshabilitar el campo si está fijado
-    return false;
-  };
+  // Observa el valor del campo fijo
+  const fixedFieldValue = Form.useWatch(fixedFieldName, form);
 
-
+  // useEffect para verificar si el campo fijo necesita valor y si debe deshabilitarse
+  useEffect(() => {
+    if (simulationType === 'fijo' && fixedOption) {
+      if (!fixedFieldValue) {
+        setFixedFieldNeedsValue(true);
+        setFixedFieldDisabled(false);
+      } else {
+        setFixedFieldNeedsValue(false);
+        setFixedFieldDisabled(true);
+      }
+    } else {
+      setFixedFieldNeedsValue(false);
+      setFixedFieldDisabled(false);
+    }
+  }, [simulationType, fixedOption, fixedFieldValue]);
 
   // Observa el valor de 'food_price'
   const foodPrice = Form.useWatch('food_price', form);
@@ -88,7 +115,7 @@ function PlanningStudioFarms() {
       console.log("dataToSend:", dataToSend);
 
       // Envía los datos al servidor
-      const response = await axios.post('http://localhost:8080/planning_scenarios', dataToSend);
+      const response = await axios.post('https://aqualink-simulation.onrender.com/planning_scenarios', dataToSend);
       console.log("Escenario añadido:", response.data);
       // Actualiza el estado agregando el nuevo escenario al array existente
       setScenarios([...scenarios, response.data]);
@@ -237,11 +264,18 @@ function PlanningStudioFarms() {
                       <Form.Item
                         label={<span style={{ color: '#73879c' }}>{inputLabels.days_to_harvest}</span>}
                         name="days_to_harvest"
-                        rules={[{ required: true, message: 'Este campo es requerido' }]}
+                        validateStatus={
+                          fixedOption === 'ciclo' && fixedFieldNeedsValue ? 'error' : ''
+                        }
+                        help={
+                          fixedOption === 'ciclo' && fixedFieldNeedsValue
+                            ? 'Este campo es requerido'
+                            : ''
+                        }
                       >
                         <Select
                           placeholder="Seleccione"
-                          disabled={isFieldDisabled('ciclo')}
+                          disabled={fixedOption === 'ciclo' && fixedFieldDisabled}
                         >
                           {[56, 63, 70, 77, 84, 91, 98].map(day => (
                             <Select.Option key={day} value={day}>
@@ -257,11 +291,18 @@ function PlanningStudioFarms() {
                       <Form.Item
                         label={<span style={{ color: '#73879c' }}>{inputLabels.density}</span>}
                         name="density"
-                        rules={[{ required: true, message: 'Este campo es requerido' }]}
+                        validateStatus={
+                          fixedOption === 'densidad' && fixedFieldNeedsValue ? 'error' : ''
+                        }
+                        help={
+                          fixedOption === 'densidad' && fixedFieldNeedsValue
+                            ? 'Este campo es requerido'
+                            : ''
+                        }
                       >
                         <Select
                           placeholder="Seleccione Densidad"
-                          disabled={isFieldDisabled('densidad')}
+                          disabled={fixedOption === 'densidad' && fixedFieldDisabled}
                         >
                           {Array.from({ length: 22 }, (_, i) => 90000 + i * 10000).map(value => (
                             <Select.Option key={value} value={value}>
@@ -272,19 +313,25 @@ function PlanningStudioFarms() {
                       </Form.Item>
                     </Col>
 
-
                     {/* Peso estimado a Cosecha */}
                     <Col xs={24} md={12} lg={8}>
                       <Form.Item
                         label={<span style={{ color: '#73879c' }}>{inputLabels.stimated_weight}</span>}
                         name="stimated_weight"
-                        rules={[{ required: true, message: 'Este campo es requerido' }]}
+                        validateStatus={
+                          fixedOption === 'peso' && fixedFieldNeedsValue ? 'error' : ''
+                        }
+                        help={
+                          fixedOption === 'peso' && fixedFieldNeedsValue
+                            ? 'Este campo es requerido'
+                            : ''
+                        }
                       >
                         <Select
                           placeholder="Seleccione Peso (g)"
-                          disabled={isFieldDisabled('peso')}
+                          disabled={fixedOption === 'peso' && fixedFieldDisabled}
                         >
-                          {Array.from({ length: 29 }, (_, i) => 15 + i).map(value => ( // Ajustado para empezar desde 15
+                          {Array.from({ length: 29 }, (_, i) => 15 + i).map(value => (
                             <Select.Option key={value} value={value}>
                               {value.toLocaleString()} g
                             </Select.Option>

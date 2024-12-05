@@ -4081,3 +4081,31 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 .ant-picker{
   min-width: auto !important;
 }
+
+.custom-table-padding .ant-table-cell {
+  padding: 2px 5px !important; /* Cambia los valores según lo que necesites */
+}
+
+.custom-table-padding-table-1 .ant-table-cell {
+  padding: 4px 8px !important; /* Cambia los valores según lo que necesites */
+}
+
+.custom-table-padding-table-2 .ant-table-cell {
+  padding: 4px 8px !important; /* Cambia los valores según lo que necesites */
+  margin-right: 2px !important;
+}
+
+.highlight-row{
+  background-color: black !important;
+  color: rgb(71, 25, 25) !important;
+    
+}
+
+/* Estilo más específico */
+.custom-black-row td{
+  background-color: #b6dde8 !important;
+}
+
+.custom-page-header{
+  margin-top: -30px;
+}

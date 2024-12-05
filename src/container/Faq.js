@@ -1,15 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Collapse, Button } from 'antd';
-import { Link } from 'react-router-dom';
-import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
-import UilMinus from '@iconscout/react-unicons/icons/uil-minus';
-import UilSmile from '@iconscout/react-unicons/icons/uil-smile';
-import UilFrown from '@iconscout/react-unicons/icons/uil-frown';
 import { Cards } from '../components/cards/frame/cards-frame';
 import Heading from '../components/heading/heading';
-import { PageHeader } from '../components/page-headers/page-headers';
 import { Main } from './styled';
 import { Badge, FaqCategoryBox, FaqSupportBox, FaqWrapper } from './pages/style';
+import { PageHeader } from '../components/page-headers/page-headers';
+import { UilPlus, UilMinus } from '@iconscout/react-unicons';
+import { Link } from 'react-router-dom';
 
 const { Panel } = Collapse;
 
@@ -19,25 +16,66 @@ const customPanelStyle = {
 };
 
 function FaqComponent() {
-  const PageRoutes = [
-    {
-      path: 'index',
-      breadcrumbName: 'Dashboard',
-    },
-    {
-      path: '',
-      breadcrumbName: 'Faqs',
-    },
-  ];
-  const handleChange = (e) => {
-    e.preventDefault();
-    e.target.closest('ul').querySelector('a.active').classList.remove('active');
-    e.target.classList.add('active');
+  const [selectedSubmenu, setSelectedSubmenu] = useState('QMS explanation');
+
+  // Contenido de las preguntas frecuentes basado en el submenú
+  const faqContent = {
+    'QMS explanation': [
+      {
+        question: '¿Para qué se utiliza esta app/web app?',
+        answer: 'La app está diseñada para ayudar a los acuicultores a gestionar sus operaciones de acuicultura de manera eficiente, brindándole herramientas para monitorear la calidad del agua, controlar el uso de alimento, gestionar el inventario local de cada unidad de producción y mucho más.',
+      },
+      {
+        question: '¿Quién puede beneficiarse del uso de esta app?',
+        answer: 'Acuicultores camaroneros, profesionales del sector acuícola, investigadores y empresas involucradas en la industria acuícola.',
+      },
+      {
+        question: '¿Es esta app adecuada para todos los tipos de acuicultura (por ejemplo, agua dulce, agua salada)?',
+        answer: 'Sí, la app está diseñada para adaptarse tanto a acuicultura de agua dulce como de agua salada, con características personalizables para diferentes protocolos de producción y entornos.',
+      },
+    ],
+    'Preguntas Generales': [
+      {
+        question: '¿Cómo creo una cuenta?',
+        answer: 'El registro de una cuenta (cliente) es parte de nuestro servicio inicial. Este servicio está enfocado en darle el mejor servicio, creando la cuenta por usted.',
+      },
+      {
+        question: '¿Cómo creo un Usuario?',
+        answer: 'El registro de usuarios dentro de la cuenta de un cliente es parte de nuestro servicio inicial, asegurando una correcta asignación de usuarios y permisos.',
+      },
+      {
+        question: '¿Cómo activo o desactivo los permisos de Usuarios?',
+        answer: 'La activación y desactivación de permisos de los usuarios se gestiona de forma segura a través de un solo Usuario con capacidad para hacerlo (Coordinador Web app).',
+      },
+    ],
+    'Cuenta y Registro': [
+      {
+        question: '¿Cómo creo una cuenta?',
+        answer: 'El registro de una cuenta (cliente) y Onboarding es parte de nuestro servicio inicial. Este servicio está enfocado en darle el mejor servicio y crear la cuenta por usted.',
+      },
+      {
+        question: '¿Puedo tener múltiples cuentas para diferentes granjas?',
+        answer: 'Sí, el Ecosistema AquaLink permite gestionar múltiples granjas desde una sola cuenta corporativa mediante un sistema de enlace (ROOT) que agrupa todas las granjas para una gestión unificada.',
+      },
+      {
+        question: '¿En qué equipos funciona AquaLink App?',
+        answer: 'AquaLink App corre exclusivamente en la Tablet de 8 pulgadas configurada para nuestros clientes, garantizando que el equipo esté dedicado a la gestión de nuestra plataforma.',
+      },
+    ],
+  };
+
+  // Maneja la selección del submenú
+  const handleSubmenuClick = (submenu) => {
+    setSelectedSubmenu(submenu);
   };
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Faqs" routes={PageRoutes} />
+      <PageHeader
+        highlightText="Aqualink Soporte"
+        className="ninjadash-page-header-main"
+        title="Faqs"
+      />
       <Main>
         <Row gutter={25}>
           <Col xxl={6} lg={8} md={10} sm={11}>
@@ -48,38 +86,39 @@ function FaqComponent() {
                     <Badge className="faq-badge" type="light">
                       Browse by Topic
                     </Badge>
-                    <ul>
-                      <li>
-                        <Link className="active primary" onClick={handleChange} to="#">
-                          Using Applications
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="secondary" onClick={handleChange} to="#">
-                          UI Elements
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="success" onClick={handleChange} to="#">
-                          Components
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="warning" onClick={handleChange} to="#">
-                          Build Process
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="info" onClick={handleChange} to="#">
-                          Support Policy
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="danger" onClick={handleChange} to="#">
-                          Accounts & Billing
-                        </Link>
-                      </li>
-                    </ul>
+                    <Collapse defaultActiveKey={['1']} bordered={false}>
+                      <Panel header="AquaLink Smart Aquaculture Ecosystem" key="1" style={customPanelStyle}>
+                        <ul>
+                          <li>
+                            <Link
+                              className={selectedSubmenu === 'QMS explanation' ? 'active primary' : 'secondary'}
+                              onClick={() => handleSubmenuClick('QMS explanation')}
+                              to="#"
+                            >
+                              QMS explanation
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              className={selectedSubmenu === 'Preguntas Generales' ? 'active primary' : 'secondary'}
+                              onClick={() => handleSubmenuClick('Preguntas Generales')}
+                              to="#"
+                            >
+                              Preguntas Generales
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              className={selectedSubmenu === 'Cuenta y Registro' ? 'active primary' : 'secondary'}
+                              onClick={() => handleSubmenuClick('Cuenta y Registro')}
+                              to="#"
+                            >
+                              Cuenta y Registro
+                            </Link>
+                          </li>
+                        </ul>
+                      </Panel>
+                    </Collapse>
                   </Cards>
                 </FaqCategoryBox>
               </Col>
@@ -88,12 +127,12 @@ function FaqComponent() {
                 <FaqSupportBox>
                   <Cards headless>
                     <figure>
-                      <img src={require('../static/img/pages/support.svg').default} alt="" />
+                      <img src={require('../static/img/AQx-IMG/logo-aqualink-240x36px-bgLite-02.svg').default} alt="" />
                     </figure>
                     <figcaption>
-                      <Heading as="h5">Not finding the help you need?</Heading>
+                      <Heading as="h5">¿No encuentras la ayuda que necesitas?</Heading>
                       <Button size="default" type="primary">
-                        Contact Support
+                        Contacta a soporte
                       </Button>
                     </figcaption>
                   </Cards>
@@ -104,132 +143,18 @@ function FaqComponent() {
 
           <Col xxl={18} lg={16} md={14} sm={13}>
             <FaqWrapper>
-              <Cards headless title="Using Applications">
+              <Cards headless title="FAQ Content">
                 <Collapse
                   bordered={false}
                   defaultActiveKey={['1']}
                   expandIcon={({ isActive }) => (isActive ? <UilMinus /> : <UilPlus />)}
                 >
-                 
-                  <Panel header="How to use SCSS variables to build custom color?" key="2" style={customPanelStyle}>
-                    <p>
-                      Many support queries and technical questions will already be answered in supporting documentation
-                      such as FAQ&rsquo;s and comments from previous buyers. Anim pariatur cliche reprehenderit, enim
-                      eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat
-                      skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                      sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                    </p>
-                    <Heading as="h4">Was this article helpful?</Heading>
-                    <div className="panel-actions">
-                      <Button outlined type="success">
-                        <UilSmile />
-                        Yes
-                      </Button>
-                      <Button outlined type="warning">
-                        <UilFrown />
-                        No
-                      </Button>
-                    </div>
-                  </Panel>
-                  <Panel header="How long does it take to download updates?" key="3" style={customPanelStyle}>
-                    <p>
-                      Many support queries and technical questions will already be answered in supporting documentation
-                      such as FAQ&rsquo;s and comments from previous buyers. Anim pariatur cliche reprehenderit, enim
-                      eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat
-                      skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                      sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                    </p>
-                    <Heading as="h4">Was this article helpful?</Heading>
-                    <div className="panel-actions">
-                      <Button outlined type="success">
-                        <UilSmile />
-                        Yes
-                      </Button>
-                      <Button outlined type="warning">
-                        <UilFrown />
-                        No
-                      </Button>
-                    </div>
-                  </Panel>
-                  <Panel header="What is the flex layout?" key="4" style={customPanelStyle}>
-                    <p>
-                      Many support queries and technical questions will already be answered in supporting documentation
-                      such as FAQ&rsquo;s and comments from previous buyers. Anim pariatur cliche reprehenderit, enim
-                      eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat
-                      skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                      sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                    </p>
-                    <Heading as="h4">Was this article helpful?</Heading>
-                    <div className="panel-actions">
-                      <Button outlined type="success">
-                        <UilSmile />
-                        Yes
-                      </Button>
-                      <Button outlined type="warning">
-                        <UilFrown />
-                        No
-                      </Button>
-                    </div>
-                  </Panel>
-                  <Panel header="How long does it take to download updates?" key="5" style={customPanelStyle}>
-                    <p>
-                      Many support queries and technical questions will already be answered in supporting documentation
-                      such as FAQ&rsquo;s and comments from previous buyers. Anim pariatur cliche reprehenderit, enim
-                      eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat
-                      skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                      sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                    </p>
-                    <Heading as="h4">Was this article helpful?</Heading>
-                    <div className="panel-actions">
-                      <Button outlined type="success">
-                        <UilSmile />
-                        Yes
-                      </Button>
-                      <Button outlined type="warning">
-                        <UilFrown />
-                        No
-                      </Button>
-                    </div>
-                  </Panel>
-                  <Panel header="Where to buy this UI dashboard?" key="6" style={customPanelStyle}>
-                    <p>
-                      Many support queries and technical questions will already be answered in supporting documentation
-                      such as FAQ&rsquo;s and comments from previous buyers. Anim pariatur cliche reprehenderit, enim
-                      eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat
-                      skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                      sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                    </p>
-                    <Heading as="h4">Was this article helpful?</Heading>
-                    <div className="panel-actions">
-                      <Button outlined type="success">
-                        <UilSmile />
-                        Yes
-                      </Button>
-                      <Button outlined type="warning">
-                        <UilFrown />
-                        No
-                      </Button>
-                    </div>
-                  </Panel>
-                  <Panel header="How long does it take to download updates?" key="7" style={customPanelStyle}>
-                    <p>
-                      Many support queries and technical questions will already be answered in supporting documentation
-                      such as FAQ&rsquo;s and comments from previous buyers. Anim pariatur cliche reprehenderit, enim
-                      eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat
-                      skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                      sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                    </p>
-                    <Heading as="h4">Was this article helpful?</Heading>
-                    <div className="panel-actions">
-                      <Button outlined type="success">
-                        Yes
-                      </Button>
-                      <Button outlined type="warning">
-                        <UilFrown />
-                        No
-                      </Button>
-                    </div>
-                  </Panel>
+                  {faqContent[selectedSubmenu].map((item, index) => (
+                    <Panel header={item.question} key={index} style={customPanelStyle}>
+                      <p>{item.answer}</p>
+                     
+                    </Panel>
+                  ))}
                 </Collapse>
               </Cards>
             </FaqWrapper>

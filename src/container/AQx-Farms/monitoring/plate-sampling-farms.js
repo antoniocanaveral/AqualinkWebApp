@@ -29,6 +29,73 @@ function PlateSamplingFarm() {
     { key: '5', dia: '05 Nov', plato1: 19, plato2: 21, plato3: 22, plato4: 18, platoN: 24, promedioConsumo: 20.8, variacionConsumo: 1.9 },
   ];
 
+  
+  const tankData = [
+    {
+      id: 1,
+      modulo: 'Módulo 1',
+      tanque: 'Tanque 1',
+      porcentaje: 60,
+      inicioCultivo: '05 Noviembre',
+      finCultivo: '05 Diciembre',
+      poblacionFinal: '3 MILLONES',
+      supervivencia: '90%',
+      estadoEntrega: 'PL12',
+      animalesPorGramo: 280,
+      reservado: '60% - 1.8 MILLONES',
+      disponible: '40% - 1.2 MILLONES',
+    },
+    {
+      id: 2,
+      modulo: 'Módulo 1',
+      tanque: 'Tanque 2',
+      porcentaje: 60,
+      inicioCultivo: '05 Noviembre',
+      finCultivo: '05 Diciembre',
+      poblacionFinal: '3 MILLONES',
+      supervivencia: '90%',
+      estadoEntrega: 'PL12',
+      animalesPorGramo: 280,
+      reservado: '60% - 1.8 MILLONES',
+      disponible: '40% - 1.2 MILLONES',
+    },
+  ];
+
+
+  
+  const TankCard = ({ data }) => (
+    <div headless
+      style={{
+        border: '2px solid #e3e3e3',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+        padding: '20px',
+      }}>
+      <Typography.Title level={5}>{data.modulo}</Typography.Title>
+      <Typography.Title level={4} style={{ color: '#0372ce' }}>
+        {data.tanque} · {data.porcentaje}%
+      </Typography.Title>
+      <div style={{ marginBottom: '16px' }}>
+        <Typography.Text>Inicio Cultivo: {data.inicioCultivo}</Typography.Text><br />
+        <Typography.Text>Fin Cultivo: {data.finCultivo}</Typography.Text><br />
+        <Typography.Text>Población final: {data.poblacionFinal}</Typography.Text><br />
+        <Typography.Text>Supervivencia: {data.supervivencia}</Typography.Text><br />
+        <Typography.Text>Estado de Entrega: {data.estadoEntrega}</Typography.Text><br />
+        <Typography.Text>Animales/g: {data.animalesPorGramo}</Typography.Text><br />
+        <Typography.Text style={{ color: 'red', fontWeight: 'bold' }}>
+          RESERVADO: {data.reservado}
+        </Typography.Text><br />
+        <Typography.Text style={{ color: 'green', fontWeight: 'bold' }}>
+          DISPONIBLE: {data.disponible}
+        </Typography.Text>
+      </div>
+      <button style={{ backgroundColor: '#0372ce', color: 'white', padding: '5px 10px', borderRadius: '5px', border: 'none' }}>
+        Ver tanque
+      </button>
+    </div>
+  );
+
+
   return (
     <>
       <PageHeader className="ninjadash-page-header-main"
@@ -41,57 +108,13 @@ function PlateSamplingFarm() {
         ]}
       />
       <Main>
+
         <Row gutter={25}>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={20} md={15}>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={20} md={9}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Camaroneras 1</Typography.Title>
-                        <Typography.Text>Área: 307.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Piscina 3</Typography.Title>
-                        <Typography.Text>Área: 5.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Pre Cría 3</Typography.Title>
-                        <Typography.Text>Área: 1.35 ha</Typography.Text>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
-            </Suspense>
-          </Col>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <Cards title="Alimentación Proyectada - Alimentación Sugerida x variación de Consumo de Platos" size="large">
-                <ProjectedSuggestedFeedingChart />
-              </Cards>
-            </Suspense>
-          </Col>
+          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "20px" }}>
+            {tankData.map((tank) => (
+              <TankCard data={tank} />
+            ))}
+          </div>
         </Row>
 
         <Row gutter={25} equal-heights>

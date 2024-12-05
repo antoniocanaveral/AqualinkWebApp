@@ -1,5 +1,5 @@
 import React, {  Suspense } from 'react';
-import { Row, Col, Skeleton,  PageHeader } from 'antd';
+import { Row, Col, Skeleton} from 'antd';
 import GrowthChart from './general/GrowthChart';
 import SurvivalChart from './general/SurvivalChart';
 import ConsumptionSuppliesChart from './general/ConsumptionSuppliesChart';
@@ -8,6 +8,7 @@ import FCAChart from './general/FCAChart';
 import CostsHaDayChart from './general/CostsHaDayChart';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
+import { PageHeader } from '../../../components/page-headers/page-headers';
 
 function GeneralMonitoringFarm() {
 

@@ -4,19 +4,12 @@ import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
 import CalendarTask from './task/calendar/CalendarTask';
 import { PageHeader } from '../../components/page-headers/page-headers';
-import UpcomingEvents from '../dashboard/overview/demoFive/UpcomingEvents';
+import ScheduleTransfer from './task/scheduled-transfer';
+import ScheduleHarvest from './task/scheduled-harvest';
+import ScheduleFarm from './task/scheduled-farm';
 
 function TaskFarms() {
-    const PageRoutes = [
-        {
-            path: '/admin',
-            breadcrumbName: 'AquaLink',
-        },
-        {
-            path: 'first',
-            breadcrumbName: 'Panel de Control',
-        },
-    ];
+
     return (
         <>
             <Main>
@@ -39,8 +32,8 @@ function TaskFarms() {
                                 ]}
                             />
                             <CalendarTask />
-                            <Row gutter={16} style={{ marginBottom: '20px' }}>
-                                <Col xl={8} lg={24} xs={24}>
+                            <Row gutter={16} style={{ marginBottom: '20px', display: 'flex' }}>
+                                <Col xl={8} lg={24} xs={24} style={{ display: 'flex', minHeight:"500px" }}>
                                     <Suspense
                                         fallback={
                                             <Cards headless>
@@ -48,10 +41,10 @@ function TaskFarms() {
                                             </Cards>
                                         }
                                     >
-                                        <UpcomingEvents />
+                                        <ScheduleFarm />
                                     </Suspense>
                                 </Col>
-                                <Col xl={8} lg={24} xs={24}>
+                                <Col xl={8} lg={24} xs={24} style={{ display: 'flex', flexDirection: 'column' }}>
                                     <Suspense
                                         fallback={
                                             <Cards headless>
@@ -59,10 +52,10 @@ function TaskFarms() {
                                             </Cards>
                                         }
                                     >
-                                        <UpcomingEvents />
+                                        <ScheduleHarvest />
                                     </Suspense>
                                 </Col>
-                                <Col xl={8} lg={24} xs={24}>
+                                <Col xl={8} lg={24} xs={24} style={{ display: 'flex', flexDirection: 'column' }}>
                                     <Suspense
                                         fallback={
                                             <Cards headless>
@@ -70,10 +63,9 @@ function TaskFarms() {
                                             </Cards>
                                         }
                                     >
-                                        <UpcomingEvents />
+                                        <ScheduleTransfer />
                                     </Suspense>
                                 </Col>
-                               
                             </Row>
                         </Suspense>
                     </Col>

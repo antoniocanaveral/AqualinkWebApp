@@ -155,18 +155,33 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ),
     ),
 
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/analytics`}>
-        {t('AquaLink Analytics')}
-      </NavLink>,
-      'aqualink-analytics',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/analytics`}>
-          <UilChartBar />
-        </NavLink>
-      ),
-    ),
 
+
+    
+     
+    getItem(t('AquaLink Analytics'), 'aqualink-analytics', !topMenu && <UilChartBar />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/analytics`}>
+          {t('Analytics ')}
+        </NavLink>,
+        'analytics',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/analytics/report`}>
+          {t('Reporte de Producción')}
+        </NavLink>,
+        'reporte-produccion',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/planning`}>
+          {t('Pro Data Analytics')}
+        </NavLink>,
+        'prodata',
+        null,
+      ),
+    ]),
     getItem(t('AquaLink Planning'), 'aqualink-planning', !topMenu && <UilClipboardAlt />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/planning-studio`}>

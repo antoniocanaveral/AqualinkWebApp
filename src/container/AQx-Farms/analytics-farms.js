@@ -18,7 +18,7 @@ function AnalyticsFarms() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader className="ninjadash-page-header-main custom-page-header"
         highlightText="Aqualink Camaroneras"
         title="Analytics"
         selectOptions={[
