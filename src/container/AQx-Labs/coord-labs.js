@@ -21,6 +21,7 @@ import { formatNumber, inputFormatter, parserNumber } from '../../utility/utilit
 import { GoogleMaps } from '../../components/maps/google-maps';
 import { ReactSVG } from 'react-svg';
 import OverviewCardMesh from '../../components/cards/OverviewCardMesh';
+import { StepsCoords } from '../../components/steps/stepsCoords';
 
 const { Option } = Select;
 
@@ -263,7 +264,7 @@ function CoordinationLabs() {
                     <Col xxl={20} xs={24}>
                       <WizardWrapper className="ninjadash-wizard-page">
                         <WizardTwo>
-                          <Steps
+                          <StepsCoords
                             isswitch
                             current={current}
                             status={status}
@@ -291,7 +292,7 @@ function CoordinationLabs() {
                                                     <BasicFormWrapper className="mb-25">
                                                       <div >
                                                         <Row gutter={25}>
-                                                          <Col xl={10} xs={24}>
+                                                          <Col xl={24} xs={24}>
                                                             <Suspense
                                                               fallback={
                                                                 <Cards headless>
@@ -332,93 +333,7 @@ function CoordinationLabs() {
                                                             </Suspense>
                                                           </Col>
 
-                                                          <Col xl={14} xs={24}>
-                                                            <Suspense
-                                                              fallback={
-                                                                <Cards headless>
-                                                                  <Skeleton active />
-                                                                </Cards>
-                                                              }
-                                                            >
-                                                              <Cards  title="Información del Laboratorio" size="large">
-                                                                {/* Detalles del laboratorio */}
-                                                                <Row gutter={16} style={{ marginBottom: '16px' }}>
-                                                                  <Col span={10}>
-                                                                    <strong>Fecha:</strong> {coordination?.planned_date ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-'}
-                                                                  </Col>
-                                                                  <Col span={10}>
-                                                                    <strong>Módulo:</strong> {coordination?.lab_module || 'M1'}
-                                                                  </Col>
-                                                                  <Col span={4}>
-                                                                    <strong>Tanque:</strong> {coordination?.tank || 'T1'}
-                                                                  </Col>
-                                                                </Row>
-                                                                <br />
-                                                                <br />
-
-                                                                <Row gutter={16} style={{ marginBottom: '16px' }}>
-                                                                  <Col xs={24} sm={24} md={24} lg={10}>
-                                                                    {/* Secciones en Cards para información clave */}
-                                                                    <div style={{ maxWidth: '100%' }}>
-                                                                      {overviewCardMeshData.map((item, i) => (
-                                                                        <OverviewCardMesh data={item} key={i} />
-                                                                      ))}
-                                                                    </div>
-                                                                  </Col>
-                                                                  <Col xs={24} sm={24} md={24} lg={14}>
-                                                                    {/* Tabla estilizada de información de laboratorio */}
-                                                                    <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
-                                                                      <Table
-                                                                        className='custom-table_lab'
-                                                                        dataSource={labInfoData}
-                                                                        columns={[
-                                                                          { title: '', dataIndex: 'label', key: 'label', width: '60%' }, // 60% para la primera columna
-                                                                          { title: '', dataIndex: 'value', key: 'value', width: '40%' }, // 40% para la segunda columna
-                                                                        ]}
-                                                                        pagination={false}
-                                                                        showHeader={false}
-                                                                        bordered
-                                                                        rowClassName={() => 'custom-table-row'}
-                                                                        style={{ width: '100%' }} // Asegura que la tabla se ajuste al 100% del contenedor
-                                                                      />
-                                                                    </div>
-                                                                  </Col>
-                                                                </Row>
-                                                                <br />
-
-                                                                <Row gutter={16} style={{ marginBottom: '16px' }}>
-                                                                  <Col span={24} style={{ textAlign: 'center' }}>
-                                                                    <div
-                                                                      style={{
-                                                                        display: 'flex',
-                                                                        flexDirection: 'row',
-                                                                        alignItems: 'center',
-                                                                        justifyContent: 'center', // Alinea el contenido al centro
-                                                                        gap: "50px", // Ajusta el espacio entre los elementos
-                                                                        width: "100%"
-                                                                      }}>
-                                                                      {binaryFields.map((field, index) => (
-                                                                        <div key={index} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                                                          <div style={{ width: "50px" }}>
-                                                                            <ReactSVG src={require(`../../static/img/AQx-IMG/${field.icon}`)} />
-                                                                          </div>
-                                                                          <div style={{ marginLeft: "10px" }}>
-                                                                            <strong>{field.label}</strong>
-                                                                          </div>
-                                                                          <div style={{ marginLeft: "10px" }}>
-                                                                            <Checkbox checked={field.value} disabled>
-                                                                              {field.value ? 'Sí' : 'No'}
-                                                                            </Checkbox>
-                                                                          </div>
-                                                                        </div>
-                                                                      ))}
-                                                                    </div>
-                                                                  </Col>
-                                                                </Row>
-                                                              </Cards>
-                                                            </Suspense>
-                                                          </Col>
-
+                                                    
                                                         </Row>
                                                       </div>
 

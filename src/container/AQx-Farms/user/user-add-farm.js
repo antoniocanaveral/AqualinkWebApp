@@ -58,6 +58,7 @@ const AddUserFarm = () => {
         { dispositivo: 'Web App', permiso: 'Ver datos Web App', nombreCampo: 'verDatosWebApp' },
         { dispositivo: 'Web App', permiso: 'Editar Web App', nombreCampo: 'editarWebApp' },
         { dispositivo: 'Web App', permiso: 'Ver Analytics', nombreCampo: 'verAnalytics' },
+        { dispositivo: 'Web App', permiso: 'Ver Pro Data Analytics', nombreCampo: 'verProDataAnalytics' },
         { dispositivo: 'Web App', permiso: 'Editar Analytics', nombreCampo: 'editarAnalytics' },
         { dispositivo: 'Web App', permiso: 'Ver Monitoreo y Evaluación', nombreCampo: 'verMonitoreo' },
         { dispositivo: 'Web App', permiso: 'Ver Control', nombreCampo: 'verControl' },

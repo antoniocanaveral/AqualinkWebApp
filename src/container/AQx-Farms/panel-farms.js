@@ -1,27 +1,15 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useRef } from 'react';
 import { Row, Col, Skeleton, Typography, Badge, Space, Table } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
-import { OverviewDataStyleWrap } from '../dashboard/Style';
-import OverviewCardMeshOriginal from '../../components/cards/OverviewCardMeshOriginal';
-import OverviewData from '../../demoData/overviewMeshData.json';
 import { GoogleMaps } from '../../components/maps/google-maps';
 import ProjectionKgPanel from './panel/charts/projections-kg-panel';
 import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
-import ProjectionPanel from './panel/charts/projection-usd-panel';
 
 function PanelFarms() {
-  const PageRoutes = [
-    {
-      path: '/admin',
-      breadcrumbName: 'AquaLink',
-    },
-    {
-      path: 'first',
-      breadcrumbName: 'Panel de Control',
-    },
-  ];
+
+
 
   // Datos de la tabla
   const productData = [
@@ -141,6 +129,34 @@ function PanelFarms() {
       reservado: '60% - 1.8 MILLONES',
       disponible: '40% - 1.2 MILLONES',
     },
+    {
+      id: 3,
+      modulo: 'Módulo 1',
+      tanque: 'Tanque 2',
+      porcentaje: 60,
+      inicioCultivo: '05 Noviembre',
+      finCultivo: '05 Diciembre',
+      poblacionFinal: '3 MILLONES',
+      supervivencia: '90%',
+      estadoEntrega: 'PL12',
+      animalesPorGramo: 280,
+      reservado: '60% - 1.8 MILLONES',
+      disponible: '40% - 1.2 MILLONES',
+    },
+    {
+      id: 4,
+      modulo: 'Módulo 1',
+      tanque: 'Tanque 2',
+      porcentaje: 60,
+      inicioCultivo: '05 Noviembre',
+      finCultivo: '05 Diciembre',
+      poblacionFinal: '3 MILLONES',
+      supervivencia: '90%',
+      estadoEntrega: 'PL12',
+      animalesPorGramo: 280,
+      reservado: '60% - 1.8 MILLONES',
+      disponible: '40% - 1.2 MILLONES',
+    },
   ];
 
 
@@ -152,30 +168,203 @@ function PanelFarms() {
         borderRadius: '8px',
         boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
         padding: '20px',
+        width: '300px',
+        minWidth: '300px',
       }}>
-      <Typography.Title level={5}>{data.modulo}</Typography.Title>
-      <Typography.Title level={4} style={{ color: '#0372ce' }}>
-        {data.tanque} · {data.porcentaje}%
-      </Typography.Title>
-      <div style={{ marginBottom: '16px' }}>
-        <Typography.Text>Inicio Cultivo: {data.inicioCultivo}</Typography.Text><br />
-        <Typography.Text>Fin Cultivo: {data.finCultivo}</Typography.Text><br />
-        <Typography.Text>Población final: {data.poblacionFinal}</Typography.Text><br />
-        <Typography.Text>Supervivencia: {data.supervivencia}</Typography.Text><br />
-        <Typography.Text>Estado de Entrega: {data.estadoEntrega}</Typography.Text><br />
-        <Typography.Text>Animales/g: {data.animalesPorGramo}</Typography.Text><br />
-        <Typography.Text style={{ color: 'red', fontWeight: 'bold' }}>
-          RESERVADO: {data.reservado}
-        </Typography.Text><br />
-        <Typography.Text style={{ color: 'green', fontWeight: 'bold' }}>
-          DISPONIBLE: {data.disponible}
-        </Typography.Text>
+      <div className="flex-row">
+        <div>
+          <span className="label">Camaronera:</span>
+        </div>
+        <div>
+          <span>{data.nombreCamaronara || 'NA'}</span>
+        </div>
       </div>
-      <button style={{ backgroundColor: '#0372ce', color: 'white', padding: '5px 10px', borderRadius: '5px', border: 'none' }}>
-        Ver tanque
+      <div className="flex-row">
+        <div>
+          <span className="label">Piscina Engorde:</span>
+        </div>
+        <div>
+          <span>{data.piscinaEngorde || 'NA'}</span>
+        </div>
+      </div>
+      <div className="flex-row">
+        <div>
+          <span className="label">Lote ID:</span>
+        </div>
+        <div>
+          <span>{data.loteID || 'NA'}</span>
+        </div>
+      </div>
+
+      <div className='flex-row'>
+        <div>
+          <Typography.Title level={4} style={{ color: '#0372ce' }}>
+            Avance Ciclo
+          </Typography.Title>
+        </div>
+
+        <Typography.Title level={4}>
+          {data.porcentaje}%
+        </Typography.Title>
+      </div>
+
+
+
+
+      <div className="harvest-report-divider-2" />
+
+      <div className="flex-row">
+        <div>
+          <span className="label">Inicio de Cultivo:</span>
+        </div>
+        <div>
+          <span>{data.inicioCultivo || 'NA'}</span>
+        </div>
+      </div>
+      <div className="flex-row">
+        <div>
+          <span className="label">Fin de Cultivo:</span>
+        </div>
+        <div>
+          <span>{data.finCultivo || 'NA'}</span>
+        </div>
+      </div>
+      <div className="flex-row">
+        <div>
+          <span className="label">Biomasa estimada:</span>
+        </div>
+        <div>
+          <span>{data.biomasaEstimada || 'NA'}</span>
+        </div>
+      </div>
+      <div className="flex-row">
+        <div>
+          <span className="label">Supervivencia real:</span>
+        </div>
+        <div>
+          <span>{data.supervivenciaReal || 'NA'}</span>
+        </div>
+      </div>
+      <div className="flex-row">
+        <div>
+          <span className="label">FCA real:</span>
+        </div>
+        <div>
+          <span>{data.fcaReal || 'NA'}</span>
+        </div>
+      </div>
+      <div className="flex-row">
+        <div>
+          <span className="label">Clasificación de Pesca:</span>
+        </div>
+        <div>
+          <span>{data.clasificacionPesca || 'NA'}</span>
+        </div>
+      </div>
+      <div className="flex-row">
+        <div>
+          <span className="label">Lbs x Ha.:</span>
+        </div>
+        <div>
+          <span>{data.lbsPorHa || 'NA'}</span>
+        </div>
+      </div>
+      <div className="flex-row">
+        <div>
+          <span className="label">Coordinación Pesca:</span>
+        </div>
+        <div>
+          <span>{data.coordinacionPesca || 'NA'}</span>
+        </div>
+      </div>
+
+
+
+
+      <button
+        //Redirigir a /farm 
+        onClick={() => alert('Ver Piscina')}
+        style={{ backgroundColor: '#0372ce', color: 'white', padding: '5px 10px', borderRadius: '5px', border: 'none' }}>
+        Ver Piscina
       </button>
     </div>
   );
+
+
+  const TankCarousel = ({ tankData }) => {
+    const carouselRef = useRef(null);
+
+    const scrollLeft = () => {
+      carouselRef.current.scrollBy({ left: -300, behavior: "smooth" });
+    };
+
+    const scrollRight = () => {
+      carouselRef.current.scrollBy({ left: 300, behavior: "smooth" });
+    };
+
+    return (
+      <div style={{ position: "relative", width: "100%" }}>
+        {/* Botón Izquierdo */}
+        <button
+          onClick={scrollLeft}
+          style={{
+            position: "absolute",
+            left: "0",
+            top: "50%",
+            transform: "translateY(-50%)",
+            backgroundColor: "#0372ce",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            cursor: "pointer",
+            zIndex: 1,
+          }}
+        >
+          {"<"}
+        </button>
+
+        {/* Contenedor del Carrusel */}
+        <div
+          ref={carouselRef}
+          style={{
+            display: "flex",
+            overflowX: "auto",
+            scrollBehavior: "smooth",
+            gap: "20px",
+            padding: "20px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {tankData.map((tank, index) => (
+            <TankCard data={tank} key={index} />
+          ))}
+        </div>
+
+        {/* Botón Derecho */}
+        <button
+          onClick={scrollRight}
+          style={{
+            position: "absolute",
+            right: "0",
+            top: "50%",
+            transform: "translateY(-50%)",
+            backgroundColor: "#0372ce",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            cursor: "pointer",
+            zIndex: 1,
+          }}
+        >
+          {">"}
+        </button>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -183,14 +372,17 @@ function PanelFarms() {
         title="Control Panel"
         highlightText="Aqualink Camaronera"
         selectOptions={[
-          ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
-          ["Sector 1", "Sector 2", "Sector 3"],
-          ["Piscina 1", "Piscina 2", "Piscina 3"]
+          ["Todas las camaroneras", "Camaronera 2", "Camaronera 3"],
+          ["Todos los Sectores", "Sector 1", "Sector 2", "Sector 3"],
+          ["Todas las Piscinas", "Piscina 1", "Piscina 2", "Piscina 3"]
         ]}
+
       />
 
       <Main>
-        <Row gutter={25}>
+        {/** 
+        * 
+        *   <Row gutter={25}>
 
           <Col xxl={12} xs={24}>
             <Suspense
@@ -209,6 +401,8 @@ function PanelFarms() {
           </Col>
 
         </Row>
+       */}
+
 
         <Row gutter={25}>
           <Col xl={12} xs={24} style={{ display: 'flex' }}>
@@ -226,30 +420,25 @@ function PanelFarms() {
                     <GoogleMaps />
                   </Col>
                   <Col xs={20} md={9}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px" }}>
-                      <Badge
-                        color="#1890ff"
-                        dot
-                        style={{ marginRight: 8 }}
-                      />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
+
                     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-
-
                       <div className="content-block">
                         <Typography.Title level={5}>Camaroneras 1</Typography.Title>
-                        <Typography.Text>Área: 307.35 ha</Typography.Text>
+                        <Typography.Text>Área: 307.35 Ha</Typography.Text>
                       </div>
 
                       <div className="content-block">
-                        <Typography.Title level={5}>Piscina 3</Typography.Title>
-                        <Typography.Text>Área: 5.35 ha</Typography.Text>
+                        <Typography.Title level={5}>Piscinas de Engorde</Typography.Title>
+                        <Typography.Text># Piscinas: 60</Typography.Text>
+                        <br></br>
+                        <Typography.Text>Área: 280.25 Ha</Typography.Text>
                       </div>
 
                       <div className="content-block">
-                        <Typography.Title level={5}>Pre Cría 3</Typography.Title>
-                        <Typography.Text>Área: 1.35 ha</Typography.Text>
+                        <Typography.Title level={5}>Piscinas Pre Cría</Typography.Title>
+                        <Typography.Text># Pre Crías: 15</Typography.Text>
+                        <br></br>
+                        <Typography.Text>Área: 20.17 Ha</Typography.Text>
                       </div>
                     </Space>
                   </Col>
@@ -288,11 +477,16 @@ function PanelFarms() {
                     <Table dataSource={harvestData} columns={harvestColumns} pagination={{ pageSize: 5 }} />
                   </div>
 
-                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "20px" }}>
-                    {tankData.map((tank) => (
-                      <TankCard data={tank} />
-                    ))}
-                  </div>
+                  {/**Titulo */}
+                  <div className="harvest-report-divider" />
+                  <center>
+                    <Typography.Title level={4} >
+                      Piscinas con ciclos Activos
+                    </Typography.Title>
+                  </center>
+
+                  <TankCarousel tankData={tankData} />
+
                 </div>
               </Cards>
             </Suspense>

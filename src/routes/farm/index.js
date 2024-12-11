@@ -27,6 +27,7 @@ import UserRoutesFarm from './farmUser';
 import FaqComponent from '../../container/Faq';
 import SupportTicket from '../../container/supportTicket/Index';
 import AnalyticRoutesFarm from './farmAnalytic';
+import FeedingTableFarms from '../../container/AQx-Farms/monitoring/feeding-tables-farm';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -50,6 +51,7 @@ const Farm = React.memo(() => {
         <Route path="/monitoring/actual-projected/*" element={<RealAndProjectedFeeding />} />
         <Route path="/monitoring/protein-percentage/*" element={<ProteinPercentageFarm />} />
         <Route path="/monitoring/plate-sampling/*" element={<PlateSamplingFarm />} />
+        <Route path="/monitoring/feeding-tables/*" element={<FeedingTableFarms />} />
 
         <Route path="/analytics/*" element={<AnalyticRoutesFarm />} />  
         <Route path="/crop/*" element={<CropRoutesFarm />} />

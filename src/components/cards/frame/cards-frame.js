@@ -77,7 +77,7 @@ function Cards(props) {
           bodypadding={bodypadding && bodypadding}
           bodyStyle={bodyStyle && bodyStyle}
           size={size}
-          style={{ width: '100%' }}
+          style={{ width: '100%', margin:0, padding:0 }}  
           bordered={border}
           className={className}
         >

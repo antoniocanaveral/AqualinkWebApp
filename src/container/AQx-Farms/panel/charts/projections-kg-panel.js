@@ -1,8 +1,6 @@
 import { Cards } from "../../../../components/cards/frame/cards-frame";
 import DashboardChart from "../../../../components/charts/DashboardChart";
 
-
-
 function ProjectionKgPanel() {
     const barChart = {
         height: 200,
@@ -13,13 +11,37 @@ function ProjectionKgPanel() {
                 data: [20, 60, 50, 45, 50, 60, 70, 40, 45, 35, 25, 30],
                 backgroundColor: '#001737',
                 barPercentage: 0.6,
-                label: 'Runs',
+                label: '80-100',
             },
             {
                 data: [10, 40, 30, 40, 60, 55, 45, 35, 30, 20, 15, 20],
                 backgroundColor: '#1ce1ac',
                 barPercentage: 0.6,
-                label: 'Dots',
+                label: '70-80',
+            },
+            {
+                data: [20, 60, 50, 45, 50, 60, 70, 40, 45, 35, 25, 30],
+                backgroundColor: '#ff2545',
+                barPercentage: 0.6,
+                label: '60-70',
+            },
+            {
+                data: [10, 40, 30, 40, 60, 55, 45, 35, 30, 20, 15, 20],
+                backgroundColor: '#5324ea',
+                barPercentage: 0.6,
+                label: '50-60',
+            },
+            {
+                data: [10, 40, 30, 40, 60, 55, 45, 35, 30, 20, 15, 20],
+                backgroundColor: '#ec7e00',
+                barPercentage: 0.6,
+                label: '40-50',
+            },
+            {
+                data: [10, 40, 30, 40, 60, 55, 45, 35, 30, 20, 15, 20],
+                backgroundColor: '#0099e6',
+                barPercentage: 0.6,
+                label: '30-40',
             },
         ],
         legend: {
@@ -41,15 +63,13 @@ function ProjectionKgPanel() {
                     fontSize: 14,
                     fontFamily: 'Jost',
                     color: '#8C90A4',
-                    max: 80,
-                    stepSize: 20,
                     padding: 10,
-                    callback(label) {
-                        return `${label}`;
+                    callback(value, index) {
+                        // Devuelve el mes correspondiente al índice
+                        return barChart.labels[index];
                     },
                 },
             },
-
             x: {
                 grid: {
                     display: false,
@@ -67,7 +87,7 @@ function ProjectionKgPanel() {
     };
 
     return (
-        <Cards title="Proyecciones Kg" size="large">
+        <Cards title="Proyecciones de Producción" size="large">
             <DashboardChart
                 {...barChart}
                 type="bar"
@@ -77,8 +97,7 @@ function ProjectionKgPanel() {
                 }}
             />
         </Cards>
-
-    )
+    );
 }
 
-export default ProjectionKgPanel
+export default ProjectionKgPanel;

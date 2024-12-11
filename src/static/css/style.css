@@ -3149,11 +3149,13 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 }
 
 .ant-table-thead .ant-table-cell {
-  font-weight: 700 !important; /* Negrita para el header */
-  font-size: 14px !important; /* Ajustar el tamaño de fuente */
+  font-weight: 700 !important;
+  /* Negrita para el header */
+  font-size: 14px !important;
+  /* Ajustar el tamaño de fuente */
 }
 
-.ant-table-cell{
+.ant-table-cell {
   padding: 8px !important;
   /* Ajustar el padding para una mejor presentación */
   font-size: 14px !important;
@@ -3406,7 +3408,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 @keyframes move {
   100% {
-      transform: translate3d(0, 0, 1px) rotate(360deg);
+    transform: translate3d(0, 0, 1px) rotate(360deg);
   }
 }
 
@@ -3442,6 +3444,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   transform-origin: -15vw -11vh;
   box-shadow: -2vmin 0 0.3774009088476471vmin currentColor;
 }
+
 .background span:nth-child(1) {
   color: #5ab7c4;
   top: 45%;
@@ -3451,6 +3454,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   transform-origin: 12vw 3vh;
   box-shadow: -2vmin 0 0.308890608461839vmin currentColor;
 }
+
 .background span:nth-child(2) {
   color: #adb0ff;
   top: 90%;
@@ -3460,6 +3464,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   transform-origin: 5vw 2vh;
   box-shadow: 2vmin 0 1.0118677402796432vmin currentColor;
 }
+
 .background span:nth-child(3) {
   color: #adb0ff;
   top: 6%;
@@ -3469,6 +3474,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   transform-origin: -18vw -13vh;
   box-shadow: -2vmin 0 0.5129378316455098vmin currentColor;
 }
+
 .background span:nth-child(4) {
   color: #adb0ff;
   top: 35%;
@@ -3478,6 +3484,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   transform-origin: -4vw 18vh;
   box-shadow: 2vmin 0 0.7671463743388458vmin currentColor;
 }
+
 .background span:nth-child(5) {
   color: #adb0ff;
   top: 96%;
@@ -3487,6 +3494,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   transform-origin: 5vw 5vh;
   box-shadow: 2vmin 0 0.3446672077421964vmin currentColor;
 }
+
 .background span:nth-child(6) {
   color: #adb0ff;
   top: 12%;
@@ -3496,6 +3504,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   transform-origin: 10vw 6vh;
   box-shadow: 2vmin 0 0.5213387566505643vmin currentColor;
 }
+
 .background span:nth-child(7) {
   color: #adb0ff;
   top: 51%;
@@ -3505,6 +3514,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   transform-origin: -20vw 23vh;
   box-shadow: -2vmin 0 0.4407968361969201vmin currentColor;
 }
+
 .background span:nth-child(8) {
   color: #adb0ff;
   top: 61%;
@@ -3521,10 +3531,13 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 
 /* Estilo para el segundo nivel de submenú */
-.ant-menu-submenu >  .ant-menu-sub {
-  margin-left: 15px; /* Ajuste de margen para el segundo nivel */
-  font-size: 0.9rem; /* Ajuste opcional para el tamaño de letra */
+.ant-menu-submenu>.ant-menu-sub {
+  margin-left: 15px;
+  /* Ajuste de margen para el segundo nivel */
+  font-size: 0.9rem;
+  /* Ajuste opcional para el tamaño de letra */
 }
+
 /* Estilo del Modal */
 .modal-content {
   padding: 20px;
@@ -3538,7 +3551,8 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 /* Tabla de información principal */
 .main-info-table {
-  flex: 2; /* Aumenta el ancho de la tabla en relación a las cards */
+  flex: 2;
+  /* Aumenta el ancho de la tabla en relación a las cards */
 }
 
 .main-info-table table {
@@ -3561,16 +3575,18 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   background-color: #f1f1f1;
 }
 
-.card-mesh-wrap{
+.card-mesh-wrap {
   background-color: #f8f9fb !important;
 }
 
 /* Estilo de "cards" */
 .information-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Mantiene dos columnas para organización */
+  grid-template-columns: repeat(2, 1fr);
+  /* Mantiene dos columnas para organización */
   gap: 15px;
-  flex: 1; /* Reduce el espacio ocupado por las cards en comparación con la tabla */
+  flex: 1;
+  /* Reduce el espacio ocupado por las cards en comparación con la tabla */
   width: 100%;
 }
 
@@ -3622,7 +3638,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 }
 
 .badge-red {
-  
+
   background-color: #f31260;
 }
 
@@ -3639,6 +3655,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   align-items: center;
   justify-content: space-between;
 }
+
 .flex-row_space-between {
   display: flex;
   width: 100%;
@@ -3681,20 +3698,25 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   margin-bottom: 10px;
 }
 
-.details, .additional-details {
+.details,
+.additional-details {
   display: flex;
   flex-wrap: wrap;
 }
 
-.detail-item, .additional-detail-item {
+.detail-item,
+.additional-detail-item {
   width: 42%;
   margin-bottom: 8px;
   display: flex;
   justify-content: space-between;
   margin-right: 8%;
-  padding-bottom: 8px; /* Espacio entre el contenido y la línea */
-  border-bottom: 1px solid #ddd; /* Línea debajo de cada item */
+  padding-bottom: 8px;
+  /* Espacio entre el contenido y la línea */
+  border-bottom: 1px solid #ddd;
+  /* Línea debajo de cada item */
 }
+
 .label {
   color: #555;
 }
@@ -3748,7 +3770,8 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 }
 
 .header-cell {
-  background-color: #f0f0f0; /* Sombreado para el encabezado */
+  background-color: #f0f0f0;
+  /* Sombreado para el encabezado */
   font-weight: bold;
 }
 
@@ -3809,6 +3832,11 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   margin: 15px 0;
 }
 
+.harvest-report-divider-2 {
+  border-bottom: 1px solid #e9ecef;
+  margin: 5px 0;
+}
+
 .harvest-report-group-item,
 .harvest-report-section-2 {
   border-left: 4px solid #007bff;
@@ -3847,7 +3875,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 }
 
 
-.align-items{
+.align-items {
   display: flex;
   justify-content: space-between;
 }
@@ -3940,12 +3968,16 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px; /* Ajusta el tamaño del círculo */
+  width: 32px;
+  /* Ajusta el tamaño del círculo */
   height: 32px;
   border-radius: 50%;
-  background-color: #52c41a; /* Color del círculo completado */
-  color: white; /* Color del icono */
-  font-size: 16px; /* Tamaño del icono */
+  background-color: #52c41a;
+  /* Color del círculo completado */
+  color: white;
+  /* Color del icono */
+  font-size: 16px;
+  /* Tamaño del icono */
 }
 
 .ant-steps-icon {
@@ -3955,10 +3987,13 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 }
 
 .ant-steps-item-icon svg {
-  width: 20px !important; /* Tamaño deseado del SVG */
+  width: 20px !important;
+  /* Tamaño deseado del SVG */
   height: 20px !important;
-  display: block !important; /* Asegura que el SVG ocupe solo su tamaño */
-  margin: auto; /* Centra el SVG dentro del círculo */
+  display: block !important;
+  /* Asegura que el SVG ocupe solo su tamaño */
+  margin: auto;
+  /* Centra el SVG dentro del círculo */
 }
 
 
@@ -4074,38 +4109,77 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 .multi-row-tabs .ant-tabs-tab {
   flex: 1 1 auto !important;
   white-space: nowrap !important;
-  text-align: center!important;
+  text-align: center !important;
 }
 
 
-.ant-picker{
+.ant-picker {
   min-width: auto !important;
 }
 
 .custom-table-padding .ant-table-cell {
-  padding: 2px 5px !important; /* Cambia los valores según lo que necesites */
+  padding: 2px 5px !important;
+  /* Cambia los valores según lo que necesites */
 }
 
 .custom-table-padding-table-1 .ant-table-cell {
-  padding: 4px 8px !important; /* Cambia los valores según lo que necesites */
+  padding: 4px 8px !important;
+  /* Cambia los valores según lo que necesites */
 }
 
 .custom-table-padding-table-2 .ant-table-cell {
-  padding: 4px 8px !important; /* Cambia los valores según lo que necesites */
+  padding: 4px 8px !important;
+  /* Cambia los valores según lo que necesites */
   margin-right: 2px !important;
 }
 
-.highlight-row{
+.highlight-row {
   background-color: black !important;
   color: rgb(71, 25, 25) !important;
-    
+
 }
 
 /* Estilo más específico */
-.custom-black-row td{
+.custom-black-row td {
   background-color: #b6dde8 !important;
 }
 
-.custom-page-header{
+.custom-page-header {
   margin-top: -30px;
+}
+
+
+.custom-header-data-production {
+  background-color: #e6f7ff !important;
+  border: 1px solid #91d5ff !important;
+}
+
+.custom-header-data-variables-diet {
+  background-color: #f6ffed !important;
+  border: 1px solid #b7eb8f !important;
+  text-align: center;
+}
+
+.custom-header-data-variables-diet-focus {
+  background-color: #bcf0cb !important;
+  border: 1px solid #3ea05c !important;
+  text-align: center;
+}
+
+.custom-header-data-projection {
+  background-color: #fffaf0 !important;
+  border: 1px solid #ffe58f !important;
+  text-align: center;
+}
+
+
+.ant-card-body{
+  margin: 0px !important;
+  padding: 0px !important;
+  width: 100% !important;
+}
+
+.flex-col{
+  display: flex;
+  flex-direction: column;
 }

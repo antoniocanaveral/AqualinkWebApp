@@ -4,7 +4,6 @@ import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { GoogleMaps } from '../../../components/maps/google-maps';
-import PreCriaVolumeDonutChart from './biomass/PreCriaVolumDonutChart';
 import ClassificationDonutChart from './biomass/ClassificationDonutChart';
 
 function ClassificationFarm() {
@@ -41,7 +40,6 @@ function ClassificationFarm() {
 
     data.forEach((row, index) => {
       const isFirstRowOfGroup = row.clasificacion !== previousClasification;
-      const isLastRowOfGroup = index === data.length - 1 || data[index + 1].clasificacion !== row.clasificacion;
 
       // Calcula el rowspan solo en la primera fila del grupo
       if (isFirstRowOfGroup) {
@@ -66,11 +64,11 @@ function ClassificationFarm() {
       rows.push(
         <tr key={index}>
           {isFirstRowOfGroup && (
-            <td rowSpan={rowspan} style={{ backgroundColor: row.color, fontWeight: 'bold', padding: '8px' }}>
+            <td rowSpan={rowspan} style={{ backgroundColor: row.color, padding: '8px' }}>
               {row.clasificacion}
             </td>
           )}
-          <td style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>{row.pesoEspecifico}</td>
+          <td style={{ borderBottom: '1px solid #ccc', padding: '8px', fontWeight:'normal' }}>{row.pesoEspecifico}</td>
           <td style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>{row.muestra}</td>
           <td style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>{row.pesoTotal}</td>
           <td style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>{row.porcentaje}</td>

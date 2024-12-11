@@ -16,6 +16,7 @@ import { cancelCustodyCoord, loadCustodyCoord, submitCustodyCoord } from '../../
 import Cookies from 'js-cookie';
 import moment from 'moment';
 import {useNavigate } from 'react-router-dom';
+import { StepsCoords } from '../../components/steps/stepsCoords';
 
 const { Option } = Select;
 
@@ -169,7 +170,7 @@ function CoordinationCustody() {
                     <Col xxl={20} xs={24}>
                       <WizardWrapper className="ninjadash-wizard-page">
                         <WizardTwo>
-                          <Steps
+                          <StepsCoords
                             isswitch
                             current={current}
                             status={status}

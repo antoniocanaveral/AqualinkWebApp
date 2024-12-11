@@ -1,22 +1,45 @@
-import React, { useState, lazy, Suspense } from 'react';
-import { Row, Col, Skeleton, Typography, Input, Button, Space } from 'antd';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { Row, Col, Skeleton, Typography, Input, Button, Space, DatePicker, message } from 'antd';
+import moment from 'moment'; // Importar moment para manejar fechas
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import Speedometer from './charts/Speedometer';
-import { GoogleMaps } from '../../../components/maps/google-maps';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function CostAddFarm() {
   const [speedometerValue, setSpeedometerValue] = useState(25.89); // Valor inicial del Speedometer
-  const [speedometerStaticValue, setSpeedometerStaticValue] = useState(25.89); // Valor del input
+  const speedometerStaticValue = 25.89; // Valor del input
   const [inputValue, setInputValue] = useState(''); // Valor del input
+
+  // Estados para los rangos de fechas
+  const [previousWeekRange, setPreviousWeekRange] = useState([]);
+  const [currentWeekRange, setCurrentWeekRange] = useState([]);
 
   const handleUpdateSpeedometer = () => {
     const numericValue = parseFloat(inputValue);
     if (!isNaN(numericValue)) {
       setSpeedometerValue(numericValue); // Actualiza el valor del Speedometer
+      message.success('Speedometer actualizado exitosamente.');
+    } else {
+      message.error('Por favor, ingresa un valor numérico válido.');
     }
   };
+
+  useEffect(() => {
+    const today = moment();
+
+    // Calcular el inicio y fin de la semana actual (lunes a domingo)
+    const startOfCurrentWeek = today.clone().startOf('isoWeek'); // Lunes
+    const endOfCurrentWeek = today.clone().endOf('isoWeek'); // Domingo
+
+    // Calcular el inicio y fin de la semana previa
+    const startOfPreviousWeek = startOfCurrentWeek.clone().subtract(1, 'week');
+    const endOfPreviousWeek = endOfCurrentWeek.clone().subtract(1, 'week');
+
+    setCurrentWeekRange([startOfCurrentWeek, endOfCurrentWeek]);
+    setPreviousWeekRange([startOfPreviousWeek, endOfPreviousWeek]);
+  }, []);
 
   return (
     <>
@@ -33,81 +56,113 @@ function CostAddFarm() {
       <Main>
         <Row gutter={25}>
           {/* Columna de la Geolocalización */}
-          <Col xl={12} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Geolocalización" size="large" style={{ marginBottom: 0 }}>
-                <Row gutter={[5, 5]} align="top">
-                  <Col xs={24} md={24}>
-                    <div>
-                      <GoogleMaps height={"220px"} />
-                    </div>
-                  </Col>
-                  <Col xs={24} md={24}>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                          <Typography.Text>Área: 307.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                          <Typography.Text>Área: 5.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                          <Typography.Text>Área: 1.35 ha</Typography.Text>
-                        </div>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
-            </Suspense>
+          <Col xl={9} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+            <AqualinkMaps width={"100%"} height={"160px"} />
           </Col>
 
           {/* Columna del Speedometer */}
-          <Col xl={12} xs={24} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Col xl={15} xs={24} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title={"Costo Indirecto Hectárea/Día"} style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ flex: 1 }}>
-                  <Space direction="vertical" style={{ width: '100%' }}>
-                    <Typography.Text style={{ fontSize: '14px' }}>Costo Indirecto Ha/Día/ Proyectado:</Typography.Text>
+              <Cards title={"Costo Indirecto Ha/Día"} style={{ display: 'flex', alignItems: 'center' }}>
+                <div className='flex-row' style={{ gap: 10 }}>
+                  <div>
+                    {/* Semana Previa */}
+                    <Typography.Text style={{ fontSize: '14px' }}>
+                      Costo Indirecto Ha/Día / Proyectado
+                    </Typography.Text>
                     <Input
                       type="number"
                       placeholder="USD 18"
                       defaultValue={"18 USD"}
                       disabled={true}
+                      style={{ marginBottom: '8px' }}
                     />
-                  </Space>
-                  <Space direction="vertical" style={{ width: '100%' }}>
-                    <Typography.Text style={{ fontSize: '14px' }}>Costo Indirecto Ha/Día:</Typography.Text>
+                  </div>
+                  <div>
+                    {/* Rango de Fecha Semana Previa */}
+                    <Typography.Text style={{ fontSize: '14px' }}>
+                      Rango de Fecha de la Corrida
+                    </Typography.Text>
+                    <DatePicker.RangePicker
+                      value={previousWeekRange}
+                      disabled={true} // Deshabilitado si no deseas que sea editable
+                      format="DD/MM/YYYY"
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+                </div>
+
+                <div className='flex-row' style={{ gap: 10 }}>
+                  <div>
+                    {/* Semana Actual */}
+                    <Typography.Text style={{ fontSize: '14px' }}>
+                      Costo Indirecto Ha/Día / Semana Previa
+                    </Typography.Text>
                     <Input
                       type="number"
                       placeholder="USD 19"
                       defaultValue={"19 USD"}
                       disabled={true}
+                      style={{ marginBottom: '8px' }}
                     />
-                  </Space>
-                  {/* Input con label */}
-                  <Space direction="vertical" style={{ width: '100%' }}>
-                    <Typography.Text style={{ fontSize: '14px' }}>Costo Hectárea/Día:</Typography.Text>
+
+                  </div>
+                  <div>
+                    {/* Rango de Fecha Semana Actual */}
+                    <Typography.Text style={{ fontSize: '14px' }}>
+                      Rango de Fecha Semana Previa
+                    </Typography.Text>
+                    <DatePicker.RangePicker
+                      value={currentWeekRange}
+                      disabled={true} // Deshabilitado si no deseas que sea editable
+                      format="DD/MM/YYYY"
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+                </div>
+
+
+
+                <div className='flex-row' style={{ gap: 10 }}>
+                  <div>
+                    {/* Semana Actual */}
+                    <Typography.Text style={{ fontSize: '14px' }}>Costo Hectárea/Día / Semana Actual</Typography.Text>
                     <Input
                       type="number"
                       placeholder="Ingrese el costo"
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
+                      style={{ marginBottom: '8px' }}
                     />
-                    <Button type="primary" onClick={handleUpdateSpeedometer}>
-                      Actualizar
-                    </Button>
-                  </Space>
+                  </div>
+                  <div>
+                    {/* Rango de Fecha Semana Actual */}
+                    <Typography.Text style={{ fontSize: '14px' }}>
+                      Rango de Fecha Semana Actual
+                    </Typography.Text>
+                    <DatePicker.RangePicker
+                      value={currentWeekRange}
+                      disabled={true} // Deshabilitado si no deseas que sea editable
+                      format="DD/MM/YYYY"
+                      style={{ width: '100%' }}
+                    />
+                  </div>
                 </div>
-                {/* Speedometer */}
 
+
+
+                {/* Input para actualizar el Speedometer */}
+                <Space direction="vertical" style={{ width: '100%' }}>
+
+                  <Button type="primary" onClick={handleUpdateSpeedometer}>
+                    Actualizar
+                  </Button>
+                </Space>
               </Cards>
             </Suspense>
           </Col>
         </Row>
+
         <Row gutter={25}>
           <Col xl={12} xs={24}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
@@ -127,7 +182,6 @@ function CostAddFarm() {
               </Cards>
             </Suspense>
           </Col>
-
         </Row>
       </Main>
     </>

@@ -4,15 +4,15 @@ import { Row, Col, Skeleton, Typography, Badge, Space, Form, Input, DatePicker, 
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
-import { GoogleMaps } from '../../components/maps/google-maps';
 import CostIncomeComparisonChart from './planning/CostIncomeComparisonChart';
 import StimatedProductionChart from './planning/StimatedProductionChart';
+import { AqualinkMaps } from '../../components/maps/aqualink-map';
 
 function PlanningStudioFarms() {
   const [form] = Form.useForm();
   const [scenarios, setScenarios] = useState([]);
 
-  const [simulationType, setSimulationType] = useState("dinamico"); // Valor preseleccionado dinámico
+  const [simulationType, setSimulationType] = useState("fijo"); // Valor preseleccionado dinámico
   const [fixedOption, setFixedOption] = useState(null); // Valor inicial sin opción fija
 
   const [fixedFieldNeedsValue, setFixedFieldNeedsValue] = useState(false);
@@ -23,14 +23,9 @@ function PlanningStudioFarms() {
     densidad: 'density',
     ciclo: 'days_to_harvest',
     peso: 'stimated_weight',
+    fca: 'stimated_fca',
   }; // Maneja el cambio de tipo de simulación
-  const handleSimulationTypeChange = (value) => {
-    setSimulationType(value);
-    if (value !== "fijo") {
-      setFixedOption(null);
-      form.resetFields(['fixedOption']);
-    }
-  };
+
 
   // Maneja el cambio de opción fija
   const handleFixedOptionChange = (value) => {
@@ -137,57 +132,12 @@ function PlanningStudioFarms() {
       <Main>
         <Row gutter={25}>
           <Col xl={9} xs={24} style={{ display: "flex" }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Studio Planning: Segmento P3" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={24} md={24}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <GoogleMaps height={"500px"} />
-                  </Col>
-                  <Col xs={24} md={24}>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                          <Typography.Text>Área: 307.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                          <Typography.Text>Área: 5.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                          <Typography.Text>Área: 1.35 ha</Typography.Text>
-                        </div>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
-            </Suspense>
+            <AqualinkMaps width="100%" height="555px" />
           </Col>
           <Col xl={15} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Planificación: Ingreso de Datos para Escenarios" size="large">
                 <div style={{ display: "flex", flexDirection: "row", gap: "16px", marginBottom: "10px", width: "100%" }}>
-                  <div style={{ flex: "0 0 30%" }}>
-                    <Form.Item
-                      label={<span style={{ color: '#73879c' }}>Tipo de simulación</span>}
-                      name="simulationType"
-                      initialValue={simulationType}
-                    >
-                      <Select
-                        placeholder="Tipo de simulación"
-                        onChange={handleSimulationTypeChange}
-                      >
-                        <Select.Option value="dinamico">Dinámico (todas las variables pueden ser distintas)</Select.Option>
-                        <Select.Option value="fijo">Variables fijas</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </div>
 
                   <div style={{ flex: "0 0 70%" }}>
                     {simulationType === "fijo" && (
@@ -203,7 +153,9 @@ function PlanningStudioFarms() {
                         >
                           <Select.Option value="densidad">1. Una sola densidad</Select.Option>
                           <Select.Option value="ciclo">2. Un solo # de días de ciclo</Select.Option>
-                          <Select.Option value="peso">3. Un solo peso con diferentes tiempos y densidades</Select.Option>
+                          <Select.Option value="peso">3. Un solo peso </Select.Option>
+                          <Select.Option value="fca">4. Un solo FCA</Select.Option>
+
                         </Select>
                       </Form.Item>
                     )}
@@ -364,8 +316,18 @@ function PlanningStudioFarms() {
                         label={<span style={{ color: '#73879c' }}>{inputLabels.stimated_fca}</span>}
                         name="stimated_fca"
                         rules={[{ required: true, message: 'Este campo es requerido' }]}
+                        validateStatus={
+                          fixedOption === 'fca' && fixedFieldNeedsValue ? 'error' : ''
+                        }
+                        help={
+                          fixedOption === 'fca' && fixedFieldNeedsValue
+                            ? 'Este campo es requerido'
+                            : ''
+                        }
                       >
-                        <Select placeholder="Seleccione FCA">
+                        <Select placeholder="Seleccione FCA"
+                          disabled={fixedOption === 'fca' && fixedFieldDisabled}
+                        >
                           {Array.from({ length: 33 }, (_, i) => (0.8 + i * 0.1).toFixed(1)).map(value => (
                             <Select.Option key={value} value={parseFloat(value)}>
                               {value}

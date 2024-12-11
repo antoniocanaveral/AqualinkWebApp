@@ -9,6 +9,7 @@ import ClassificationFarm from '../../container/AQx-Farms/crop/classification-fa
 import HarvestFarm from '../../container/AQx-Farms/crop/harvest-farm';
 import AnalyticsFarms from '../../container/AQx-Farms/analytics-farms';
 import AnalyticReportFarm from '../../container/AQx-Farms/analytics/report-analytic';
+import ProDataAnalyticsFarms from '../../container/AQx-Farms/analytics-farms-pro-data';
 
 const NotFound = lazy(() => import('../../container/pages/404'));
 
@@ -19,6 +20,7 @@ function AnalyticRoutesFarm() {
             </Route>
             <Route path="/" element={<AnalyticsFarms />} />
             <Route path="/report" element={<AnalyticReportFarm />} />
+            <Route path="/pro-data-analytics" element={<ProDataAnalyticsFarms />} />
 
             <Route path="*" element={<NotFound />} />
         </Routes>

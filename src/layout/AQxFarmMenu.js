@@ -175,7 +175,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/planning`}>
+        <NavLink className="menuItem-icon" to={`${path}/analytics/pro-data-analytics`}>
           {t('Pro Data Analytics')}
         </NavLink>,
         'prodata',
@@ -253,15 +253,20 @@ function AQxFarmMenu({ toggleCollapsed }) {
               'alimentacion-proteina',
               null,
             ),
-            getItem(
+           
+            /**
+             *
+             *  getItem(
               <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/plate-sampling`}>
                 {t('Muestreo de Platos')}
               </NavLink>,
               'alimentacion-muestreo-platos',
               null,
-            ),
+            ), 
+             */
+           
             getItem(
-              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/plate-sampling`}>
+              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/feeding-tables`}>
                 {t('Tablas de Alimentación')}
               </NavLink>,
               'alimentacion-tabla',
@@ -457,7 +462,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
 
     getItem(
-      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('RECURSOS PRODUCCIÓN')}</NavTitle>,
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('RECURSOS DE GESTIÓN')}</NavTitle>,
       'submenu-ingresos',
       null,
       null,
