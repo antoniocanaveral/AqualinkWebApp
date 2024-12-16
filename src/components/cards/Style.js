@@ -89,8 +89,8 @@ const OverviewCardWrap = Styled.div`
         .ninjadash-overview-card{
             .ninjadash-overview-card__top{
                 .ninjadash-overview-card__top--icon{
-                    width: 150px;
-                    height: 108px;
+                    width: 100px;
+                    height: 100px;
                     display: flex;
                     align-items: center;
                     justify-content: center;

@@ -10,8 +10,8 @@ const ListItemsMessageNotificationsCenter = React.memo(() => {
       <Row gutter={25}>
         {SupportOverview.map((item, i) => {
           return (
-            <Col xxl={6} sm={8} xs={24} key={i}>
-              <OverviewCard className="ninjadash-overview-card-support" data={item} bottomStatus={false} contentFirst />
+            <Col xxl={6} sm={6} xs={24} key={i}>
+              <OverviewCard className="" data={item} bottomStatus={false} contentFirst />
             </Col>
           );
         })}

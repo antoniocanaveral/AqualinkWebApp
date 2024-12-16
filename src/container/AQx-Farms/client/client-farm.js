@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Row, Col, Skeleton, Typography, Badge, Space, Table, Tabs } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -9,6 +9,9 @@ import DonutChartComponent from '../../../components/charts/donut/DonutChartComp
 const { TabPane } = Tabs;
 
 function ClientFarm() {
+    // Estado local para controlar la renderización del gráfico
+    const [showChart, setShowChart] = useState(false);
+
     // Datos de la primera tabla
     const clientInfo = [
         { key: '1', categoria: 'Razón Social', valor: '' },
@@ -289,6 +292,16 @@ function ClientFarm() {
         },
     ];
 
+
+    useEffect(() => {
+        // Introduce un retraso de 1 segundo antes de renderizar el gráfico
+        const timer = setTimeout(() => {
+            setShowChart(true);
+        }, 1000); // 1000 milisegundos = 1 segundo
+
+        // Limpia el timeout si el componente se desmonta antes de que termine
+        return () => clearTimeout(timer);
+    }, []);
     return (
         <>
             <PageHeader
@@ -363,37 +376,41 @@ function ClientFarm() {
                             <Col xl={10} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
                                 <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
                                     <Cards title="Relación Has por tipo de Piscina" size="large" style={{ marginBottom: 0 }}>
-                                        <div style={{ width: "75%", margin: "auto" }}>
-                                            <DonutChartComponent
-                                                data={[
-                                                    { label: 'Ppc', value: 7 },
-                                                    { label: 'Ppe', value: 50 },
-                                                    { label: 'Pef', value: 67 },
-                                                ]}
-                                                titleText="Relación Has"
-                                                subtitleText="Por Piscina"
-                                                height={200}
-                                                width={200}
-                                            />
+                                        <div style={{ width: "85%", margin: "auto" }}>
+                                            {showChart && (
+                                                <DonutChartComponent
+                                                    data={[
+                                                        { label: 'Ppc', value: 7 },
+                                                        { label: 'Ppe', value: 50 },
+                                                        { label: 'Pef', value: 67 },
+                                                    ]}
+                                                    titleText="Relación Has"
+                                                    subtitleText="Por Piscina"
+                                                    height={200}
+                                                    width={200}
+                                                />
+                                            )}
                                         </div>
 
                                     </Cards>
                                 </Suspense>
                                 <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
                                     <Cards title="Volumen de agua operativo por tipo de piscina" size="large" style={{ flex: 1, marginTop: 0 }}>
-                                        <div style={{ width: "75%", margin: "auto" }}>
-                                            <DonutChartComponent
-                                                data={[
-                                                    { label: 'Ppc', value: 4 },
-                                                    { label: 'Ppe', value: 17 },
-                                                    { label: 'Pef', value: 77 },
-                                                    { label: 'R&C', value: 2 },
-                                                ]}
-                                                titleText="Porcentaje"
-                                                subtitleText="Agua por Piscina"
-                                                height={200}
-                                                width={200}
-                                            />
+                                        <div style={{ width: "85%", margin: "auto" }}>
+                                            {showChart && (
+                                                <DonutChartComponent
+                                                    data={[
+                                                        { label: 'Ppc', value: 4 },
+                                                        { label: 'Ppe', value: 17 },
+                                                        { label: 'Pef', value: 77 },
+                                                        { label: 'R&C', value: 2 },
+                                                    ]}
+                                                    titleText="Porcentaje"
+                                                    subtitleText="Agua por Piscina"
+                                                    height={200}
+                                                    width={200}
+                                                />
+                                            )}
                                         </div>
                                     </Cards>
                                 </Suspense>

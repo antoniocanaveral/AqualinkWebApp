@@ -144,9 +144,9 @@ function InventoryTable() {
                 width={800} // Aumenta el ancho del modal para mejor visualización
             >
                 {selectedItem && (
-                    <div className="content-row">
+                    <div className="content-row" style={{display:"flex", flexWrap:"wrap"}}>
                         {/* Tabla principal con información clave */}
-                        <div style={{ flex: '1 1 60%' }}>
+                        <div >
                             <Table
                                 dataSource={[
                                     { key: 'categoria', label: 'Categoría', value: selectedItem.categoria },
@@ -169,7 +169,7 @@ function InventoryTable() {
                         </div>
 
                         {/* Información adicional en formato de "cards" */}
-                        <div style={{ flex: '1 1 40%' }}>
+                        <div >
                             <div className="information-grid">
                                 <div className="info-item">
                                     <span className="info-label">Tipo</span>

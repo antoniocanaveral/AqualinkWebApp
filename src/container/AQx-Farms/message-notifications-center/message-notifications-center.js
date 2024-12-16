@@ -13,11 +13,9 @@ import ListItemsMessageNotificationsCenter from './list-items';
 import Card from 'antd/lib/card/Card';
 
 function MessageNotificationsCenter() {
-    const { dataState } = useSelector((state) => {
-        return {
-            dataState: state.tickets.data,
-        };
-    });
+    const { dataState } = useSelector((state) => ({
+        dataState: state.tickets.data,
+    }));
 
     const dispatch = useDispatch();
 
@@ -74,7 +72,6 @@ function MessageNotificationsCenter() {
             dataIndex: 'status',
             key: 'status',
         },
-        
         {
             title: 'Acciones',
             dataIndex: 'action',
@@ -106,7 +103,7 @@ function MessageNotificationsCenter() {
     const handleEditSubmit = (values) => {
         const updatedData = dataState.map((item) => {
             if (item.id === editableData.id) {
-                return { ...item, status: values.status };
+                return { ...item, status: values.status, actions: values.actions };
             }
             return item;
         });
@@ -115,9 +112,9 @@ function MessageNotificationsCenter() {
     };
 
     if (dataState.length) {
-        dataState.map((item) => {
-            const { id, user, status, subject, priority, createAt, type } = item;
-            return dataSource.push({
+        dataState.forEach((item) => {
+            const { id, user, status, subject, priority, createAt, type, actions } = item;
+            dataSource.push({
                 key: `${id}`,
                 id: `#${id}`,
                 requested: (
@@ -128,11 +125,11 @@ function MessageNotificationsCenter() {
                     </div>
                 ),
                 status: (
-                    <span className={`ninjadash-support-status ninjadash-support-status-${status}`}> {
+                    <span className={`ninjadash-support-status ninjadash-support-status-${status}`}>{
                         status === 'Open' ? 'Por Revisar' : 'Finalizado'
                     }</span>
                 ),
-                subject: <span className="ninjadash-ticket-subject">{subject}</span>,
+                subject: <span>{subject}</span>,
                 type: type === 'message' ? 'Mensaje' : 'Notificación',
                 createAt,
                 action: (
@@ -152,7 +149,6 @@ function MessageNotificationsCenter() {
     return (
         <>
             <PageHeader
-                
                 highlightText="Aqualink Administración"
                 title="Centro de Mensajes y Notificaciones"
             />
@@ -217,6 +213,7 @@ function MessageNotificationsCenter() {
                 </TicketBox>
             </Main>
 
+            {/* Modal de Ver Detalles */}
             <Modal
                 visible={modalVisible}
                 title="Detalles del Mensaje/Notificación"
@@ -230,22 +227,18 @@ function MessageNotificationsCenter() {
                 {modalData && (
                     <div className="modal-container">
                         <Card className="info-card">
-                            <div className='flex-row'>
-                                <p><strong>ID:</strong> {modalData.id}</p>
-                                <p><strong>Asignado A:</strong> {modalData.user.name}</p>
-                            </div>
-                            <div className='flex-row'>
-                                <p><strong>Tipo:</strong> {modalData.type === "message" ? "Mensaje" : "Mensajen"}</p>
-                                <p><strong>Estado:</strong> {modalData.status === "Open" ? "Por Revisar" : "Finalizado"}</p>
-                            </div>
+                            <p><strong>ID:</strong> {modalData.id}</p>
+                            <p><strong>Asignado A:</strong> {modalData.user.name}</p>
+                            <p><strong>Estado:</strong> {modalData.status === 'Open' ? 'Por Revisar' : 'Finalizado'}</p>
                         </Card>
-
                         <Card className="subject-card">
-                            <p><strong>Asunto:</strong></p>
+                            <p><strong>Asunto:</strong> {modalData.subject}</p>
+                        </Card>
+                        <Card className="actions-card">
+                            <p><strong>Acciones por Tomar:</strong></p>
                             <textarea
-                                rows={3}
-                                defaultValue={modalData.subject}
-                                placeholder="Editar asunto"
+                                rows={4}
+                                defaultValue={modalData.actions || ''}
                                 className="textarea"
                                 disabled
                             />
@@ -254,7 +247,7 @@ function MessageNotificationsCenter() {
                 )}
             </Modal>
 
-
+            {/* Modal de Editar */}
             <Modal
                 visible={visibleEdit}
                 title="Editar Estado"
@@ -265,7 +258,10 @@ function MessageNotificationsCenter() {
                     <Form
                         layout="vertical"
                         onFinish={handleEditSubmit}
-                        initialValues={{ status: editableData.status }}
+                        initialValues={{
+                            status: editableData.status,
+                            actions: editableData.actions || '',
+                        }}
                     >
                         <Form.Item
                             name="status"
@@ -276,6 +272,13 @@ function MessageNotificationsCenter() {
                                 <Select.Option value="Open">Por Revisar</Select.Option>
                                 <Select.Option value="Close">Finalizado</Select.Option>
                             </Select>
+                        </Form.Item>
+                        <Form.Item
+                            name="actions"
+                            label="Acciones por Tomar"
+                            rules={[{ required: true, message: 'Por favor ingresa las acciones por tomar' }]}
+                        >
+                            <Input.TextArea rows={4} />
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" htmlType="submit">

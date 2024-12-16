@@ -151,7 +151,7 @@ function ProDataAnalyticsFarms() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={6} xs={24}>
+          <Col xl={24} xs={24}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -159,7 +159,7 @@ function ProDataAnalyticsFarms() {
                 </Cards>
               }
             >
-              <div className="flex-col">
+              <div className="flex-row-responsive">
                 {proDataBox.map((item, i) => {
                   return <OverviewCardMeshOriginal data={item} key={i} />;
                 })}
@@ -180,7 +180,7 @@ function ProDataAnalyticsFarms() {
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={9} xs={24}>
+          <Col xl={15} xs={24}>
             <Suspense
               fallback={
                 <Cards headless>

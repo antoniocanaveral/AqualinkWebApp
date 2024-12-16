@@ -26,21 +26,21 @@ const ThemeLayout = (WrappedComponent) => {
     constructor(props) {
       super(props);
       this.state = {
-        collapsed: true,
+        collapsed: window.innerWidth <= 500,
         hide: true,
       };
       this.updateDimensions = this.updateDimensions.bind(this);
     }
-
+    
     componentDidMount() {
       window.addEventListener('resize', this.updateDimensions);
       this.updateDimensions();
-
+      
+      console.log('componentDidMount - window.innerWidth:', window.innerWidth);
+    
       // Aquí añadimos el cambio de estilo cuando el componente se monta
       const headerContent = document.querySelector('.ninjadash-header-content__left');
-      const isMobile = window.innerWidth <= 990;
-      console.log('isMobile', isMobile);
-      console.log(window.innerWidth);
+      const isMobile = window.innerWidth <= 500;
       if (headerContent) {
         if (isMobile) {
           headerContent.style.backgroundColor = '#ffffff';
@@ -49,16 +49,26 @@ const ThemeLayout = (WrappedComponent) => {
         }
       }
     }
+    
+    updateDimensions() {
+      console.log('updateDimensions - window.innerWidth:', window.innerWidth);
+      this.setState({
+        collapsed: window.innerWidth <= 990,
+      });
+    }
+    
 
     componentWillUnmount() {
       window.removeEventListener('resize', this.updateDimensions);
     }
 
     updateDimensions() {
+      // Si la ventana es menor o igual a 990, colapsamos; caso contrario, no colapsamos.
       this.setState({
-        collapsed: window.innerWidth <= 1200 && true,
+        collapsed: window.innerWidth <= 990,
       });
     }
+    
 
     render() {
       const { collapsed, hide } = this.state;

@@ -66,7 +66,7 @@ const CostProjectionWrapLab = React.memo(() => {
       {showChart && ( // Renderiza el gráfico solo si showChart es true
         <div className="ninjadash-overview-wrap">
           {/* Contenedor del Doughnut Chart con altura definida */}
-          <div style={{ width: '100%', height: '300px' }}>
+          <div style={{ width: '100%', height: '200px' }}>
             <DoughnutChart
               type="doughnut"
               id="insumosOverview"

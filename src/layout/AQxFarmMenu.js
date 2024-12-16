@@ -68,7 +68,14 @@ function AQxFarmMenu({ toggleCollapsed }) {
   };
 
   const onClick = (item) => {
-    if (item.keyPath.length === 1) setOpenKeys([]);
+    if (item.keyPath.length === 1) {
+      setOpenKeys([]);
+
+      // Si estás en modo móvil (ej: ancho <= 991px), cierra el sidebar después de seleccionar
+      if (window.innerWidth <= 991) {
+        toggleCollapsed();
+      }
+    }
   };
 
 

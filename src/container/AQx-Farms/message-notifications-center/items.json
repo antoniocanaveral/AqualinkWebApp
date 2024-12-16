@@ -9,6 +9,15 @@
         "prefix": ""
     },
     {
+        "id": 2,
+        "type": "secondary",
+        "icon": "bell.svg",
+        "label": "Mensajes",
+        "total": "30825",
+        "suffix": "",
+        "prefix": ""
+    },
+    {
         "id": 3,
         "type": "warning",
         "icon": "clock.svg",
