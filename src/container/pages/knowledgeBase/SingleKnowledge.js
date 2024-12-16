@@ -50,7 +50,7 @@ function SingleKnowledge() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Knowledgebase" routes={PageRoutes} />
+      <PageHeader  title="Knowledgebase" routes={PageRoutes} />
       <Main>
         <GeneralKnowledgeTop />
         <KnowledgebaseArticleWrap>

@@ -88,7 +88,7 @@ function Calendars() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Calendar" routes={PageRoutes} />
+      <PageHeader  title="Calendar" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={24}>

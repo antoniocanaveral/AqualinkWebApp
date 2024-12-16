@@ -20,7 +20,7 @@ function Results() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Results" routes={PageRoutes} />
+      <PageHeader  title="Results" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

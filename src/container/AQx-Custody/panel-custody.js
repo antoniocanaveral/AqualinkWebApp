@@ -88,7 +88,7 @@ function PanelCustody() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader 
         highlightText="Aqualink Empacadoras"
         title="Control Panel" routes={PageRoutes} />
 

@@ -18,7 +18,7 @@ function TermsConditions() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Terms & Conditions" routes={PageRoutes} />
+      <PageHeader  title="Terms & Conditions" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>

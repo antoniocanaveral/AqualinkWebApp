@@ -88,7 +88,7 @@ function LaboratoryViewFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="AquaLink Laboratorio"
         title="Vista de Laboratorios"
       />

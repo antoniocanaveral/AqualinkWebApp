@@ -90,7 +90,7 @@ function ClassificationFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="Aqualink Monitoreo"
         title="Clasificación"
         selectOptions={[

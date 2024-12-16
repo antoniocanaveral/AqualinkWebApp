@@ -19,7 +19,7 @@ function Switches() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Switch" routes={PageRoutes} />
+      <PageHeader  title="Switch" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} sm={12} xs={24}>

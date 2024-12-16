@@ -36,7 +36,7 @@ function RealAndProjectedFeeding() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader
         highlightText="Aqualink Monitoreo"
         title="Alimentación Real Vs Proyectada"
         selectOptions={[
@@ -93,15 +93,15 @@ function RealAndProjectedFeeding() {
               }
             >
               <Cards title="Alimentación Real vs Alimentación Proyectada" size="large">
-                  <ProjectedSuggestedFeedingChart />
+                <ProjectedSuggestedFeedingChart />
               </Cards>
             </Suspense>
           </Col>
-         
+
         </Row>
 
         <Row gutter={25} equal-heights>
-        
+
           <Col xl={24} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
@@ -112,7 +112,9 @@ function RealAndProjectedFeeding() {
             >
               {/* Tabla de Alimentación */}
               <Cards title="Alimentación" size="large">
-                <Table dataSource={feedingData} columns={feedingColumns} pagination={{ pageSize: 5 }} />
+                <Table 
+                className='table-responsive'
+                dataSource={feedingData} columns={feedingColumns} pagination={{ pageSize: 5 }} />
               </Cards>
             </Suspense>
           </Col>

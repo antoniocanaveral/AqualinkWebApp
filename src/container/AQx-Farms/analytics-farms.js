@@ -10,15 +10,14 @@ import CropYieldChart from './analytics/charts/cropYieldChart';
 import ProductionSalesProjectionChart from './analytics/charts/ProductionSalesProjectionChart';
 import EvolutionParametersBarChart from './analytics/charts/EvolutionParametersBarChart';
 import WaterPhysicsDonutChart from './analytics/charts/donut/WaterPhysicsDonutChart';
-import SoilPhysicsDonutChart from './analytics/charts/donut/SoilPhysicsDonutChart';
-import BiomechanicalDonutChart from './analytics/charts/donut/BiomechanicalDonutChart';
+import Card from 'antd/lib/card/Card';
 
 function AnalyticsFarms() {
- 
+
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main custom-page-header"
+      <PageHeader 
         highlightText="Aqualink Camaroneras"
         title="Analytics"
         selectOptions={[
@@ -51,7 +50,7 @@ function AnalyticsFarms() {
 
 
         <Row gutter={25}>
-          <Col xl={15} xs={24} style={{ display: 'flex' }}> 
+          <Col xl={15} xs={24} >
             <Suspense
               fallback={
                 <Cards headless>
@@ -59,12 +58,12 @@ function AnalyticsFarms() {
                 </Cards>
               }
             >
-              <Cards title="Proyección Producción Ventas" size="large" style={{ width: '100%', height: '100%' }}> 
+              <Cards title="Proyección Producción Ventas" size="large" style={{ width: '100%', height: '100%' }}>
                 <ProductionSalesProjectionChart />
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={9} xs={24} style={{ display: 'flex' }}> 
+          <Col xl={9} xs={24} >
             <Suspense
               fallback={
                 <Cards headless>
@@ -78,39 +77,63 @@ function AnalyticsFarms() {
             </Suspense>
           </Col>
 
-          <Col xl={24} xs={24} style={{ display: 'flex' }}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <Cards title="Relación de Parámetros Semanal " size="large" style={{ width: '100%', height: '100%' }}>
-                <center>
-                  <Typography.Text strong style={{ fontSize: "1.2rem" }}>Evolución de Parámetros</Typography.Text>
-                </center>
-                <br />
-                <br />
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  <div style={{ width: "26%" }}>
+          <Card title="Relación Parámetros General" size="large" style={{ width: '100%', height: '100%' }}>
+            <Row gutter={25}>
+              <Col xl={6} xs={24} >
+                <Suspense
+                  fallback={
+                    <Cards headless>
+                      <Skeleton active />
+                    </Cards>
+                  }
+                >
+                  <div>
                     <EvolutionParametersBarChart />
                   </div>
-                  <div style={{ display: "flex", flexDirection: "row", width: "70%" }}>
-                    <div>
-                      <WaterPhysicsDonutChart />
-                    </div>
-                    <div>
-                      <SoilPhysicsDonutChart />
-                    </div>
-                    <div>
-                      <BiomechanicalDonutChart />
-                    </div>
+                </Suspense>
+              </Col>
+              <Col xl={6} xs={24} >
+                <Suspense
+                  fallback={
+                    <Cards headless>
+                      <Skeleton active />
+                    </Cards>
+                  }
+                >
+                  <div>
+                    <WaterPhysicsDonutChart />
                   </div>
-                </div>
-              </Cards>
-            </Suspense>
-          </Col>
+                </Suspense>
+              </Col>
+              <Col xl={6} xs={24} >
+                <Suspense
+                  fallback={
+                    <Cards headless>
+                      <Skeleton active />
+                    </Cards>
+                  }
+                >
+                  <div>
+                    <WaterPhysicsDonutChart />
+                  </div>
+                </Suspense>
+              </Col>
+              <Col xl={6} xs={24} >
+                <Suspense
+                  fallback={
+                    <Cards headless>
+                      <Skeleton active />
+                    </Cards>
+                  }
+                >
+                  <div>
+                    <WaterPhysicsDonutChart />
+                  </div>
+                </Suspense>
+              </Col>
+            </Row>
+          </Card>
+
         </Row>
       </Main>
     </>

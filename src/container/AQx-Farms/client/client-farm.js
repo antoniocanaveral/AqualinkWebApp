@@ -292,7 +292,7 @@ function ClientFarm() {
     return (
         <>
             <PageHeader
-                className="ninjadash-page-header-main"
+
                 highlightText={"AquaLink Administración"}
                 title="Ficha de Clientes"
             />
@@ -408,6 +408,7 @@ function ClientFarm() {
                                 <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
                                     <Cards title="Infraestructura - Detalles de Piscinas" size="large">
                                         <Table
+                                            className='table-responsive'
                                             columns={infrastructureColumns}
                                             dataSource={infrastructureData}
                                             pagination={{ pageSize: 5 }}
@@ -426,6 +427,7 @@ function ClientFarm() {
                                 <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
                                     <Cards title="Georreferenciación - Detalles de Nodos" size="large">
                                         <Table
+                                            className='table-responsive'
                                             columns={geolocationColumns}
                                             dataSource={geolocationData}
                                             pagination={{ pageSize: 5 }}

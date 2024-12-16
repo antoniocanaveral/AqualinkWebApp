@@ -21,7 +21,7 @@ function ChangeLog() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Changelog" routes={PageRoutes} />
+      <PageHeader  title="Changelog" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xxl={19} md={16} xs={24}>

@@ -121,7 +121,8 @@ function PlanningStudioFarms() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" highlightText={"AquaLink Camaronera"}
+      <PageHeader
+        highlightText={"AquaLink Camaronera"}
         title="Planning Studio®"
         selectOptions={[
           ["Camaronera 1", "Camaronera 2", "Camaronera 3"],

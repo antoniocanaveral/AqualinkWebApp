@@ -86,7 +86,7 @@ function ToDo() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="To Do" routes={PageRoutes} />
+      <PageHeader  title="To Do" routes={PageRoutes} />
       <Main>
         <Row gutter={30}>
           <Col xs={24}>

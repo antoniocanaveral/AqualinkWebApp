@@ -25,7 +25,7 @@ function DashboardBase() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Theme Configuration" routes={PageRoutes} />
+      <PageHeader  title="Theme Configuration" routes={PageRoutes} />
       <Main>
         <Row gutter={15}>
           <Col xs={24}>

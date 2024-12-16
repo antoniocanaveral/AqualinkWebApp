@@ -27,7 +27,7 @@ function AllArticle() {
   };
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="All Article" routes={PageRoutes} />
+      <PageHeader  title="All Article" routes={PageRoutes} />
       <Main>
         <GeneralKnowledgeTop />
         <KnowledgebaseArticleWrap>

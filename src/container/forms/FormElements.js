@@ -43,7 +43,7 @@ function FormElements() {
   function onChange() {}
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Form Elements" routes={PageRoutes} />
+      <PageHeader  title="Form Elements" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xs={24}>

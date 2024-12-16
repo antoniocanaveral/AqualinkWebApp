@@ -49,7 +49,7 @@ function CardContainer() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Cards" routes={PageRoutes} />
+      <PageHeader  title="Cards" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xs={24}>

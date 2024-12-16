@@ -129,7 +129,7 @@ function ViewPage() {
   return (
     <RecordViewWrapper>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         routes={[]}
         subTitle={
           <div>

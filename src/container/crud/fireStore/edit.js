@@ -82,7 +82,7 @@ function Edit() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         routes={[]}
         buttons={[
           <Button className="btn-add_new" size="default" key="1" type="primary">

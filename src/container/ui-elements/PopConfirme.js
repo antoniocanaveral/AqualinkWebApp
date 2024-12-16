@@ -34,7 +34,7 @@ function Confirme() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Popconfirm" routes={PageRoutes} />
+      <PageHeader  title="Popconfirm" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xl={12} lg={8} xs={24}>

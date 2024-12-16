@@ -140,7 +140,7 @@ function Calendars() {
   };
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Calendar" routes={PageRoutes} />
+      <PageHeader  title="Calendar" routes={PageRoutes} />
 
       <Main>
         <CalendarWrapper className="ninjadash-calendar-wrap">

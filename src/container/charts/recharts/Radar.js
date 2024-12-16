@@ -40,7 +40,7 @@ function ReChartRadar() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Radar Chart" routes={PageRoutes} />
+      <PageHeader  title="Radar Chart" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

@@ -127,7 +127,7 @@ function HarvestFarm() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" highlightText={"AquaLink Monitoreo"}
+      <PageHeader  highlightText={"AquaLink Monitoreo"}
         title="Cosecha"
         selectOptions={[
           ["Camaronera 1", "Camaronera 2", "Camaronera 3"],

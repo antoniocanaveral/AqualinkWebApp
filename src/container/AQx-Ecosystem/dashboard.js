@@ -7,18 +7,13 @@ import { Main } from '../styled';
 const EcoSystemList = lazy(() => import('./overview/EcoSystem/EcoSystemList'));
 
 function DashboardEcosystem() {
-  const PageRoutes = [
-    {
-      path: '/ecosystem',
-      breadcrumbName: 'AquaLink',
-    }
-  ];
+ 
   return (
     <>
      
       <Main>
         <Row gutter={25}>
-          <Col xxl={12} xs={24}>
+          <Col xxl={24} xs={24}>
             <Suspense
               fallback={
                 <Cards>

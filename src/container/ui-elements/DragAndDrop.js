@@ -17,7 +17,7 @@ function UserListDataTable() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Drag & Drop" routes={PageRoutes} />
+      <PageHeader  title="Drag & Drop" routes={PageRoutes} />
 
       <Main>
         <Row gutter={15}>

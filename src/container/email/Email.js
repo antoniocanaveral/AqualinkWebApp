@@ -68,7 +68,7 @@ function Email() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Dashboard" routes={PageRoutes} />
+      <PageHeader  title="Dashboard" routes={PageRoutes} />
 
       {isMailEditorOpen && <ComposeMail close={closeMailComposr} />}
 

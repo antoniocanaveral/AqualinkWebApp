@@ -115,7 +115,7 @@ function Modals() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Modals" routes={PageRoutes} />
+      <PageHeader  title="Modals" routes={PageRoutes} />
       <Main>
         <Row gutter={15}>
           <Col md={12}>

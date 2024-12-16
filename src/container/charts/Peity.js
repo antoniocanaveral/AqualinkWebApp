@@ -36,7 +36,7 @@ function Peity() {
   }, []);
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Peity Chart" routes={PageRoutes} />
+      <PageHeader  title="Peity Chart" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} sm={24} xs={24}>

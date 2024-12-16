@@ -27,7 +27,7 @@ function MyProfile() {
   const path = '.';
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="My Profile" routes={PageRoutes} />
+      <PageHeader  title="My Profile" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xxl={6} lg={8} md={10} xs={24}>

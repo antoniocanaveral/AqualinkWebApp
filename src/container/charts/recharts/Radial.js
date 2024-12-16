@@ -89,7 +89,7 @@ function ReChartRadial() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Radial Chart" routes={PageRoutes} />
+      <PageHeader  title="Radial Chart" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xs={24}>

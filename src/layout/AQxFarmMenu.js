@@ -1,5 +1,4 @@
 import {
-  Uil500px,
   UilUser,
   UilAirplay,
   UilMoneyBill,
@@ -7,42 +6,19 @@ import {
   UilChart,
   UilChartBar,
   UilClipboardAlt,
-  UilCloudDataConnection,
   UilDesktop,
-  // UilExpandArrowsAlt,
   UilFlaskPotion,
-  UilFile,
-  UilFileCheckAlt,
-  UilFileShieldAlt,
   UilHeadphones,
-  UilHeadphonesAlt,
-  UilIcons,
-  UilImages,
-  UilLayerGroup,
-  UilMap,
-  UilPresentation,
-  UilQrcodeScan,
   UilQuestionCircle,
-  UilSearch,
-  UilServer,
-  UilSetting,
-  UilShoppingCart,
-  UilSquareFull,
-  UilTable,
-  UilUsdCircle,
-  UilUsersAlt,
   UilWater,
-  UilWifiRouter,
-  UilWindowSection,
+  //for message-notifications-center
+  UilBell,
 } from '@iconscout/react-unicons';
 
 
 import {
-  UilSatellite,
-  UilShrimp,
   UilArchive,
   UilUserCircle,
-  UilKeySkeleton,
 } from '@iconscout/react-unicons';
 
 import { Menu } from 'antd';
@@ -54,9 +30,6 @@ import { NavLink } from 'react-router-dom';
 import UilEllipsisV from '@iconscout/react-unicons/icons/uil-ellipsis-v';
 import propTypes from 'prop-types';
 import { NavTitle } from './Style';
-import versions from '../demoData/changelog.json';
-import { changeDirectionMode, changeLayoutMode, changeMenuMode } from '../redux/themeLayout/actionCreator';
-import UilSync from '@iconscout/react-unicons/icons/uil-sync';
 
 function AQxFarmMenu({ toggleCollapsed }) {
   const { t } = useTranslation();
@@ -90,47 +63,15 @@ function AQxFarmMenu({ toggleCollapsed }) {
   );
 
   const onOpenChange = (keys) => {
-    // Aseguramos que los menús padres permanezcan abiertos cuando seleccionamos un submenú
     const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
     setOpenKeys(latestOpenKey ? [...openKeys, latestOpenKey] : keys);
   };
 
   const onClick = (item) => {
-    // Ajustamos para que no se cierren los menús padres
     if (item.keyPath.length === 1) setOpenKeys([]);
   };
 
 
-  const changeLayout = (mode) => {
-    dispatch(changeLayoutMode(mode));
-  };
-  const changeNavbar = (topMode) => {
-    const html = document.querySelector('html');
-    if (topMode) {
-      html.classList.add('ninjadash-topmenu');
-    } else {
-      html.classList.remove('ninjadash-topmenu');
-    }
-    dispatch(changeMenuMode(topMode));
-  };
-  const changeLayoutDirection = (rtlMode) => {
-    if (rtlMode) {
-      const html = document.querySelector('html');
-      html.setAttribute('dir', 'rtl');
-    } else {
-      const html = document.querySelector('html');
-      html.setAttribute('dir', 'ltr');
-    }
-    dispatch(changeDirectionMode(rtlMode));
-  };
-
-  const darkmodeActivated = () => {
-    document.body.classList.add('dark-mode');
-  };
-
-  const darkmodeDiactivated = () => {
-    document.body.classList.remove('dark-mode');
-  };
 
   const items = [
     getItem(
@@ -191,7 +132,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/planning`}>
+        <NavLink className="menuItem-icon" to={`${path}/real-planning`}>
           {t('Planificación Real')}
         </NavLink>,
         'planificacion-real',
@@ -579,6 +520,16 @@ function AQxFarmMenu({ toggleCollapsed }) {
       !topMenu && <UilQuestionCircle />,
     ),
   
+    // Message Notifications Center
+    getItem(
+      <NavLink to={`${path}/message-notifications-center`}>
+        {t('Mensajes y Notificaciones')}
+      </NavLink>,
+      'message-notifications-center',
+      //icon for message-notifications-center
+      !topMenu && <UilBell />,
+    ),
+    
     // SOPORTE
     getItem(
       <NavLink to={`${path}/support`}>

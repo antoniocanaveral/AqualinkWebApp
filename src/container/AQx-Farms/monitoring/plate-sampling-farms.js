@@ -98,7 +98,7 @@ function PlateSamplingFarm() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader 
         highlightText="Aqualink Monitoreo"
         title="Alimentación/muestreo de Platos"
         selectOptions={[

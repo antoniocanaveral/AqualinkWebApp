@@ -107,7 +107,7 @@ function TextureFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="Aqualink Monitoreo"
         title="Textura"
         selectOptions={[

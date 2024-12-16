@@ -355,7 +355,7 @@ function AddClientFarm() {
     return (
         <>
             <PageHeader
-                className="ninjadash-page-header-main"
+                
                 highlightText="AquaLink Administración"
                 title="Añadir Clientes"
             />

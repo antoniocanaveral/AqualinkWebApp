@@ -204,7 +204,7 @@ function CourseDetails() {
   return (
     <CourseDetailsWrap>
       <ModalVideo channel="youtube" autoplay isOpen={isOpen} videoId="L61p2uyiMSo" onClose={() => setOpen(false)} />
-      <PageHeader className="ninjadash-page-header-main" title="Course " routes={PageRoutes} />
+      <PageHeader  title="Course " routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col lg={12} xs={24}>

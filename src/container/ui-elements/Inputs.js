@@ -19,7 +19,7 @@ function Inputs() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Input" routes={PageRoutes} />
+      <PageHeader  title="Input" routes={PageRoutes} />
       <Main>
         <div className="input-wrap">
           <Row gutter={25}>

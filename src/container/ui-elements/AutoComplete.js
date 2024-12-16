@@ -48,7 +48,7 @@ function AutoCompletess() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="AutoComplete" routes={PageRoutes} />
+      <PageHeader  title="AutoComplete" routes={PageRoutes} />
       <Main>
         <AutoCompleteWrapper>
           <Row gutter={25}>

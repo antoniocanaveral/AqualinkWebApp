@@ -97,7 +97,7 @@ function Testimonials() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Testimonials" routes={PageRoutes} />
+      <PageHeader  title="Testimonials" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>

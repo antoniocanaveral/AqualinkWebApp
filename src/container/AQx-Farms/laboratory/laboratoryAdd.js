@@ -176,7 +176,7 @@ function LaboratoryAddFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="AquaLink Laboratorio"
         title="Creación de Laboratorios"
       />

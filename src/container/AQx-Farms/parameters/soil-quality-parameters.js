@@ -30,7 +30,7 @@ function SoilQualityFarm() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" highlightText={"AquaLink Parámetros:"}
+      <PageHeader  highlightText={"AquaLink Parámetros:"}
         title="Calidad de Suelo"
         selectOptions={[
           ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
@@ -96,7 +96,9 @@ function SoilQualityFarm() {
                     C:N: Relación C:N <br />
                   </div>
                 </div>
-                <Table dataSource={soilQualityData} columns={soilQualityColumns} pagination={false} />
+                <Table 
+                className='table-responsive'
+                dataSource={soilQualityData} columns={soilQualityColumns} pagination={false} />
               </Cards>
             </Suspense>
           </Col>

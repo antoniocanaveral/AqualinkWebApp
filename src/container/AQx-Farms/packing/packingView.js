@@ -65,7 +65,7 @@ function PackingViewFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="AquaLink Empacadora"
         title="Vista de Empacadoras"
       />

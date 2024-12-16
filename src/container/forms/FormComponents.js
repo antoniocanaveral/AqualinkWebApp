@@ -63,7 +63,7 @@ function FormLayout({ onChange }) {
   };
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Form Components" routes={PageRoutes} />
+      <PageHeader  title="Form Components" routes={PageRoutes} />
       <Main>
         <FormComponentsWrap>
           <Row gutter={25}>

@@ -65,7 +65,7 @@ function Project() {
     <>
       <ProjectHeader>
         <PageHeader
-          className="ninjadash-page-header-main"
+          
           ghost
           title="Projects"
           subTitle={<>12 Running Projects</>}

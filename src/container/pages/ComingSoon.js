@@ -65,7 +65,7 @@ function ComingSoon() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Coming Soon" routes={PageRoutes} />
+      <PageHeader  title="Coming Soon" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>

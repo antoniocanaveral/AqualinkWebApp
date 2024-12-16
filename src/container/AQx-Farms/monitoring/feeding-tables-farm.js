@@ -776,7 +776,7 @@ function FeedingTableFarms() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader 
         highlightText="Aqualink Monitoreo"
         title="Tablas de Alimentación"
         selectOptions={[

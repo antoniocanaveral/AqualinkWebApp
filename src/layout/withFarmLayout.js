@@ -20,7 +20,7 @@ const { theme } = require('../config/theme/themeVariables');
 const { Header, Sider, Content } = Layout;
 
 const ThemeLayout = (WrappedComponent) => {
-const { darkMode } = theme; // Accedemos directamente a darkMode
+  const { darkMode } = theme; // Accedemos directamente a darkMode
 
   class LayoutComponent extends Component {
     constructor(props) {
@@ -38,8 +38,15 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
 
       // Aquí añadimos el cambio de estilo cuando el componente se monta
       const headerContent = document.querySelector('.ninjadash-header-content__left');
+      const isMobile = window.innerWidth <= 990;
+      console.log('isMobile', isMobile);
+      console.log(window.innerWidth);
       if (headerContent) {
-        headerContent.style.backgroundColor = '#012E40';
+        if (isMobile) {
+          headerContent.style.backgroundColor = '#ffffff';
+        } else {
+          headerContent.style.backgroundColor = '#012E40';
+        }
       }
     }
 
@@ -148,7 +155,8 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
                     >
                       <img
                         src={
-                          collapsed
+                          window.innerWidth <= 991 ||
+                            collapsed
                             ? require(`../static/img/AQx-IMG/aqualink-dark.svg`).default
                             : require(`../static/img/AQx-IMG/aqualink-lite.svg`).default
                         }
@@ -239,7 +247,7 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
                           © 2024<Link to="#">Aqualink</Link>
                         </span>
                       </Col>
-                     
+
                     </Row>
                   </FooterStyle>
                 </Content>

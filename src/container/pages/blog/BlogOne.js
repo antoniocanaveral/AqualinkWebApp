@@ -21,7 +21,7 @@ function BlogOne() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Blog One" routes={PageRoutes} />
+      <PageHeader  title="Blog One" routes={PageRoutes} />
       <Main>
         <Row gutter={25} className="mt-sm-10">
           {BlogCardData.slice(0, 9).map((blog) => {

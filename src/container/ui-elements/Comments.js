@@ -123,7 +123,7 @@ function Comments() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Comments" routes={PageRoutes} />
+      <PageHeader  title="Comments" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xs={24}>

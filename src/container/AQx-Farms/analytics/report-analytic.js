@@ -847,8 +847,6 @@ function AnalyticReportFarm() {
     return (
         <>
             <PageHeader
-                
-                className="ninjadash-page-header-main custom-page-header"
                 highlightText="Aqualink Camaroneras"
                 title="Analytics"
                 selectOptions={[
@@ -869,7 +867,7 @@ function AnalyticReportFarm() {
                             bordered
                             showHeader={true}
                             rowKey="key"
-                            className="custom-table-padding-table-1"
+                            className="custom-table-padding-table-1 table-responsive"
                             tableLayout="fixed" // Asegura que las columnas respeten los anchos definidos
                         />
                         {/* Contenedor con scroll vertical para la tabla desplazable */}
@@ -887,7 +885,7 @@ function AnalyticReportFarm() {
                                 bordered
                                 showHeader={false}
                                 rowKey="key"
-                                className="custom-table-padding-table-1"
+                                className="custom-table-padding-table-1 table-responsive"
                                 tableLayout="fixed"
                                 rowClassName={(record) => {
                                     if (
@@ -914,7 +912,7 @@ function AnalyticReportFarm() {
                             pagination={false}
                             bordered
                             rowKey="key"
-                            className="custom-table-padding"
+                            className="custom-table-padding table-responsive"
 
                         />
                     </Col>

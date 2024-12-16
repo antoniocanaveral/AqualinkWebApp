@@ -312,7 +312,7 @@ function CoordinationCustodyDrawers() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title={`Información de Gavetas para coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} routes={PageRoutes} />
+      <PageHeader  title={`Información de Gavetas para coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>

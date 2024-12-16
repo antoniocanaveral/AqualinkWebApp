@@ -40,7 +40,7 @@ function ReChartArea() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Area Chart" routes={PageRoutes} />
+      <PageHeader  title="Area Chart" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

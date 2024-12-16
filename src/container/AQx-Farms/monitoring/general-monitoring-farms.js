@@ -15,7 +15,7 @@ function GeneralMonitoringFarm() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader 
         highlightText="Aqualink "
         title="Monitoreo General"
         selectOptions={[

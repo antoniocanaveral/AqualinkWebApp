@@ -282,7 +282,7 @@ function ChartJs() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Chart" routes={PageRoutes} />
+      <PageHeader  title="Chart" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

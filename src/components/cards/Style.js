@@ -19,7 +19,7 @@ const OverviewCardWrap = Styled.div`
                     .ninjadash-overview-card__top--icon{
                         position: absolute;
                         top: -9px;
-                        right: -38%;
+                        right: -10%;
                         width: 230px;
                         height: 168px;
                         border-radius: 100%;
@@ -33,7 +33,7 @@ const OverviewCardWrap = Styled.div`
                             top: -12px;
                         }
                         @media only screen and (max-width: 1399px){
-                            right: -24%;
+                            right: -44%;
                             top: -15px;
                         }
                         @media only screen and (max-width: 991px){
@@ -104,8 +104,8 @@ const OverviewCardWrap = Styled.div`
                     }
                     svg,
                     img{
-                        width: 150px;
-                        height: 150px;
+                        width: 50px;
+                        height: 50px;
                     }
                    &.ninjadash-primary {
   background-color: ${({ theme }) => theme['primary-color']}15;

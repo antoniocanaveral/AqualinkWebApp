@@ -6,6 +6,7 @@ import { Main } from '../styled';
 import { GoogleMaps } from '../../components/maps/google-maps';
 import ProjectionKgPanel from './panel/charts/projections-kg-panel';
 import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
+import { AqualinkMaps } from '../../components/maps/aqualink-map';
 
 function PanelFarms() {
 
@@ -405,7 +406,7 @@ function PanelFarms() {
 
 
         <Row gutter={25}>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
+          <Col xl={12} xs={24} xxl={10} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -413,41 +414,13 @@ function PanelFarms() {
                 </Cards>
               }
             >
-
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={20} md={15}>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={20} md={9}>
-
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Camaroneras 1</Typography.Title>
-                        <Typography.Text>Área: 307.35 Ha</Typography.Text>
-                      </div>
-
-                      <div className="content-block">
-                        <Typography.Title level={5}>Piscinas de Engorde</Typography.Title>
-                        <Typography.Text># Piscinas: 60</Typography.Text>
-                        <br></br>
-                        <Typography.Text>Área: 280.25 Ha</Typography.Text>
-                      </div>
-
-                      <div className="content-block">
-                        <Typography.Title level={5}>Piscinas Pre Cría</Typography.Title>
-                        <Typography.Text># Pre Crías: 15</Typography.Text>
-                        <br></br>
-                        <Typography.Text>Área: 20.17 Ha</Typography.Text>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
-
+              <AqualinkMaps width={'100%'} height={
+                window.innerWidth >= 2000 ? '600px' :
+                  '305px'
+              } />
             </Suspense>
           </Col>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
+          <Col xl={12} xs={24} xxl={14} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -462,7 +435,7 @@ function PanelFarms() {
 
 
         <Row gutter={25} equal-heights>
-          <Col xl={15} xs={24} style={{ display: 'flex' }}>
+          <Col xl={15} xs={24} xxl={16} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -473,7 +446,7 @@ function PanelFarms() {
               {/* Tabla de Coordinación de Cosechas */}
               <Cards title="Coordinación de Cosechas" size="large">
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div>
+                <div className="table-responsive">
                     <Table dataSource={harvestData} columns={harvestColumns} pagination={{ pageSize: 5 }} />
                   </div>
 
@@ -492,7 +465,7 @@ function PanelFarms() {
             </Suspense>
           </Col>
 
-          <Col xl={9} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <Col xl={9} xs={24} xxl={8} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Gráfico de Proyección de Costos */}
             <Suspense
               fallback={
@@ -515,9 +488,9 @@ function PanelFarms() {
               }
             >
               <Cards title="Inventario de Productos" size="large" style={{ flex: 1 }}>
-                {/* Tabla de productos */}
-                <Table dataSource={productData} columns={columns} pagination={false} />
+                  <Table  dataSource={productData} columns={columns} pagination={false} />
               </Cards>
+
             </Suspense>
           </Col>
         </Row>

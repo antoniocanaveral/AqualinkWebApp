@@ -40,7 +40,7 @@ function GoogleChart() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Google Chart" routes={PageRoutes} />
+      <PageHeader  title="Google Chart" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

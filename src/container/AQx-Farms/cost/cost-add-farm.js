@@ -44,7 +44,7 @@ function CostAddFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="Aqualink Costos"
         title="Costo Indirecto"
         selectOptions={[

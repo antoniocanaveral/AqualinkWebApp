@@ -44,7 +44,7 @@ function Messages() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Message" routes={PageRoutes} />
+      <PageHeader  title="Message" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} sm={24} xs={24}>

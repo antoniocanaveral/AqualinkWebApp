@@ -18,7 +18,7 @@ function Grid() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Grid" routes={PageRoutes} />
+      <PageHeader  title="Grid" routes={PageRoutes} />
       <Main>
         <Row gutter={15}>
           <Col xs={24}>

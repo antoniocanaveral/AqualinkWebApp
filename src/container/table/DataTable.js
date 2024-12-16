@@ -283,7 +283,7 @@ function DataTables() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Table" routes={PageRoutes} />
+      <PageHeader  title="Table" routes={PageRoutes} />
       <Main>
         <Row gutter={15}>
           <Col xs={24}>

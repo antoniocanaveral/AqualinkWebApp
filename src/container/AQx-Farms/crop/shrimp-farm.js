@@ -133,7 +133,7 @@ function ShrimpFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="Aqualink Monitoreo"
         title="Siembra"
         selectOptions={[

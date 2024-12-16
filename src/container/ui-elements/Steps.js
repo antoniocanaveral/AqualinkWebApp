@@ -53,7 +53,7 @@ function Stepess() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Steps" routes={PageRoutes} />
+      <PageHeader  title="Steps" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={24} sm={24} xs={24}>

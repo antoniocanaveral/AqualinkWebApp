@@ -37,7 +37,7 @@ function BlogDetails() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Blog Details" routes={PageRoutes} />
+      <PageHeader  title="Blog Details" routes={PageRoutes} />
       <Main>
         <Row justify="center">
           <Col lg={15}>

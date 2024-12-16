@@ -184,7 +184,7 @@ function PackingAddFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="AquaLink Empacadora"
         title="Gestión de Empacadoras"
       />

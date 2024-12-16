@@ -32,7 +32,7 @@ function Collapses() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Collapse" routes={PageRoutes} />
+      <PageHeader  title="Collapse" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12}>

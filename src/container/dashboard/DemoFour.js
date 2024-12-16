@@ -30,7 +30,7 @@ function Performance() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" ghost title="Dashboard" routes={PageRoutes} />
+      <PageHeader  ghost title="Dashboard" routes={PageRoutes} />
       <Main>
         <DemoFourStyle>
           <Row justify="center" gutter={25}>

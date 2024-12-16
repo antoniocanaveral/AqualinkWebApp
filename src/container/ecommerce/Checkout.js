@@ -49,7 +49,7 @@ function ShoppingCart() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Shopping Cart" routes={PageRoutes} />
+      <PageHeader  title="Shopping Cart" routes={PageRoutes} />
       <Main>
         <div className="checkoutWraper">
           <Row gutter={15}>

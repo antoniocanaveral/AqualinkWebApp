@@ -81,7 +81,7 @@ function UserList() {
     <>
       <CardToolbox>
         <PageHeader
-          className="ninjadash-page-header-main"
+          
           ghost
           title="User List Data Table"
           subTitle={

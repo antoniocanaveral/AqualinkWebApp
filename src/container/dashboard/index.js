@@ -24,7 +24,7 @@ function Dashboard() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Bienvenido Esteban!" routes={PageRoutes} />
+      <PageHeader  title="Bienvenido Esteban!" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>

@@ -53,7 +53,7 @@ function Team() {
     <>
       <CardToolbox>
         <PageHeader
-          className="ninjadash-page-header-main"
+          
           backIcon={false}
           title="Team Members"
           subTitle={

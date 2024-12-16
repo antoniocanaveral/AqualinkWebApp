@@ -6,7 +6,7 @@ import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { loadLabCoordinations } from '../../redux/lab/actionCreator';
 import DataTable from '../../components/table/DataTable';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
 import UilListOlAlt from '@iconscout/react-unicons/icons/uil-list-ol-alt';
@@ -21,6 +21,9 @@ function CoordinationsLabs() {
   const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName')); // Organización seleccionada
   const selectedModule = useSelector((state) => state.auth.selectedModule); // Obtener el módulo seleccionado desde Redux
 
+  const location = useLocation(); // Hook para obtener la ruta actual
+  const currentPath = location.pathname; // Obtener la ruta como string
+
   const PageRoutes = [
     {
       path: '/lab',
@@ -33,7 +36,6 @@ function CoordinationsLabs() {
   ];
 
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.lab.loading);
   const coordinations = useSelector((state) => state.lab.coordinations);
   const organizations = useSelector((state) => state.auth.labsOrgs); // Lista de organizaciones
 
@@ -47,7 +49,9 @@ function CoordinationsLabs() {
     setSelectedOrg(value); // Cambiar la organización seleccionada visualmente
     Cookies.set('orgName', value); // Actualizar en cookies el nombre de la organización
     Cookies.set('orgEmail', orgEmail); // Asegúrate de actualizar también el email de la organización en la cookie
-    dispatch(loadLabCoordinations()); // Recargar las coordinaciones para la nueva organización
+    dispatch(loadLabCoordinations(value, (isCompleted, error) => {
+      console.log(`loadLabCoordinations ${isCompleted} for organization: ${value}`);
+    })); // Recargar las coordinaciones para la nueva organización
   };
 
   // Función para determinar la clase de estado
@@ -71,41 +75,52 @@ function CoordinationsLabs() {
   // Determinar si se debe usar "Lab Seleccionado" o "Finca Seleccionada"
   const labOrFarm = selectedModule !== 'FARM' ? 'Finca Seleccionada' : 'Lab Seleccionado';
 
+  // Determinar si la ruta actual es '/farm/seeding-coords'
+  const isFarmSeedingCoords = currentPath === '/farm/seeding-coords';
+
   // Generar los datos de la tabla de manera reactiva usando useMemo
   const tableDataScource = useMemo(() => {
     if (!coordinations || coordinations.length === 0) return [];
 
-    return coordinations.map((item) => {
-      const itemStatus = item.statusWrapper;
-      return {
-        id: `${item.SM_FishingNotification || 'Sin Lote ID'}`, // LOTE id
-        scheduledDate: moment(item.planned_date).format('YYYY-MM-DD HH:mm A') || 'Fecha no disponible', // FECHA PROGRAMADA DE SIEMBRA
-        systemType: item.system_type || 'Sin Sistema', // SISTEMA DE CULTIVO
-        preBreeding: item.pre_breeding_pool || 'No disponible', // PRE CRIA
-        growOut: item.grow_out_pool || 'No disponible', // PISCINA ENGORDE
-        cycleNumber: item.cycle_number || 'No disponible', // # CICLO
-        seedingVolume: item.seeding_volume || 'No definido', // volumen de siembra
-        pl: item.pl || 'No disponible', // PL
-        lab: item.lab_name || `Sin ${labOrFarm}`, // Lab Seleccionado o Finca Seleccionada
-        location: <span>{item.City || 'No Ciudad'}, {item.Address1 || 'No Dirección'}</span>, // UBICACIÓN
-        status: (
-          <span className={`ninjadash-status ${getStatusClass(itemStatus.statusName)}`}>
-            {itemStatus.statusName || 'Estado no definido'}
-          </span>
-        ), // ESTADO
-        action: (
-          <div className="table-actions" style={{ minWidth: "50px !important", textAlign: "center" }}>
-            {!itemStatus.showEditFrom && <Link className="view" to={`./${item.id}/view`}><UilEye /></Link>}
-            {itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}><UilEdit /></Link>}
-            {itemStatus.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}><UilListOlAlt /></Link>}
-            <Link className="notification" to={`./notification/${item.id}/view`}>
-              <UilBell />
-            </Link> {/* Nuevo botón de notificación */}
-          </div>
-        ),
-      };
-    });
-  }, [coordinations, labOrFarm]); // Añadimos labOrFarm a las dependencias
+    return coordinations
+      // Filtrar si es la ruta específica y excluir estados "Por Revisar"
+      .filter(item => {
+        if (isFarmSeedingCoords) {
+          return item.statusWrapper.statusName.toLowerCase() !== 'por revisar';
+        }
+        return true;
+      })
+      .map((item) => {
+        const itemStatus = item.statusWrapper;
+        return {
+          id: `${item.SM_FishingNotification || 'Sin Lote ID'}`, // LOTE id
+          scheduledDate: moment(item.planned_date).format('YYYY-MM-DD HH:mm A') || 'Fecha no disponible', // FECHA PROGRAMADA DE SIEMBRA
+          systemType: item.system_type || 'Sin Sistema', // SISTEMA DE CULTIVO
+          preBreeding: item.pre_breeding_pool || 'No disponible', // PRE CRIA
+          growOut: item.grow_out_pool || 'No disponible', // PISCINA ENGORDE
+          cycleNumber: item.cycle_number || 'No disponible', // # CICLO
+          seedingVolume: item.seeding_volume || 'No definido', // volumen de siembra
+          pl: item.pl || 'No disponible', // PL
+          lab: item.lab_name || `Sin ${labOrFarm}`, // Lab Seleccionado o Finca Seleccionada
+          location: <span>{item.City || 'No Ciudad'}, {item.Address1 || 'No Dirección'}</span>, // UBICACIÓN
+          status: (
+            <span className={`ninjadash-status ${getStatusClass(itemStatus.statusName)}`}>
+              {itemStatus.statusName || 'Estado no definido'}
+            </span>
+          ), // ESTADO
+          action: (
+            <div className="table-actions" style={{ minWidth: "50px", textAlign: "center" }}>
+              {!itemStatus.showEditFrom && <Link className="view" to={`./${item.id}/view`}><UilEye /></Link>}
+              {itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}><UilEdit /></Link>}
+              {itemStatus.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}><UilListOlAlt /></Link>}
+              <Link className="notification" to={`./notification/${item.id}/view`}>
+                <UilBell />
+              </Link> {/* Nuevo botón de notificación */}
+            </div>
+          ),
+        };
+      });
+  }, [coordinations, labOrFarm, isFarmSeedingCoords]); // Añadimos isFarmSeedingCoords a las dependencias
 
   // Definición de las columnas
   const dataTableColumn = [
@@ -161,7 +176,6 @@ function CoordinationsLabs() {
     <>
       <PageHeader
         highlightText="Aqualink"
-        className="ninjadash-page-header-main"
         title="Coordinaciones Siembra"
         routes={PageRoutes}
         organizations={organizations} // Lista de organizaciones
@@ -182,7 +196,7 @@ function CoordinationsLabs() {
               <BorderLessHeading>
                 <Cards title="Coordinaciones de Siembra">
                   <DataTable
-                    key={selectedOrg} // Forzar el re-renderizado cuando cambie la organización seleccionada
+                    key={`${selectedOrg}-${isFarmSeedingCoords}`} // Forzar el re-renderizado cuando cambie la organización o la ruta
                     tableData={tableDataScource}
                     columns={dataTableColumn}
                     rowSelection={false}

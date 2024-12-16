@@ -30,7 +30,7 @@ function Timelines() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Timelines" routes={PageRoutes} />
+      <PageHeader  title="Timelines" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col lg={12} xs={24}>

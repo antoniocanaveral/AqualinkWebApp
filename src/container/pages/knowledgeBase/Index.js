@@ -29,7 +29,7 @@ function KnowledgeBase() {
   const path = '/admin/knowledgebase';
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Knowledgebase" routes={PageRoutes} />
+      <PageHeader  title="Knowledgebase" routes={PageRoutes} />
       <Main>
         <KnowledgeBaseTop />
         <KnowledgebaseArticleWrap>

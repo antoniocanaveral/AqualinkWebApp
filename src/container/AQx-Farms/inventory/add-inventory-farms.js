@@ -72,7 +72,7 @@ function AddInventoryFarms() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader
         highlightText="Aqualink Camaroneras"
         title="Inventario"
       />
@@ -99,12 +99,12 @@ function AddInventoryFarms() {
                     </Form.Item>
                   </Col>
 
-                  {/* Selector de subcategoría, visible solo si hay una categoría seleccionada */}
+                  {/* Selector de subcategoría */}
                   <Col span={12}>
                     {selectedCategory && (
                       <Form.Item
                         label="Producto"
-                        name="Producto"
+                        name="producto"
                         rules={[{ required: true, message: 'Seleccione un Producto' }]}
                       >
                         <Select
@@ -138,7 +138,7 @@ function AddInventoryFarms() {
                     </div>
                   )}
 
-                  {/* Formulario adicional para marca, modelo, precio lista, precio por unidad de medida */}
+                  {/* Formulario adicional: muestra campos según la selección */}
                   {selectedSubCategory && (
                     <div style={{ flex: '1 1 55%', maxWidth: '55%' }}>
                       <div style={{
@@ -147,37 +147,29 @@ function AddInventoryFarms() {
                         borderRadius: '8px',
                       }}>
                         <h3 style={{ marginBottom: '16px', color: '#595959' }}>Detalles del Producto</h3>
-                        <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between", gap: 20 }}>
-                          <div style={{ width: "50%" }}>
+                        {selectedCategory === 'larva' ? (
+                          <>
                             <Form.Item
-                              label="Marca"
-                              name="marca"
-                              rules={[{ required: true, message: 'Ingrese la marca' }]}
+                              label="Código Reproductor"
+                              name="codigo_reproductor"
+                              rules={[{ required: true, message: 'Ingrese el código reproductor' }]}
                             >
-                              <Input placeholder="Marca" />
+                              <Input placeholder="Código Reproductor" />
                             </Form.Item>
-                          </div>
-                          <div style={{ width: "50%" }}>
                             <Form.Item
                               label="Proveedor"
                               name="proveedor"
-                              rules={[{ required: true, message: 'Ingrese el Proveedor' }]}
+                              rules={[{ required: true, message: 'Ingrese el proveedor' }]}
                             >
                               <Input placeholder="Proveedor" />
                             </Form.Item>
-                          </div>
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between", gap: 20 }}>
-                          <div style={{ width: "50%" }}>
                             <Form.Item
-                              label="Modelo"
-                              name="modelo"
-                              rules={[{ required: true, message: 'Ingrese el modelo' }]}
+                              label="Origen Nauplio"
+                              name="origen_nauplio"
+                              rules={[{ required: true, message: 'Ingrese el origen del nauplio' }]}
                             >
-                              <Input placeholder="Modelo" />
+                              <Input placeholder="Origen Nauplio" />
                             </Form.Item>
-                          </div>
-                          <div style={{ width: "50%" }}>
                             <Form.Item
                               label="Precio Lista"
                               name="precio_lista"
@@ -185,17 +177,53 @@ function AddInventoryFarms() {
                             >
                               <Input placeholder="Precio Lista" type="number" />
                             </Form.Item>
-                          </div>
-                        </div>
-                        <div style={{ width: "50%" }}>
-                          <Form.Item
-                            label="Cantidad"
-                            name="cantidad"
-                            rules={[{ required: true, message: 'Ingrese la cantidad' }]}
-                          >
-                            <Input placeholder="Cantidad" type="number" />
-                          </Form.Item>
-                        </div>
+                            <Form.Item
+                              label="Cantidad"
+                              name="cantidad"
+                              rules={[{ required: true, message: 'Ingrese la cantidad' }]}
+                            >
+                              <Input placeholder="Cantidad" type="number" />
+                            </Form.Item>
+                            <Form.Item
+                              label="Lote Destino"
+                              name="lote_destino"
+                              rules={[{ required: true, message: 'Ingrese el lote destino' }]}
+                            >
+                              <Input placeholder="Lote Destino" />
+                            </Form.Item>
+                          </>
+                        ) : (
+                          <>
+                            <Form.Item
+                              label="Marca"
+                              name="marca"
+                              rules={[{ required: true, message: 'Ingrese la marca' }]}
+                            >
+                              <Input placeholder="Marca" />
+                            </Form.Item>
+                            <Form.Item
+                              label="Modelo"
+                              name="modelo"
+                              rules={[{ required: true, message: 'Ingrese el modelo' }]}
+                            >
+                              <Input placeholder="Modelo" />
+                            </Form.Item>
+                            <Form.Item
+                              label="Precio Lista"
+                              name="precio_lista"
+                              rules={[{ required: true, message: 'Ingrese el precio de lista' }]}
+                            >
+                              <Input placeholder="Precio Lista" type="number" />
+                            </Form.Item>
+                            <Form.Item
+                              label="Cantidad"
+                              name="cantidad"
+                              rules={[{ required: true, message: 'Ingrese la cantidad' }]}
+                            >
+                              <Input placeholder="Cantidad" type="number" />
+                            </Form.Item>
+                          </>
+                        )}
                       </div>
                     </div>
                   )}

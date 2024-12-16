@@ -40,7 +40,7 @@ function ReChartComposed() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Compossed Chart" routes={PageRoutes} />
+      <PageHeader  title="Compossed Chart" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

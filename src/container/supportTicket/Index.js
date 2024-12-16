@@ -228,7 +228,7 @@ function SupportTicket() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader 
       highlightText="Aqualink Soporte"
       title="Tickets" />
       <Main>

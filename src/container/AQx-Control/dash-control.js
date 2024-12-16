@@ -24,7 +24,7 @@ function DashboardControl() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Aqualink Control Control Panel" routes={PageRoutes} />
+      <PageHeader  title="Aqualink Control Control Panel" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>

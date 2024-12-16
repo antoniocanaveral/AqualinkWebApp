@@ -125,7 +125,7 @@ function Sellers() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Sellers" routes={PageRoutes} />
+      <PageHeader  title="Sellers" routes={PageRoutes} />
       <Main>
         <Cards headless>
           <Row gutter={15}>

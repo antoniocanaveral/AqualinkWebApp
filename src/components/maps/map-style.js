@@ -4,6 +4,10 @@ const GmapWraper = Styled.div`
     width: ${(props) => props.width}; 
     height: ${(props) => props.height};
     position: relative;
+    .map-container {
+        width: 100%;
+        height: 100%;
+    }
     .leaflet-container {
         wieth: ${(props) => props.width}; 
         height: ${(props) => props.height};

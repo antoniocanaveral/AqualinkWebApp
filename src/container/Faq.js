@@ -182,7 +182,7 @@ function FaqComponent() {
     <>
       <PageHeader
         highlightText="Aqualink Soporte"
-        className="ninjadash-page-header-main"
+        
         title="Faqs"
       />
       <Main>

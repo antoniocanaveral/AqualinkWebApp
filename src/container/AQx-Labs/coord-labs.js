@@ -212,42 +212,11 @@ function CoordinationLabs() {
     { key: '12', label: 'PH Tanque de Origen:', value: coordination?.pre_breeding_pool_ph || '' },
   ];
 
-  // Valores binarios para usar checkbox
-  const binaryFields = [
-    { key: '9', label: 'Óxigeno en Camino', icon: 'food.svg', value: coordination?.oxygen_on_the_go ? true : false },
-    { key: '10', label: 'Comida en Camino', icon: 'food.svg', value: coordination?.food_on_the_go ? true : false },
-  ];
-  const overviewCardMeshData = [
-    {
-      id: 1,
-      type: 'primary',
-      icon: 'biomasa.svg',
-      label: 'Total Tanque',
-      total: coordination ? coordination.tank_planting : '0',
-      dataPeriod: 'Tanque',
-    },
-    {
-      id: 2,
-      type: 'secondary',
-      icon: 'biomasa.svg',
-      label: 'Total Confirmado',
-      total: coordination ? coordination.confirmed_total : '0',
-      dataPeriod: 'Confirmado',
-    },
-
-    {
-      id: 2,
-      type: 'success',
-      icon: 'biomasa.svg',
-      label: 'Unidad x Empaque',
-      total: coordination ? coordination.confirmed_total : '0',
-      dataPeriod: 'Confirmado',
-    },
-  ];
+  
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title={`Responder Coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} routes={PageRoutes} />
+      <PageHeader  title={`Responder Coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>

@@ -105,7 +105,7 @@ function Task() {
   const path = '/admin/app/task';
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Task" routes={PageRoutes} />
+      <PageHeader  title="Task" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xxl={5} lg={6} md={7} xs={24}>

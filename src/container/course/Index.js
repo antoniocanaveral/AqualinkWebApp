@@ -41,7 +41,7 @@ function Course() {
   };
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Course " routes={PageRoutes} />
+      <PageHeader  title="Course " routes={PageRoutes} />
       <Main>
         <Row gutter={25} className="mt-sm-10">
           {courses.map((value, index) => (

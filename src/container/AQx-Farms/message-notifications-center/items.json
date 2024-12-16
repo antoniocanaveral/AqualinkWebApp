@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "type": "primary",
+        "icon": "bell.svg",
+        "label": "Notificaciones",
+        "total": "30825",
+        "suffix": "",
+        "prefix": ""
+    },
+    {
+        "id": 3,
+        "type": "warning",
+        "icon": "clock.svg",
+        "label": "Por Revisar",
+        "total": "350",
+        "suffix": "",
+        "prefix": ""
+    },
+    {
+        "id": 4,
+        "type": "success",
+        "icon": "check-circle.svg",
+        "label": "Finalizadas",
+        "total": "30825",
+        "suffix": "",
+        "prefix": ""
+    }
+]

@@ -109,7 +109,7 @@ function TreeSelects() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Tree Select" routes={PageRoutes} />
+      <PageHeader  title="Tree Select" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

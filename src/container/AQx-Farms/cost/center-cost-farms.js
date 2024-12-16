@@ -119,7 +119,7 @@ function CenterCostFarm() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader 
         highlightText="Aqualink Costos"
         title="Centro de Costos"
         selectOptions={[

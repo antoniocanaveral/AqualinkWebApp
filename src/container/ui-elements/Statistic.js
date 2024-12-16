@@ -26,7 +26,7 @@ function Statistics() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Statistics" routes={PageRoutes} />
+      <PageHeader  title="Statistics" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

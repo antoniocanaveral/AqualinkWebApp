@@ -67,6 +67,7 @@ function PageHeader(props) {
               <img
                 src={require(`../../static/img/AQx-IMG/shrimp16.svg`).default}
                 style={{ marginRight: 10 }}
+                alt="icon"
               />
               <Link to={route.path} style={{ display: 'contents' }}>
                 {route.breadcrumbName}
@@ -84,14 +85,13 @@ function PageHeader(props) {
     if (!selectOptions || selectOptions.length === 0) return null;
 
     return (
-      <div style={{ display: 'flex', gap: '10px', marginTop: '20px', justifyContent: 'flex-end', width: "100px" }}>
+      <div className="responsive-select-container">
         {selectOptions.map((options, index) => (
           <Select
             key={index}
             defaultValue={options[0]} // Seleccionar la primera opción por defecto
             placeholder={`Seleccione ${["Camaronera", "Sector", "Piscina"][index] || `Opción ${index + 1}`}`}
-            style={{ width: 180, fontSize: '12px' }} // Reducir tamaño de letra
-            dropdownStyle={{ fontSize: '12px' }} // Reducir tamaño de letra en el dropdown
+            className="responsive-select"
           >
             {options.map((option) => (
               <Option key={option} value={option}>
@@ -109,16 +109,16 @@ function PageHeader(props) {
       <PageHeaderStyle
         className={className}
         title={
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
-            {icon && <span style={{ marginRight: 10 }}>{icon}</span>}
+          <div className="responsive-container">
+            {icon && <span className="icon">{icon}</span>}
 
             {highlightText && (
-              <h1 style={{ fontSize: '1.5em', marginRight: '10px', fontWeight: "800", marginBottom: 0 }}>
+              <h1 className="highlight-text">
                 {highlightText}
               </h1>
             )}
 
-            <span style={{ fontSize: '1.4em', fontWeight: "400", marginBottom: 0 }}>
+            <span className="title">
               {title}
             </span>
           </div>
@@ -126,7 +126,8 @@ function PageHeader(props) {
         subTitle={subTitle}
         extra={
           <>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+            {/* Cambiar alignItems a 'stretch' para permitir que los hijos ocupen el ancho completo */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '10px' }}>
               {buttons}
               {renderSelectOptions()}
             </div>
@@ -135,7 +136,6 @@ function PageHeader(props) {
         }
         ghost={ghost}
       />
-
     </HeaderWrapper>
   );
 }

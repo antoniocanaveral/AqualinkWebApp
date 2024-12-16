@@ -27,7 +27,7 @@ function TimePickers() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Time Picker" routes={PageRoutes} />
+      <PageHeader  title="Time Picker" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={12} xs={24}>

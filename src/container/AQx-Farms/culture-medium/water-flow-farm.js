@@ -36,7 +36,7 @@ function WaterFlowFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="AquaLink Cultivo"
         title="Flujo y Recambio de Agua"
         selectOptions={[

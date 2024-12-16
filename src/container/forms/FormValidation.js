@@ -29,7 +29,7 @@ function FormValidation() {
   const [form] = Form.useForm();
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Form Validation" routes={PageRoutes} />
+      <PageHeader  title="Form Validation" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xs={24}>

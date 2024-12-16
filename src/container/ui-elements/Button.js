@@ -21,7 +21,7 @@ function Buttons() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Button" routes={PageRoutes} />
+      <PageHeader  title="Button" routes={PageRoutes} />
       <Main className="button-example">
         <Row gutter={25}>
           <Col md={12}>

@@ -19,7 +19,7 @@ function Alerts() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Alerts" routes={PageRoutes} />
+      <PageHeader  title="Alerts" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

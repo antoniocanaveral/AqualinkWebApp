@@ -24,7 +24,7 @@ function Widgets() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Widgets Charts" routes={PageRoutes} />
+      <PageHeader  title="Widgets Charts" routes={PageRoutes} />
       <Main>
         <CardChartStyle>
           <Row gutter={25}>

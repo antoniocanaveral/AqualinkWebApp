@@ -28,7 +28,7 @@
                 }
             ]
         },
-        "email": "Kellie@mail.com",
+        "type": "notificacion","email": "Kellie@mail.com",
         "subject": "Need to help for adding new contact",
         "priority": "High",
         "description": "lorem ipsum dollar site emmeit.......",
@@ -69,7 +69,7 @@
         "description": "lorem ipsum dollar site emmeit.......",
         "status": "pending",
         "createAt": "01-20-2022",
-        "email": "robert@mail.com"
+        "type": "message","email": "robert@mail.com"
     },
     {
         "id": "03",
@@ -105,7 +105,7 @@
         "description": "lorem ipsum dollar site emmet.......",
         "status": "close",
         "createAt": "01-20-2022",
-        "email": "chris@mail.com"
+        "type": "message","email": "chris@mail.com"
     },
     {
         "id": "04",
@@ -141,7 +141,7 @@
         "description": "lorem ipsum dollar site emmet.......",
         "status": "close",
         "createAt": "01-20-2022",
-        "email": "chris@mail.com"
+        "type": "message","email": "chris@mail.com"
     },
     {
         "id": "05",
@@ -177,7 +177,7 @@
         "description": "lorem ipsum dollar site emmet.......",
         "status": "close",
         "createAt": "01-20-2022",
-        "email": "chris@mail.com"
+        "type": "message","email": "chris@mail.com"
     },
     {
         "id": "06",
@@ -213,6 +213,6 @@
         "description": "lorem ipsum dollar site emmet.......",
         "status": "close",
         "createAt": "01-20-2022",
-        "email": "chris@mail.com"
+        "type": "message","email": "chris@mail.com"
     }
 ]

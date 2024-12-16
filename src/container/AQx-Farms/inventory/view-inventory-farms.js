@@ -99,7 +99,7 @@ function InventoryTable() {
 
     return (
         <>
-            <PageHeader className="ninjadash-page-header-main"
+            <PageHeader
                 highlightText="Aqualink Camaroneras"
                 title="Inventario"
             />
@@ -122,6 +122,7 @@ function InventoryTable() {
                         </Col>
                     </Row>
                     <Table
+                        className='table-responsive'
                         columns={columns}
                         dataSource={filteredData}
                         pagination={{ pageSize: 5 }}

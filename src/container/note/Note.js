@@ -120,7 +120,7 @@ function Note() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Note" routes={PageRoutes} />
+      <PageHeader  title="Note" routes={PageRoutes} />
       <Main>
         <NoteWrapper>
           <Row className="justify-content-center" gutter={25}>

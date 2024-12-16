@@ -121,7 +121,7 @@ function CoordinationLabsResumen() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title={`Coordinación: ${coordination?.SM_FishingNotification || "-"}`} routes={PageRoutes} />
+      <PageHeader  title={`Coordinación: ${coordination?.SM_FishingNotification || "-"}`} routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>
@@ -234,7 +234,7 @@ function CoordinationLabsResumen() {
                             <div
                               style={{
                                 display: 'flex',
-                                flexDirection: 'row',
+                                flexDirection: window.innerWidth < 430 ? 'column' : 'row', // Ajusta la dirección de los elementos
                                 alignItems: 'center',
                                 justifyContent: 'center', // Alinea el contenido al centro
                                 gap: "50px", // Ajusta el espacio entre los elementos

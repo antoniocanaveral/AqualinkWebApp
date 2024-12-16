@@ -117,7 +117,7 @@ function TransferFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="Aqualink Monitoreo"
         title="Transferencia"
         selectOptions={[

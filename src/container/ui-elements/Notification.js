@@ -104,7 +104,7 @@ function Notifications() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Notifications" routes={PageRoutes} />
+      <PageHeader  title="Notifications" routes={PageRoutes} />
       <Main>
         <Row gutter={15}>
           <Col md={12} sm={12} xs={24}>

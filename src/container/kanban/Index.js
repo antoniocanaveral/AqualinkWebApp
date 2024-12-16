@@ -391,7 +391,7 @@ function Kanban() {
   };
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Kanban Board" routes={PageRoutes} />
+      <PageHeader  title="Kanban Board" routes={PageRoutes} />
       <Main>
         <Row gutter={15}>
           <Col xs={24}>

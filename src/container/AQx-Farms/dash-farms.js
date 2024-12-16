@@ -25,7 +25,7 @@ function DashboardFarms() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Aqualink Camaronera Control Panel" routes={PageRoutes} />
+      <PageHeader  title="Aqualink Camaronera Control Panel" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>

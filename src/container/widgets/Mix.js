@@ -25,7 +25,7 @@ function WidgetsCard() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Widgets Mixed" routes={PageRoutes} />
+      <PageHeader  title="Widgets Mixed" routes={PageRoutes} />
       <Main>
         <MixedCardWrap>
           <Row gutter={25}>

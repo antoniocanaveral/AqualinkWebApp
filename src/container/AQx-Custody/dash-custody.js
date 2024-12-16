@@ -24,7 +24,7 @@ function DashboardCustody() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Aqualink Custodia Control Panel" routes={PageRoutes} />
+      <PageHeader  title="Aqualink Custodia Control Panel" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>

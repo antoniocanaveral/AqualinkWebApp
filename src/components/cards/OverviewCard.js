@@ -54,10 +54,10 @@ function OverviewCard({ data, className, bottomStatus, contentFirst, halfCircleI
               className={`ninjadash-overview-card__top--icon  ninjadash-${type}`}
               onClick={handleImageClick} // Activar la animación en el clic
               style={{ cursor: 'pointer', transition: 'transform 0.3s ease' }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')} // Hover sobre la imagen
-              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')} // Revertir en mouse out
-            >
-              <ReactSVG src={require(`../../static/img/icon/${icon}`)} />
+              >
+              <ReactSVG
+                fontSize={20}
+                src={require(`../../static/img/icon/${icon}`)} />
             </div>
             <div
               className={contentFirst

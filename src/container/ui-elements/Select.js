@@ -63,7 +63,7 @@ function Selects() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Select" routes={PageRoutes} />
+      <PageHeader  title="Select" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

@@ -28,6 +28,8 @@ import FaqComponent from '../../container/Faq';
 import SupportTicket from '../../container/supportTicket/Index';
 import AnalyticRoutesFarm from './farmAnalytic';
 import FeedingTableFarms from '../../container/AQx-Farms/monitoring/feeding-tables-farm';
+import RealPlanning from '../../container/AQx-Farms/real-planning';
+import MessageNotificationsCenter from '../../container/AQx-Farms/message-notifications-center/message-notifications-center';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -47,6 +49,7 @@ const Farm = React.memo(() => {
         <Route index element={<PanelFarmRoutes />} />     
         <Route path="/panel/*" element={<PanelFarmRoutes />} />  
         <Route path="/planning-studio/*" element={<PlanningStudioFarms />} />
+        <Route path="/real-planning/*" element={<RealPlanning />} />
         <Route path="/monitoreo-general/*" element={<GeneralMonitoringFarm />} />
         <Route path="/monitoring/actual-projected/*" element={<RealAndProjectedFeeding />} />
         <Route path="/monitoring/protein-percentage/*" element={<ProteinPercentageFarm />} />
@@ -64,6 +67,7 @@ const Farm = React.memo(() => {
 
         <Route path='/faq/*' element={<FaqComponent/>} />
         <Route path="/support/*" element={<SupportTicket />} />
+        <Route path='/message-notifications-center/*' element={<MessageNotificationsCenter />} />
 
         <Route path="/inventory/add/*" element={<AddInventoryFarms />} />
         <Route path="/inventory/view/*" element={<InventoryTable />} />

@@ -228,7 +228,7 @@ function AddSupportTicket() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Support Ticket" routes={PageRoutes} />
+      <PageHeader  title="Support Ticket" routes={PageRoutes} />
       <Main>
         <TicketBox>
           <Row justify="center">

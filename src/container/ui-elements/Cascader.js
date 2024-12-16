@@ -44,7 +44,7 @@ function Cascaders() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Cascader" routes={PageRoutes} />
+      <PageHeader  title="Cascader" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>

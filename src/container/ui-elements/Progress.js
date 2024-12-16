@@ -42,7 +42,7 @@ function ProgressBar() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Progress Bar" routes={PageRoutes} />
+      <PageHeader  title="Progress Bar" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col lg={12} md={12} xs={24}>

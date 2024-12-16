@@ -43,7 +43,7 @@ function PopulationBiomassFarm() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" highlightText={"AquaLink Parámetros:"}
+      <PageHeader  highlightText={"AquaLink Parámetros:"}
         title="Población-Biomasa"
         selectOptions={[
           ["Camaronera 1", "Camaronera 2", "Camaronera 3"],

@@ -87,7 +87,7 @@ function PanelLabs() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader 
         highlightText="Aqualink Laboratorios"
         title="Control Panel" routes={PageRoutes} />
 

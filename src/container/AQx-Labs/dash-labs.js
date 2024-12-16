@@ -25,7 +25,7 @@ function DashboardLabs() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Panel de Control" routes={PageRoutes} />
+      <PageHeader  title="Panel de Control" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>

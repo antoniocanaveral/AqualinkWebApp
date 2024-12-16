@@ -19,7 +19,7 @@ function Drawers() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Drawer" routes={PageRoutes} />
+      <PageHeader  title="Drawer" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col lg={12} xs={24}>

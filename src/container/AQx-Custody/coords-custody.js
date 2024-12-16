@@ -166,7 +166,7 @@ function CoordinationsCustody() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="Aqualink"
         title="Coordinaciones Pesca"
         routes={PageRoutes}

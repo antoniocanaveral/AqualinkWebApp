@@ -28,7 +28,7 @@ function TaskLabs() {
                                 </Cards>
                             }
                         >
-                            <PageHeader className="ninjadash-page-header-main"
+                            <PageHeader 
                                 highlightText="Aqualink Laboratorios"
                                 title="Tareas" routes={PageRoutes} />
 

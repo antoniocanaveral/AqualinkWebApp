@@ -27,7 +27,7 @@ function Settings() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="My Profile" routes={PageRoutes} />
+      <PageHeader  title="My Profile" routes={PageRoutes} />
 
       <Main>
         <Row gutter={25}>

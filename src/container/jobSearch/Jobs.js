@@ -47,7 +47,7 @@ function Jobs() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Job Search " routes={PageRoutes} />
+      <PageHeader  title="Job Search " routes={PageRoutes} />
       <Main>
         <JobLandingStyle>
           <div className="ninjadash-joblanding-top align-center-v">

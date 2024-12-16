@@ -141,7 +141,6 @@ function ProDataAnalyticsFarms() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main custom-page-header"
         highlightText="Aqualink Camaroneras"
         title="Pro Data Analytics"
         selectOptions={[
@@ -212,7 +211,7 @@ function ProDataAnalyticsFarms() {
                   pagination={{ pageSize: 5 }}
                   bordered
                   rowClassName="table-row"
-                  className="custom-table"
+                  className="custom-table table-responsive"
                 />
               </Cards>
             </Suspense>

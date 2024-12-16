@@ -128,7 +128,7 @@ function SupportTicketDetails() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         title={
           <>
             <h4>Ticket Details</h4>

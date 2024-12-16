@@ -44,7 +44,7 @@ function Gallery() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Gallery" routes={PageRoutes} />
+      <PageHeader  title="Gallery" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col xs={24}>

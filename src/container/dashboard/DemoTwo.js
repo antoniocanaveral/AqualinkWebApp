@@ -24,7 +24,7 @@ function DemoTwo() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Dashboard" routes={PageRoutes} />
+      <PageHeader  title="Dashboard" routes={PageRoutes} />
 
       <Main>
         <Row justify="center">

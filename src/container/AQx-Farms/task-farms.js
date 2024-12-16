@@ -14,7 +14,7 @@ function TaskFarms() {
         <>
             <Main>
                 <Row gutter={[24, 24]}>
-                    <Col xxl={12} xs={24}>
+                    <Col xxl={24} xs={24}>
                         <Suspense
                             fallback={
                                 <Cards headless>
@@ -22,7 +22,7 @@ function TaskFarms() {
                                 </Cards>
                             }
                         >
-                            <PageHeader className="ninjadash-page-header-main"
+                            <PageHeader
                                 highlightText="Aqualink Camaronera"
                                 title="Tareas"
                                 selectOptions={[
@@ -33,7 +33,7 @@ function TaskFarms() {
                             />
                             <CalendarTask />
                             <Row gutter={16} style={{ marginBottom: '20px', display: 'flex' }}>
-                                <Col xl={8} lg={24} xs={24} style={{ display: 'flex', minHeight:"500px" }}>
+                                <Col xl={8} lg={24} xs={24} style={{ display: 'flex', flexDirection: 'column' }}>
                                     <Suspense
                                         fallback={
                                             <Cards headless>

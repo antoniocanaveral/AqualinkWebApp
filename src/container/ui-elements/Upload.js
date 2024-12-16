@@ -135,7 +135,7 @@ function Uploads() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Upload" routes={PageRoutes} />
+      <PageHeader  title="Upload" routes={PageRoutes} />
       <Main>
         <Row gutter={15}>
           <Col sm={12} xs={24}>

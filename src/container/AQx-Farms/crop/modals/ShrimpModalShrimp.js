@@ -91,26 +91,6 @@ function CoordModalShrimp() {
     },
   ];
 
-  const columns = [
-    {
-      title: '', dataIndex: 'label', key: 'label', width: '55%', render: (text) => (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span
-            style={{
-              height: '5px',
-              width: '5px',
-              backgroundColor: '#012e40', // Elige el color del dot
-              borderRadius: '50%',
-              display: 'inline-block',
-              marginRight: '8px', // Espacio entre el dot y el texto
-            }}
-          />
-          <span>{text}</span>
-        </div>
-      ),
-    },
-    { title: '', dataIndex: 'value', key: 'value', width: '45%' },
-  ];
 
   return (
     <>
@@ -135,78 +115,82 @@ function CoordModalShrimp() {
                           </Cards>
                         }
                       >
-                          <Row gutter={16} style={{ marginBottom: '16px' }}>
-                            <Col span={10}>
-                              <strong>Fecha:</strong> {coordination?.planned_date ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-'}
-                            </Col>
-                            <Col span={10}>
-                              <strong>Módulo:</strong> {coordination?.lab_module || 'M1'}
-                            </Col>
-                            <Col span={4}>
-                              <strong>Tanque:</strong> {coordination?.tank || 'T1'}
-                            </Col>
-                          </Row>
-                          <br />
+                        <Row gutter={16} style={{ marginBottom: '16px' }}>
+                          <Col span={10}>
+                            <strong>Fecha:</strong> {coordination?.planned_date ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-'}
+                          </Col>
+                          <Col span={10}>
+                            <strong>Módulo:</strong> {coordination?.lab_module || 'M1'}
+                          </Col>
+                          <Col span={4}>
+                            <strong>Tanque:</strong> {coordination?.tank || 'T1'}
+                          </Col>
+                        </Row>
+                        <br />
 
-                          <Row gutter={16} style={{ marginBottom: '16px' }}>
-                            <Col xs={24} sm={24} md={24} lg={10}>
-                              {/* Secciones en Cards para información clave */}
-                              <div style={{ maxWidth: '100%' }}>
-                                {overviewCardMeshData.map((item, i) => (
-                                  <OverviewCardMesh data={item} key={i} />
-                                ))}
-                              </div>
-                            </Col>
-                            <Col xs={24} sm={24} md={24} lg={14}>
-                              {/* Tabla estilizada de información de laboratorio */}
-                              <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
-                                <Table
-                                  className='custom-table_lab'
-                                  dataSource={labInfoData}
-                                  columns={[
-                                    { title: '', dataIndex: 'label', key: 'label', width: '60%' }, // 60% para la primera columna
-                                    { title: '', dataIndex: 'value', key: 'value', width: '40%' }, // 40% para la segunda columna
-                                  ]}
-                                  pagination={false}
-                                  showHeader={false}
-                                  bordered
-                                  rowClassName={() => 'custom-table-row'}
-                                  style={{ width: '100%' }} // Asegura que la tabla se ajuste al 100% del contenedor
-                                />
-                              </div>
-                            </Col>
-                          </Row>
-                          <br />
+                        <Row gutter={16} style={{ marginBottom: '16px' }}>
+                          <Col xs={24} sm={24} md={24} lg={10}>
+                            {/* Secciones en Cards para información clave */}
+                            <div style={{ maxWidth: '100%' }}>
+                              {overviewCardMeshData.map((item, i) => (
+                                <OverviewCardMesh data={item} key={i} />
+                              ))}
+                            </div>
+                          </Col>
+                          <Col xs={24} sm={24} md={24} lg={14}>
+                            {/* Tabla estilizada de información de laboratorio */}
+                            <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
+                              <Table
+                                className='custom-table_lab'
+                                dataSource={labInfoData}
+                                columns={[
+                                  { title: '', dataIndex: 'label', key: 'label', width: '60%' }, // 60% para la primera columna
+                                  { title: '', dataIndex: 'value', key: 'value', width: '40%' }, // 40% para la segunda columna
+                                ]}
+                                pagination={false}
+                                showHeader={false}
+                                bordered
+                                rowClassName={() => 'custom-table-row'}
+                                style={{ width: '100%' }} // Asegura que la tabla se ajuste al 100% del contenedor
+                              />
+                            </div>
+                          </Col>
+                        </Row>
+                        <br />
 
-                          <Row gutter={16} style={{ marginBottom: '16px' }}>
-                            <Col span={24} style={{ textAlign: 'center' }}>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                  justifyContent: 'center', // Alinea el contenido al centro
-                                  gap: "50px", // Ajusta el espacio entre los elementos
-                                  width: "100%"
+                        <Row gutter={16} style={{ marginBottom: '16px' }}>
+                          <Col span={24} style={{ textAlign: 'center' }}>
+                            <div
+                              style={{
+                                display: 'flex',
+                                flexDirection: window.innerWidth < 430 ? 'column' : 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: "50px",
+                                width: "100%"
+                              }}>
+                              {binaryFields.map((field, index) => (
+                                //poner wrap
+                                <div key={index} style={{
+                                  display: "flex", flexDirection: window.innerWidth <430  ? "column" : "row",
+                                  alignItems: "center"
                                 }}>
-                                {binaryFields.map((field, index) => (
-                                  <div key={index} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                    <div style={{ width: "50px" }}>
-                                      <ReactSVG src={require(`../../../../static/img/AQx-IMG/${field.icon}`)} />
-                                    </div>
-                                    <div style={{ marginLeft: "10px" }}>
-                                      <strong>{field.label}</strong>
-                                    </div>
-                                    <div style={{ marginLeft: "10px" }}>
-                                      <Checkbox checked={field.value} disabled>
-                                        {field.value ? 'Sí' : 'No'}
-                                      </Checkbox>
-                                    </div>
+                                  <div style={{ width: "50px" }}>
+                                    <ReactSVG src={require(`../../../../static/img/AQx-IMG/${field.icon}`)} />
                                   </div>
-                                ))}
-                              </div>
-                            </Col>
-                          </Row>
+                                  <div style={{ marginLeft: "10px" }}>
+                                    <strong>{field.label}</strong>
+                                  </div>
+                                  <div style={{ marginLeft: "10px" }}>
+                                    <Checkbox checked={field.value} disabled>
+                                      {field.value ? 'Sí' : 'No'}
+                                    </Checkbox>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </Col>
+                        </Row>
                       </Suspense>
                     </Col>
 

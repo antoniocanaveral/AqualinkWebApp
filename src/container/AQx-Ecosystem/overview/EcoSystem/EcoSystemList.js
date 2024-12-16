@@ -117,11 +117,11 @@ const OverviewDataList = React.memo(() => {
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilCloudDataConnection />
-          <PageHeader className="ninjadash-page-header-main" title="Smart AquaCulture EcoSystem" />
+          <PageHeader  title="Smart AquaCulture EcoSystem" />
         </div>
       </Col>
       {overviewCardData.map((item) => (
-        <Col xl={8} xs={24} key={item.id}>
+        <Col xl={8} md={8} xs={24} key={item.id}>
           <OverviewCard
             data={item}
             bottomStatus
@@ -135,39 +135,37 @@ const OverviewDataList = React.memo(() => {
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilSlack />
-          <PageHeader className="ninjadash-page-header-main" im title="Solutions" />
+          <PageHeader  im title="Solutions" />
         </div>
       </Col>
-      <Col xs={8}>
+      <Col xs={24} xl={8} md={8}>
         <InfoCard icon="UilAnalysis" img={"Analytics.png"} type={"solutions"} />
       </Col>
-      <Col xs={8}>
+      <Col xs={24} xl={8} md={8}>
         <InfoCard icon="UilMonitorHeartRate" img={"Control.png"} type={"solutions"} />
       </Col>
 
-      <Col xs={8}>
+      <Col xs={24} xl={8} md={8}>
         <InfoCard icon="UilAnalytics" img={"M&E.png"} type={"solutions"} />
       </Col>
-      <Col xs={8}>
+      <Col xs={24} xl={8} md={8}>
         <InfoCard icon="UilBriefcaseAlt" img={"B2b.png"} type={"solutions"} />
       </Col>
 
-      <Col xs={8}>
+      <Col xs={24} xl={8} md={8}>
         <InfoCard icon="UilWifiRouter" img={"Network.png"} type={"solutions"} />
       </Col>
 
-      <Col xs={8}>
+      <Col xs={24} xl={8} md={8}>
         <InfoCard icon="UilSetting" img={"ERP.png"} type={"solutions"} />
       </Col>
 
-      <Col xl={24} >
+
+      <Col xs={8}>
         <div className="flex_row">
           <UilBooks />
-          <PageHeader className="ninjadash-page-header-main" title="Knowledge Center" />
+          <PageHeader  title="Knowledge Center" />
         </div>
-      </Col>
-      <Col xs={8}>
-
         <InfoCard icon="UilBrain" img={"AquaDemia.png"} type={"solutions"} />
       </Col>
 

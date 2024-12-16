@@ -81,7 +81,7 @@ function ProteinPercentageFarm() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main"
+      <PageHeader
         highlightText="Aqualink Monitoreo"
         title="Porcentaje de Proteína"
         selectOptions={[
@@ -136,7 +136,9 @@ function ProteinPercentageFarm() {
           <Col xl={24} xs={24} style={{ display: 'flex' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Alimentación por tipo de Proteína" size="large">
-                <Table dataSource={feedingData} columns={feedingColumns} pagination={{ pageSize: 5 }} />
+                <Table 
+                className='table-responsive'
+                dataSource={feedingData} columns={feedingColumns} pagination={{ pageSize: 5 }} />
               </Cards>
             </Suspense>
           </Col>

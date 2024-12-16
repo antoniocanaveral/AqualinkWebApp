@@ -17,7 +17,7 @@ function Skeletons() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Skeleton" routes={PageRoutes} />
+      <PageHeader  title="Skeleton" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} sm={12} xs={24}>

@@ -18,7 +18,7 @@ function Editors() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Editors" routes={PageRoutes} />
+      <PageHeader  title="Editors" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>

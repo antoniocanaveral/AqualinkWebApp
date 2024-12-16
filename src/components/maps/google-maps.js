@@ -13,7 +13,7 @@ const GoogleMaps = GoogleApiWrapper({
     longitude,
     google,
     width = '100%', // Valor predeterminado
-    height = '305px', // Valor predeterminado
+    height = '100%', // Cambiado de '305px' a '100%'
     zoom,
     mapStyles,
     place,
@@ -56,25 +56,23 @@ const GoogleMaps = GoogleApiWrapper({
         onClick={onMapClicked}
         styles={mapStyles}
         google={google}
-        style={{ ...styles, width, height }} // Sobrescribe width y height si se pasan como props
-        center={{ lat: latitude, lng: longitude }}
+        style={{ ...styles, width, height }} // Asegúrate de que width y height sean '100%'
+        center={{ lat: parseFloat(latitude), lng: parseFloat(longitude) }} // Convertir a números
         zoom={zoom}
       >
         {place !== undefined ? (
-          place.map((item) => {
-            return (
-              <Marker
-                key={item.id}
-                onClick={onMarkerClick}
-                position={{ lat: item.latitude, lng: item.longitude }}
-                icon={require(`../../static/img/map/mpc.png`)}
-              />
-            );
-          })
+          place.map((item) => (
+            <Marker
+              key={item.id}
+              onClick={onMarkerClick}
+              position={{ lat: parseFloat(item.latitude), lng: parseFloat(item.longitude) }} // Convertir a números
+              icon={require(`../../static/img/map/mpc.png`)}
+            />
+          ))
         ) : (
           <Marker
             onClick={onMarkerClick}
-            position={{ lat: latitude, lng: longitude }}
+            position={{ lat: parseFloat(latitude), lng: parseFloat(longitude) }}
             icon={require(`../../static/img/map/mpc.png`)}
           />
         )}
@@ -90,7 +88,7 @@ GoogleMaps.defaultProps = {
   latitude: '50.797897',
   longitude: '-1.077641',
   width: '100%',
-  height: '305px',
+  height: '100%', // Cambiado de '305px' a '100%'
   zoom: 13,
   infoWindow: (
     <div>
@@ -109,7 +107,7 @@ GoogleMaps.defaultProps = {
 GoogleMaps.propTypes = {
   latitude: PropTypes.string,
   longitude: PropTypes.string,
-  google: PropTypes.string,
+  google: PropTypes.object, // Cambiado de 'string' a 'object' ya que GoogleApiWrapper proporciona el objeto
   width: PropTypes.string,
   height: PropTypes.string,
   zoom: PropTypes.number,

@@ -79,7 +79,7 @@ function PreparationBioremediationFarm() {
   return (
     <>
       <PageHeader
-        className="ninjadash-page-header-main"
+        
         highlightText="AquaLink Cultivo"
         title="Preparación Y Biorremediación"
         selectOptions={[

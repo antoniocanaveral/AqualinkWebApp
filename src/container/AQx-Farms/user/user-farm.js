@@ -114,7 +114,7 @@ function UserFarm() {
     return (
         <>
             <PageHeader
-                className="ninjadash-page-header-main"
+                
                 highlightText={"AquaLink Administración"}
                 title="Ficha de Usuarios"
             />

@@ -21,7 +21,7 @@ function Spiner() {
   ];
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Spin" routes={PageRoutes} />
+      <PageHeader  title="Spin" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={12} xs={24}>

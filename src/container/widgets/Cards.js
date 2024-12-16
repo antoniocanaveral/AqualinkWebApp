@@ -68,7 +68,7 @@ function WidgetsCard() {
   });
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Widgets Cards" routes={PageRoutes} />
+      <PageHeader  title="Widgets Cards" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           {projects.map((project) => {

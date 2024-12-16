@@ -75,7 +75,7 @@ function ReChartLine() {
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title="Line Chart" routes={PageRoutes} />
+      <PageHeader  title="Line Chart" routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col md={12} xs={24}>
