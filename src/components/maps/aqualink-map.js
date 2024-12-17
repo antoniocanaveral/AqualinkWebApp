@@ -9,7 +9,7 @@ const AqualinkMaps = ({ width, height }) => {
 
     return (
         <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-            <Cards title="Studio Planning: Segmento P3" size="large">
+            <Cards title="Geolocalización" size="large">
                 <Row gutter={[25, 25]} align="top">
                     <Col xs={24} md={24}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: "20px" }}>

@@ -1,65 +1,18 @@
 import {
-  Uil500px,
-  UilAirplay,
-  UilArrowGrowth,
-  UilAt,
-  UilBagAlt,
-  UilBookAlt,
-  UilBookOpen,
-  UilBookReader,
   UilListUl,
-  UilBriefcaseAlt,
   UilCalendarAlt,
-  UilChart,
   UilChartBar,
-  UilChartPieAlt,
-  UilChat,
-  UilCheckSquare,
-  UilCircle,
   UilClipboardAlt,
-  UilClock,
   UilCloudDataConnection,
-  UilCompactDisc,
-  UilCreateDashboard,
-  UilDatabase,
-  UilDashboard,
   UilDesktop,
-  UilDocumentLayoutLeft,
-  UilEdit,
-  UilEnvelope,
-  UilEstate,
-  UilExchange,
-  UilExclamationOctagon,
   // UilExpandArrowsAlt,
   UilFlaskPotion,
-  UilFile,
-  UilFileCheckAlt,
-  UilFileShieldAlt,
-  UilHeadphones,
   UilHeadphonesAlt,
-  UilIcons,
-  UilImages,
-  UilLayerGroup,
-  UilMap,
-  UilPresentation,
-  UilQrcodeScan,
-  UilQuestionCircle,
-  UilSearch,
-  UilServer,
-  UilSetting,
-  UilShoppingCart,
-  UilSquareFull,
-  UilTable,
-  UilUsdCircle,
-  UilUsersAlt,
-  UilWater,
-  UilWifi,
   UilWindowSection,
 } from '@iconscout/react-unicons';
 
 
 import {
-  UilMonitorHeartRate,
   UilTicket,
   UilCube,
   UilTruck,
@@ -80,9 +33,7 @@ import { NavLink } from 'react-router-dom';
 import UilEllipsisV from '@iconscout/react-unicons/icons/uil-ellipsis-v';
 import propTypes from 'prop-types';
 import { NavTitle } from './Style';
-import versions from '../demoData/changelog.json';
 import { changeDirectionMode, changeLayoutMode, changeMenuMode } from '../redux/themeLayout/actionCreator';
-import UilSync from '@iconscout/react-unicons/icons/uil-sync';
 
 function AQxCustodityMenu({ toggleCollapsed }) {
   const { t } = useTranslation();
@@ -126,26 +77,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
   const changeLayout = (mode) => {
     dispatch(changeLayoutMode(mode));
   };
-  const changeNavbar = (topMode) => {
-    const html = document.querySelector('html');
-    if (topMode) {
-      html.classList.add('ninjadash-topmenu');
-    } else {
-      html.classList.remove('ninjadash-topmenu');
-    }
-    dispatch(changeMenuMode(topMode));
-  };
-  const changeLayoutDirection = (rtlMode) => {
-    if (rtlMode) {
-      const html = document.querySelector('html');
-      html.setAttribute('dir', 'rtl');
-    } else {
-      const html = document.querySelector('html');
-      html.setAttribute('dir', 'ltr');
-    }
-    dispatch(changeDirectionMode(rtlMode));
-  };
-
+  
   const darkmodeActivated = () => {
     document.body.classList.add('dark-mode');
   };
@@ -162,24 +94,14 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
+  
     getItem(
-      <NavLink onClick={toggleCollapsed} to={`/`}>
-        {t('Ecosistema')}
-      </NavLink>,
-      'Ecosistema',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/`}>
-          <UilCloudDataConnection />
-        </NavLink>
-      ),
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}`}>
+      <NavLink onClick={toggleCollapsed} to={`${path}/panel`}>
         {t('Panel de Control')}
       </NavLink>,
       'Panel de Control',
       !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}`}>
+        <NavLink className="menuItem-iocn" to={`${path}/panel`}>
           <UilDesktop />
         </NavLink>
       ),

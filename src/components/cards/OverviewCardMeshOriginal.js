@@ -17,7 +17,7 @@ function OverviewCardMeshOriginal({ data, circleIcon }) {
     setDidViewCountUp(true);
   }, [pathname]);
 
-  const { type, icon, label, total, status, statusRate, suffix, prefix, decimel } = data;
+  const { type, icon, label, total, status, statusRate, suffix, prefix, decimel, secondLabel } = data;
   const totalNumber = Number(total);
   return (
     <OverviewCardMeshWrap
@@ -43,7 +43,25 @@ function OverviewCardMeshOriginal({ data, circleIcon }) {
                 />
                 {suffix && <span style={{ marginLeft: "3px" }}>{suffix}</span>}
               </h4>
-              <span style={{ marginLeft: "5px" }} className="ninjadahs-overview-label">{label}</span>
+              <span
+                style={{
+                  marginLeft: "5px",
+                }}
+                className="ninjadahs-overview-label"
+              >
+                {label}
+              </span>
+              <span
+                style={{
+                  display: "block",
+                  fontSize: "13px", 
+                  marginLeft: "5px",
+                }}
+                className="ninjadahs-overview-label"
+              >
+                {secondLabel}
+              </span>
+
             </div>
             {
               <span className={`ninjadash-overview-status ninjadash-status-${status}`}>
@@ -51,7 +69,7 @@ function OverviewCardMeshOriginal({ data, circleIcon }) {
                   {status === 'growth' ? <UilUp /> : <UilDown />} {statusRate}%
                 </span>
               </span>
-              
+
             }
           </div>
         </div>

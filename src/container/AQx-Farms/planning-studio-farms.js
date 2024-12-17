@@ -466,7 +466,7 @@ function PlanningStudioFarms() {
         {/* Mostrar escenarios añadidos */}
         <Row gutter={25}>
           {scenarios.length > 0 && scenarios.map((scenario, index) => (
-            <Col xl={8} xs={12} key={index}>
+            <Col xl={24} xs={8} key={index}>
               <Cards
                 image={require(`../../static/img/AQx-IMG/shrimp16.svg`).default}
                 title={`Escenario ${index + 1}`} size="large">
@@ -576,11 +576,11 @@ function PlanningStudioFarms() {
           {
             scenarios.length > 0 && (
               <>
-                <Col xs={12}>
+                <Col xs={24} xl={12}>
                   <StimatedProductionChart scenarios={scenarios} />
                 </Col>
 
-                <Col xs={12}>
+                <Col xs={24} xl={12}>
                   <CostIncomeComparisonChart scenarios={scenarios} />
                 </Col>
               </>

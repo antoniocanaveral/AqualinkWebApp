@@ -1,0 +1,58 @@
+[
+    {
+        "id": 1,
+        "type": "primary",
+        "icon": "biomasa.svg",
+        "label": "Performance",
+        "secondLabel": "De Entrega",
+        "total": "12711",
+        "suffix": "lb",
+        "prefix": "",
+        "status": "growth",
+        "statusRate": "3.36",
+        "decimel": 0,
+        "dataPeriod": "Todas las Camaroneras"
+    },
+    {
+        "id": 2,
+        "type": "primary",
+        "icon": "food.svg",
+        "label": "Cumplimiento",
+        "secondLabel": "De Pescas",
+        "total": "62.75",
+        "suffix": "kg",
+        "prefix": "",
+        "status": "growth",
+        "statusRate": "6.01",
+        "decimel": 2,
+        "dataPeriod": "Todas las Camaroneras"
+    },
+    {
+        "id": 3,
+        "type": "primary",
+        "icon": "health.svg",
+        "label": "Performance",
+        "secondLabel": "De Coordinación",
+        "total": "99.84",
+        "suffix": "%",
+        "prefix": "",
+        "status": "growth",
+        "statusRate": "1.05",
+        "decimel": 2,
+        "dataPeriod": "Todas las Camaroneras"
+    },
+    {
+        "id": 4,
+        "type": "primary",
+        "icon": "growth.svg",
+        "label": "Cumplimiento",
+        "secondLabel": "De Proyecciones",
+        "total": "12620",
+        "suffix": "lb",
+        "prefix": "$",
+        "status": "down",
+        "statusRate": "1.87",
+        "decimel": 0,
+        "dataPeriod": "Todas las Camaroneras"
+    }
+  ]

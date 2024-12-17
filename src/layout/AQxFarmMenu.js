@@ -68,15 +68,12 @@ function AQxFarmMenu({ toggleCollapsed }) {
   };
 
   const onClick = (item) => {
-    if (item.keyPath.length === 1) {
-      setOpenKeys([]);
-
-      // Si estás en modo móvil (ej: ancho <= 991px), cierra el sidebar después de seleccionar
-      if (window.innerWidth <= 991) {
-        toggleCollapsed();
-      }
+    setOpenKeys([]);
+    if (window.innerWidth <= 1024) {
+      toggleCollapsed();
     }
   };
+
 
 
 
@@ -89,7 +86,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       'group',
     ),
 
-   
+
 
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/panel`}>
@@ -105,8 +102,8 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
 
 
-    
-     
+
+
     getItem(t('AquaLink Analytics'), 'aqualink-analytics', !topMenu && <UilChartBar />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/analytics`}>
@@ -201,7 +198,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
               'alimentacion-proteina',
               null,
             ),
-           
+
             /**
              *
              *  getItem(
@@ -212,7 +209,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
               null,
             ), 
              */
-           
+
             getItem(
               <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/feeding-tables`}>
                 {t('Tablas de Alimentación')}
@@ -261,7 +258,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       'cultivo',
       !topMenu && <UilAirplay />,
       [
-        
+
         getItem(
           <div className="menu-item-level-1">
             <NavLink to={`${path}/crop/general-pathology`}>{t('Patología')}</NavLink>
@@ -304,7 +301,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
           'cultivo-clasificacion',
           null,
         ),
-   
+
         getItem(
           <div className="menu-item-level-1">
             <NavLink to={`${path}/crop/harvest`}>{t('Cosecha/Raleo')}</NavLink>
@@ -328,8 +325,8 @@ function AQxFarmMenu({ toggleCollapsed }) {
           'medio-cultivo-flujo-agua',
           null,
         ),
-     
-       
+
+
         getItem(
           <div className="menu-item-level-1">
             <NavLink to={`${path}/culture-medium/preparation-bioremediation`}>{t('Preparación de Suelo y Biorremediación')}</NavLink>
@@ -340,7 +337,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ]
     ),
 
-   
+
 
 
     getItem(
@@ -499,7 +496,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         ),
       ]
     ),
-  
+
     getItem(t('Usuarios'), 'usuarios', !topMenu && <UilUserCircle />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/users`}>
@@ -517,7 +514,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ),
     ]),
 
- 
+
     // FAQ
     getItem(
       <NavLink to={`${path}/faq`}>
@@ -526,7 +523,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       'faq',
       !topMenu && <UilQuestionCircle />,
     ),
-  
+
     // Message Notifications Center
     getItem(
       <NavLink to={`${path}/message-notifications-center`}>
@@ -536,7 +533,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       //icon for message-notifications-center
       !topMenu && <UilBell />,
     ),
-    
+
     // SOPORTE
     getItem(
       <NavLink to={`${path}/support`}>
@@ -545,7 +542,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       'soporte',
       !topMenu && <UilHeadphones />,
     ),
-    
+
 
 
   ];
@@ -554,7 +551,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
     <Menu
       onOpenChange={onOpenChange}
       onClick={onClick}
-      mode={!topMenu || window.innerWidth <= 991 ? 'inline' : 'horizontal'}
+      mode={!topMenu || window.innerWidth <= 1024 ? 'inline' : 'horizontal'}
       // // eslint-disable-next-line no-nested-ternary
       defaultSelectedKeys={
         !topMenu
