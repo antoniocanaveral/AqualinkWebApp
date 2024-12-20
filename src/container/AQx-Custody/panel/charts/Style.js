@@ -1350,6 +1350,40 @@ const UpcomingEventsStyleWrap = Styled.div`
             }
         }
     }
+        .ninjadash-event-details-action-2{
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin: -12px;
+        a{
+            display: block;
+            margin: 12px;
+            svg{
+                width: 14px;
+                height: 14px;
+                color: ${({ theme }) => theme[theme.mainContent]['gray-light-text']};
+            }
+        }
+        .ninjadash-event-details-action__edit{
+            &:hover{
+                svg{
+                    color: ${({ theme }) => theme['info-color']};
+                }
+            }
+            
+        }
+        .ninjadash-event-details-action__delete{
+            &:hover{
+                svg{
+                    color: ${({ theme }) => theme['danger-color']};
+                }
+            }
+            svg{
+                width: 16px;
+                height: 16px;
+            }
+        }
+    }
 `;
 
 const KnowledgeBaseCardWrap = Styled.div`
@@ -1605,27 +1639,27 @@ const PerfomanceOverviewStyle = Styled.div`
 `;
 
 export {
-  OverviewDataStyleWrap,
-  NewProductWrapper,
-  TotalChartStyleWrap,
-  SalesOverviewStyleWrap,
-  ChartContainer,
-  DashboardBaseStyleWrap,
-  EChartCard,
-  CardBarChart,
-  SaleLocationMap,
-  UserOverviewStyle,
-  LocationTableWrap,
-  CardBarChart2,
-  SalesRevenueWrapper,
-  RevenueGeneratedWrapper,
-  SalesOverviewStyleWrap2,
-  TopSellerWrap,
-  BrowserStateWrap,
-  PerfomanceOverviewStyle,
-  DemoFourStyle,
-  UpcomingEventsStyleWrap,
-  KnowledgeBaseCardWrap,
-  TimelineStyleWrap,
-  InboxListStyleWrap,
+    OverviewDataStyleWrap,
+    NewProductWrapper,
+    TotalChartStyleWrap,
+    SalesOverviewStyleWrap,
+    ChartContainer,
+    DashboardBaseStyleWrap,
+    EChartCard,
+    CardBarChart,
+    SaleLocationMap,
+    UserOverviewStyle,
+    LocationTableWrap,
+    CardBarChart2,
+    SalesRevenueWrapper,
+    RevenueGeneratedWrapper,
+    SalesOverviewStyleWrap2,
+    TopSellerWrap,
+    BrowserStateWrap,
+    PerfomanceOverviewStyle,
+    DemoFourStyle,
+    UpcomingEventsStyleWrap,
+    KnowledgeBaseCardWrap,
+    TimelineStyleWrap,
+    InboxListStyleWrap,
 };

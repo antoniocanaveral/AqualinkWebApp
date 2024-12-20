@@ -8,7 +8,6 @@ import UilCheck from '@iconscout/react-unicons/icons/uil-check';
 import UilUsersAlt from '@iconscout/react-unicons/icons/uil-users-alt';
 import UilFileCheckAlt from '@iconscout/react-unicons/icons/uil-file-check-alt';
 import UilCheckCircle from '@iconscout/react-unicons/icons/uil-check-circle';
-import { Steps } from '../../components/steps/steps';
 import Heading from '../../components/heading/heading';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Checkbox } from '../../components/checkbox/checkbox';
@@ -18,9 +17,6 @@ import Cookies from 'js-cookie';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { formatNumber, inputFormatter, parserNumber } from '../../utility/utility';
-import { GoogleMaps } from '../../components/maps/google-maps';
-import { ReactSVG } from 'react-svg';
-import OverviewCardMesh from '../../components/cards/OverviewCardMesh';
 import { StepsCoords } from '../../components/steps/stepsCoords';
 
 const { Option } = Select;
@@ -199,20 +195,7 @@ function CoordinationLabs() {
   ];
 
 
-  const labInfoData = [
-    { key: '0', label: 'Módulo:', value: coordination?.lab_module || '' },
-    { key: '1', label: 'Tanque:', value: coordination?.tank || '' },
-    { key: '2', label: 'Código:', value: coordination?.SM_FishingNotification || '' },
-    { key: '2', label: 'Origen de Nauplio:', value: coordination?.origen || '' },
-    { key: '5', label: 'PL:', value: coordination?.answered_pl || '' },
-    { key: '4', label: 'Conteo Preliminar Lab:', value: coordination ? `${formatNumber(coordination.lab_count)} larvas/gramo` : '280 larvas/gramo' },
-    { key: '6', label: 'Salinidad:', value: coordination ? `${coordination.confirmed_salinity} ppm` : '' },
-    { key: '7', label: 'Método de Envío:', value: coordination?.shipping_method || '' },
-    { key: '11', label: 'Alcalinidad Tanque de Origen:', value: coordination?.alkalinity || '' },
-    { key: '12', label: 'PH Tanque de Origen:', value: coordination?.pre_breeding_pool_ph || '' },
-  ];
-
-  
+ 
 
   return (
     <>
@@ -270,7 +253,7 @@ function CoordinationLabs() {
                                                               }
                                                             >
                                                               <Cards
-                                                                title={`Coordinación `}
+                                                                title={``}
                                                                 size="large"
                                                               >
                                                                 <div style={{ display: 'flex', flexDirection: "column", alignItems: 'center', textAlign: "center" }}>
@@ -281,11 +264,6 @@ function CoordinationLabs() {
                                                                   {coordination?.pre_breeding_pool || 'Pre Cria 1'}
                                                                 </div>
                                                                 <br />
-                                                                <Col xs={24} md={24} style={{ marginBottom: '18px', overflow: 'hidden' }}>
-                                                                  <div style={{ height: '200px' }}>
-                                                                    <GoogleMaps />
-                                                                  </div>
-                                                                </Col>
 
                                                                 <Col xs={24} md={24}>
                                                                   <Table
@@ -343,7 +321,7 @@ function CoordinationLabs() {
                                             <Form form={form} name="address" layout="vertical" style={{ marginTop: '-10px' }}>
                                               <Row gutter={16}>
                                                 {/* Primera fila de tres columnas */}
-                                                <Col xs={24} sm={8}>
+                                                <Col xs={24} sm={6}>
                                                   <Form.Item name="responsed_date" label="Fecha Propuesta" initialValue={state.form.answeredDate ? moment(state.form.answeredDate) : moment()} rules={[{ required: true, message: 'Por favor seleccione una Fecha' }]}>
                                                     <DatePicker value={state.form.answeredDate} onChange={(value) => {
                                                       let current = '';
@@ -362,7 +340,7 @@ function CoordinationLabs() {
                                                   </Form.Item>
                                                   <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? moment(coordination.planned_date).format("DD-MM-YYYY") : "-"}]</div>
                                                 </Col>
-                                                <Col xs={24} sm={8}>
+                                                <Col xs={24} sm={6}>
                                                   <Form.Item name="response-time" label="Hora Propuesta" initialValue={moment(state.form.answeredDate ? moment(state.form.answeredDate).format("HH:mm") : "00:00", 'HH:mm')} rules={[{ required: true, message: 'Por favor seleccione una Hora' }]}>
                                                     <TimePicker value={state.form.answeredDate} onChange={(value) => {
                                                       let current = moment(state.form.answeredDate);
@@ -378,7 +356,7 @@ function CoordinationLabs() {
                                                   </Form.Item>
                                                   <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? moment(coordination.planned_date).format("HH:mm A") : "-"}]</div>
                                                 </Col>
-                                                <Col xs={24} sm={8}>
+                                                <Col xs={24} sm={6}>
                                                   <Form.Item name="module" label="Módulo" rules={[{ required: true, message: 'Por favor agregue un Módulo' }]}>
                                                     <Input
                                                       value={state.form.module}
@@ -388,6 +366,22 @@ function CoordinationLabs() {
                                                           form: {
                                                             ...state.form,
                                                             module: e.target.value,
+                                                          },
+                                                        });
+                                                      }}
+                                                    />
+                                                  </Form.Item>
+                                                </Col>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="controller" label="Controlador" rules={[{ required: true, message: 'Por favor agregue un Controlador' }]}>
+                                                    <Input
+                                                      value={state.form.controller}
+                                                      onChange={(e) => {
+                                                        setState({
+                                                          ...state,
+                                                          form: {
+                                                            ...state.form,
+                                                            controller: e.target.value,
                                                           },
                                                         });
                                                       }}

@@ -14,7 +14,7 @@ function RealAndProjectedFeeding() {
     { title: 'CORRIDA', dataIndex: 'corrida', key: 'corrida' },
     { title: 'LOTE', dataIndex: 'lote', key: 'lote' },
     { title: 'DÍA', dataIndex: 'dia', key: 'dia' },
-    { title: 'ALIMENTO PROGRAMADO', dataIndex: 'alimentoProgramado', key: 'alimentoProgramado' },
+    { title: 'ALIMENTO PROYECTADO', dataIndex: 'alimentoProyectado', key: 'alimentoProyectado' },
     { title: 'ALIMENTO ENTREGADO', dataIndex: 'alimentoEntregado', key: 'alimentoEntregado' },
     { title: 'TIPO DE ALIMENTO', dataIndex: 'tipoAlimento', key: 'tipoAlimento' },
     { title: '% PROTEÍNA', dataIndex: 'proteina', key: 'proteina' },
@@ -22,16 +22,16 @@ function RealAndProjectedFeeding() {
 
   // Datos ficticios para la nueva tabla de Alimentación
   const feedingData = [
-    { key: '1', codigo: 'A001', corrida: '1', lote: 'L01', dia: '01 Nov', alimentoProgramado: 50, alimentoEntregado: 48, tipoAlimento: 'Pellet', proteina: 30 },
-    { key: '2', codigo: 'A002', corrida: '1', lote: 'L02', dia: '02 Nov', alimentoProgramado: 55, alimentoEntregado: 53, tipoAlimento: 'Pellet', proteina: 32 },
-    { key: '3', codigo: 'A003', corrida: '1', lote: 'L03', dia: '03 Nov', alimentoProgramado: 60, alimentoEntregado: 59, tipoAlimento: 'Pellet', proteina: 28 },
-    { key: '4', codigo: 'A004', corrida: '2', lote: 'L01', dia: '04 Nov', alimentoProgramado: 65, alimentoEntregado: 63, tipoAlimento: 'Gránulo', proteina: 35 },
-    { key: '5', codigo: 'A005', corrida: '2', lote: 'L02', dia: '05 Nov', alimentoProgramado: 70, alimentoEntregado: 68, tipoAlimento: 'Gránulo', proteina: 33 },
-    { key: '6', codigo: 'A006', corrida: '2', lote: 'L03', dia: '06 Nov', alimentoProgramado: 75, alimentoEntregado: 73, tipoAlimento: 'Pellet', proteina: 31 },
-    { key: '7', codigo: 'A007', corrida: '3', lote: 'L01', dia: '07 Nov', alimentoProgramado: 80, alimentoEntregado: 79, tipoAlimento: 'Gránulo', proteina: 34 },
-    { key: '8', codigo: 'A008', corrida: '3', lote: 'L02', dia: '08 Nov', alimentoProgramado: 85, alimentoEntregado: 84, tipoAlimento: 'Pellet', proteina: 29 },
-    { key: '9', codigo: 'A009', corrida: '3', lote: 'L03', dia: '09 Nov', alimentoProgramado: 90, alimentoEntregado: 88, tipoAlimento: 'Gránulo', proteina: 36 },
-    { key: '10', codigo: 'A010', corrida: '3', lote: 'L04', dia: '10 Nov', alimentoProgramado: 95, alimentoEntregado: 92, tipoAlimento: 'Pellet', proteina: 30 },
+    { key: '1', codigo: 'A001', corrida: '1', lote: 'L01', dia: '01 Nov', alimentoProyectado: 50, alimentoEntregado: 48, tipoAlimento: 'Pellet', proteina: 30 },
+    { key: '2', codigo: 'A002', corrida: '1', lote: 'L02', dia: '02 Nov', alimentoProyectado: 55, alimentoEntregado: 53, tipoAlimento: 'Pellet', proteina: 32 },
+    { key: '3', codigo: 'A003', corrida: '1', lote: 'L03', dia: '03 Nov', alimentoProyectado: 60, alimentoEntregado: 59, tipoAlimento: 'Pellet', proteina: 28 },
+    { key: '4', codigo: 'A004', corrida: '2', lote: 'L01', dia: '04 Nov', alimentoProyectado: 65, alimentoEntregado: 63, tipoAlimento: 'Gránulo', proteina: 35 },
+    { key: '5', codigo: 'A005', corrida: '2', lote: 'L02', dia: '05 Nov', alimentoProyectado: 70, alimentoEntregado: 68, tipoAlimento: 'Gránulo', proteina: 33 },
+    { key: '6', codigo: 'A006', corrida: '2', lote: 'L03', dia: '06 Nov', alimentoProyectado: 75, alimentoEntregado: 73, tipoAlimento: 'Pellet', proteina: 31 },
+    { key: '7', codigo: 'A007', corrida: '3', lote: 'L01', dia: '07 Nov', alimentoProyectado: 80, alimentoEntregado: 79, tipoAlimento: 'Gránulo', proteina: 34 },
+    { key: '8', codigo: 'A008', corrida: '3', lote: 'L02', dia: '08 Nov', alimentoProyectado: 85, alimentoEntregado: 84, tipoAlimento: 'Pellet', proteina: 29 },
+    { key: '9', codigo: 'A009', corrida: '3', lote: 'L03', dia: '09 Nov', alimentoProyectado: 90, alimentoEntregado: 88, tipoAlimento: 'Gránulo', proteina: 36 },
+    { key: '10', codigo: 'A010', corrida: '3', lote: 'L04', dia: '10 Nov', alimentoProyectado: 95, alimentoEntregado: 92, tipoAlimento: 'Pellet', proteina: 30 },
   ];
 
   return (

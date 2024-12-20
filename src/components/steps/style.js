@@ -17,9 +17,9 @@ const StepsStyle = Styled(Steps)`
         }
     }
     .steps-action{
-        margin-top: 40px;
+        margin-top: 20px;
         button{
-            height: 44px;
+            height: 54px;
         }
     }
 `;

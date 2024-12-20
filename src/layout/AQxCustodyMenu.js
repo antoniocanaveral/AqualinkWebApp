@@ -130,6 +130,18 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       ),
     ),
 
+      getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/harvest-reports`}>
+        {t('Reportes Cosecha')}
+      </NavLink>,
+      'Reportes Cosecha',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/harvest-reports`}>
+          <UilClipboardAlt /> {/* Ícono para Planificación */}
+        </NavLink>
+      ),
+    ),
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/task`}>
         {t('Tareas')}
@@ -154,7 +166,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/coords`}>
-          {t('Ver')} {t('Coordinaciones')}
+          {t('Coordinaciones')} {t('Activas')}
         </NavLink>,
         'light',
         null,
@@ -162,33 +174,18 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
     ]),
 
-    getItem(t('Sellos y Contenedores'), 'sellos-contenedores', !topMenu && <UilTicket />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/sellos`}>
-          {t('Administración de Sellos')}
-        </NavLink>,
-        'administracion-sellos',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/contenedores`}>
-          {t('Administración de Contenedores')}
-        </NavLink>,
-        'administracion-contenedores',
-        null,
-      ),
-    ]),
+  
 
     getItem(t('Suministros'), 'suministros', !topMenu && <UilCube />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/inventario`}>
+        <NavLink className="menuItem-icon" to={`${path}/supply/inventary/view`}>
           {t('Ver Inventario')}
         </NavLink>,
         'ver-inventario',
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/productos`}>
+        <NavLink className="menuItem-icon" to={`${path}/supply/inventary/add`}>
           {t('Añadir Productos')}
         </NavLink>,
         'add-productos',
@@ -198,24 +195,17 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
     getItem(t('Transporte'), 'transporte', !topMenu && <UilTruck />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/trayectos`}>
-          {t('Ver Trayectos')}
+        <NavLink className="menuItem-icon" to={`${path}/transport/carriers/view`}>
+          {t('Ver Transportistas')}
         </NavLink>,
         'ver-trayectos',
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/transporte`}>
+        <NavLink className="menuItem-icon" to={`${path}/transport/carriers/add`}>
           {t('Añadir Transportista')}
         </NavLink>,
         'add-transportista',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/vehiculos`}>
-          {t('Añadir Vehículos')}
-        </NavLink>,
-        'add-vehiculos',
         null,
       ),
       getItem(
@@ -244,23 +234,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       ),
     ]),
 
-    getItem(t('IoT'), 'iot', !topMenu && <UilPlug />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/dispositivos`}>
-          {t('Ver Dispositivos')}
-        </NavLink>,
-        'ver-dispositivos',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/add-dispositivos`}>
-          {t('Añadir Dispositivos')}
-        </NavLink>,
-        'add-dispositivos',
-        null,
-      ),
-    ]),
-
+   
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Proveedores')}</NavTitle>,
       'submenu-proveedores',
@@ -271,21 +245,21 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
     getItem(t('Compras'), 'compras', !topMenu && <UilShoppingBag />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/proveedores`}>
+        <NavLink className="menuItem-icon" to={`${path}/purchases/supplier/view`}>
           {t('Ver Proveedores')}
         </NavLink>,
         'ver-proveedores',
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/add-proveedores`}>
+        <NavLink className="menuItem-icon" to={`${path}/purchases/supplier/add`}>
           {t('Añadir Proveedores')}
         </NavLink>,
         'add-proveedores',
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/add-pesca`}>
+        <NavLink className="menuItem-icon" to={`${path}/purchases/fishing-applications`}>
           {t('Solicitudes de Pesca')}
         </NavLink>,
         'solicitudes-pesca',

@@ -94,32 +94,10 @@ function ProteinPercentageFarm() {
         <Row gutter={25}>
           <Col xl={12} xs={24} style={{ display: 'flex' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={20} md={15}>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={20} md={9}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Camaroneras 1</Typography.Title>
-                        <Typography.Text>Área: 307.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Piscina 3</Typography.Title>
-                        <Typography.Text>Área: 5.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Pre Cría 3</Typography.Title>
-                        <Typography.Text>Área: 1.35 ha</Typography.Text>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
+              <Cards title="Alimentación por tipo de Proteína" size="large">
+                <Table
+                  className='table-responsive'
+                  dataSource={feedingData} columns={feedingColumns} pagination={{ pageSize: 5 }} />
               </Cards>
             </Suspense>
           </Col>
@@ -135,11 +113,7 @@ function ProteinPercentageFarm() {
         <Row gutter={25} equal-heights>
           <Col xl={24} xs={24} style={{ display: 'flex' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Alimentación por tipo de Proteína" size="large">
-                <Table 
-                className='table-responsive'
-                dataSource={feedingData} columns={feedingColumns} pagination={{ pageSize: 5 }} />
-              </Cards>
+             
             </Suspense>
           </Col>
         </Row>

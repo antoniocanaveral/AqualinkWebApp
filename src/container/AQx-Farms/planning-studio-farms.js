@@ -110,7 +110,7 @@ function PlanningStudioFarms() {
       console.log("dataToSend:", dataToSend);
 
       // Envía los datos al servidor
-      const response = await axios.post('https://aqualink-simulation.onrender.com/planning_scenarios', dataToSend);
+      const response = await axios.post('http://localhost:8080/planning_scenarios', dataToSend);
       console.log("Escenario añadido:", response.data);
       // Actualiza el estado agregando el nuevo escenario al array existente
       setScenarios([...scenarios, response.data]);
@@ -230,7 +230,7 @@ function PlanningStudioFarms() {
                           placeholder="Seleccione"
                           disabled={fixedOption === 'ciclo' && fixedFieldDisabled}
                         >
-                          {[56, 63, 70, 77, 84, 91, 98].map(day => (
+                          {[63, 70, 77, 84, 91, 98].map(day => (
                             <Select.Option key={day} value={day}>
                               {day} días
                             </Select.Option>
@@ -257,7 +257,7 @@ function PlanningStudioFarms() {
                           placeholder="Seleccione Densidad"
                           disabled={fixedOption === 'densidad' && fixedFieldDisabled}
                         >
-                          {Array.from({ length: 22 }, (_, i) => 90000 + i * 10000).map(value => (
+                          {Array.from({ length: 9 }, (_, i) => 90000 + i * 20000).map(value => (
                             <Select.Option key={value} value={value}>
                               {value.toLocaleString()}
                             </Select.Option>
@@ -284,7 +284,7 @@ function PlanningStudioFarms() {
                           placeholder="Seleccione Peso (g)"
                           disabled={fixedOption === 'peso' && fixedFieldDisabled}
                         >
-                          {Array.from({ length: 29 }, (_, i) => 15 + i).map(value => (
+                          {Array.from({ length: 24 }, (_, i) => 15 + i).map(value => (
                             <Select.Option key={value} value={value}>
                               {value.toLocaleString()} g
                             </Select.Option>
@@ -301,7 +301,7 @@ function PlanningStudioFarms() {
                         rules={[{ required: true, message: 'Este campo es requerido' }]}
                       >
                         <Select placeholder="Seleccione Supervivencia">
-                          {Array.from({ length: 50 }, (_, i) => 50 + i).map(value => (
+                          {Array.from({ length: 6 }, (_, i) => 60 + i * 5).map(value => (
                             <Select.Option key={value} value={value}>
                               {value}%
                             </Select.Option>
@@ -329,7 +329,7 @@ function PlanningStudioFarms() {
                         <Select placeholder="Seleccione FCA"
                           disabled={fixedOption === 'fca' && fixedFieldDisabled}
                         >
-                          {Array.from({ length: 33 }, (_, i) => (0.8 + i * 0.1).toFixed(1)).map(value => (
+                          {Array.from({ length: 6 }, (_, i) => (1 + i * 0.1).toFixed(1)).map(value => (
                             <Select.Option key={value} value={parseFloat(value)}>
                               {value}
                             </Select.Option>
@@ -348,7 +348,7 @@ function PlanningStudioFarms() {
                         rules={[{ required: true, message: 'Este campo es requerido' }]}
                       >
                         <Select placeholder="Seleccione Crecimiento">
-                          {Array.from({ length: 50 }, (_, i) => 50 + i).map(value => (
+                          {Array.from({ length: 3 }, (_, i) => 85 + i * 5).map(value => (
                             <Select.Option key={value} value={value}>
                               {value}%
                             </Select.Option>
@@ -365,7 +365,7 @@ function PlanningStudioFarms() {
                         rules={[{ required: true, message: 'Este campo es requerido' }]}
                       >
                         <Select placeholder="Días">
-                          {[14, 21, 28].map(week => (
+                          {[21, 28].map(week => (
                             <Select.Option key={week} value={week}>
                               {week} días
                             </Select.Option>
@@ -379,20 +379,15 @@ function PlanningStudioFarms() {
                       <Form.Item
                         label={<span style={{ color: '#73879c' }}>{inputLabels.food_price}</span>}
                         name="food_price"
-                        rules={[
-                          { required: true, message: 'El costo debe estar entre 1 y 3 USD' },
-                          { type: 'number', min: 1, max: 3, message: 'El costo debe estar entre 1 y 3 USD' },
-                        ]}
+                        rules={[{ required: true, message: 'El costo es requerido' }]}
                       >
-                        <InputNumber
-                          placeholder="Costo x Kg Alimento (USD)"
-                          min={1}
-                          max={3}
-                          step={0.01}
-                          style={{ width: '100%' }}
-                          formatter={value => `$ ${value}`}
-                          parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                        />
+                        <Select placeholder="Selecciona el costo">
+                          {Array.from({ length: 9 }, (_, i) => (1 + i * 0.1).toFixed(1)).map(value => (
+                            <Select.Option key={value} value={parseFloat(value)}>
+                              $ {value}
+                            </Select.Option>
+                          ))}
+                        </Select>
                       </Form.Item>
                     </Col>
 
@@ -422,12 +417,13 @@ function PlanningStudioFarms() {
                         name="dayly_inditect_cost"
                         rules={[{ required: true, message: 'Este campo es requerido' }]}
                       >
-                        <InputNumber
-                          placeholder="Costo indirecto"
-                          type="number"
-                          style={{ width: '100%' }}
-                          min={0}
-                        />
+                        <Select placeholder="Selecciona un valor">
+                          {Array.from({ length: 16 }, (_, i) => 15 + i).map(value => (
+                            <Select.Option key={value} value={value}>
+                              {value}
+                            </Select.Option>
+                          ))}
+                        </Select>
                       </Form.Item>
                     </Col>
 
@@ -466,7 +462,7 @@ function PlanningStudioFarms() {
         {/* Mostrar escenarios añadidos */}
         <Row gutter={25}>
           {scenarios.length > 0 && scenarios.map((scenario, index) => (
-            <Col xl={24} xs={8} key={index}>
+            <Col xl={6} xs={24} key={index}>
               <Cards
                 image={require(`../../static/img/AQx-IMG/shrimp16.svg`).default}
                 title={`Escenario ${index + 1}`} size="large">

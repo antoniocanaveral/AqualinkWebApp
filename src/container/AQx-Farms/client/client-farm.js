@@ -33,8 +33,7 @@ function ClientFarm() {
     const farmInfo = [
         { key: '1', categoria: 'Provincia', valor: '' },
         { key: '2', categoria: 'Cantón', valor: '' },
-        { key: '3', categoria: 'Tierra Firme', valor: '' },
-        { key: '4', categoria: 'Isla', valor: '' },
+        { key: '3', categoria: 'Tipo de suelo', valor: 'Tierra firme' },
         { key: '5', categoria: 'Acuerdo Ministerial', valor: '' },
         { key: '6', categoria: 'Certificado Ambiental', valor: '' },
         { key: '7', categoria: 'Certificado de Inocuidad', valor: '' },

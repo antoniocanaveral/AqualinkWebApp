@@ -40,7 +40,6 @@ function LaboratoryAddFarm() {
     { ext: 'PA-126', int: 56, razonSocial: 'PROMARISCO S.A.' },
     { ext: 'PA-143', int: 21, razonSocial: 'EXPALSA EXPORTADORA DE ALIMENTOS S.A.' },
     { ext: 'PA-480', int: 1, razonSocial: 'EMPACADORA DUFER CIA. LTDA.' },
-    // Agrega más opciones según sea necesario
   ];
 
   const givOptions = ['GIV', 'GP', 'FIN', 'LAB', 'PAK'];

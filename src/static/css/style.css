@@ -4336,7 +4336,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 }
 
 
-.flex-row-responsive{
+.flex-row-responsive {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -4351,5 +4351,38 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
     /* Cambia a columna en pantallas pequeñas */
     align-items: stretch;
     /* Asegura que los elementos ocupen todo el ancho */
+  }
+}
+
+
+
+.ninjadash-event-details-action-2 {
+  display: flex;
+  margin: 0px;
+
+  a {
+    display: block;
+    margin: 4px;
+
+    svg {
+      color: #a0a0a0;
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+.ninjadash-event-details-action-3 {
+  display: flex;
+  margin: 0px;
+
+  a {
+    display: block;
+    margin: 4px;
+
+    svg {
+      color: #a0a0a0;
+      width: 18px;
+      height: 18px;
+    }
   }
 }

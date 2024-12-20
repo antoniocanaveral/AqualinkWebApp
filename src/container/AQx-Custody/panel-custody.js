@@ -92,11 +92,7 @@ function PanelCustody() {
       <PageHeader
         title="Control Panel"
         highlightText="Aqualink Empacadora"
-        selectOptions={[
-          ["Todas las camaroneras", "Camaronera 2", "Camaronera 3"],
-          ["Todos los Sectores", "Sector 1", "Sector 2", "Sector 3"],
-          ["Todas las Piscinas", "Piscina 1", "Piscina 2", "Piscina 3"]
-        ]}
+       
 
       />
       <Main>

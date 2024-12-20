@@ -3,18 +3,18 @@ import LineChartWithXAxisPadding from '../../../../components/charts/line/LineCh
 
 function ProjectedSuggestedFeedingChart() {
   const exampleData = [
-    { name: 'Enero', 'A': 1000, uv: 1200, amt: 2000 },
-    { name: 'Febrero', 'A': 1600, uv: 1400, amt: 2100 },
-    { name: 'Marzo', 'A': 1800, uv: 2000, amt: 2200 },
-    { name: 'Abril', 'A': 2400, uv: 2300, amt: 2500 },
-    { name: 'Mayo', 'A': 3000, uv: 2900, amt: 2700 },
-    { name: 'Junio', 'A': 3500, uv: 3300, amt: 2800 },
-    { name: 'Julio', 'A': 4200, uv: 3700, amt: 3000 },
-    { name: 'Agosto', 'A': 4700, uv: 4000, amt: 3100 },
-    { name: 'Septiembre', 'A': 5200, uv: 4500, amt: 3400 },
-    { name: 'Octubre', 'A': 5800, uv: 4800, amt: 3600 },
-    { name: 'Noviembre', 'A': 6200, uv: 5100, amt: 3700 },
-    { name: 'Diciembre', 'A': 6700, uv: 5500, amt: 4000 },
+    { name: 'Enero', 'Real': 1000, 'Proyectado': 1200, 'Ajustado': 2000 },
+    { name: 'Febrero', 'Real': 1600, 'Proyectado': 1400, 'Ajustado': 2100 },
+    { name: 'Marzo', 'Real': 1800, 'Proyectado': 2000, 'Ajustado': 2200 },
+    { name: 'Abril', 'Real': 2400, 'Proyectado': 2300, 'Ajustado': 2500 },
+    { name: 'Mayo', 'Real': 3000, 'Proyectado': 2900, 'Ajustado': 2700 },
+    { name: 'Junio', 'Real': 3500, 'Proyectado': 3300, 'Ajustado': 2800 },
+    { name: 'Julio', 'Real': 4200, 'Proyectado': 3700, 'Ajustado': 3000 },
+    { name: 'Agosto', 'Real': 4700, 'Proyectado': 4000, 'Ajustado': 3100 },
+    { name: 'Septiembre', 'Real': 5200, 'Proyectado': 4500, 'Ajustado': 3400 },
+    { name: 'Octubre', 'Real': 5800, 'Proyectado': 4800, 'Ajustado': 3600 },
+    { name: 'Noviembre', 'Real': 6200, 'Proyectado': 5100, 'Ajustado': 3700 },
+    { name: 'Diciembre', 'Real': 6700, 'Proyectado': 5500, 'Ajustado': 4000 },
   ];
 
 

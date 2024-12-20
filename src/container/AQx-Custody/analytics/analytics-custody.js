@@ -7,25 +7,47 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 import { OverviewDataStyleWrap } from '../../dashboard/Style';
 import OverviewCardMeshOriginal from '../../../components/cards/OverviewCardMeshOriginal';
 import OverviewData from './data.json';
-import ProductionSalesProjectionChart from '../../AQx-Farms/analytics/charts/ProductionSalesProjectionChart';
-import CropYieldChart from '../../AQx-Farms/analytics/charts/cropYieldChart';
-import EvolutionParametersBarChart from '../../AQx-Farms/analytics/charts/EvolutionParametersBarChart';
 import WaterPhysicsDonutChart from '../../AQx-Farms/analytics/charts/donut/WaterPhysicsDonutChart';
 import ConfirmedScheduledFishingEntry from './charts/ConfirmedScheduledFishingEntry';
 import FishingPerformanceChart from './charts/FishingPerformanceChart';
+import ComplianceClassifications from './charts/ComplianceClassifications';
+import DonutClassifications from '../../../components/charts/donut/DonutClassifications';
 function AnalyticsCustody() {
+
+  const chartDataChina = [
+    { label: "20/30", value: 25, color: "#ff6384" },
+    { label: "30-40", value: 35, color: "#36a2eb" },
+    { label: "40-50", value: 20, color: "#cc65fe" },
+    { label: "50/60", value: 20, color: "#ffce56" },
+    { label: "70/80", value: 15, color: "#4bc0c0" },
+    { label: "80/100", value: 10, color: "#9966ff" },
+  ];
+
+  const chartDataUSA = [
+    { label: "20/30", value: 30, color: "#ff6384" },
+    { label: "30-40", value: 25, color: "#36a2eb" },
+    { label: "40-50", value: 15, color: "#cc65fe" },
+    { label: "50/60", value: 10, color: "#ffce56" },
+    { label: "70/80", value: 12, color: "#4bc0c0" },
+    { label: "80/100", value: 8, color: "#9966ff" },
+  ];
+
+  const chartDataEurope = [
+    { label: "20/30", value: 20, color: "#ff6384" },
+    { label: "30-40", value: 30, color: "#36a2eb" },
+    { label: "40-50", value: 25, color: "#cc65fe" },
+    { label: "50/60", value: 15, color: "#ffce56" },
+    { label: "70/80", value: 5, color: "#4bc0c0" },
+    { label: "80/100", value: 5, color: "#9966ff" },
+  ];
 
 
   return (
     <>
-      <PageHeader 
+      <PageHeader
         highlightText="Aqualink Empacadora"
         title="Analytics"
-        selectOptions={[
-          ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
-          ["Sector 1", "Sector 2", "Sector 3"],
-          ["Piscina 1", "Piscina 2", "Piscina 3"]
-        ]}
+        
       />
       <Main>
         <Row gutter={25}>
@@ -51,7 +73,7 @@ function AnalyticsCustody() {
 
 
         <Row gutter={25}>
-          <Col xl={15} xs={24} >
+          <Col xl={15} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -59,12 +81,12 @@ function AnalyticsCustody() {
                 </Cards>
               }
             >
-              <Cards title="Ingreso de Pescas Confirmadas frente a Programadas" size="large" style={{ width: '100%', height: '100%' }}>
+              <Cards title="Ingreso de Pescas Confirmadas frente a Programadas" size="large" >
                 <ConfirmedScheduledFishingEntry />
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={9} xs={24} >
+          <Col xl={9} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -72,7 +94,7 @@ function AnalyticsCustody() {
                 </Cards>
               }
             >
-              <Cards title="Rendimiento de Pesca (%)" size="large" style={{ width: '100%', height: '100%' }}>
+              <Cards title="Rendimiento de Pesca (%)" size="large" >
                 <FishingPerformanceChart />
               </Cards>
             </Suspense>
@@ -89,7 +111,7 @@ function AnalyticsCustody() {
                   }
                 >
                   <div>
-                    <EvolutionParametersBarChart />
+                    <ComplianceClassifications />
                   </div>
                 </Suspense>
               </Col>
@@ -101,8 +123,13 @@ function AnalyticsCustody() {
                     </Cards>
                   }
                 >
-                  <div>
-                    <WaterPhysicsDonutChart />
+                  <div style={{padding: '15px'}}>
+                    <DonutClassifications
+                      labels={chartDataChina.map((item) => item.label)}
+                      data={chartDataChina.map((item) => item.value)}
+                      backgroundColors={chartDataChina.map((item) => item.color)}
+                      title="Lotes Confirmados por clasificación-China"
+                    />
                   </div>
                 </Suspense>
               </Col>
@@ -114,8 +141,13 @@ function AnalyticsCustody() {
                     </Cards>
                   }
                 >
-                  <div>
-                    <WaterPhysicsDonutChart />
+                  <div style={{padding: '15px'}}>
+                    <DonutClassifications
+                      labels={chartDataUSA.map((item) => item.label)}
+                      data={chartDataUSA.map((item) => item.value)}
+                      backgroundColors={chartDataUSA.map((item) => item.color)}
+                      title="Lotes Confirmados por clasificación - USA"
+                    />
                   </div>
                 </Suspense>
               </Col>
@@ -127,8 +159,13 @@ function AnalyticsCustody() {
                     </Cards>
                   }
                 >
-                  <div>
-                    <WaterPhysicsDonutChart />
+                  <div style={{padding: '5px'}}>
+                    <DonutClassifications
+                      labels={chartDataEurope.map((item) => item.label)}
+                      data={chartDataEurope.map((item) => item.value)}
+                      backgroundColors={chartDataEurope.map((item) => item.color)}
+                      title="Lotes Confirmados por clasificación - Europa"
+                    />
                   </div>
                 </Suspense>
               </Col>

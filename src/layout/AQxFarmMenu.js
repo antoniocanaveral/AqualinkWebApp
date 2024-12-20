@@ -50,7 +50,6 @@ function AQxFarmMenu({ toggleCollapsed }) {
     };
   });
 
-  const dispatch = useDispatch();
 
   const path = '/farm';
   const pathName = window.location.pathname;
@@ -68,7 +67,6 @@ function AQxFarmMenu({ toggleCollapsed }) {
   };
 
   const onClick = (item) => {
-    setOpenKeys([]);
     if (window.innerWidth <= 1024) {
       toggleCollapsed();
     }

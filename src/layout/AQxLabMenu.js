@@ -414,7 +414,7 @@ function AQxLabMenu({ toggleCollapsed }) {
       
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/seeding-coords`}>
-          {t('Ver')} {t('Coordinaciones')}
+          {t('Coordinaciones')} {t('Activas')}
         </NavLink>,
         'coords',
         null,

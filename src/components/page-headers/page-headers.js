@@ -1,9 +1,11 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-return-assign */
 import React, { useState } from 'react';
-import { Breadcrumb, Dropdown, Menu, Select } from 'antd';
+import { Breadcrumb, Dropdown, Menu, Select, Button } from 'antd';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { HeaderWrapper, PageHeaderStyle } from './style';
-import { DownOutlined } from '@ant-design/icons';
+import { Link, useNavigate } from 'react-router-dom';
+import { DownOutlined, LeftOutlined } from '@ant-design/icons'; // Importar el ícono de izquierda
 
 const { Option } = Select;
 
@@ -22,6 +24,7 @@ function PageHeader(props) {
     icon,
     highlightText,
     selectOptions,
+    onBack, // Nueva prop para el botón de regresar
   } = props;
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -105,19 +108,26 @@ function PageHeader(props) {
   };
 
   return (
-    <HeaderWrapper style={{ backgroundColor: "#ffffff" || '#f0f2f5', padding: '0px' }}>
+    <HeaderWrapper style={{ backgroundColor: bgColor || '#f0f2f5', padding: '0px' }}>
       <PageHeaderStyle
         className={className}
         title={
-          <div className="responsive-container">
+          <div className="responsive-container" style={{ display: 'flex', alignItems: 'center' }}>
+            {onBack && (
+              <Button
+                type="link"
+                onClick={onBack}
+                style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}
+              >
+                <LeftOutlined color='black' /> 
+              </Button>
+            )}
             {icon && <span className="icon">{icon}</span>}
-
             {highlightText && (
-              <h1 className="highlight-text">
+              <h1 className="highlight-text" style={{ margin: 0, marginRight: '10px' }}>
                 {highlightText}
               </h1>
             )}
-
             <span className="title">
               {title}
             </span>
@@ -154,6 +164,7 @@ PageHeader.propTypes = {
   icon: PropTypes.node,
   highlightText: PropTypes.string,
   selectOptions: PropTypes.arrayOf(PropTypes.array),
+  onBack: PropTypes.func, // Definir la nueva prop
 };
 
 export { PageHeader };

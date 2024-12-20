@@ -91,7 +91,7 @@ function StepsCoords({
         <div className="steps-wrapper">
           <div
             className="steps-content"
-            style={{ minHeight: height, display: 'flex', justifyContent: 'center', marginTop: 100 }}
+            style={ {display: 'flex', justifyContent: 'center', marginTop: 2 }}
           >
             {steps[state.currents].content}
           </div>
@@ -134,7 +134,7 @@ function StepsCoords({
         <>
           <div
             className="steps-content"
-            style={{ minHeight: height, display: 'flex', justifyContent: 'center', marginTop: 100 }}
+            style={{ minHeight: height, display: 'flex', justifyContent: 'center', marginTop: 2 }}
           >
             {steps[state.currents].content}
           </div>
