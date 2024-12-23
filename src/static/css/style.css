@@ -4386,3 +4386,46 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
     }
   }
 }
+.ninjadash-status-pending {
+  background-color: #ffe58f !important; /* Amarillo claro */
+  color: #d48806; /* Amarillo oscuro */
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 8px;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+}
+
+.ninjadash-status-in-process {
+  background-color: #e74c3c !important; /* Rojo claro */
+  color: #ffffff; /* Blanco */
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 8px;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+}
+
+.ninjadash-status-completed {
+  background-color: #b7eb8f !important; /* Verde claro */
+  color: #237804; /* Verde oscuro */
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 8px;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+}
+
+.ninjadash-status-undefined {
+  background-color: #f5f5f5 !important; /* Gris claro */
+  color: #8c8c8c; /* Gris oscuro */
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 8px;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+}

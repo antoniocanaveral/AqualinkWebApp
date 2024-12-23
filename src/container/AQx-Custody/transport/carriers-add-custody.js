@@ -8,33 +8,43 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 const { Step } = Steps;
 const { Option } = Select;
 
-const htOptions = [
-    { ext: 'PA-67', int: 38, razonSocial: 'MARISCOS DEL ECUADOR MARECUADOR CÍA. LTDA.' },
-    { ext: 'PA-126', int: 56, razonSocial: 'PROMARISCO S.A.' },
-    { ext: 'PA-143', int: 21, razonSocial: 'EXPALSA EXPORTADORA DE ALIMENTOS S.A.' },
-    { ext: 'PA-480', int: 1, razonSocial: 'EMPACADORA DUFER CIA. LTDA.' },
+const trOptions = [
+    { ext: 'TR-67', int: 38, razonSocial: 'MARISCOS DEL ECUADOR MARECUADOR CÍA. LTDA.' },
+    { ext: 'TR-126', int: 56, razonSocial: 'PROMARISCO S.A.' },
+    { ext: 'TR-143', int: 21, razonSocial: 'EXPALSA EXPORTADORA DE ALIMENTOS S.A.' },
+    { ext: 'TR-480', int: 1, razonSocial: 'EMPACADORA DUFER CIA. LTDA.' },
 ];
 
 function CarriersAddCustody() {
     const [currentStep, setCurrentStep] = useState(0);
     const [form] = Form.useForm();
-    const [selectedHT, setSelectedHT] = useState(null);
-    const [selectedRazonSocial, setSelectedRazonSocial] = useState(null);
+    const [vehiculoForm] = Form.useForm(); // Formulario separado para el paso 3
+    const [selectedTr, setSelectedTr] = useState(null);
+    const [vehiculos, setVehiculos] = useState([]);
 
     const onNext = async () => {
         try {
-            await form.validateFields();
-            if (currentStep === 1) { // Si estamos en el Step 2 y vamos al Step 3
-                const numVehiculosRaw = form.getFieldValue('numVehiculos');
-                const numVehiculos = parseInt(numVehiculosRaw, 10) || 0; // Asegurar que es un número
-                if (numVehiculos < 1) {
-                    // Puedes agregar una validación adicional aquí si es necesario
-                    return;
-                }
-                const vehiculos = form.getFieldValue('vehiculos') || [];
-                const newVehiculos = Array.from({ length: numVehiculos }).map((_, index) => vehiculos[index] || {});
-                form.setFieldsValue({ vehiculos: newVehiculos });
+            // Validación del formulario correspondiente al paso actual
+            if (currentStep === 2) {
+                await vehiculoForm.validateFields();
+            } else {
+                await form.validateFields();
             }
+
+            if (currentStep === 1) {
+                const numVehiculos = parseInt(form.getFieldValue('numVehiculos'), 10) || 0;
+                if (numVehiculos > 0) {
+                    setVehiculos(
+                        Array.from({ length: numVehiculos }, () => ({
+                            tipo: '',
+                            marca: '',
+                            modelo: '',
+                            conductor: '',
+                        }))
+                    );
+                }
+            }
+
             setCurrentStep((prev) => prev + 1);
         } catch (error) {
             console.error('Error en la validación del formulario:', error);
@@ -46,23 +56,28 @@ function CarriersAddCustody() {
     };
 
     const handleHTChange = (value) => {
-        const selectedOption = htOptions.find(option => option.ext === value);
-        setSelectedHT(value);
-        setSelectedRazonSocial(selectedOption?.razonSocial || null);
+        const selectedOption = trOptions.find((option) => option.ext === value);
+        setSelectedTr(value);
+    };
+
+    const handleVehiculoChange = (index, field, value) => {
+        const updatedVehiculos = [...vehiculos];
+        updatedVehiculos[index][field] = value;
+        setVehiculos(updatedVehiculos);
     };
 
     const steps = [
         {
-            title: 'Código HT',
+            title: 'Código TR',
             content: (
                 <Form layout="vertical" form={form}>
                     <Form.Item
-                        label="Seleccione el Código HT"
-                        name="codigoHT"
-                        rules={[{ required: true, message: 'Debe seleccionar un Código HT' }]}
+                        label="Seleccione el Código TR"
+                        name="codigoTr"
+                        rules={[{ required: true, message: 'Debe seleccionar un Código TR' }]}
                     >
-                        <Select placeholder="Seleccione un Código HT" onChange={handleHTChange}>
-                            {htOptions.map((option, index) => (
+                        <Select placeholder="Seleccione un Código TR" onChange={handleHTChange}>
+                            {trOptions.map((option, index) => (
                                 <Option key={index} value={option.ext}>
                                     {option.ext}
                                 </Option>
@@ -95,7 +110,7 @@ function CarriersAddCustody() {
                             <Form.Item
                                 label="Razón Social"
                                 name="razonSocial"
-                                initialValue={selectedHT ? htOptions.find((ht) => ht.ext === selectedHT)?.razonSocial : ''}
+                                initialValue={selectedTr ? trOptions.find((tr) => tr.ext === selectedTr)?.razonSocial : ''}
                                 rules={[{ required: true, message: 'Debe ingresar la Razón Social' }]}
                             >
                                 <Input placeholder="Razón Social" />
@@ -141,22 +156,13 @@ function CarriersAddCustody() {
                                 <Input placeholder="Teléfono" />
                             </Form.Item>
                         </Col>
-
                         <Col span={12}>
                             <Form.Item
                                 label="Número de Vehículos"
                                 name="numVehiculos"
                                 rules={[{ required: true, message: 'Debe ingresar el Número de Vehículos' }]}
                             >
-                                <Input
-                                    type='number'
-                                    placeholder="Número de Vehículos"
-                                    min={1}
-                                    onChange={() => {
-                                        // Limpiar los campos de vehículos si el número cambia
-                                        form.setFieldsValue({ vehiculos: [] });
-                                    }}
-                                />
+                                <Input type="number" placeholder="Número de Vehículos" min={1} />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -166,97 +172,88 @@ function CarriersAddCustody() {
         {
             title: 'Vehículos',
             content: (
-                <Form.List name="vehiculos">
-                    {(fields) => (
-                        <>
-                            {fields.length > 0 ? (
-                                fields.map((field, index) => (
-                                    <Card
-                                        key={field.key}
-                                        title={`Vehículo ${index + 1}`}
-                                        style={{ marginBottom: 20 }}
-                                    >
-                                        <Row gutter={16}>
-                                            <Col span={12}>
-                                                <Form.Item
-                                                    {...field}
-                                                    label="Tipo de Vehículo"
-                                                    name={[field.name, 'tipo']}
-                                                    fieldKey={[field.fieldKey, 'tipo']}
-                                                    rules={[{ required: true, message: 'Seleccione el tipo de vehículo' }]}
-                                                >
-                                                    <Select placeholder="Seleccione tipo">
-                                                        <Option value="plataforma">Plataforma</Option>
-                                                        <Option value="furgon">Furgón</Option>
-                                                    </Select>
-                                                </Form.Item>
-                                            </Col>
-                                            <Col span={12}>
-                                                <Form.Item
-                                                    {...field}
-                                                    label="Marca"
-                                                    name={[field.name, 'marca']}
-                                                    fieldKey={[field.fieldKey, 'marca']}
-                                                    rules={[{ required: true, message: 'Ingrese la marca' }]}
-                                                >
-                                                    <Input placeholder="Marca" />
-                                                </Form.Item>
-                                            </Col>
-                                        </Row>
-                                        <Row gutter={16}>
-                                            <Col span={12}>
-                                                <Form.Item
-                                                    {...field}
-                                                    label="Modelo"
-                                                    name={[field.name, 'modelo']}
-                                                    fieldKey={[field.fieldKey, 'modelo']}
-                                                    rules={[{ required: true, message: 'Ingrese el modelo' }]}
-                                                >
-                                                    <Input placeholder="Modelo" />
-                                                </Form.Item>
-                                            </Col>
-                                            <Col span={12}>
-                                                <Form.Item
-                                                    {...field}
-                                                    label="Nombre del Conductor"
-                                                    name={[field.name, 'conductor']}
-                                                    fieldKey={[field.fieldKey, 'conductor']}
-                                                    rules={[{ required: true, message: 'Ingrese el nombre del conductor' }]}
-                                                >
-                                                    <Input placeholder="Nombre del Conductor" />
-                                                </Form.Item>
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                ))
-                            ) : (
-                                <p>No hay vehículos para mostrar. Por favor, ingrese el número de vehículos y avance.</p>
-                            )}
-                        </>
+                <Form layout="vertical" form={vehiculoForm}>
+                    {vehiculos.length > 0 ? (
+                        vehiculos.map((vehiculo, index) => (
+                            <Card key={index} title={`Vehículo ${index + 1}`} style={{ marginBottom: 20 }}>
+                                <Row gutter={16}>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            label="Tipo de Vehículo"
+                                            name={`vehiculo-${index}-tipo`}
+                                            rules={[{ required: true, message: 'Seleccione el tipo de vehículo' }]}
+                                        >
+                                            <Select
+                                                value={vehiculo.tipo}
+                                                onChange={(value) => handleVehiculoChange(index, 'tipo', value)}
+                                            >
+                                                <Option value="plataforma">Plataforma</Option>
+                                                <Option value="furgon">Furgón</Option>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            label="Marca"
+                                            name={`vehiculo-${index}-marca`}
+                                            rules={[{ required: true, message: 'Ingrese la marca' }]}
+                                        >
+                                            <Input
+                                                value={vehiculo.marca}
+                                                onChange={(e) => handleVehiculoChange(index, 'marca', e.target.value)}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                                <Row gutter={16}>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            label="Modelo"
+                                            name={`vehiculo-${index}-modelo`}
+                                            rules={[{ required: true, message: 'Ingrese el modelo' }]}
+                                        >
+                                            <Input
+                                                value={vehiculo.modelo}
+                                                onChange={(e) => handleVehiculoChange(index, 'modelo', e.target.value)}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            label="Nombre del Conductor"
+                                            name={`vehiculo-${index}-conductor`}
+                                            rules={[{ required: true, message: 'Ingrese el nombre del conductor' }]}
+                                        >
+                                            <Input
+                                                value={vehiculo.conductor}
+                                                onChange={(e) => handleVehiculoChange(index, 'conductor', e.target.value)}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Card>
+                        ))
+                    ) : (
+                        <p>No hay vehículos para mostrar. Por favor, ingrese el número de vehículos y avance.</p>
                     )}
-                </Form.List>
+                </Form>
             ),
         },
     ];
 
     return (
         <>
-            <PageHeader
-                highlightText="AquaLink Empacadora"
-                title="Gestión de Transportistas"
-            />
+            <PageHeader title="Gestión de Transportistas" />
             <Main>
                 <Row gutter={25}>
                     <Col span={24}>
-                        <Cards title="">
-                            <Steps current={currentStep} className="custom-steps">
+                        <Cards>
+                            <Steps current={currentStep}>
                                 {steps.map((step, index) => (
                                     <Step key={index} title={step.title} />
                                 ))}
                             </Steps>
-                            <div style={{ marginTop: 20 }} key={currentStep}>
-                                {steps[currentStep].content}
-                            </div>
+                            <div style={{ marginTop: 20 }}>{steps[currentStep].content}</div>
                             <div style={{ marginTop: 20, textAlign: 'right' }}>
                                 {currentStep > 0 && (
                                     <Button style={{ marginRight: 8 }} onClick={onPrev}>
@@ -271,15 +268,12 @@ function CarriersAddCustody() {
                                 {currentStep === steps.length - 1 && (
                                     <Button
                                         type="primary"
-                                        onClick={() => {
-                                            form
-                                                .validateFields()
-                                                .then((values) => {
-                                                    console.log('Datos enviados:', values);
-                                                    // Aquí puedes agregar la lógica para enviar los datos a tu backend
-                                                })
-                                                .catch((info) => console.error('Validación fallida:', info));
-                                        }}
+                                        onClick={() =>
+                                            console.log('Datos enviados:', {
+                                                ...form.getFieldsValue(),
+                                                vehiculos,
+                                            })
+                                        }
                                     >
                                         Finalizar
                                     </Button>

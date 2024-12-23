@@ -3,7 +3,10 @@ import {
   UilCalendarAlt,
   UilChartBar,
   UilClipboardAlt,
-  UilCloudDataConnection,
+  UilUser,
+  UilQuestionCircle,
+  UilBell,
+  UilHeadphones,
   UilDesktop,
   // UilExpandArrowsAlt,
   UilFlaskPotion,
@@ -77,7 +80,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
   const changeLayout = (mode) => {
     dispatch(changeLayoutMode(mode));
   };
-  
+
   const darkmodeActivated = () => {
     document.body.classList.add('dark-mode');
   };
@@ -94,7 +97,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
-  
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/panel`}>
         {t('Panel de Control')}
@@ -130,7 +133,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       ),
     ),
 
-      getItem(
+    getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/harvest-reports`}>
         {t('Reportes Cosecha')}
       </NavLink>,
@@ -163,7 +166,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
     ),
 
     getItem(t('Coordinación'), 'coordinacion', !topMenu && <UilCalendarAlt />, [
-      
+
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/coords`}>
           {t('Coordinaciones')} {t('Activas')}
@@ -174,7 +177,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
     ]),
 
-  
+
 
     getItem(t('Suministros'), 'suministros', !topMenu && <UilCube />, [
       getItem(
@@ -219,14 +222,14 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
     getItem(t('Análisis de Laboratorio'), 'analisis-laboratorio', !topMenu && <UilFlaskPotion />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/analisis`}>
+        <NavLink className="menuItem-icon" to={`${path}/laboratory/view`}>
           {t('Ver Análisis')}
         </NavLink>,
         'ver-analisis',
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/add-analisis`}>
+        <NavLink className="menuItem-icon" to={`${path}/laboratory/add`}>
           {t('Añadir Análisis')}
         </NavLink>,
         'add-analisis',
@@ -234,7 +237,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       ),
     ]),
 
-   
+
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Proveedores')}</NavTitle>,
       'submenu-proveedores',
@@ -284,15 +287,8 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       ),
     ]),
 
-    getItem(t('Histórico'), 'historico', !topMenu && <UilHistory />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/historico`}>
-          {t('Histórico de Clientes')}
-        </NavLink>,
-        'historico-clientes',
-        null,
-      ),
-    ]),
+
+
 
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Administración')}</NavTitle>,
@@ -301,17 +297,38 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
+    getItem(
+      t('Cliente'),
+      'cliente',
+      !topMenu && <UilUser />,
+      [
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/client/view`}>{t('Ficha Cliente')}</NavLink>
+          </div>,
+          'cliente-ficha',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/client/add`}>{t('Añadir Cliente')}</NavLink>
+          </div>,
+          'cliente-usuarios',
+          null,
+        ),
+      ]
+    ),
 
     getItem(t('Usuarios'), 'usuarios', !topMenu && <UilUserCircle />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/ver-usuarios`}>
+        <NavLink className="menuItem-icon" to={`${path}/users`}>
           {t('Ver Usuarios')}
         </NavLink>,
         'ver-usuarios',
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/add-usuarios`}>
+        <NavLink className="menuItem-icon" to={`${path}/users/add`}>
           {t('Añadir Usuarios')}
         </NavLink>,
         'add-usuarios',
@@ -319,61 +336,36 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       ),
     ]),
 
+
+    // FAQ
     getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/permissions`}>
-        {t('Permisos')}
+      <NavLink to={`${path}/faq`}>
+        {t('FAQ')}
       </NavLink>,
-      'Permisos',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/permissions`}>
-          <UilKeySkeleton /> {/* Ícono para Permisos */}
-        </NavLink>
-      ),
+      'faq',
+      !topMenu && <UilQuestionCircle />,
     ),
 
+    // Message Notifications Center
     getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/customer service`}>
-        {t('Atención al Cliente')}
+      <NavLink to={`${path}/message-notifications-center`}>
+        {t('Mensajes y Notificaciones')}
       </NavLink>,
-      'Atención al Cliente',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/customer service`}>
-          <UilHeadphonesAlt /> {/* Ícono para Atención al Cliente */}
-        </NavLink>
-      ),
+      'message-notifications-center',
+      //icon for message-notifications-center
+      !topMenu && <UilBell />,
+    ),
+
+    // SOPORTE
+    getItem(
+      <NavLink to={`${path}/support`}>
+        {t('Soporte')}
+      </NavLink>,
+      'soporte',
+      !topMenu && <UilHeadphones />,
     ),
 
 
-    getItem(t('Visualización'), 'layout', !topMenu && <UilWindowSection />, [
-      getItem(
-        <NavLink
-          onClick={() => {
-            toggleCollapsed();
-            darkmodeDiactivated();
-            changeLayout('lightMode');
-          }}
-          to="#"
-        >
-          {t('light')} {t('mode')}
-        </NavLink>,
-        'light',
-        null,
-      ),
-      getItem(
-        <NavLink
-          onClick={() => {
-            toggleCollapsed();
-            darkmodeActivated();
-            changeLayout('darkMode');
-          }}
-          to="#"
-        >
-          {t('dark')} {t('mode')}
-        </NavLink>,
-        'dark',
-        null,
-      ),
-    ]),
   ];
 
   return (

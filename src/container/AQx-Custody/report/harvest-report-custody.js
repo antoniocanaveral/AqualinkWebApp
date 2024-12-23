@@ -165,6 +165,11 @@ function HarvestReportCustody() {
             <PageHeader
                 title="Reporte de Lotes Procesados"
                 highlightText="Aqualink Empacadora"
+                selectOptions={[
+                    ["Cliente 1", "Cliente 2", "Cliente 3"],
+                    ["Lote 1", "Lote 2", "Lote 3"],
+                    ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+                  ]}
 
 
             />

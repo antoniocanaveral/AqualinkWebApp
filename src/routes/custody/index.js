@@ -12,6 +12,13 @@ import StampsContainersAdminCustody from '../../container/AQx-Custody/stamps-con
 import PlanningCustody from '../../container/AQx-Custody/planning/planning-custody';
 import SupplyCustodyRoutes from './custodySupply';
 import TransportCustodyRoutes from './custodyTransport';
+import ClientRouteFarm from '../farm/farmClient';
+import UserRoutesFarm from '../farm/farmUser';
+import FaqComponent from '../../container/Faq';
+import SupportTicket from '../../container/supportTicket/Index';
+import MessageNotificationsCenter from '../../container/AQx-Farms/message-notifications-center/message-notifications-center';
+import ClientRouteCustody from './CustodyClient';
+import LaboratoryRouteCustody from './CustodyLaboratory';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Custody = React.memo(() => {
@@ -38,6 +45,16 @@ const Custody = React.memo(() => {
         <Route path="/supply/*" element={<SupplyCustodyRoutes />} />
         <Route path="/transport/*" element={<TransportCustodyRoutes />} />
         <Route path="/coords/*" element={<CustodyCoordinations />} />
+
+        <Route path="/laboratory/*" element={<LaboratoryRouteCustody />} />
+
+        <Route path="/client/*" element={<ClientRouteCustody />} />
+        <Route path="/users/*" element={<UserRoutesFarm />} />
+
+        <Route path='/faq/*' element={<FaqComponent/>} />
+        <Route path="/support/*" element={<SupportTicket />} />
+        <Route path='/message-notifications-center/*' element={<MessageNotificationsCenter />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
