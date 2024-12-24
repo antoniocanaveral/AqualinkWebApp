@@ -261,30 +261,18 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         'add-proveedores',
         null,
       ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/purchases/fishing-applications`}>
-          {t('Solicitudes de Pesca')}
-        </NavLink>,
-        'solicitudes-pesca',
-        null,
-      ),
+    
     ]),
 
     getItem(t('Trazabilidad'), 'trazabilidad', !topMenu && <UilWifiRouter />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/tracking`}>
+        <NavLink className="menuItem-icon" to={`${path}/traceability/tracking`}>
           {t('Tracking de Lotes')}
         </NavLink>,
         'tracking-lotes',
         null,
       ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/qr-lotes`}>
-          {t('QR de Lotes')}
-        </NavLink>,
-        'qr-lotes',
-        null,
-      ),
+     
     ]),
 
 

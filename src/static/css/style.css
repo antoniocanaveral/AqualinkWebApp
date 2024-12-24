@@ -4387,7 +4387,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   }
 }
 .ninjadash-status-pending {
-  background-color: #ffe58f !important; /* Amarillo claro */
+  background-color: #fec002 !important; /* Amarillo claro */
   color: #d48806; /* Amarillo oscuro */
   font-weight: bold;
   padding: 5px 10px;
@@ -4409,15 +4409,17 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 }
 
 .ninjadash-status-completed {
-  background-color: #b7eb8f !important; /* Verde claro */
-  color: #237804; /* Verde oscuro */
+  background-color: #01b81a !important; /* Verde claro */
+  color: white !important; /* Verde oscuro */
   font-weight: bold;
   padding: 5px 10px;
+  margin: 5px;
   border-radius: 8px;
   display: inline-block;
   text-align: center;
   min-width: 80px;
 }
+
 
 .ninjadash-status-undefined {
   background-color: #f5f5f5 !important; /* Gris claro */

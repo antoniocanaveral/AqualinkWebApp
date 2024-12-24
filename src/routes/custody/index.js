@@ -19,6 +19,7 @@ import SupportTicket from '../../container/supportTicket/Index';
 import MessageNotificationsCenter from '../../container/AQx-Farms/message-notifications-center/message-notifications-center';
 import ClientRouteCustody from './CustodyClient';
 import LaboratoryRouteCustody from './CustodyLaboratory';
+import TraceabilityRoutesCustody from './CustodyTraceability';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Custody = React.memo(() => {
@@ -47,6 +48,7 @@ const Custody = React.memo(() => {
         <Route path="/coords/*" element={<CustodyCoordinations />} />
 
         <Route path="/laboratory/*" element={<LaboratoryRouteCustody />} />
+        <Route path="/traceability/*" element={<TraceabilityRoutesCustody />} />
 
         <Route path="/client/*" element={<ClientRouteCustody />} />
         <Route path="/users/*" element={<UserRoutesFarm />} />
