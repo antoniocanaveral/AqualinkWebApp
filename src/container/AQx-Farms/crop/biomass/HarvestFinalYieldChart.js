@@ -6,21 +6,17 @@ import PropTypes from "prop-types";
 function HarvestFinalYieldChart({ data }) {
     return (
         <Cards title="Rendimiento en Piscina">
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={320}>
                 <AreaChart
                     data={data}
                     margin={{
-                        top: 10,
-                        right: 10,
-                        left: -20,
-                        bottom: 0,
                     }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="ciclo" label={{ value: "Ciclo #", position: "insideBottomRight", offset: -5 }} />
+                    <XAxis dataKey="ciclo" label={{ value: "Ciclo #", offset: -2 }} />
                     <YAxis label={{ value: "Cosecha Final (lbs)", angle: -90, position: "insideLeft" }} />
                     <Tooltip />
-                    <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
+                    <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '80px' }} />
                     <Area
                         type="monotone"
                         dataKey="cosechaFinal"

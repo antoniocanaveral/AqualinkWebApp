@@ -2,13 +2,13 @@ import React from 'react';
 import RadarChartComponent from '../../../../components/charts/radal/RadarChart';
 
 const radarData = [
-    { subject: 'Medio de Cultivo', A: 80, B: 70, fullMark: 90 },
-    { subject: 'Supervivencia', A: 78, B: 80, fullMark: 90 },
-    { subject: 'ADG', A: 76, B: 80, fullMark: 90 },
-    { subject: 'MBW', A: 89, B: 100, fullMark: 90 },
-    { subject: 'Biomecánica', A: 89, B: 100, fullMark: 90 },
-    { subject: 'Clasificación', A: 65, B: 70, fullMark: 90 },
-    { subject: 'FCA', A: 55, B: 45, fullMark: 90 },
+    { subject: '60-70', Entero: 80, B: 70, Cola: 90 },
+    { subject: '70-80', Entero: 78, B: 80, Cola: 90 },
+    { subject: "80-100", Entero: 76, B: 80, Cola: 90 },
+    { subject: '20-30', Entero: 89, B: 100, Cola: 90 },
+    { subject: '30-40', Entero: 89, B: 100, Cola: 90 },
+    { subject: '40-50', Entero: 65, B: 70, Cola: 90 },
+    { subject: '50-60', Entero: 55, B: 45, Cola: 90 },
 ];
 
 function FishingPerformanceChart() {
@@ -16,8 +16,8 @@ function FishingPerformanceChart() {
         <div style={{ width: "100%", height: "100%" }}> {/* Asegura que el contenedor tenga el ancho y alto completo */}
             <RadarChartComponent
                 data={radarData}
-                dataKey1="A"
-                dataKey2="B"
+                dataKey1="Entero"
+                dataKey2="Cola"
             />
         </div>
     );

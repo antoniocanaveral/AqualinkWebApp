@@ -181,7 +181,7 @@ function TextureFarm() {
                 </Cards>
               }
             >
-              <Cards title="Reporte de Siembra" size="large">
+              <Cards title="Reporte de Textura" size="large">
                 <Table
                   columns={columns}
                   dataSource={data}

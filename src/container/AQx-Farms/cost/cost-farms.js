@@ -95,7 +95,7 @@ function CostFarm() {
       align: 'center',
       render: (_, record) => (
         <strong style={{ fontSize: '11px' }}>
-          {calculateCostoInd(record)}
+          ${calculateCostoInd(record)}
         </strong>
       ),
     },
@@ -532,7 +532,7 @@ function CostFarm() {
         </Col>
         <Col xl={8} xs={24} style={{ display: "flex" }}>
           <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-            <Cards title="Engorde Semanal y Promedio" size="large">
+            <Cards title="Aditivo Semanal Promedio" size="large">
               <WeeklyCombinedChart dataSource={dataSource} />
             </Cards>
 

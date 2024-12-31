@@ -26,7 +26,7 @@ function RealPlanning() {
     const datasetsEscenario41 = [
         {
             data: [28, 48, 40, 19, 86, 27],
-            label: 'Ingresos',
+            label: 'Biomasa',
             backgroundColor: '#FF6384', // Opcional, si no se pasa, se usará barColor
         },
     ];
@@ -34,7 +34,7 @@ function RealPlanning() {
     const datasetsEscenario46 = [
         {
             data: [28, 48, 40, 19, 86, 27],
-            label: 'Ingresos',
+            label: 'Costo',
             backgroundColor: '#fa8b0c', // Opcional, si no se pasa, se usará barColor
         },
     ];
@@ -42,7 +42,7 @@ function RealPlanning() {
     const datasetsEscenario51 = [
         {
             data: [28, 48, 40, 19, 86, 27],
-            label: 'Ingresos',
+            label: 'IEP',
             backgroundColor: '#1cb997', // Opcional, si no se pasa, se usará barColor
         },
     ];

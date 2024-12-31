@@ -726,6 +726,47 @@ function AnalyticReportFarm() {
         },
     ];
 
+    const columnsSecondTable = [
+        {
+            title: '',
+            dataIndex: 'descripcion',
+            key: 'descripcion',
+            fixed: 'left',
+            width: 90,
+
+        },
+        {
+            title: 'Ciclo 1',
+            dataIndex: 'ciclo1',
+            key: 'ciclo1',
+            width: 135,
+        },
+        {
+            title: 'Ciclo 2',
+            dataIndex: 'ciclo2',
+            key: 'ciclo2',
+            width: 135,
+        },
+        {
+            title: 'Ciclo 3',
+            dataIndex: 'ciclo3',
+            key: 'ciclo3',
+            width: 135,
+        },
+        {
+            title: 'Ciclo 4',
+            dataIndex: 'ciclo4',
+            key: 'ciclo4',
+            width: 135,
+        },
+        {
+            title: 'Ciclo 5',
+            dataIndex: 'ciclo5',
+            key: 'ciclo5',
+            width: 135,
+        },
+    ];
+
     const columns2 = [
         {
             title: '',
@@ -907,7 +948,7 @@ function AnalyticReportFarm() {
                 <Row gutter={25} style={{ marginTop: '20px' }}>
                     <Col xxl={24} xs={24}>
                         <Table
-                            columns={columns}
+                            columns={columnsSecondTable}
                             dataSource={resultsTableData}
                             pagination={false}
                             bordered

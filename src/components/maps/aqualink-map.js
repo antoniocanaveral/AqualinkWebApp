@@ -12,14 +12,11 @@ const AqualinkMaps = ({ width, height }) => {
             <Cards title="Geolocalización" size="large">
                 <Row gutter={[25, 25]} align="top">
                     <Col xs={24} md={24}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: "20px" }}>
-                            <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                            <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                        </div>
+                       
                         <GoogleMaps width={width} height={height} />
                     </Col>
                     <Col xs={24} md={24}>
-                        <Space direction="vertical" size="middle" style={{ width: '100%', display:"flex", flexDirection:"row", justifyContent:"space-between" }}>
+                        <Space direction="vertical" size="middle" style={{ marginTop: height === "305px" ? 0 : height, width: '100%', display:"flex", flexDirection:"row", justifyContent:"space-between" }}>
                             <div className="content-block">
                                 <Typography.Title level={5}>Camaroneras 1</Typography.Title>
                                 <Typography.Text>Área: 307.35 Ha</Typography.Text>

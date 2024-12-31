@@ -11,6 +11,8 @@ import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
 import CoordModalHarvest from './modals/CoordModalHarvest';
 import HarvestModalHarvest from './modals/HarvestModalHarvest';
 import PackingModalHarvest from './modals/PackingModalHarvest';
+import UilEye from '@iconscout/react-unicons/icons/uil-eye';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function HarvestFarm() {
 
@@ -84,7 +86,8 @@ function HarvestFarm() {
     binesProgramados: "40 bines",
     biomasaCosechada: "44,000 lbs",
     tempPromedio: "-6",
-    binesEntregados: "38"
+    binesEntregados: "38",
+    date: "2023-12-05",
   };
 
 
@@ -108,7 +111,6 @@ function HarvestFarm() {
       render: (text, record) => (
         <span onClick={() => showModal(record)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
           {text}
-          <UilEdit size={16} style={{ fontSize: '14px', marginLeft: '5px' }} /> {/* Ajuste de tamaño y espaciado */}
         </span>
       ),
     },
@@ -119,7 +121,7 @@ function HarvestFarm() {
       render: (text, record) => (
         <span onClick={() => showObservationModal(record)} style={{ cursor: 'pointer', display: 'flex', justifyContent: "space-between" }}>
           {text}
-          <UilEdit size={16} style={{ fontSize: '12px', marginLeft: '5px' }} /> {/* Ajuste de tamaño y espaciado */}
+          <UilEye size={16} style={{ fontSize: '12px', marginLeft: '5px' }} /> {/* Ajuste de tamaño y espaciado */}
         </span>
       ),
     },
@@ -127,7 +129,7 @@ function HarvestFarm() {
 
   return (
     <>
-      <PageHeader  highlightText={"AquaLink Monitoreo"}
+      <PageHeader highlightText={"AquaLink Monitoreo"}
         title="Cosecha"
         selectOptions={[
           ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
@@ -137,40 +139,12 @@ function HarvestFarm() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={11} xs={24} style={{ display: "flex" }}>
+          <Col xl={10} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={24} md={24}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={24} md={24}>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                          <Typography.Text>Área: 307.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                          <Typography.Text>Área: 5.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                          <Typography.Text>Área: 1.35 ha</Typography.Text>
-                        </div>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
+              <AqualinkMaps />
             </Suspense>
           </Col>
-          <Col xl={13} xs={24} style={{ display: "flex" }}>
+          <Col xl={14} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
 
               <Cards title="Reporte de Pesca" size="large">
@@ -180,15 +154,17 @@ function HarvestFarm() {
                     <span className="label">Tipo: </span>
                     <span>{fishingReportData.tipo}</span>
                   </div>
+                  <div>
+                    <span className="label">Fecha: </span>
+                    <span>{fishingReportData.date}</span>
+                  </div>
                   <div className='flex-row' style={{ gap: 10 }}>
                     <span className="label">Detalles: </span>
                     <div className='flex-row'>
                       <Button onClick={() => setModalCoord(true)}>
                         Coordinación
                       </Button>
-                      <Button onClick={() => setModalHarvest(true)}>
-                        Cosecha
-                      </Button>
+
                       <Button onClick={() => setModalPacking(true)}>
                         Empacadora
                       </Button>
@@ -332,6 +308,7 @@ function HarvestFarm() {
           </Col>
           <Col xl={10} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
+
               <HarvestFinalYieldChart data={historicalFishingData} />
             </Suspense>
           </Col>
@@ -355,9 +332,7 @@ function HarvestFarm() {
           </Col>
         </Row>
 
-        <Modal title="Editar Rendimiento de Planta" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-          <Input value={updatedValue} onChange={(e) => setUpdatedValue(e.target.value)} />
-        </Modal>
+
 
         <Modal
           style={{ maxHeight: '400px' }} // Cambia a la altura deseada
@@ -374,16 +349,17 @@ function HarvestFarm() {
         </Modal>
 
         <Modal
-          style={{ maxHeight: '400px' }} // Cambia a la altura deseada
+        width={700}
+          style={{ maxHeight: '500px', width:"500px" }} // Cambia a la altura deseada
           bodyStyle={{ overflowY: 'auto', padding: '16px', maxHeight: '500px' }} // Controla el contenido interno
           title="Detalle de Empacadora" visible={modalPacking} onOk={() => setModalPacking(false)} onCancel={() => setModalPacking(false)}>
           <PackingModalHarvest />
         </Modal>
 
-        <Modal title="Editar Observaciones" visible={isObservationModalVisible} onOk={handleObservationOk} onCancel={handleCancel}>
+        <Modal title="Ver Observaciones" visible={isObservationModalVisible} onOk={handleObservationOk} onCancel={handleCancel}>
           <Input.TextArea value={updatedObservation} onChange={(e) => setUpdatedObservation(e.target.value)} rows={4} />
           <Upload beforeUpload={(file) => { handleFileUpload(file); return false; }}>
-            <Button >Subir PDF</Button>
+            <Button >Ver PDF</Button>
           </Upload>
         </Modal>
 

@@ -133,17 +133,38 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       ),
     ),
 
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/harvest-reports`}>
-        {t('Reportes Cosecha')}
-      </NavLink>,
-      'Reportes Cosecha',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/harvest-reports`}>
-          <UilClipboardAlt /> {/* Ícono para Planificación */}
-        </NavLink>
+
+
+    getItem(t('Reportes Cosecha'), 'ReportesCosecha', !topMenu && <UilCalendarAlt />, [
+
+
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/reports/lote/view`}>
+          {t('Ver')} {t('Lote')}
+        </NavLink>,
+        'view-lote',
+        null,
       ),
-    ),
+
+
+
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/reports/lote/add`}>
+          {t('Añadir')} {t('Lote')}
+        </NavLink>,
+        'add-lote',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/reports/harvest-reports`}>
+          {t('Reportes de')} {t('Lote')}
+        </NavLink>,
+        'light',
+        null,
+      ),
+    ]),
+
+
 
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/task`}>
@@ -163,6 +184,18 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       null,
       null,
       'group',
+    ),
+
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/geolocation`}>
+        {t('Geolocalización')}
+      </NavLink>,
+      'Geolocation',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/geolocation`}>
+          <UilListUl />
+        </NavLink>
+      ),
     ),
 
     getItem(t('Coordinación'), 'coordinacion', !topMenu && <UilCalendarAlt />, [
@@ -212,7 +245,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/seguridad`}>
+        <NavLink className="menuItem-icon" to={`${path}/transport/seguridad`}>
           {t('Añadir Seguridad')}
         </NavLink>,
         'add-seguridad',
@@ -239,17 +272,17 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
 
     getItem(
-      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Proveedores')}</NavTitle>,
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Proveedores/Camaroneras')}</NavTitle>,
       'submenu-proveedores',
       null,
       null,
       'group',
     ),
 
-    getItem(t('Compras'), 'compras', !topMenu && <UilShoppingBag />, [
+    getItem(t('Proveedores'), 'compras', !topMenu && <UilShoppingBag />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/purchases/supplier/view`}>
-          {t('Ver Proveedores')}
+          {t('Ver Proveedores/Camaroneras')}
         </NavLink>,
         'ver-proveedores',
         null,
@@ -261,7 +294,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         'add-proveedores',
         null,
       ),
-    
+
     ]),
 
     getItem(t('Trazabilidad'), 'trazabilidad', !topMenu && <UilWifiRouter />, [
@@ -272,7 +305,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         'tracking-lotes',
         null,
       ),
-     
+
     ]),
 
 

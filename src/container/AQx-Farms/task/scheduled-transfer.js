@@ -15,7 +15,7 @@ const events = {
       id: 1,
       type: 'primary',
       loteId: 'L001',
-      Pf: 'PC01', Pf: 'PF11',
+      Tanque: 'T P001 -> T P-022', 
       biomasa: 100,
       date: '19 Marzo',
     },
@@ -23,7 +23,7 @@ const events = {
       id: 2,
       type: 'secondary',
       loteId: 'L002',
-      Pf: 'PC02', Pf: 'PF11',
+      Tanque: 'T P001 -> T P-022', 
       biomasa: 200,
       date: '19 Marzo',
     },
@@ -31,7 +31,8 @@ const events = {
       id: 3,
       type: 'info',
       loteId: 'L003',
-      Pf: 'PC03', Pf: 'PF11',
+      
+      Tanque: 'T P001 -> T P-022', 
       biomasa: 150,
       date: '19 Marzo',
     },
@@ -39,7 +40,8 @@ const events = {
       id: 4,
       type: 'warning',
       loteId: 'L004',
-      Pf: 'PC04', Pf: 'PF11',
+      
+      Tanque: 'T P001 -> T P-022', 
       biomasa: 250,
       date: '19 Marzo',
     },
@@ -49,7 +51,8 @@ const events = {
       id: 1,
       type: 'primary',
       loteId: 'L005',
-      Pf: 'PC05', Pf: 'PF11',
+      
+      Tanque: 'T P001 -> T P-022', 
       biomasa: 120,
       date: '12 Septiembre',
     },
@@ -57,7 +60,7 @@ const events = {
       id: 2,
       type: 'info',
       loteId: 'L006',
-      Pf: 'PC06', Pf: 'PF11',
+      Tanque: 'PC06', Tanque: 'PF11',
       biomasa: 180,
       date: '16 Septiembre',
     },
@@ -65,7 +68,7 @@ const events = {
       id: 3,
       type: 'secondary',
       loteId: 'L007',
-      Pf: 'PC07', Pf: 'PF11',
+      Tanque: 'PC07', Tanque: 'PF11',
       biomasa: 300,
       date: '15 Septiembre',
     },
@@ -73,7 +76,7 @@ const events = {
       id: 4,
       type: 'warning',
       loteId: 'L008',
-      Pf: 'PC08', Pf: 'PF11',
+      Tanque: 'PC08', Tanque: 'PF11',
       biomasa: 500,
       date: '13 Septiembre',
     },
@@ -83,7 +86,7 @@ const events = {
       id: 1,
       type: 'primary',
       loteId: 'L009',
-      Pf: 'PC09', Pf: 'PF11',
+      Tanque: 'PC09', Tanque: 'PF11',
       biomasa: 400,
       date: '24 Abril',
     },
@@ -91,7 +94,7 @@ const events = {
       id: 2,
       type: 'secondary',
       loteId: 'L010',
-      Pf: 'PC10', Pf: 'PF11',
+      Tanque: 'PC10', Tanque: 'PF11',
       biomasa: 350,
       date: '24 Abril',
     },
@@ -99,7 +102,7 @@ const events = {
       id: 3,
       type: 'info',
       loteId: 'L011',
-      Pf: 'PC11', Pf: 'PF11',
+      Tanque: 'PC11', Tanque: 'PF11',
       biomasa: 270,
       date: '24 Abril',
     },
@@ -107,7 +110,7 @@ const events = {
       id: 4,
       type: 'warning',
       loteId: 'L012',
-      Pf: 'PC12', Pf: 'PF11',
+      Tanque: 'PC12', Tanque: 'PF11',
       biomasa: 600,
       date: '28 Abril',
     },
@@ -164,7 +167,7 @@ function ScheduleTransfer() {
 
   if (eventState)
     eventState.map((value) => {
-      const { loteId,  Pf, biomasa, date, type, id } = value;
+      const { loteId,  Tanque, biomasa, date, type, id } = value;
       return dataSource.push({
         key: id,
         name: (
@@ -174,25 +177,12 @@ function ScheduleTransfer() {
             </div>
             <article className="ninjadash-event-details__content">
               <h4 className="ninjadash-event-details__title">{`Lote: ${loteId}`}</h4>
-              <h4 className="ninjadash-event-details__title">{`Pf: ${Pf}`}</h4>
+              <h4 className="ninjadash-event-details__title">{`${Tanque}`}</h4>
               <p className="ninjadash-event-details__time">{`Biomasa(lb): ${biomasa}`}</p>
             </article>
           </div>
         ),
-        actions: (
-          <div className="ninjadash-event-details-action">
-            <Link
-              to="#"
-              className="ninjadash-event-details-action__edit"
-              onClick={() => showModal(id, { loteId, Pf, biomasa, date, id })}
-            >
-              <UilEdit />
-            </Link>
-            <Link to="#" className="ninjadash-event-details-action__delete" onClick={() => handleTaskDelete(id)}>
-              <UilTimes />
-            </Link>
-          </div>
-        ),
+       
       });
     });
 
@@ -219,14 +209,14 @@ function ScheduleTransfer() {
   const handleUpdate = (value) => {
     events[state.tabValue].map((item) => {
       if (item.id === taskEditId) {
-        return (item.loteId = value.loteId,  item.Pf,  item.biomasa = value.biomasa);
+        return (item.loteId = value.loteId,  item.Tanque,  item.biomasa = value.biomasa);
       }
       return item;
     });
 
     eventState.map((item) => {
       if (item.id === taskEditId) {
-        return (item.loteId = value.loteId,  item.Pf, item.biomasa = value.biomasa);
+        return (item.loteId = value.loteId,  item.Tanque, item.biomasa = value.biomasa);
       }
       return item;
     });
@@ -294,16 +284,16 @@ function ScheduleTransfer() {
                 <Input placeholder="Lote" />
               </Form.Item>
               <Form.Item
-                rules={[{ required: true, message: 'Por favor, ingrese el Pf' }]}
-                name="Pf"
-                initialValue={editableItem.Pf}
+                rules={[{ required: true, message: 'Por favor, ingrese el Tanque' }]}
+                name="Tanque"
+                initialValue={editableItem.Tanque}
               >
                 <Input placeholder="PC" />
               </Form.Item>
               <Form.Item
-                rules={[{ required: true, message: 'Por favor, ingrese el Pf' }]}
-                name="Pf"
-                initialValue={editableItem.Pf}
+                rules={[{ required: true, message: 'Por favor, ingrese el Tanque' }]}
+                name="Tanque"
+                initialValue={editableItem.Tanque}
               >
                 <Input placeholder="PC" />
               </Form.Item>

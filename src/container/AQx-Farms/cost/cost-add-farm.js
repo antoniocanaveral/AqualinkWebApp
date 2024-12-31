@@ -126,7 +126,7 @@ function CostAddFarm() {
                 <div className='flex-row' style={{ gap: 10 }}>
                   <div>
                     {/* Semana Actual */}
-                    <Typography.Text style={{ fontSize: '14px' }}>Costo Hectárea/Día / Semana Actual</Typography.Text>
+                    <Typography.Text style={{ fontSize: '14px' }}>Costo Indirecto Ha/Día / Semana Actual</Typography.Text>
                     <Input
                       type="number"
                       placeholder="Ingrese el costo"
@@ -166,7 +166,7 @@ function CostAddFarm() {
         <Row gutter={25}>
           <Col xl={12} xs={24}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="" size="large">
+              <Cards title="Costo Indirecto Ha/Día Performance" size="large">
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
                   <Speedometer value={speedometerStaticValue} />
                 </div>
@@ -175,7 +175,7 @@ function CostAddFarm() {
           </Col>
           <Col xl={12} xs={24}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="" size="large">
+              <Cards title="Costo Indirecto Ha/Día Semana Actual" size="large">
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
                   <Speedometer value={speedometerValue} />
                 </div>

@@ -66,7 +66,7 @@ function SupplierViewCustody() {
       <PageHeader
         
         highlightText="AquaLink Empacadora"
-        title="Vista de Proveedores"
+        title="Vista de Proveedores / Camaroneras"
       />
       <Main>
         <Row gutter={[25, 25]}>

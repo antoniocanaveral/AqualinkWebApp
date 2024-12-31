@@ -80,9 +80,6 @@ function CoordModalHarvest() {
                                 <Typography.Title level={5}>{coordination?.org_name || 'EcSSA Manabí'}</Typography.Title>
                                 {coordination?.warehouse_name || ''}
                             </div>
-                            <Col xs={24} md={24} style={{ marginBottom: '18px', overflow: 'hidden' }}>
-                                    <GoogleMaps height='150px' />
-                            </Col>
                             <Col xs={24} md={24}>
                                 <Table
                                     className='custom-table_lab'

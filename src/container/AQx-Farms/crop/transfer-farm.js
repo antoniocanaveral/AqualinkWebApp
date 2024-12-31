@@ -56,14 +56,6 @@ function TransferFarm() {
       dataIndex: 'poblacionEstimada',
       key: 'poblacionEstimada',
     },
-    {
-      title: 'Acción',
-      key: 'accion',
-      render: (_, record) => (
-        <Button icon={<UilEye />} type="link">
-        </Button>
-      ),
-    },
   ];
 
   // Datos de ejemplo para la tabla

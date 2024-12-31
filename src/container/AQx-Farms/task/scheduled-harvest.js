@@ -15,7 +15,7 @@ const events = {
       type: 'primary',
       idCoordinacion: '00034-NP',
       peso: '1000lb',
-      clasificacion: '40-50',
+      clasificacion: 'PL-11',
       date: '19 Marzo',
     },
     {
@@ -23,7 +23,7 @@ const events = {
       type: 'secondary',
       idCoordinacion: '00032-NP',
       peso: '1050lb',
-      clasificacion: '50-60',
+      clasificacion: 'PL-12',
       date: '19 Marzo',
     },
     {
@@ -31,7 +31,7 @@ const events = {
       type: 'info',
       idCoordinacion: '00033-NP',
       peso: '1100lb',
-      clasificacion: '60-70',
+      clasificacion: 'PL-12',
       date: '19 Marzo',
     },
     {
@@ -39,7 +39,7 @@ const events = {
       type: 'warning',
       idCoordinacion: '00031-NP',
       peso: '1150lb',
-      clasificacion: '70-80',
+      clasificacion: 'PL-12',
       date: '19 Marzo',
     },
   ],

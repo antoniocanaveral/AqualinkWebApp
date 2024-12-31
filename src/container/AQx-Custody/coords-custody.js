@@ -6,17 +6,22 @@ import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { loadCustodyCoordinations } from '../../redux/custody/actionCreator';
 import DataTable from '../../components/table/DataTable';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';  // <-- Importar useLocation
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
-import UilBell from '@iconscout/react-unicons/icons/uil-bell'; // Para notificaciones
-import UilUpload from '@iconscout/react-unicons/icons/uil-upload'; // Para cargar información
+import UilUpload from '@iconscout/react-unicons/icons/uil-upload';
 import moment from 'moment';
 import Cookies from 'js-cookie';
 
 function CoordinationsCustody() {
-  const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName')); // Organización seleccionada
-  const selectedModule = useSelector((state) => state.auth.selectedModule); // Acceder al módulo seleccionado desde Redux
+  const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName')); 
+  const selectedModule = useSelector((state) => state.auth.selectedModule);
+  
+  // <-- Para saber en qué ruta estamos
+  const location = useLocation();
+  const currentPath = location.pathname; 
+  // <-- Verificamos si la ruta es '/farm/fishing-coords'
+  const isFarmFishingCoords = currentPath === '/farm/fishing-coords'; 
 
   const PageRoutes = [
     {
@@ -32,24 +37,26 @@ function CoordinationsCustody() {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.custody.loading);
   const coordinations = useSelector((state) => state.custody.coordinations);
-  const organizations = useSelector((state) => state.auth.custodyOrgs); // Lista de organizaciones
+  const organizations = useSelector((state) => state.auth.custodyOrgs);
 
   // Determinar si se debe usar "Finca Seleccionada" o "Empacadora Seleccionada"
   const packerOrFarm = selectedModule !== 'FARM' ? 'Finca Seleccionada' : 'Empacadora Seleccionada';
 
-  // Cargar coordinaciones según la organización seleccionada
   useLayoutEffect(() => {
-    dispatch(loadCustodyCoordinations(selectedOrg, (isCompleted, error) => {
-      console.log(`loadCustodyCoordinations ${isCompleted} for organization: ${selectedOrg}`);
-    }));
+    dispatch(
+      loadCustodyCoordinations(selectedOrg, (isCompleted, error) => {
+        console.log(`loadCustodyCoordinations ${isCompleted} for organization: ${selectedOrg}`);
+      })
+    );
   }, [dispatch, selectedOrg]);
 
-  // Manejar el cambio de organización
   const handleOrgChange = (value, orgEmail) => {
-    setSelectedOrg(value); // Cambiar la organización seleccionada
-    Cookies.set('orgName', value); // Actualizar la cookie de organización
-    Cookies.set('orgEmail', orgEmail); // Actualizar el email de la organización en cookies
-    dispatch(loadCustodyCoordinations()); // Recargar las coordinaciones para la nueva organización
+    setSelectedOrg(value);
+    Cookies.set('orgName', value);
+    Cookies.set('orgEmail', orgEmail);
+    dispatch(loadCustodyCoordinations(value, (isCompleted, error) => {
+      console.log(`loadCustodyCoordinations ${isCompleted} for organization: ${value}`);
+    }));
   };
 
   // Función para determinar la clase de estado
@@ -64,54 +71,89 @@ function CoordinationsCustody() {
       case 'ejecutado':
         return 'ninjadash-status-executed';
       default:
-        return 'ninjadash-status-undefined'; // Clase para estados indefinidos
+        return 'ninjadash-status-undefined';
     }
   };
 
-  // Generar los datos de la tabla de manera reactiva usando useMemo
+  // Generar los datos de la tabla con useMemo
   const tableDataScource = useMemo(() => {
     if (!coordinations || coordinations.length === 0) return [];
 
-    return coordinations.map((item) => {
-      const itemStatus = item.statusWrapper;
-      
-      return {
-        id: `${item.SM_FishingNotification || 'Sin Lote ID'}`, // LOTE id
-        harvestDate: moment(item.planned_harvest_date).format('YYYY-MM-DD') || 'No disponible', // FECHA PROGRAMADA DE COSECHA / RALEO
-        harvestType: item.harvest_type || 'Sin Tipo', // TIPO DE COSECHA
-        growOut: item.grow_out_pool || 'No disponible', // PISCINA ENGORDE
-        cycleNumber: item.cycle_number || 'No disponible', // # CICLO
-        seedingVolume: item.seeding_volume || 'No definido', // VOLUMEN DE PESCA
-        classificationP: item.classification_p || 'No clasificado', // CLASIF P
-        classificationS: item.classification_s || 'No clasificado', // CLASIF S
-        classificationT: item.classification_t || 'No clasificado', // CLASIF T
-        packer: item.packer_name || `Sin ${packerOrFarm}`, // Empacadora Seleccionada o Finca Seleccionada
-        location: <span>{item.City || 'No Ciudad'}, {item.Address1 || 'No Dirección'}</span>, // UBICACIÓN
-        status: (
-          <span className={`ninjadash-status ${getStatusClass(itemStatus.statusName)}`}>
-            {itemStatus.statusName || 'Estado no definido'}
-          </span>
-        ), // ESTADO
-        action: (
-          <div className="table-actions" style={{ minWidth: "50px !important", textAlign: "center" }}>
-            {!itemStatus.showEditFrom && <Link className="view" title='Ver información' to={`./${item.id}/view`}><UilEye /></Link>}
-            {itemStatus.showEditFrom && <Link className="edit" title='Enviar Propuesta' to={`./${item.id}/edit`}><UilEdit /></Link>}
-            <Link className="notification" title="Ver Notificación" to={`./notification/${item.id}/view`}>
-              <UilBell />
-            </Link>
-            {itemStatus.showBinesForm && <Link className="edit" title='Cargar información de Bines' to={`./${item.id}/bines`}>
-              <UilUpload />
-            </Link>}
-            {itemStatus.showDrawersForm && <Link className="edit" title='Cargar información de Gavetas' to={`./${item.id}/drawers`}>
-              <UilUpload />
-            </Link>}
-          </div>
-        ),
-      };
-    });
-  }, [coordinations, selectedModule]); // Añadir selectedModule a las dependencias
+    return coordinations
+      .filter((item) => {
+        // <-- Si la ruta es '/farm/fishing-coords', excluimos los que tengan estado "por revisar"
+        if (isFarmFishingCoords) {
+          return item.statusWrapper.statusName.toLowerCase() !== 'por revisar';
+        }
+        return true;
+      })
+      .map((item) => {
+        const itemStatus = item.statusWrapper;
+        return {
+          // LOTE id
+          id: `${item.SM_FishingNotification || 'Sin Lote ID'}`,
+          // FECHA PROGRAMADA DE COSECHA / RALEO
+          harvestDate: moment(item.planned_harvest_date).format('YYYY-MM-DD') || 'No disponible',
+          // TIPO DE COSECHA
+          harvestType: item.harvest_type || 'Sin Tipo',
+          // PISCINA ENGORDE
+          growOut: item.grow_out_pool || 'No disponible',
+          // # CICLO
+          cycleNumber: item.cycle_number || 'No disponible',
+          // VOLUMEN DE PESCA
+          seedingVolume: item.seeding_volume || 'No definido',
+          // CLASIF P
+          classificationP: item.classification_p || 'No clasificado',
+          // CLASIF S
+          classificationS: item.classification_s || 'No clasificado',
+          // CLASIF T
+          classificationT: item.classification_t || 'No clasificado',
+          // Empacadora o Finca Seleccionada
+          packer: item.packer_name || `Sin ${packerOrFarm}`,
+          // UBICACIÓN
+          location: (
+            <span>
+              {item.City || 'No Ciudad'}, {item.Address1 || 'No Dirección'}
+            </span>
+          ),
+          // ESTADO
+          status: (
+            <span className={`ninjadash-status ${getStatusClass(itemStatus.statusName)}`}>
+              {itemStatus.statusName || 'Estado no definido'}
+            </span>
+          ),
+          // ACCIONES
+          action: (
+            <div className="table-actions" style={{ minWidth: '50px !important', textAlign: 'center' }}>
+              {!itemStatus.showEditFrom && (
+                <Link className="view" title="Ver información" to={`./${item.id}/view`}>
+                  <UilEye />
+                </Link>
+              )}
+              {itemStatus.showEditFrom && (
+                <Link className="edit" title="Enviar Propuesta" to={`./${item.id}/edit`}>
+                  <UilEdit />
+                </Link>
+              )}
+             
+             
+              {itemStatus.showBinesForm && (
+                <Link className="edit" title="Cargar información de Bines" to={`./${item.id}/bines`}>
+                  <UilUpload />
+                </Link>
+              )}
+              {itemStatus.showDrawersForm && (
+                <Link className="edit" title="Cargar información de Gavetas" to={`./${item.id}/drawers`}>
+                  <UilUpload />
+                </Link>
+              )}
+            </div>
+          ),
+        };
+      });
+  }, [coordinations, isFarmFishingCoords, packerOrFarm]);
 
-  // Definición de las columnas
+  // Definición de columnas
   const dataTableColumn = [
     {
       title: 'Fecha de Pesca',
@@ -148,8 +190,6 @@ function CoordinationsCustody() {
       dataIndex: 'classificationT',
       key: 'classificationT',
     },
-   
-
     {
       title: 'Estado',
       dataIndex: 'status',
@@ -166,13 +206,12 @@ function CoordinationsCustody() {
   return (
     <>
       <PageHeader
-        
         highlightText="Aqualink"
         title="Coordinaciones Pesca"
         routes={PageRoutes}
-        organizations={organizations} // Lista de organizaciones
-        selectedOrg={selectedOrg} // Organización seleccionada
-        handleOrgChange={handleOrgChange} // Función para manejar el cambio
+        organizations={organizations}
+        selectedOrg={selectedOrg}
+        handleOrgChange={handleOrgChange}
       />
       <Main>
         <Row gutter={25}>

@@ -47,7 +47,7 @@ export const optionsInventory = [
         ]
     },
     {
-        categoria: "metaBS",
+        categoria: "Metabisulfito",
         items: [
             {
                 codigo: "META001",
@@ -63,6 +63,21 @@ export const optionsInventory = [
     },
     {
         categoria: "Hielo",
+        items: [
+            {
+                codigo: "HIELO001",
+                nombre: "Hielo Modelo A",
+                id: "ID-005",
+                unidad: "Unidad",
+                peso: 20,
+                disponibles: 100,
+                capacidad: "50 kg",
+            },
+            // Agrega más ítems de Hielo según sea necesario
+        ]
+    },
+    {
+        categoria: "Sellos",
         items: [
             {
                 codigo: "HIELO001",

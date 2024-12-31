@@ -172,11 +172,7 @@ function CoordinationCustodyResumen() {
                   {coordination?.warehouse_name || ''}
                 </div>
                 <br />
-                <Col xs={24} md={24} style={{ marginBottom: '18px', overflow: 'hidden' }}>
-                  <div style={{ height: '200px' }}>
-                    <GoogleMaps />
-                  </div>
-                </Col>
+               
                 <Col xs={24} md={24}>
                   <Table
                     className='custom-table_lab'

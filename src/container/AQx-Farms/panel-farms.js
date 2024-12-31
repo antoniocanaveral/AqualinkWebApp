@@ -381,29 +381,7 @@ function PanelFarms() {
       />
 
       <Main>
-        {/** 
-        * 
-        *   <Row gutter={25}>
-
-          <Col xxl={12} xs={24}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <OverviewDataStyleWrap className="card-mesh-wrap align-center-v">
-                {OverviewData.map((item, i) => {
-                  return <OverviewCardMeshOriginal data={item} key={i} />;
-                })}
-              </OverviewDataStyleWrap>
-            </Suspense>
-          </Col>
-
-        </Row>
-       */}
-
+      
 
         <Row gutter={25}>
           <Col xl={12} xs={24} xxl={10} style={{ display: 'flex' }}>
@@ -488,7 +466,7 @@ function PanelFarms() {
               }
             >
               <Cards title="Inventario de Productos" size="large" style={{ flex: 1 }}>
-                  <Table  dataSource={productData} columns={columns} pagination={false} />
+                  <Table  dataSource={productData} columns={columns} pagination={{pageSize:5}} />
               </Cards>
 
             </Suspense>

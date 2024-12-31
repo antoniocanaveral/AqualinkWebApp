@@ -195,7 +195,7 @@ function CenterCostFarm() {
                 </Cards>
               }
             >
-              <Cards title="Costo / Ha / Día" size="large" style={{ width: '100%', height: '100%' }}>
+              <Cards title="Costo Producción Ha/Día" size="large" style={{ width: '100%', height: '100%' }}>
                 <CostoLineChart  data={dataLineChart} height={400} />
               </Cards>
             </Suspense>

@@ -20,6 +20,8 @@ import MessageNotificationsCenter from '../../container/AQx-Farms/message-notifi
 import ClientRouteCustody from './CustodyClient';
 import LaboratoryRouteCustody from './CustodyLaboratory';
 import TraceabilityRoutesCustody from './CustodyTraceability';
+import HarvestReportCustodyRoutes from './custodyReport';
+import GeolocationCustody from '../../container/AQx-Custody/geolocation-custody';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Custody = React.memo(() => {
@@ -40,9 +42,10 @@ const Custody = React.memo(() => {
         <Route path="/panel" element={<PanelCustody/>} />
         <Route path="/analytics" element={<AnalyticsCustody/>} />
         <Route path="/planning/*" element={<PlanningCustody />} />
-        <Route path="/harvest-reports/*" element={<HarvestReportCustody />} />
+        <Route path="/reports/*" element={<HarvestReportCustodyRoutes />} />
         <Route path="/task/*" element={<TaskCustody />} />
         <Route path="/purchases/*" element={<PurchasesCustodyRoutes />} />
+        <Route path="/geolocation" element={<GeolocationCustody />} />
         <Route path="/supply/*" element={<SupplyCustodyRoutes />} />
         <Route path="/transport/*" element={<TransportCustodyRoutes />} />
         <Route path="/coords/*" element={<CustodyCoordinations />} />

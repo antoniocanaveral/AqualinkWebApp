@@ -23,6 +23,9 @@ function PlanningCustody() {
             fechaPesca: '05 Diciembre 2023',
             piscina: 'Piscina 1',
             volumenProgramado: '1.5 M',
+            tipoCosecha: 'Manual',  
+
+
             clasificacionReportada: '20-30',
         },
         {
@@ -34,6 +37,8 @@ function PlanningCustody() {
             fechaPesca: '06 Diciembre 2023',
             piscina: 'Piscina 2',
             volumenProgramado: '2.0 M',
+            tipoCosecha: 'Manual',  
+
             clasificacionReportada: '40-50',
         },
         {
@@ -45,6 +50,8 @@ function PlanningCustody() {
             fechaPesca: '07 Diciembre 2023',
             piscina: 'Piscina 3',
             volumenProgramado: '1.2 M',
+            tipoCosecha: 'Manual',  
+
             clasificacionReportada: '30-40',
         },
         {
@@ -56,6 +63,8 @@ function PlanningCustody() {
             fechaPesca: '08 Diciembre 2023',
             piscina: 'Piscina 4',
             volumenProgramado: '1.8 M',
+            tipoCosecha: 'Manual',  
+
             clasificacionReportada: '80-100',
         },
     ];
@@ -183,7 +192,7 @@ function PlanningCustody() {
 
                 {/* Modal para detalles del tanque */}
                 <Modal
-                    title="Detalles del Tanque"
+                    title="Detalles del Lote"
                     visible={isModalVisible}
                     onCancel={handleCancel}
                     footer={null} // Eliminamos el footer por defecto para personalizarlo

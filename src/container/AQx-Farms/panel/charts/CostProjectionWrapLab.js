@@ -1,13 +1,8 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import DoughnutChart from '../../../../components/charts/DoughnutChart';
 import config from '../../../../config/config';
 import { SalesOverviewStyleWrap2 } from './Style';
-import propTypes from 'prop-types';
 
 const CostProjectionWrapLab = React.memo(() => {
   // Acceder al estado de Redux para obtener 'mainContent'
@@ -29,10 +24,10 @@ const CostProjectionWrapLab = React.memo(() => {
     return () => clearTimeout(timer);
   }, []);
 
-  const labels = ['Balanceado', 'Artemia', 'Algas', 'Ácidos Orgánicos', 'Bacterias', 'Vitaminas'];
+  const labels = ['Balanceado', 'Cálcicos', 'Ácidos Orgánicos', 'Bacteria', 'Vitaminas'];
   const datasets = [
     {
-      data: [58, 17, 11, 4, 7, 3], // Datos proporcionados
+      data: [58, 11, 4, 7, 3], // Datos proporcionados
       backgroundColor: ['#0372CE', '#00AAFF', '#FA8B0C', '#00C49A', '#FF4560', '#775DD0'],
       centerText: 'Insumos',
       centerTextLabel: 'Distribución',
@@ -42,7 +37,7 @@ const CostProjectionWrapLab = React.memo(() => {
   const options = {
     cutout: '70%', // Controla el grosor del doughnut
     borderWidth: 2,
-    borderColor: themeColor[mainContent]['white-background'], // Color válido
+    borderColor: themeColor[mainContent]['white-background'],
     maintainAspectRatio: false, // Permite que el gráfico ocupe el contenedor
     responsive: true, // Asegura que el gráfico sea responsivo
     plugins: {
@@ -59,11 +54,22 @@ const CostProjectionWrapLab = React.memo(() => {
     },
   };
 
+  // <-- Ajustamos color de tooltip a negro
+  const tooltip = {
+    backgroundColor: '#FFF',
+    titleFont: { size: 16 },
+    titleColor: '#000', // <-- Título en negro
+    bodyColor: '#000',  // <-- Texto en negro
+    bodyFont: { size: 14 },
+    displayColors: false,
+  };
+
+  // Cálculo de la suma total
   const totalSale = datasets[0].data.reduce((a, b) => a + b, 0);
 
   return (
     <SalesOverviewStyleWrap2>
-      {showChart && ( // Renderiza el gráfico solo si showChart es true
+      {showChart && (
         <div className="ninjadash-overview-wrap">
           {/* Contenedor del Doughnut Chart con altura definida */}
           <div style={{ width: '100%', height: '200px' }}>
@@ -73,22 +79,16 @@ const CostProjectionWrapLab = React.memo(() => {
               labels={labels}
               datasets={datasets}
               option={options}
-              tooltip={{
-                backgroundColor: '#FFF',
-                titleFont: { size: 16 },
-                titleColor: '#0066ff',
-                bodyColor: '#000',
-                bodyFont: { size: 14 },
-                displayColors: false,
-              }}
+              tooltip={tooltip}
               centerTextSize="16px"
             />
           </div>
 
-          {/* Overview Percentage */}
+          {/* Bloque unificado de Dots + Labels + Porcentajes */}
           <div className="ninjadash-overview-percentage">
             {datasets[0].data.map((value, index) => {
               const itemPercent = Math.round((value / totalSale) * 100);
+
               return (
                 <div className="ninjadash-overview-percentage__item" key={index}>
                   <span
@@ -97,19 +97,10 @@ const CostProjectionWrapLab = React.memo(() => {
                       backgroundColor: datasets[0].backgroundColor[index],
                     }}
                   />
-                  <span className="ninjadash-overview-percentage__text">{itemPercent}%</span>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Overview Box */}
-          <div className="ninjadash-overview-box align-center-v justify-content-between">
-            {datasets[0].data.map((value, index) => {
-              return (
-                <div className="ninjadash-overview-box-item" key={index}>
-                  <h4>{value}%</h4>
-                  <p>{labels[index]}</p>
+                  {/* Muestra label y porcentaje juntos */}
+                  <span className="ninjadash-overview-percentage__text">
+                    {labels[index]}: {itemPercent}%
+                  </span>
                 </div>
               );
             })}

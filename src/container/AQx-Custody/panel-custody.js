@@ -7,7 +7,6 @@ import { OverviewDataStyleWrap } from '../dashboard/Style';
 import OverviewCardMeshOriginal from '../../components/cards/OverviewCardMeshOriginal';
 import OverviewData from './panel/data/panelCustody.json';
 import { AqualinkMaps } from '../../components/maps/aqualink-map';
-import TankCard from './panel/components/TankCard';
 import TankCarouselCustody from './panel/components/TankCarouselCustody';
 
 function PanelCustody() {
@@ -16,16 +15,16 @@ function PanelCustody() {
 
   // Datos de la tabla de Coordinación de Cosechas
   const data = [
-    { key: '1', finca: 'Finca El Progreso', loteID: 'L-001', larva: 'PL10', kilos: '1,200', estado: 'Pendiente' },
-    { key: '2', finca: 'AgroMar', loteID: 'L-002', larva: 'PL12', kilos: '1,500', estado: 'Completado' },
-    { key: '3', finca: 'Acuícola Santa Rosa', loteID: 'L-003', larva: 'PL10', kilos: '1,000', estado: 'Pendiente' },
-    { key: '4', finca: 'Finca La Esperanza', loteID: 'L-004', larva: 'PL12', kilos: '900', estado: 'En proceso' },
-    { key: '5', finca: 'Grupo Camarón', loteID: 'L-005', larva: 'PL10', kilos: '1,700', estado: 'Completado' },
-    { key: '6', finca: 'Finca Del Sol', loteID: 'L-006', larva: 'PL10', kilos: '1,300', estado: 'Pendiente' },
-    { key: '7', finca: 'Pacifiqa', loteID: 'L-007', larva: 'PL12', kilos: '800', estado: 'En proceso' },
-    { key: '8', finca: 'EcoShrimp', loteID: 'L-008', larva: 'PL10', kilos: '1,000', estado: 'Completado' },
-    { key: '9', finca: 'Camarones Premium', loteID: 'L-009', larva: 'PL12', kilos: '950', estado: 'Pendiente' },
-    { key: '10', finca: 'Aquamar', loteID: 'L-010', larva: 'PL10', kilos: '1,200', estado: 'Completado' },
+    { key: '1', finca: 'Finca El Progreso', loteID: 'L-001', larva: '40-50', kilos: '1,200', estado: 'Pendiente' },
+    { key: '2', finca: 'AgroMar', loteID: 'L-002', larva: '60-70', kilos: '1,500', estado: 'Completado' },
+    { key: '3', finca: 'Acuícola Santa Rosa', loteID: 'L-003', larva: '40-50', kilos: '1,000', estado: 'Pendiente' },
+    { key: '4', finca: 'Finca La Esperanza', loteID: 'L-004', larva: '60-70', kilos: '900', estado: 'En proceso' },
+    { key: '5', finca: 'Grupo Camarón', loteID: 'L-005', larva: '40-50', kilos: '1,700', estado: 'Completado' },
+    { key: '6', finca: 'Finca Del Sol', loteID: 'L-006', larva: '40-50', kilos: '1,300', estado: 'Pendiente' },
+    { key: '7', finca: 'Pacifiqa', loteID: 'L-007', larva: '60-70', kilos: '800', estado: 'En proceso' },
+    { key: '8', finca: 'EcoShrimp', loteID: 'L-008', larva: '40-50', kilos: '1,000', estado: 'Completado' },
+    { key: '9', finca: 'Camarones Premium', loteID: 'L-009', larva: '60-70', kilos: '950', estado: 'Pendiente' },
+    { key: '10', finca: 'Aquamar', loteID: 'L-010', larva: '40-50', kilos: '1,200', estado: 'Completado' },
   ];
 
 
@@ -33,7 +32,7 @@ function PanelCustody() {
   const columns = [
     { title: 'Fincas', dataIndex: 'finca', key: 'finca' },
     { title: 'LoteID', dataIndex: 'loteID', key: 'loteID' },
-    { title: 'Larva', dataIndex: 'larva', key: 'larva' },
+    { title: 'Clasificación', dataIndex: 'larva', key: 'larva' },
     { title: 'Kilos', dataIndex: 'kilos', key: 'kilos' },
     { title: 'Estado', dataIndex: 'estado', key: 'estado' },
   ];
@@ -49,7 +48,8 @@ function PanelCustody() {
         fechaPesca: '05 Diciembre 2023',
         piscina: 'Piscina 1',
         volumenProgramado: '1.5 M',
-        clasificacionReportada: 'PL12',
+        tipoCosecha: 'Manual',  
+        clasificacionReportada: '60-70',
     },
     {
         id: 2,
@@ -59,8 +59,9 @@ function PanelCustody() {
         estado: 'Confirmado',
         fechaPesca: '06 Diciembre 2023',
         piscina: 'Piscina 2',
+        tipoCosecha: 'Manual',  
         volumenProgramado: '2.0 M',
-        clasificacionReportada: 'PL10',
+        clasificacionReportada: '40-50',
     },
     {
         id: 3,
@@ -68,6 +69,7 @@ function PanelCustody() {
         codigoAQLK: 'AQLK003',
         loteID: 'L-003',
         estado: 'Confirmado',
+        tipoCosecha: 'Manual',  
         fechaPesca: '07 Diciembre 2023',
         piscina: 'Piscina 3',
         volumenProgramado: '1.2 M',
@@ -79,6 +81,7 @@ function PanelCustody() {
         codigoAQLK: 'AQLK004',
         loteID: 'L-004',
         estado: 'Confirmado',
+        tipoCosecha: 'Manual',  
         fechaPesca: '08 Diciembre 2023',
         piscina: 'Piscina 4',
         volumenProgramado: '1.8 M',

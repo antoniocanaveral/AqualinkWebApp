@@ -11,6 +11,8 @@ import ProductionSalesProjectionChart from './analytics/charts/ProductionSalesPr
 import EvolutionParametersBarChart from './analytics/charts/EvolutionParametersBarChart';
 import WaterPhysicsDonutChart from './analytics/charts/donut/WaterPhysicsDonutChart';
 import Card from 'antd/lib/card/Card';
+import SoilPhysicsDonutChart from './analytics/charts/donut/SoilPhysicsDonutChart';
+import BiomechanicalDonutChart from './analytics/charts/donut/BiomechanicalDonutChart';
 
 function AnalyticsFarms() {
 
@@ -63,7 +65,7 @@ function AnalyticsFarms() {
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={9} xs={24} >
+          <Col xl={9} xs={24} style={{display:"flex"}} >
             <Suspense
               fallback={
                 <Cards headless>
@@ -114,7 +116,7 @@ function AnalyticsFarms() {
                   }
                 >
                   <div>
-                    <WaterPhysicsDonutChart />
+                    <SoilPhysicsDonutChart />
                   </div>
                 </Suspense>
               </Col>
@@ -127,7 +129,7 @@ function AnalyticsFarms() {
                   }
                 >
                   <div>
-                    <WaterPhysicsDonutChart />
+                    <BiomechanicalDonutChart />
                   </div>
                 </Suspense>
               </Col>

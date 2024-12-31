@@ -6,6 +6,7 @@ import { GoogleMaps } from '../../../components/maps/google-maps';
 import { Main } from '../../styled';
 import ProjectedSuggestedFeedingChart from '../monitoring/feeding/ProjectedSuggestedFeedingChart';
 import BiomassEvolutionChart from './biomass/BiomassEvolutionChart';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function PopulationBiomassFarm() {
 
@@ -18,11 +19,12 @@ function PopulationBiomassFarm() {
     { label: "Área de Atarraya", value: 4 },
     { label: "Animales por m²", value: "6,854" },
     { label: "Animales totales", value: "274,167", bold: true },
-    { label: "Peso promedio (100 camarones)", value: "11.4 g", highlight: true },
+    { label: "Biomasa Estimada (lb)", value: "6,884", bold: true },
     { label: "Fecha de Siembra", value: "23 Feb 2021" },
     { label: "Siembra Total", value: "360,000" },
     { label: "Sobrevivencia", value: "76%" },
-    { label: "Biomasa Estimada (lb)", value: "6,884", bold: true },
+    { label: "Peso promedio", value: "11.4 g", highlight: true },
+
   ];
 
 
@@ -38,12 +40,12 @@ function PopulationBiomassFarm() {
     { title: 'S.C', dataIndex: 'semanaCiclo', key: 'semanaCiclo' },
     { title: 'Lote', dataIndex: 'loteId', key: 'loteId' },
     { title: 'Población', dataIndex: 'poblacion', key: 'poblacion' },
-    { title: 'P. X', dataIndex: 'pesoPromedio', key: 'pesoPromedio' },
+    { title: 'Px', dataIndex: 'pesoPromedio', key: 'pesoPromedio' },
     { title: 'Biomasa', dataIndex: 'biomasa', key: 'biomasa' },
   ];
   return (
     <>
-      <PageHeader  highlightText={"AquaLink Parámetros:"}
+      <PageHeader highlightText={"AquaLink Parámetros:"}
         title="Población-Biomasa"
         selectOptions={[
           ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
@@ -54,37 +56,7 @@ function PopulationBiomassFarm() {
       <Main>
         <Row gutter={25}>
           <Col xl={11} xs={24} style={{ display: "flex" }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={24} md={24}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={24} md={24}>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                          <Typography.Text>Área: 307.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                          <Typography.Text>Área: 5.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                          <Typography.Text>Área: 1.35 ha</Typography.Text>
-                        </div>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
-            </Suspense>
+            <AqualinkMaps />
           </Col>
           <Col xl={13} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
@@ -137,7 +109,7 @@ function PopulationBiomassFarm() {
                     S. Ciclo: Semana de ciclo
                   </div>
                   <div>
-                    P. Promedio: Peso Promedio
+                    Px: Peso Promedio
                   </div>
                 </div>
                 <br />

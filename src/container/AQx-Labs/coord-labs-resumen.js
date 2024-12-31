@@ -1,7 +1,7 @@
 import React, { Suspense, useState, useEffect, useRef } from 'react';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Row, Col, Form, Skeleton, Table, Typography, Badge, Checkbox, Avatar, Button } from 'antd';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { BasicFormWrapper, Main } from '../styled';
@@ -22,6 +22,7 @@ import {
 import { generatePDF } from '../../utility/printPdf';
 
 function CoordinationLabsResumen() {
+   const navigate = useNavigate();
   const [orientation, setOrientation] = useState('landscape');  // Controlar la disposición
   const reportRef = useRef(); // Referencia al HTML que se convertirá en PDF
 
@@ -118,10 +119,15 @@ function CoordinationLabsResumen() {
     },
     { title: '', dataIndex: 'value', key: 'value', width: '45%' },
   ];
-
+  const handleBack = () => {
+    navigate(-1);
+  };
   return (
     <>
-      <PageHeader  title={`Coordinación: ${coordination?.SM_FishingNotification || "-"}`} routes={PageRoutes} />
+      <PageHeader  
+       onBack={handleBack}
+      title={`Coordinación: ${coordination?.SM_FishingNotification || "-"}`} 
+      routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>

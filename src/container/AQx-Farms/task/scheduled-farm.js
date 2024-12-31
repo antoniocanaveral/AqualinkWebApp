@@ -15,7 +15,7 @@ const events = {
       id: 1,
       type: 'primary',
       loteId: 'L001',
-      Pc: 'PC01',
+      Tanque: 'PC01',
       cantidad: 100,
       date: '19 Marzo',
     },
@@ -23,7 +23,7 @@ const events = {
       id: 2,
       type: 'secondary',
       loteId: 'L002',
-      Pc: 'PC02',
+      Tanque: 'PC02',
       cantidad: 200,
       date: '19 Marzo',
     },
@@ -31,7 +31,7 @@ const events = {
       id: 3,
       type: 'info',
       loteId: 'L003',
-      Pc: 'PC03',
+      Tanque: 'PC03',
       cantidad: 150,
       date: '19 Marzo',
     },
@@ -39,7 +39,7 @@ const events = {
       id: 4,
       type: 'warning',
       loteId: 'L004',
-      Pc: 'PC04',
+      Tanque: 'PC04',
       cantidad: 250,
       date: '19 Marzo',
     },
@@ -49,7 +49,7 @@ const events = {
       id: 1,
       type: 'primary',
       loteId: 'L005',
-      Pc: 'PC05',
+      Tanque: 'PC05',
       cantidad: 120,
       date: '12 Septiembre',
     },
@@ -57,7 +57,7 @@ const events = {
       id: 2,
       type: 'info',
       loteId: 'L006',
-      Pc: 'PC06',
+      Tanque: 'PC06',
       cantidad: 180,
       date: '16 Septiembre',
     },
@@ -65,7 +65,7 @@ const events = {
       id: 3,
       type: 'secondary',
       loteId: 'L007',
-      Pc: 'PC07',
+      Tanque: 'PC07',
       cantidad: 300,
       date: '15 Septiembre',
     },
@@ -73,7 +73,7 @@ const events = {
       id: 4,
       type: 'warning',
       loteId: 'L008',
-      Pc: 'PC08',
+      Tanque: 'PC08',
       cantidad: 500,
       date: '13 Septiembre',
     },
@@ -83,7 +83,7 @@ const events = {
       id: 1,
       type: 'primary',
       loteId: 'L009',
-      Pc: 'PC09',
+      Tanque: 'PC09',
       cantidad: 400,
       date: '24 Abril',
     },
@@ -91,7 +91,7 @@ const events = {
       id: 2,
       type: 'secondary',
       loteId: 'L010',
-      Pc: 'PC10',
+      Tanque: 'PC10',
       cantidad: 350,
       date: '24 Abril',
     },
@@ -99,7 +99,7 @@ const events = {
       id: 3,
       type: 'info',
       loteId: 'L011',
-      Pc: 'PC11',
+      Tanque: 'PC11',
       cantidad: 270,
       date: '24 Abril',
     },
@@ -107,7 +107,7 @@ const events = {
       id: 4,
       type: 'warning',
       loteId: 'L012',
-      Pc: 'PC12',
+      Tanque: 'PC12',
       cantidad: 600,
       date: '28 Abril',
     },
@@ -164,7 +164,7 @@ function ScheduleFarm() {
 
   if (eventState)
     eventState.map((value) => {
-      const { loteId, Pc, cantidad, date, type, id } = value;
+      const { loteId, Tanque, cantidad, date, type, id } = value;
       return dataSource.push({
         key: id,
         name: (
@@ -174,25 +174,12 @@ function ScheduleFarm() {
             </div>
             <article className="ninjadash-event-details__content">
               <h4 className="ninjadash-event-details__title">{`Lote: ${loteId}`}</h4>
-              <h4 className="ninjadash-event-details__title">{`PC: ${Pc}`}</h4>
+              <h4 className="ninjadash-event-details__title">{`Tanque: ${Tanque}`}</h4>
               <p className="ninjadash-event-details__time">{`Cantidad: ${cantidad}`}</p>
             </article>
           </div>
         ),
-        actions: (
-          <div className="ninjadash-event-details-action">
-            <Link
-              to="#"
-              className="ninjadash-event-details-action__edit"
-              onClick={() => showModal(id, { loteId, Pc, cantidad, date, id })}
-            >
-              <UilEdit />
-            </Link>
-            <Link to="#" className="ninjadash-event-details-action__delete" onClick={() => handleTaskDelete(id)}>
-              <UilTimes />
-            </Link>
-          </div>
-        ),
+       
       });
     });
 
@@ -219,14 +206,14 @@ function ScheduleFarm() {
   const handleUpdate = (value) => {
     events[state.tabValue].map((item) => {
       if (item.id === taskEditId) {
-        return (item.loteId = value.loteId, item.Pc = value.Pc, item.cantidad = value.cantidad);
+        return (item.loteId = value.loteId, item.Tanque = value.Tanque, item.cantidad = value.cantidad);
       }
       return item;
     });
 
     eventState.map((item) => {
       if (item.id === taskEditId) {
-        return (item.loteId = value.loteId, item.Pc = value.Pc, item.cantidad = value.cantidad);
+        return (item.loteId = value.loteId, item.Tanque = value.Tanque, item.cantidad = value.cantidad);
       }
       return item;
     });
@@ -295,8 +282,8 @@ function ScheduleFarm() {
               </Form.Item>
               <Form.Item
                 rules={[{ required: true, message: 'Por favor, ingrese un PC' }]}
-                name="Pc"
-                initialValue={editableItem.Pc}
+                name="Tanque"
+                initialValue={editableItem.Tanque}
               >
                 <Input placeholder="PC" />
               </Form.Item>

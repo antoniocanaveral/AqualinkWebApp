@@ -12,9 +12,6 @@ import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
 import UilListOlAlt from '@iconscout/react-unicons/icons/uil-list-ol-alt';
 import moment from 'moment';
 
-import {
-  UilBell, // Agrega este ícono para la notificación
-} from '@iconscout/react-unicons';
 import Cookies from 'js-cookie';
 
 function CoordinationsLabs() {
@@ -113,9 +110,7 @@ function CoordinationsLabs() {
               {!itemStatus.showEditFrom && <Link className="view" to={`./${item.id}/view`}><UilEye /></Link>}
               {itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}><UilEdit /></Link>}
               {itemStatus.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}><UilListOlAlt /></Link>}
-              <Link className="notification" to={`./notification/${item.id}/view`}>
-                <UilBell />
-              </Link> {/* Nuevo botón de notificación */}
+             
             </div>
           ),
         };

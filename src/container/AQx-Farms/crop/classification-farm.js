@@ -5,6 +5,7 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { GoogleMaps } from '../../../components/maps/google-maps';
 import ClassificationDonutChart from './biomass/ClassificationDonutChart';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function ClassificationFarm() {
   // Datos de ejemplo que incluyen el color de fondo para cada categoría
@@ -109,33 +110,7 @@ function ClassificationFarm() {
                 </Cards>
               }
             >
-              <Cards title="Geolocalización" size="large" style={{ marginBottom: 0 }}>
-                <Row gutter={[5, 5]} align="top">
-                  <Col xs={24} md={24}>
-                    <div>
-                      <GoogleMaps height={"350px"} />
-                    </div>
-                  </Col>
-                  <Col xs={24} md={24}>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                          <Typography.Text>Área: 307.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                          <Typography.Text>Área: 5.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                          <Typography.Text>Área: 1.35 ha</Typography.Text>
-                        </div>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
+             <AqualinkMaps />
             </Suspense>
 
             <Suspense
@@ -145,7 +120,7 @@ function ClassificationFarm() {
                 </Cards>
               }
             >
-              <Cards title="Composición del lote por clasificación" size="large" style={{ flex: 1, marginTop: 0 }}>
+              <Cards title="Clasificación" size="large" style={{ flex: 1, marginTop: 0 }}>
                 <div style={{ width: "78%", margin: "0 auto" }}>
                 <ClassificationDonutChart data={data} />
                 </div>
