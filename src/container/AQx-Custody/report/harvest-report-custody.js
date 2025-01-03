@@ -1,9 +1,6 @@
-import React, { Suspense, useRef, useState } from 'react';
-import { Row, Col, Skeleton, Typography, Table, Button, Modal } from 'antd';
+import { Row, Col, Table, } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
-import { Cards } from '../../../components/cards/frame/cards-frame';
-import ProjectionKgPanel from '../../AQx-Farms/panel/charts/projections-kg-panel';
 import ComparativePerformanceBarChart from './chart/ComparativePerformanceBarChart';
 
 function HarvestReportCustody() {
@@ -205,12 +202,7 @@ function HarvestReportCustody() {
                                 rowKey="key"
                                 className="custom-table-padding-table-1 table-responsive"
                                 tableLayout="fixed"
-                                rowClassName={(record) => {
-                                    // Aplica una clase CSS a filas específicas si lo deseas
-                                    // Por ejemplo, si quisieras remarcar una fila clave:
-                                    // if (record.key === 'costos_produccion') return 'custom-black-row';
-                                    return '';
-                                }}
+                                
                             />
                         </div>
                     </Col>

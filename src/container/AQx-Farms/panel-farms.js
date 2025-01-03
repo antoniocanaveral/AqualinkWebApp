@@ -3,14 +3,15 @@ import { Row, Col, Skeleton, Typography, Badge, Space, Table } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
-import { GoogleMaps } from '../../components/maps/google-maps';
 import ProjectionKgPanel from './panel/charts/projections-kg-panel';
 import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
 import { AqualinkMaps } from '../../components/maps/aqualink-map';
+import { useNavigate } from 'react-router-dom';
 
 function PanelFarms() {
 
 
+  const navigate = useNavigate();
 
   // Datos de la tabla
   const productData = [
@@ -283,8 +284,7 @@ function PanelFarms() {
 
 
       <button
-        //Redirigir a /farm 
-        onClick={() => alert('Ver Piscina')}
+        onClick={() => navigate("/farm/seeding-coords")}
         style={{ backgroundColor: '#0372ce', color: 'white', padding: '5px 10px', borderRadius: '5px', border: 'none' }}>
         Ver Piscina
       </button>

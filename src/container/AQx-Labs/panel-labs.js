@@ -1,96 +1,165 @@
-import React, { lazy, Suspense } from 'react';
-import { Row, Col, Skeleton, Typography, Badge, Space, Table } from 'antd';
+import React, { lazy, Suspense, useRef } from 'react';
+import { Row, Col, Skeleton, Typography, Badge, Space, Table, Descriptions } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
 import { OverviewDataStyleWrap } from '../dashboard/Style';
 import OverviewCardMeshOriginal from '../../components/cards/OverviewCardMeshOriginal';
-import OverviewData from '../../demoData/overviewMeshData.json';
+import { AqualinkMaps } from '../../components/maps/aqualink-map';
+import TankCarouselCustody from './panel/components/TankCarouselCustody';
 import { GoogleMaps } from '../../components/maps/google-maps';
-import ProjectionKgPanel from './panel/charts/projections-kg-panel';
-import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
+import { Text } from 'recharts';
+import {
+  IdcardOutlined,
+  SlidersOutlined,
+  DatabaseOutlined,
+  CalendarOutlined,
+  ClockCircleOutlined,
+  ClusterOutlined,
+} from '@ant-design/icons';
 
 function PanelLabs() {
-  const PageRoutes = [
-    {
-      path: '/admin',
-      breadcrumbName: 'AquaLink',
-    },
-    {
-      path: 'first',
-      breadcrumbName: 'Panel de Control',
-    },
+
+  const OverviewData =
+    [
+      {
+        "id": 1,
+        "type": "primary",
+        "icon": "biomasa.svg",
+        "label": "Capacidad Instalada",
+        "total": "1271100",
+        "suffix": "larvas",
+        "prefix": "",
+        "status": "growth",
+        "statusRate": "3.36",
+        "decimel": 0,
+        "dataPeriod": "Todas las Camaroneras"
+      },
+      {
+        "id": 2,
+        "type": "primary",
+        "icon": "food.svg",
+        "label": "Corridas en Curso",
+        "total": "1271100",
+        "suffix": "larvas",
+        "prefix": "",
+        "status": "growth",
+        "statusRate": "6.01",
+        "decimel": 0,
+        "dataPeriod": "Todas las Camaroneras"
+      },
+      {
+        "id": 3,
+        "type": "primary",
+        "icon": "health.svg",
+        "label": "Siembras Solicitadas",
+        "total": "1000000",
+        "suffix": "larvas",
+        "prefix": "",
+        "status": "growth",
+        "statusRate": "1.05",
+        "decimel": "",
+        "dataPeriod": "Todas las Camaroneras"
+      },
+      {
+        "id": 4,
+        "type": "primary",
+        "icon": "growth.svg",
+        "label": "Proyección",
+        "total": "1262000",
+        "suffix": "larvas",
+        "prefix": "$",
+        "status": "down",
+        "statusRate": "1.87",
+        "decimel": 0,
+        "dataPeriod": "Todas las Camaroneras"
+      }
+    ]
+
+  // Datos de la tabla de Coordinación de Cosechas
+  const data = [
+    { key: '1', finca: 'Finca El Progreso', loteID: 'L-001', larva: '40-50', kilos: '1,200', estado: 'Pendiente' },
+    { key: '2', finca: 'AgroMar', loteID: 'L-002', larva: '60-70', kilos: '1,500', estado: 'Completado' },
+    { key: '3', finca: 'Acuícola Santa Rosa', loteID: 'L-003', larva: '40-50', kilos: '1,000', estado: 'Pendiente' },
+    { key: '4', finca: 'Finca La Esperanza', loteID: 'L-004', larva: '60-70', kilos: '900', estado: 'En proceso' },
+    { key: '5', finca: 'Grupo Camarón', loteID: 'L-005', larva: '40-50', kilos: '1,700', estado: 'Completado' },
+    { key: '6', finca: 'Finca Del Sol', loteID: 'L-006', larva: '40-50', kilos: '1,300', estado: 'Pendiente' },
+    { key: '7', finca: 'Pacifiqa', loteID: 'L-007', larva: '60-70', kilos: '800', estado: 'En proceso' },
+    { key: '8', finca: 'EcoShrimp', loteID: 'L-008', larva: '40-50', kilos: '1,000', estado: 'Completado' },
+    { key: '9', finca: 'Camarones Premium', loteID: 'L-009', larva: '60-70', kilos: '950', estado: 'Pendiente' },
+    { key: '10', finca: 'Aquamar', loteID: 'L-010', larva: '40-50', kilos: '1,200', estado: 'Completado' },
   ];
 
-  // Datos de la tabla
-  const productData = [
-    {
-      key: '1',
-      producto: 'Ziegler',
-      ci: '45%',
-      hoy: '2.50 kg',
-      disp: '50 kg',
-    },
-    {
-      key: '2',
-      producto: 'Artemia',
-      ci: 'A',
-      hoy: '4.00 kg',
-      disp: '15 kg',
-    },
-    {
-      key: '3',
-      producto: 'Algas',
-      ci: 'A',
-      hoy: '0.7 kg',
-      disp: '12 kg',
-    },
-    {
-      key: '4',
-      producto: 'Flake',
-      ci: 'B',
-      hoy: '0.90 kg',
-      disp: '1.80 kg',
-    },
-    {
-      key: '5',
-      producto: 'Vitamina C',
-      ci: 'MF35',
-      hoy: '0.12 kg',
-      disp: '10.00 kg',
-    },
-  ];
 
-  // Definición de columnas
+  // Definición de columnas para la tabla de Coordinación de Cosechas
   const columns = [
+    { title: 'LoteID', dataIndex: 'loteID', key: 'loteID' },
+    { title: 'Clasificación', dataIndex: 'larva', key: 'larva' },
+    { title: 'Kilos', dataIndex: 'kilos', key: 'kilos' },
+    { title: 'Estado', dataIndex: 'estado', key: 'estado' },
+  ];
+
+
+  const tankData = [
     {
-      title: 'Producto',
-      dataIndex: 'producto',
-      key: 'producto',
+      id: 1,
+      nombreCamaronera: 'El Progreso',
+      codigoAQLK: 'AQLK001',
+      loteID: 'L-001',
+      estado: 'Confirmado',
+      fechaPesca: '05 Diciembre 2023',
+      piscina: 'Piscina 1',
+      volumenProgramado: '1.5 M',
+      tipoCosecha: 'Manual',
+      clasificacionReportada: '60-70',
     },
     {
-      title: 'CI',
-      dataIndex: 'ci',
-      key: 'ci',
+      id: 2,
+      nombreCamaronera: 'Las Palmas',
+      codigoAQLK: 'AQLK002',
+      loteID: 'L-002',
+      estado: 'Confirmado',
+      fechaPesca: '06 Diciembre 2023',
+      piscina: 'Piscina 2',
+      tipoCosecha: 'Manual',
+      volumenProgramado: '2.0 M',
+      clasificacionReportada: '40-50',
     },
     {
-      title: 'Hoy',
-      dataIndex: 'hoy',
-      key: 'hoy',
+      id: 3,
+      nombreCamaronera: 'El Sol',
+      codigoAQLK: 'AQLK003',
+      loteID: 'L-003',
+      estado: 'Confirmado',
+      tipoCosecha: 'Manual',
+      fechaPesca: '07 Diciembre 2023',
+      piscina: 'Piscina 3',
+      volumenProgramado: '1.2 M',
+      clasificacionReportada: 'PL15',
     },
     {
-      title: 'Disp.',
-      dataIndex: 'disp',
-      key: 'disp',
+      id: 4,
+      nombreCamaronera: 'Azul',
+      codigoAQLK: 'AQLK004',
+      loteID: 'L-004',
+      estado: 'Confirmado',
+      tipoCosecha: 'Manual',
+      fechaPesca: '08 Diciembre 2023',
+      piscina: 'Piscina 4',
+      volumenProgramado: '1.8 M',
+      clasificacionReportada: 'PL20',
     },
   ];
+
 
   return (
     <>
-      <PageHeader 
-        highlightText="Aqualink Laboratorios"
-        title="Control Panel" routes={PageRoutes} />
+      <PageHeader
+        title="Control Panel"
+        highlightText="Aqualink Empacadora"
 
+
+      />
       <Main>
         <Row gutter={25}>
 
@@ -102,7 +171,7 @@ function PanelLabs() {
                 </Cards>
               }
             >
-              <OverviewDataStyleWrap className="card-mesh-wrap align-center-v">
+              <OverviewDataStyleWrap style={{ gap: 4 }} className="card-mesh-wrap align-center-v">
                 {OverviewData.map((item, i) => {
                   return <OverviewCardMeshOriginal data={item} key={i} />;
                 })}
@@ -121,43 +190,36 @@ function PanelLabs() {
                 </Cards>
               }
             >
-
-              <Cards title="Studio Planning: Segmento P3" size="large">
+              <Cards title="Geolocalización" size="large">
                 <Row gutter={[25, 25]} align="top">
-                  <Col xs={20} md={15}>
-                    <GoogleMaps />
+                  <Col xs={24} md={24}>
+                    <GoogleMaps height="300px" />
                   </Col>
-                  <Col xs={20} md={9}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px" }}>
-                      <Badge
-                        color="#1890ff"
-                        dot
-                        style={{ marginRight: 8 }}
-                      />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
+                  <Col xs={24} md={24}>
                     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                      <Col xs={24} md={24}>
+                        <Descriptions
+                          column={{ xs: 1, sm: 2, md: 3 }}
+                          bordered
+                          size="small"
+                          layout="vertical"
+                        >
+                           <Descriptions.Item label={<Space><ClusterOutlined /> Módulos</Space>}>
+                            <Text>5</Text>
+                          </Descriptions.Item>
 
+                        
+                          <Descriptions.Item label={<Space><DatabaseOutlined /> Tanques</Space>}>
+                            <Text>30</Text>
+                          </Descriptions.Item>
 
-                      <div className="content-block">
-                        <Typography.Title level={5}>Camaroneras 1</Typography.Title>
-                        <Typography.Text>Área: 307.35 ha</Typography.Text>
-                      </div>
-
-                      <div className="content-block">
-                        <Typography.Title level={5}>Piscina 3</Typography.Title>
-                        <Typography.Text>Área: 5.35 ha</Typography.Text>
-                      </div>
-
-                      <div className="content-block">
-                        <Typography.Title level={5}>Pre Cría 3</Typography.Title>
-                        <Typography.Text>Área: 1.35 ha</Typography.Text>
-                      </div>
+                        
+                        </Descriptions>
+                      </Col>
                     </Space>
                   </Col>
                 </Row>
               </Cards>
-
             </Suspense>
           </Col>
           <Col xl={12} xs={24} style={{ display: 'flex' }}>
@@ -168,42 +230,26 @@ function PanelLabs() {
                 </Cards>
               }
             >
-              <ProjectionKgPanel />
-            </Suspense>
-          </Col>
-        </Row>
-
-        <Row gutter={25} equal-heights >
-          <Col xl={14} xs={24} style={{ display: 'flex' }}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <Cards title="Proyección de Costos" size="large">
-                <CostProjectionWrapLab />
-              </Cards>
-
-            </Suspense>
-          </Col>
-          <Col xl={10} xs={24} style={{ display: 'flex' }}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <Cards title="Inventario de Productos" size="large"
-                >
-                {/* Tabla de productos */}
-                <Table dataSource={productData} columns={columns} pagination={false} />
+              <Cards title="Coordinaciones Activas" size="large">
+                <div className="table-responsive">
+                  <Table dataSource={data} columns={columns} pagination={{ pageSize: 7 }} />
+                </div>
               </Cards>
             </Suspense>
           </Col>
         </Row>
+
+        <Row gutter={25}>
+          <Col xl={24} xs={24} >
+            <center>
+              <Typography.Title level={4} >
+                Lotes Activos
+              </Typography.Title>
+            </center>
+            <TankCarouselCustody tankData={tankData} />
+          </Col>
+        </Row>
+
       </Main>
     </>
   );

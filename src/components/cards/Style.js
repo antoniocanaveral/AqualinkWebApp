@@ -500,10 +500,10 @@ const OverviewCardMeshWrap = Styled.div`
                     margin-bottom: 0;
                     color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
                     @media only screen and (max-width: 1599px){
-                        font-size: 16px;
+                        font-size: 13px;
                     }
                     @media only screen and (max-width: 1399px){
-                        font-size: 16px;
+                        font-size: 13px;
                     }
                     @media only screen and (max-width: 991px){
                         font-size: 20px;

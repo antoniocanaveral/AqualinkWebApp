@@ -12,7 +12,7 @@ import {
 
 const LineChartWithXAxisPadding = ({ data, height: customHeight, width: customWidth }) => {
   const [chartWidth, setChartWidth] = useState(550);
-  const [chartHeight, setChartHeight] = useState(300);
+  const [chartHeight, setChartHeight] = useState(350);
 
   useLayoutEffect(() => {
     function updateSize() {

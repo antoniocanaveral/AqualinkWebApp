@@ -98,49 +98,43 @@ function AQXLabMenu({ toggleCollapsed }) {
       ),
     ),
 
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/analytics`}>
+        {t('Aqualink Analytics')}
+      </NavLink>,
+      'aqualink-analytics',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/analytics`}>
+          <UilChartBar />
+        </NavLink>
+      ),
+    ),
 
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/planning`}>
+        {t('Aqualink Planning')}
+      </NavLink>,
+      'aqulink-planning',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/planning`}>
+          <UilClipboardAlt />
+        </NavLink>
+      ),
+    ),
 
+    
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/dispatch-reports`}>
+        {t('Reportes de Despacho')}
+      </NavLink>,
+      'dispatch-reports',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/dispatch-reports`}>
+          <UilClipboardAlt />
+        </NavLink>
+      ),
+    ),
 
-
-    getItem(t('AquaLink Analytics'), 'aqualink-analytics', !topMenu && <UilChartBar />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/analytics`}>
-          {t('Analytics ')}
-        </NavLink>,
-        'analytics',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/analytics/report`}>
-          {t('Reporte de Producción')}
-        </NavLink>,
-        'reporte-produccion',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/analytics/pro-data-analytics`}>
-          {t('Pro Data Analytics')}
-        </NavLink>,
-        'prodata',
-        null,
-      ),
-    ]),
-    getItem(t('AquaLink Planning'), 'aqualink-planning', !topMenu && <UilClipboardAlt />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/planning-studio`}>
-          {t('Planning Studio')}
-        </NavLink>,
-        'planning-studio',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/real-planning`}>
-          {t('Planificación Real')}
-        </NavLink>,
-        'planificacion-real',
-        null,
-      ),
-    ]),
 
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/tasks`}>
@@ -170,7 +164,7 @@ function AQXLabMenu({ toggleCollapsed }) {
       !topMenu && <UilChart />,
       [
         getItem(
-          <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/monitoreo-general`}>
+          <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/monitoring/general`}>
             {t('Monitoreo General')}
           </NavLink>,
           'monitoreo-general',
@@ -189,32 +183,7 @@ function AQXLabMenu({ toggleCollapsed }) {
               'alimentacion-real-vs-proyectada',
               null,
             ),
-            getItem(
-              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/protein-percentage`}>
-                {t('Por % de Proteína')}
-              </NavLink>,
-              'alimentacion-proteina',
-              null,
-            ),
-
-            /**
-             *
-             *  getItem(
-              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/plate-sampling`}>
-                {t('Muestreo de Platos')}
-              </NavLink>,
-              'alimentacion-muestreo-platos',
-              null,
-            ), 
-             */
-
-            getItem(
-              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/feeding-tables`}>
-                {t('Tablas de Alimentación')}
-              </NavLink>,
-              'alimentacion-tabla',
-              null,
-            ),
+          
           ]
         ),
       ]
@@ -240,13 +209,7 @@ function AQXLabMenu({ toggleCollapsed }) {
           'parametros-calidad-agua',
           null,
         ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/parameters/soil-quality`}>{t('Calidad de Suelo')}</NavLink>
-          </div>,
-          'parametros-calidad-suelo',
-          null,
-        ),
+       
       ]
     ),
 
@@ -271,13 +234,7 @@ function AQXLabMenu({ toggleCollapsed }) {
           'cultivo-siembras',
           null,
         ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/crop/transfer`}>{t('Transferencia')}</NavLink>
-          </div>,
-          'cultivo-transferencia',
-          null,
-        ),
+      
         getItem(
           <div className="menu-item-level-1">
             <NavLink to={`${path}/crop/population-biomass`}>{t('Población / Biomasa')}</NavLink>
@@ -285,20 +242,7 @@ function AQXLabMenu({ toggleCollapsed }) {
           'cultivo-poblacion-biomasa',
           null,
         ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/crop/texture`}>{t('Textura')}</NavLink>
-          </div>,
-          'cultivo-textura',
-          null,
-        ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/crop/classification`}>{t('Clasificación')}</NavLink>
-          </div>,
-          'cultivo-clasificacion',
-          null,
-        ),
+        
 
         getItem(
           <div className="menu-item-level-1">
@@ -325,13 +269,6 @@ function AQXLabMenu({ toggleCollapsed }) {
         ),
 
 
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/culture-medium/preparation-bioremediation`}>{t('Preparación de Suelo y Biorremediación')}</NavLink>
-          </div>,
-          'medio-cultivo-preparation',
-          null,
-        ),
       ]
     ),
 

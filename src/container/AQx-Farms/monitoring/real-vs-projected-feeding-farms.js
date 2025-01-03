@@ -6,6 +6,7 @@ import { PageHeader } from '../../../components/page-headers/page-headers';
 import { GoogleMaps } from '../../../components/maps/google-maps';
 import { Badge } from '../../pages/style';
 import ProjectedSuggestedFeedingChart from './feeding/ProjectedSuggestedFeedingChart';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function RealAndProjectedFeeding() {
   // Definición de columnas para la nueva tabla de Alimentación
@@ -19,7 +20,7 @@ function RealAndProjectedFeeding() {
         <center>
           ALIMENTO <br /> PROYECTADO
         </center>
-        
+
       ),
       dataIndex: 'alimentoProyectado',
       key: 'alimentoProyectado',
@@ -36,7 +37,7 @@ function RealAndProjectedFeeding() {
       render: (text) => <center style={{ whiteSpace: 'pre-wrap' }}>{`${text}kg`}</center>,
     },
     {
-      title: 
+      title:
         (
           <center>
             ALIMENTO <br /> AJUSTADO
@@ -85,33 +86,7 @@ function RealAndProjectedFeeding() {
                 </Cards>
               }
             >
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={20} md={15}>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={20} md={9}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Camaroneras 1</Typography.Title>
-                        <Typography.Text>Área: 307.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Piscina 3</Typography.Title>
-                        <Typography.Text>Área: 5.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Pre Cría 3</Typography.Title>
-                        <Typography.Text>Área: 1.35 ha</Typography.Text>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
+              <AqualinkMaps />
             </Suspense>
           </Col>
           <Col xl={12} xs={24} style={{ display: 'flex' }}>

@@ -6,6 +6,7 @@ import { PageHeader } from '../../../components/page-headers/page-headers';
 import { GoogleMaps } from '../../../components/maps/google-maps';
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import { Link } from 'react-router-dom';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function GeneralPathologyFarm() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -192,11 +193,11 @@ function GeneralPathologyFarm() {
     <>
       <PageHeader
         highlightText="Aqualink Monitoreo"
-        title="Platología"
+        title="Patología"
         selectOptions={[
-          ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
-          ["Sector 1", "Sector 2", "Sector 3"],
-          ["Piscina 1", "Piscina 2", "Piscina 3"]
+          ["Lab 1", "Lab 2", "Lab 3"],
+          ["Módulo 1", "Módulo 2", "Módulo 3"],
+          ["Tanque 1", "Tanque 2", "Tanque 3"]
         ]}
       />
       <Main>
@@ -209,33 +210,7 @@ function GeneralPathologyFarm() {
                 </Cards>
               }
             >
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={20} md={15}>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={20} md={9}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Camaroneras 1</Typography.Title>
-                        <Typography.Text>Área: 307.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Piscina 3</Typography.Title>
-                        <Typography.Text>Área: 5.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Pre Cría 3</Typography.Title>
-                        <Typography.Text>Área: 1.35 ha</Typography.Text>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
+              <AqualinkMaps />
             </Suspense>
           </Col>
           <Col xl={12} xs={24} style={{ display: 'flex' }}>

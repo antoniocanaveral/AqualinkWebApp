@@ -10,22 +10,18 @@ import HarvestFarm from '../../container/AQx-Farms/crop/harvest-farm';
 
 const NotFound = lazy(() => import('../../container/pages/404'));
 
-function CropRoutesFarm() {
+function CropRoutesLabs() {
     return (
         <Routes>
             <Route index element={<GeneralPathologyFarm />}>
             </Route>
             <Route path="/general-pathology" element={<GeneralPathologyFarm />} />
             <Route path="/shrimp" element={<ShrimpFarm />} />
-            <Route path="/transfer" element={<TransferFarm />} />
             <Route path="/population-biomass" element={<PopulationBiomassFarm />} />
-            <Route path="/texture" element={<TextureFarm />} />
-            <Route path="/classification" element={<ClassificationFarm />} />
             <Route path="/harvest" element={<HarvestFarm />} />
-
             <Route path="*" element={<NotFound />} />
         </Routes>
     );
 }
 
-export default CropRoutesFarm;
+export default CropRoutesLabs;

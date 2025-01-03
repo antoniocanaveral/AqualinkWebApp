@@ -32,7 +32,7 @@ function OverviewCardMeshOriginal({ data, circleIcon }) {
           </div>
           <div className="ninjadash-overview-card__right">
             <div className="ninjadash-overview-card__right--content">
-              <h4 className="ninjadash-overview-total">
+              <h5 className="ninjadash-overview-total">
                 <CountUp
                   start={0}
                   end={didViewCountUp ? totalNumber : 0}
@@ -41,11 +41,12 @@ function OverviewCardMeshOriginal({ data, circleIcon }) {
                   decimals={decimel}
                   duration={1}
                 />
-                {suffix && <span style={{ marginLeft: "3px" }}>{suffix}</span>}
-              </h4>
+                {suffix && <span style={{ marginLeft: "2px" }}>{suffix}</span>}
+              </h5>
               <span
                 style={{
                   marginLeft: "5px",
+                  fontSize: "14px",
                 }}
                 className="ninjadahs-overview-label"
               >

@@ -31,6 +31,13 @@ import RealPlanning from '../../container/AQx-Farms/real-planning';
 import MessageNotificationsCenter from '../../container/AQx-Farms/message-notifications-center/message-notifications-center';
 import PanelLabs from '../../container/AQx-Labs/panel-labs';
 import AnalyticRoutesLabs from './labAnalytic';
+import PlanningLabs from '../../container/AQx-Labs/planning/planning-labs';
+import DispatchReportLab from '../../container/AQx-Labs/report/dispatch-report-lab';
+import GeneralMonitoringLab from '../../container/AQx-Labs/monitoring/general-monitoring-lab';
+import ODParametersLabs from '../../container/AQx-Labs/parameters/od-parameters-labs';
+import WaterAqualityLabs from '../../container/AQx-Labs/parameters/water-quality-parameters-labs';
+import CropRoutesLabs from './farmCrop';
+import CultureMediumRoutesLab from './farmCultureMedium';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -49,17 +56,15 @@ const Farm = React.memo(() => {
       <Routes>
         <Route index element={<PanelFarmRoutes />} />     
         <Route path="/panel/*" element={<PanelLabs />} />  
-        <Route path="/planning-studio/*" element={<PlanningStudioFarms />} />
-        <Route path="/real-planning/*" element={<RealPlanning />} />
-        <Route path="/monitoreo-general/*" element={<GeneralMonitoringFarm />} />
-        <Route path="/monitoring/actual-projected/*" element={<RealAndProjectedFeeding />} />
-        <Route path="/monitoring/protein-percentage/*" element={<ProteinPercentageFarm />} />
-        <Route path="/monitoring/plate-sampling/*" element={<PlateSamplingFarm />} />
-        <Route path="/monitoring/feeding-tables/*" element={<FeedingTableFarms />} />
-
         <Route path="/analytics/*" element={<AnalyticRoutesLabs />} />  
-        <Route path="/crop/*" element={<CropRoutesFarm />} />
-        <Route path="/culture-medium/*" element={<CultureMediumRoutesFarm />} />
+        <Route path="/planning/*" element={<PlanningLabs />} />
+        <Route path="/dispatch-reports/*" element={<DispatchReportLab />} />
+        <Route path="/real-planning/*" element={<RealPlanning />} />
+        <Route path="/monitoring/general/*" element={<GeneralMonitoringLab />} />
+        <Route path="/monitoring/actual-projected/*" element={<RealAndProjectedFeeding />} />
+        <Route path="/crop/*" element={<CropRoutesLabs />} />
+
+        <Route path="/culture-medium/*" element={<CultureMediumRoutesLab />} />
         <Route path="/laboratory/*" element={<LaboratoryFarm/>} />
         <Route path="/packing/*" element={<PackingRouteFarm />} />
         <Route path='/costs/*' element={<CostRouteFarm />} />
@@ -72,9 +77,8 @@ const Farm = React.memo(() => {
 
         <Route path="/inventory/add/*" element={<AddInventoryFarms />} />
         <Route path="/inventory/view/*" element={<InventoryTable />} />
-        <Route path="/parameters/od-temp/*" element={<ODParametersFarms />} />
-        <Route path="/parameters/soil-quality/*" element={<SoilQualityFarm />} />
-        <Route path="/parameters/water-quality/*" element={<WaterAqualityFarms />} />
+        <Route path="/parameters/od-temp/*" element={<ODParametersLabs />} />
+        <Route path="/parameters/water-quality/*" element={<WaterAqualityLabs />} />
         <Route path="/tasks/*" element={<TaskFarms />} />
         <Route path="/coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/seeding-coords/*" element={<LabCoordinationsRoutes />} />

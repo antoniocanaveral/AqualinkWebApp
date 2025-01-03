@@ -139,7 +139,7 @@ function CoordinationLabsResumen() {
               <BasicFormWrapper className="mb-25">
               <div ref={reportRef}>
                 <Row gutter={25}>
-                  <Col xl={10} xs={24}>
+                  <Col xl={10} xs={24} style={{display: 'flex'}}>
                     <Suspense
                       fallback={
                         <Cards headless>
@@ -160,11 +160,7 @@ function CoordinationLabsResumen() {
                           {coordination?.pre_breeding_pool || 'Pre Cria 1'}
                         </div>
                         <br />
-                        <Col xs={24} md={24} style={{ marginBottom: '18px', overflow: 'hidden' }}>
-                          <div style={{ height: '200px' }}>
-                            <GoogleMaps />
-                          </div>
-                        </Col>
+                      
 
                         <Col xs={24} md={24}>
                           <Table

@@ -12,12 +12,13 @@ import NitriteChart from './charts/NitriteChart';
 import PhosphateChart from './charts/PhosphateChart';
 import NitrateChart from './charts/NitrateChart';
 import MagnesiumChart from './charts/MagnesiumChart';
+import { AqualinkMapLab } from '../../../components/maps/aqualink-map-lab';
 
-function WaterAqualityFarms() {
+function WaterAqualityLabs() {
 
   return (
     <>
-      <PageHeader highlightText={"AquaLink Parámetros:"}
+      <PageHeader  highlightText={"AquaLink Parámetros:"}
         title="Calidad del Agua"
         selectOptions={[
           ["Lab 1", "Lab 2", "Lab 3"],
@@ -27,43 +28,12 @@ function WaterAqualityFarms() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={11} xs={24} style={{ display: "flex" }}>
+          <Col xl={12} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={24} md={24}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={24} md={24}>
-
-
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                          <Typography.Text>Área: 307.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                          <Typography.Text>Área: 5.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                          <Typography.Text>Área: 1.35 ha</Typography.Text>
-                        </div>
-                      </div>
-
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
+                <AqualinkMapLab height={220} />
             </Suspense>
           </Col>
-          <Col xl={13} xs={24} style={{ display: "flex" }}>
+          <Col xl={12} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Comportamiento de Ph y Alcalinidad" size="large">
                 <PhAlcalinityBehaviorChart />
@@ -120,12 +90,12 @@ function WaterAqualityFarms() {
               <PhosphateChart />
             </Cards>
           </Col>
-
+         
         </Row>
       </Main >
     </>
   );
 }
 
-export default WaterAqualityFarms;
+export default WaterAqualityLabs;
 
