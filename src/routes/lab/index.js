@@ -38,6 +38,10 @@ import ODParametersLabs from '../../container/AQx-Labs/parameters/od-parameters-
 import WaterAqualityLabs from '../../container/AQx-Labs/parameters/water-quality-parameters-labs';
 import CropRoutesLabs from './farmCrop';
 import CultureMediumRoutesLab from './farmCultureMedium';
+import AddInventoryLabs from '../../container/AQx-Labs/inventory/add-inventory-farms';
+import InventoryTableLabs from '../../container/AQx-Labs/inventory/view-inventory-farms';
+import CostRouteLab from './farmCost';
+import ClientRouteLab from './farmClient';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -66,17 +70,16 @@ const Farm = React.memo(() => {
 
         <Route path="/culture-medium/*" element={<CultureMediumRoutesLab />} />
         <Route path="/laboratory/*" element={<LaboratoryFarm/>} />
-        <Route path="/packing/*" element={<PackingRouteFarm />} />
-        <Route path='/costs/*' element={<CostRouteFarm />} />
-        <Route path="/client/*" element={<ClientRouteFarm />} />
+        <Route path='/costs/*' element={<CostRouteLab />} />
+        <Route path="/client/*" element={<ClientRouteLab />} />
         <Route path="/users/*" element={<UserRoutesFarm />} />
 
         <Route path='/faq/*' element={<FaqComponent/>} />
         <Route path="/support/*" element={<SupportTicket />} />
         <Route path='/message-notifications-center/*' element={<MessageNotificationsCenter />} />
 
-        <Route path="/inventory/add/*" element={<AddInventoryFarms />} />
-        <Route path="/inventory/view/*" element={<InventoryTable />} />
+        <Route path="/inventory/add/*" element={<AddInventoryLabs />} />
+        <Route path="/inventory/view/*" element={<InventoryTableLabs />} />
         <Route path="/parameters/od-temp/*" element={<ODParametersLabs />} />
         <Route path="/parameters/water-quality/*" element={<WaterAqualityLabs />} />
         <Route path="/tasks/*" element={<TaskFarms />} />

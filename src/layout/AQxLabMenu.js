@@ -317,23 +317,7 @@ function AQXLabMenu({ toggleCollapsed }) {
     ]),
 
 
-    getItem(t('Empacadoras'), 'Empacadoras', !topMenu && <UilFlaskPotion />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/packing/view`}>
-          {t('Ver Empacadora')}
-        </NavLink>,
-        'ver-empacadora',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/packing/add`}>
-          {t('Añadir Empacadora')}
-        </NavLink>,
-        'add-empacadora',
-        null,
-      ),
-    ]),
-
+   
 
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('RECURSOS DE GESTIÓN')}</NavTitle>,
@@ -387,7 +371,7 @@ function AQXLabMenu({ toggleCollapsed }) {
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/costs/indirect-add`}>{t('Añadir Costo Indirecto Ha/día')}</NavLink>
+            <NavLink to={`${path}/costs/indirect-add`}>{t('Añadir Costo Indirecto Tanque/día')}</NavLink>
           </div>,
           'costo-indirecto-add',
           null,

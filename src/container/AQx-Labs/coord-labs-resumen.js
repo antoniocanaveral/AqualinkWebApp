@@ -22,12 +22,12 @@ import {
 import { generatePDF } from '../../utility/printPdf';
 
 function CoordinationLabsResumen() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [orientation, setOrientation] = useState('landscape');  // Controlar la disposición
   const reportRef = useRef(); // Referencia al HTML que se convertirá en PDF
 
-   // Función para generar el PDF
-   const handleGeneratePDF = () => {
+  // Función para generar el PDF
+  const handleGeneratePDF = () => {
     const element = reportRef.current; // Referencia al contenido del reporte
     generatePDF(element, orientation, 'reporte-coordinacion.pdf');
   };
@@ -107,10 +107,10 @@ function CoordinationLabsResumen() {
             style={{
               height: '5px',
               width: '5px',
-              backgroundColor: '#012e40', // Elige el color del dot
+              backgroundColor: '#012e40',
               borderRadius: '50%',
               display: 'inline-block',
-              marginRight: '8px', // Espacio entre el dot y el texto
+              marginRight: '8px',
             }}
           />
           <span>{text}</span>
@@ -124,10 +124,10 @@ function CoordinationLabsResumen() {
   };
   return (
     <>
-      <PageHeader  
-       onBack={handleBack}
-      title={`Coordinación: ${coordination?.SM_FishingNotification || "-"}`} 
-      routes={PageRoutes} />
+      <PageHeader
+        onBack={handleBack}
+        title={`Coordinación: ${coordination?.SM_FishingNotification || "-"}`}
+        routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>
@@ -137,137 +137,141 @@ function CoordinationLabsResumen() {
               </Cards>
             }>
               <BasicFormWrapper className="mb-25">
-              <div ref={reportRef}>
-                <Row gutter={25}>
-                  <Col xl={10} xs={24} style={{display: 'flex'}}>
-                    <Suspense
-                      fallback={
-                        <Cards headless>
-                          <Skeleton active />
-                        </Cards>
-                      }
-                    >
-                      <Cards
-                        icon={<UilArrowsResize />}
-                        title={`Coordinación `}
-                        size="large"
+                <div ref={reportRef}>
+                  <Row gutter={25}>
+                    <Col xl={10} xs={24} style={{ display: 'flex' }}>
+                      <Suspense
+                        fallback={
+                          <Cards headless>
+                            <Skeleton active />
+                          </Cards>
+                        }
                       >
-                        <div style={{ display: 'flex', flexDirection: "column", alignItems: 'center', textAlign: "center" }}>
-                          <Avatar style={{ backgroundColor: '#0e92e7', marginRight: '10px' }}>
-                            {coordination?.org_name?.[0] || 'E'}
-                          </Avatar>
-                          <Typography.Title level={5}>{coordination?.org_name || 'EcSSA Manabí'}</Typography.Title>
-                          {coordination?.pre_breeding_pool || 'Pre Cria 1'}
-                        </div>
-                        <br />
-                      
+                        <Cards
+                          icon={<UilArrowsResize />}
+                          title={`Coordinación `}
+                          size="large"
+                        >
 
-                        <Col xs={24} md={24}>
-                          <Table
-                            className='custom-table_lab'
-                            dataSource={coordData}
-                            columns={columns}
-                            pagination={false}
-                            showHeader={false}
-                            bordered
-                            rowClassName={() => 'custom-table-row'}
-                          />
-                        </Col>
-                      </Cards>
-                    </Suspense>
-                  </Col>
+                          <div style={{ display: 'flex', flexDirection: "column", alignItems: 'center', textAlign: "center" }}>
 
-                  <Col xl={14} xs={24}>
-                    <Suspense
-                      fallback={
-                        <Cards headless>
-                          <Skeleton active />
+                            <Typography.Text style={{ fontSize: '14px' }}>
+                              <strong>Estado:</strong> {coordination?.statusWrapper.statusName || '-'}
+                            </Typography.Text>
+                            <br />
+                            <Avatar style={{ backgroundColor: '#0e92e7', marginRight: '10px' }}>
+                              {coordination?.org_name?.[0] || 'E'}
+                            </Avatar>
+                            <Typography.Title level={5}>{coordination?.org_name || 'EcSSA Manabí'}</Typography.Title>
+                            {coordination?.pre_breeding_pool || 'Pre Cria 1'}
+                          </div>
+                          <br />
+
+
+                          <Col xs={24} md={24}>
+                            <Table
+                              className='custom-table_lab'
+                              dataSource={coordData}
+                              columns={columns}
+                              pagination={false}
+                              showHeader={false}
+                              bordered
+                              rowClassName={() => 'custom-table-row'}
+                            />
+                          </Col>
+
+
                         </Cards>
-                      }
-                    >
-                      <Cards icon={<UilFlaskPotion />} title="Información del Laboratorio" size="large">
-                        {/* Detalles del laboratorio */}
-                        <Row gutter={16} style={{ marginBottom: '16px' }}>
-                          <Col span={10}>
-                            <strong>Fecha:</strong> {coordination?.planned_date ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-'}
-                          </Col>
-                          <Col span={10}>
-                            <strong>Módulo:</strong> {coordination?.lab_module || 'M1'}
-                          </Col>
-                          <Col span={4}>
-                            <strong>Tanque:</strong> {coordination?.tank || 'T1'}
-                          </Col>
-                        </Row>
-                        <br />
-                        <br />
+                      </Suspense>
+                    </Col>
 
-                        <Row gutter={16} style={{ marginBottom: '16px' }}>
-                          <Col xs={24} sm={24} md={24} lg={10}>
-                            {/* Secciones en Cards para información clave */}
-                            <div style={{ maxWidth: '100%' }}>
-                              {overviewCardMeshData.map((item, i) => (
-                                <OverviewCardMesh data={item} key={i} />
-                              ))}
-                            </div>
-                          </Col>
-                          <Col xs={24} sm={24} md={24} lg={14}>
-                            {/* Tabla estilizada de información de laboratorio */}
-                            <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
-                              <Table
-                                className='custom-table_lab'
-                                dataSource={labInfoData}
-                                columns={[
-                                  { title: '', dataIndex: 'label', key: 'label', width: '60%' }, // 60% para la primera columna
-                                  { title: '', dataIndex: 'value', key: 'value', width: '40%' }, // 40% para la segunda columna
-                                ]}
-                                pagination={false}
-                                showHeader={false}
-                                bordered
-                                rowClassName={() => 'custom-table-row'}
-                                style={{ width: '100%' }} // Asegura que la tabla se ajuste al 100% del contenedor
-                              />
-                            </div>
-                          </Col>
-                        </Row>
-                        <br />
+                    <Col xl={14} xs={24}>
+                      <Suspense
+                        fallback={
+                          <Cards headless>
+                            <Skeleton active />
+                          </Cards>
+                        }
+                      >
+                        <Cards icon={<UilFlaskPotion />} title="Información del Laboratorio" size="large">
+                          <Row gutter={16} style={{ marginBottom: '16px' }}>
+                            <Col span={10}>
+                              <strong>Fecha:</strong> {coordination?.planned_date ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-'}
+                            </Col>
+                            <Col span={10}>
+                              <strong>Módulo:</strong> {coordination?.lab_module || 'M1'}
+                            </Col>
+                            <Col span={4}>
+                              <strong>Tanque:</strong> {coordination?.tank || 'T1'}
+                            </Col>
+                          </Row>
+                          <br />
+                          <br />
 
-                        <Row gutter={16} style={{ marginBottom: '16px' }}>
-                          <Col span={24} style={{ textAlign: 'center' }}>
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: window.innerWidth < 430 ? 'column' : 'row', // Ajusta la dirección de los elementos
-                                alignItems: 'center',
-                                justifyContent: 'center', // Alinea el contenido al centro
-                                gap: "50px", // Ajusta el espacio entre los elementos
-                                width: "100%"
-                              }}>
-                              {binaryFields.map((field, index) => (
-                                <div key={index} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                  <div style={{ width: "50px" }}>
-                                    <ReactSVG src={require(`../../static/img/AQx-IMG/${field.icon}`)} />
-                                  </div>
-                                  <div style={{ marginLeft: "10px" }}>
-                                    <strong>{field.label}</strong>
-                                  </div>
-                                  <div style={{ marginLeft: "10px" }}>
-                                    <Checkbox checked={field.value} disabled>
-                                      {field.value ? 'Sí' : 'No'}
-                                    </Checkbox>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </Col>
-                        </Row>
-                      </Cards>
-                    </Suspense>
-                  </Col>
+                          <Row gutter={16} style={{ marginBottom: '16px' }}>
+                            <Col xs={24} sm={24} md={24} lg={10}>
+                              <div style={{ maxWidth: '100%' }}>
+                                {overviewCardMeshData.map((item, i) => (
+                                  <OverviewCardMesh data={item} key={i} />
+                                ))}
+                              </div>
+                            </Col>
+                            <Col xs={24} sm={24} md={24} lg={14}>
+                              <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
+                                <Table
+                                  className='custom-table_lab'
+                                  dataSource={labInfoData}
+                                  columns={[
+                                    { title: '', dataIndex: 'label', key: 'label', width: '60%' },
+                                    { title: '', dataIndex: 'value', key: 'value', width: '40%' },
+                                  ]}
+                                  pagination={false}
+                                  showHeader={false}
+                                  bordered
+                                  rowClassName={() => 'custom-table-row'}
+                                  style={{ width: '100%' }}
+                                />
+                              </div>
+                            </Col>
+                          </Row>
+                          <br />
 
-                </Row>
+                          <Row gutter={16} style={{ marginBottom: '16px' }}>
+                            <Col span={24} style={{ textAlign: 'center' }}>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: window.innerWidth < 430 ? 'column' : 'row',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: "50px",
+                                  width: "100%"
+                                }}>
+                                {binaryFields.map((field, index) => (
+                                  <div key={index} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                    <div style={{ width: "50px" }}>
+                                      <ReactSVG src={require(`../../static/img/AQx-IMG/${field.icon}`)} />
+                                    </div>
+                                    <div style={{ marginLeft: "10px" }}>
+                                      <strong>{field.label}</strong>
+                                    </div>
+                                    <div style={{ marginLeft: "10px" }}>
+                                      <Checkbox checked={field.value} disabled>
+                                        {field.value ? 'Sí' : 'No'}
+                                      </Checkbox>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </Col>
+                          </Row>
+                        </Cards>
+                      </Suspense>
+                    </Col>
+
+                  </Row>
                 </div>
-                  {/* Botón para generar el PDF */}
-                  <Button type="primary" onClick={handleGeneratePDF}>
+                <Button type="primary" onClick={handleGeneratePDF}>
                   Generar PDF
                 </Button>
               </BasicFormWrapper>

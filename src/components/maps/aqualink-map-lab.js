@@ -30,27 +30,27 @@ const AqualinkMapLab = ({ width, height }) => {
               layout="vertical"
               style={{ marginTop: height === "305px" ? 0 : height }}
             >
-              <Descriptions.Item label={<Space><IdcardOutlined /> Lote ID</Space>}>
+              <Descriptions.Item style={{fontSize:"13px"}} label={<Space><IdcardOutlined /> Lote ID</Space>}>
                 <Text>12345</Text>
               </Descriptions.Item>
 
-              <Descriptions.Item label={<Space><SlidersOutlined /> Tanque</Space>}>
+              <Descriptions.Item  style={{fontSize:"13px"}}  label={<Space><SlidersOutlined /> Tanque</Space>}>
                 <Text>Tanque A</Text>
               </Descriptions.Item>
 
-              <Descriptions.Item label={<Space><DatabaseOutlined /> Cap. instalada</Space>}>
+              <Descriptions.Item  style={{fontSize:"13px"}}  label={<Space><DatabaseOutlined /> Capacidad</Space>}>
                 <Text>5000 Litros</Text>
               </Descriptions.Item>
 
-              <Descriptions.Item label={<Space><CalendarOutlined /> Fecha Inicio</Space>}>
+              <Descriptions.Item style={{fontSize:"13px"}}  label={<Space><CalendarOutlined /> Fecha Inicio</Space>}>
                 <Text>01/01/2025</Text>
               </Descriptions.Item>
 
-              <Descriptions.Item label={<Space><ClockCircleOutlined /> Fecha Prog. Fin</Space>}>
+              <Descriptions.Item style={{fontSize:"13px"}}  label={<Space><ClockCircleOutlined /> Fecha  Fin</Space>}>
                 <Text>31/12/2025</Text>
               </Descriptions.Item>
 
-              <Descriptions.Item label={<Space><ClusterOutlined /> Nauplios sembrados</Space>}>
+              <Descriptions.Item style={{fontSize:"13px"}}  label={<Space><ClusterOutlined /> Nauplios </Space>}>
                 <Text>15000</Text>
               </Descriptions.Item>
             </Descriptions>

@@ -108,7 +108,7 @@ function CoordinationsLabs() {
           action: (
             <div className="table-actions" style={{ minWidth: "50px", textAlign: "center" }}>
               {!itemStatus.showEditFrom && <Link className="view" to={`./${item.id}/view`}><UilEye /></Link>}
-              {itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}><UilEdit /></Link>}
+              {itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/param`}><UilEdit /></Link>}
               {itemStatus.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}><UilListOlAlt /></Link>}
              
             </div>

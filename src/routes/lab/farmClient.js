@@ -1,19 +1,19 @@
 import React, { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import ClientFarm from '../../container/AQx-Farms/client/client-farm';
-import AddClientFarm from '../../container/AQx-Farms/client/client-add-farm';
+import ClientLab from '../../container/AQx-Labs/client/client-farm';
+import AddClientLab from '../../container/AQx-Labs/client/client-add-farm';
 
 const NotFound = lazy(() => import('../../container/pages/404'));
 
-function ClientRouteFarm() {
+function ClientRouteLab() {
     return (
         <Routes>
-            <Route index element={<ClientFarm />} />
-            <Route path="/view" element={<ClientFarm />} />
-            <Route path="/add" element={<AddClientFarm />} />
+            <Route index element={<ClientLab />} />
+            <Route path="/view" element={<ClientLab />} />
+            <Route path="/add" element={<AddClientLab />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );
 }
 
-export default ClientRouteFarm;
+export default ClientRouteLab;
