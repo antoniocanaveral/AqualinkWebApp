@@ -2,19 +2,21 @@ import React, { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import LaboratoryAddFarm from '../../container/AQx-Farms/laboratory/laboratoryAdd';
 import LaboratoryViewFarm from '../../container/AQx-Farms/laboratory/laboratoryView';
+import ShrimpViewLab from '../../container/AQx-Labs/shrimp/shrimpView';
+import ShrimpAddLab from '../../container/AQx-Labs/shrimp/shrimpAdd';
 
 const NotFound = lazy(() => import('../../container/pages/404'));
 
-function LaboratoryFarm() {
+function ShrimpRouteLab() {
     return (
         <Routes>
-            <Route index element={<LaboratoryAddFarm />}>
+            <Route index element={<ShrimpViewLab />}>
             </Route>
-            <Route path="/add" element={<LaboratoryAddFarm />} />
-            <Route path="/view" element={<LaboratoryViewFarm />} />
+            <Route path="/add" element={<ShrimpAddLab />} />
+            <Route path="/view" element={<ShrimpViewLab />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );
 }
 
-export default LaboratoryFarm;
+export default ShrimpRouteLab;

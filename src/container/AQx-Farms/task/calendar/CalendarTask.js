@@ -29,17 +29,7 @@ const DragAndDropCalendar = withDragAndDrop(Calendar);
 export const eventContext = React.createContext();
 
 function CalendarTask() {
-  const PageRoutes = [
-    {
-      path: '/admin',
-      breadcrumbName: 'Dashboard',
-    },
-    {
-      path: '',
-      breadcrumbName: 'Calendario',
-    },
-  ];
-
+ 
   const mapToRBCFormat = (e) => ({ ...e, start: new Date(e.start), end: new Date(e.end) });
   const dispatch = useDispatch();
   const { events } = useSelector((state) => {
@@ -273,7 +263,7 @@ function CalendarTask() {
                 events={events.map(mapToRBCFormat)}
                 resizable
                 components={{ toolbar: CustomToolbar }}
-                defaultView="month"
+                defaultView="week"
                 defaultDate={new Date()}
                 step={60}
                 onSelectEvent={onSelectEvent}
@@ -320,12 +310,12 @@ export class CustomToolbar extends Toolbar {
         <div className="calendar-header__right">
           <ul>
             <li>
-              <Link className="active" to="#" onClick={this.view.bind(null, 'month')}>
+              <Link  to="#" onClick={this.view.bind(null, 'month')}>
                 Mes
               </Link>
             </li>
             <li>
-              <Link to="#" onClick={this.view.bind(null, 'week')}>
+              <Link className="active" to="#" onClick={this.view.bind(null, 'week')}>
                 Semana
               </Link>
             </li>

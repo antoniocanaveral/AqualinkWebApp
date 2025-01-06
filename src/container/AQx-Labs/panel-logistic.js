@@ -17,8 +17,9 @@ import {
   ClockCircleOutlined,
   ClusterOutlined,
 } from '@ant-design/icons';
+import TankCarouselLogistic from './panel/components/TankCarouselLogistic';
 
-function PanelLabs() {
+function PanelLogisticLabs() {
 
   const OverviewData =
     [
@@ -246,7 +247,7 @@ function PanelLabs() {
                 Lotes Activos
               </Typography.Title>
             </center>
-            <TankCarouselCustody tankData={tankData} />
+            <TankCarouselLogistic tankData={tankData} />
           </Col>
         </Row>
 
@@ -255,4 +256,4 @@ function PanelLabs() {
   );
 }
 
-export default PanelLabs;
+export default PanelLogisticLabs;

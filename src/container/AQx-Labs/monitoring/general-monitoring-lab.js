@@ -5,6 +5,10 @@ import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import ConsumptionSuppliesChart from '../../AQx-Farms/monitoring/general/ConsumptionSuppliesChart';
 import CostsHaDayChart from '../../AQx-Farms/monitoring/general/CostsHaDayChart';
+import GrowthChart from '../../AQx-Farms/monitoring/general/GrowthChart';
+import SurvivalChart from '../../AQx-Farms/monitoring/general/SurvivalChart';
+import FCAChart from '../../AQx-Farms/monitoring/general/FCAChart';
+import BiomassChart from '../../AQx-Farms/monitoring/general/BiomassChart';
 
 function GeneralMonitoringLab() {
 
@@ -22,8 +26,33 @@ function GeneralMonitoringLab() {
             />
             <Main>
                 <Row gutter={25}>
-
-                    <Col xl={10} xs={24} style={{ display: 'flex' }}>
+                    <Col xl={8} xs={24} style={{ display: 'flex' }}>
+                        <Suspense
+                            fallback={
+                                <Cards headless>
+                                    <Skeleton active />
+                                </Cards>
+                            }
+                        >
+                            <Cards title="Crecimiento" size="large" style={{ width: '100%', height: '100%' }}>
+                                <GrowthChart />
+                            </Cards>
+                        </Suspense>
+                    </Col>
+                    <Col xl={8} xs={24} style={{ display: 'flex' }}>
+                        <Suspense
+                            fallback={
+                                <Cards headless>
+                                    <Skeleton active />
+                                </Cards>
+                            }
+                        >
+                            <Cards title="Supervivencia" size="large" style={{ width: '100%', height: '100%' }}>
+                                <SurvivalChart />
+                            </Cards>
+                        </Suspense>
+                    </Col>
+                    <Col xl={8} xs={24} style={{ display: 'flex' }}>
                         <Suspense
                             fallback={
                                 <Cards headless>
@@ -37,7 +66,7 @@ function GeneralMonitoringLab() {
                         </Suspense>
                     </Col>
 
-                    <Col xl={14} xs={24} style={{ display: 'flex' }}>
+                    <Col xl={8} xs={24} style={{ display: 'flex' }}>
                         <Suspense
                             fallback={
                                 <Cards headless>
@@ -45,7 +74,34 @@ function GeneralMonitoringLab() {
                                 </Cards>
                             }
                         >
-                            <Cards title="Costos(USD) Ha/Día" size="large" style={{ width: '100%', height: '100%' }}>
+                            <Cards title="Biomasa" size="large" style={{ width: '100%', height: '100%' }}>
+                                <BiomassChart />
+                            </Cards>
+                        </Suspense>
+                    </Col>
+                    <Col xl={8} xs={24} style={{ display: 'flex' }}>
+                        <Suspense
+                            fallback={
+                                <Cards headless>
+                                    <Skeleton active />
+                                </Cards>
+                            }
+                        >
+                            <Cards title="FCA" size="large" style={{ width: '100%', height: '100%' }}>
+                                <FCAChart />
+                            </Cards>
+                        </Suspense>
+                    </Col>
+
+                    <Col xl={8} xs={24} style={{ display: 'flex' }}>
+                        <Suspense
+                            fallback={
+                                <Cards headless>
+                                    <Skeleton active />
+                                </Cards>
+                            }
+                        >
+                            <Cards title="Costos(USD) Tanque/Día" size="large" style={{ width: '100%', height: '100%' }}>
                                 <CostsHaDayChart />
                             </Cards>
                         </Suspense>

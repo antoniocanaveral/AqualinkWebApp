@@ -168,7 +168,7 @@ function CostAddLabs() {
         <Row gutter={25}>
           <Col xl={12} xs={24}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Costo Indirecto Ha/Día Performance" size="large">
+              <Cards title="Costo Indirecto Tanque/Día Performance" size="large">
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
                   <Speedometer value={speedometerStaticValue} />
                 </div>
@@ -177,7 +177,7 @@ function CostAddLabs() {
           </Col>
           <Col xl={12} xs={24}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Costo Indirecto Ha/Día Semana Actual" size="large">
+              <Cards title="Costo Indirecto Tanque/Día Semana Actual" size="large">
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
                   <Speedometer value={speedometerValue} />
                 </div>

@@ -1,16 +1,11 @@
 import { Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 
+
 const TankCard = ({ data }) => {
     const navigate = useNavigate();
-
-    const handleViewLote = () => {
-        // Redirige a la ruta deseada con el loteID
-        navigate(`/lab/seeding-coords`);
-    };
-
     return (
-        <div
+        <div headless
             style={{
                 border: '2px solid #e3e3e3',
                 borderRadius: '8px',
@@ -18,29 +13,23 @@ const TankCard = ({ data }) => {
                 padding: '20px',
                 width: '300px',
                 minWidth: '300px',
-            }}
-        >
-            {/* Camaronera */}
+            }}>
             <div className="flex-row">
                 <div>
-                    <span className="label">Camaronera:</span>
+                    <span className="label">Laboratorio:</span>
                 </div>
                 <div>
-                    <span>{data.nombreCamaronera || 'NA'}</span>
+                    <span>{data.nombreCamaronara || 'NA'}</span>
                 </div>
             </div>
-
-            {/* Código AQLK */}
             <div className="flex-row">
                 <div>
-                    <span className="label">Código AQLK:</span>
+                    <span className="label">Tanque:</span>
                 </div>
                 <div>
-                    <span>{data.codigoAQLK || 'NA'}</span>
+                    <span>{data.piscinaEngorde || 'NA'}</span>
                 </div>
             </div>
-
-            {/* Lote ID */}
             <div className="flex-row">
                 <div>
                     <span className="label">Lote ID:</span>
@@ -49,109 +38,99 @@ const TankCard = ({ data }) => {
                     <span>{data.loteID || 'NA'}</span>
                 </div>
             </div>
-            <br />
-            <div className="harvest-report-divider-2" />
 
-            {/* Estado */}
             <div className='flex-row'>
                 <div>
-                    <Typography.Title level={5} style={{ color: '#0372ce', fontWeight: 'bold' }}>
-                        Estado:
+                    <Typography.Title level={4} style={{ color: '#0372ce' }}>
+                        Avance Ciclo
                     </Typography.Title>
                 </div>
 
-                <Typography.Title level={5}>
-                    {data.estado}
+                <Typography.Title level={4}>
+                    {data.porcentaje}%
                 </Typography.Title>
             </div>
 
+
+
+
             <div className="harvest-report-divider-2" />
-            <br />
 
-            {/* Fecha de Siembra */}
             <div className="flex-row">
                 <div>
-                    <span className="label">Fecha de Siembra:</span>
+                    <span className="label">Inicio de Cultivo:</span>
                 </div>
                 <div>
-                    <span>{data.fechaSiembra || 'NA'}</span>
+                    <span>{data.inicioCultivo || 'NA'}</span>
+                </div>
+            </div>
+            <div className="flex-row">
+                <div>
+                    <span className="label">Fin de Cultivo:</span>
+                </div>
+                <div>
+                    <span>{data.finCultivo || 'NA'}</span>
+                </div>
+            </div>
+            <div className="flex-row">
+                <div>
+                    <span className="label">Biomasa estimada:</span>
+                </div>
+                <div>
+                    <span>{data.biomasaEstimada || 'NA'}</span>
+                </div>
+            </div>
+            <div className="flex-row">
+                <div>
+                    <span className="label">Supervivencia real:</span>
+                </div>
+                <div>
+                    <span>{data.supervivenciaReal || 'NA'}</span>
+                </div>
+            </div>
+            <div className="flex-row">
+                <div>
+                    <span className="label">FCA real:</span>
+                </div>
+                <div>
+                    <span>{data.fcaReal || 'NA'}</span>
+                </div>
+            </div>
+            <div className="flex-row">
+                <div>
+                    <span className="label">Clasificación de Pesca:</span>
+                </div>
+                <div>
+                    <span>{data.clasificacionPesca || 'NA'}</span>
+                </div>
+            </div>
+            <div className="flex-row">kg x Tanque
+                <div>
+                    <span className="label">Lbs x Ha.:</span>
+                </div>
+                <div>
+                    <span>{data.lbsPorHa || 'NA'}</span>
+                </div>
+            </div>
+            <div className="flex-row">
+                <div>
+                    <span className="label">Coordinación Pesca:</span>
+                </div>
+                <div>
+                    <span>{data.coordinacionPesca || 'NA'}</span>
                 </div>
             </div>
 
-            {/* Pre Cría destino (a sembrar) */}
-            <div className="flex-row">
-                <div>
-                    <span className="label">Pre Cría destino (a sembrar):</span>
-                </div>
-                <div>
-                    <span>{data.preCriaDestino || 'NA'}</span>
-                </div>
-            </div>
 
-            {/* Piscina Engorde destino */}
-            <div className="flex-row">
-                <div>
-                    <span className="label">Piscina Engorde destino:</span>
-                </div>
-                <div>
-                    <span>{data.piscinaEngordeDestino || 'NA'}</span>
-                </div>
-            </div>
 
-            {/* Estadio requerido */}
-            <div className="flex-row">
-                <div>
-                    <span className="label">Estadio requerido:</span>
-                </div>
-                <div>
-                    <span>
-                        {data.estadioRequerido && data.estadioRequerido.length > 0
-                            ? data.estadioRequerido.join(', ')
-                            : 'NA'}
-                    </span>
-                </div>
-            </div>
-
-            {/* PL / Gramo */}
-            <div className="flex-row">
-                <div>
-                    <span className="label">PL / Gramo:</span>
-                </div>
-                <div>
-                    <span>
-                        {data.plGramo && data.plGramo.length > 0
-                            ? data.plGramo.join(', ')
-                            : 'NA'}
-                    </span>
-                </div>
-            </div>
-
-            {/* Salinidad */}
-            <div className="flex-row">
-                <div>
-                    <span className="label">Salinidad:</span>
-                </div>
-                <div>
-                    <span>{data.salinidad || 'NA'}</span>
-                </div>
-            </div>
 
             <button
-                style={{
-                    backgroundColor: '#0372ce',
-                    color: 'white',
-                    padding: '5px 10px',
-                    borderRadius: '5px',
-                    border: 'none',
-                    marginTop: '10px',
-                    cursor: 'pointer',
-                }}
-                onClick={handleViewLote}
-            >
+                onClick={() => navigate("/lab/seeding-coords")}
+                style={{ backgroundColor: '#0372ce', color: 'white', padding: '5px 10px', borderRadius: '5px', border: 'none' }}>
                 Ver Tanque
             </button>
         </div>
-    );
-};
+    )
+}
 
 export default TankCard;

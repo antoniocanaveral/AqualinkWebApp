@@ -12,7 +12,7 @@ function CenterCostLabs() {
   const data = [
     {
       key: '1',
-      asignacion: 'PP Piscina 1',
+      asignacion: 'Tanque 1',
       codigo: '8569',
       valor: '$3,395',
       costo: '$1,250',
@@ -20,7 +20,7 @@ function CenterCostLabs() {
     },
     {
       key: '2',
-      asignacion: 'PP PreCría 1',
+      asignacion: 'Tanque 1',
       codigo: '8572',
       valor: '$2,820',
       costo: '$950',
@@ -28,7 +28,7 @@ function CenterCostLabs() {
     },
     {
       key: '3',
-      asignacion: 'PP Piscina 2',
+      asignacion: 'Tanque 2',
       codigo: '8570',
       valor: '$3,672',
       costo: '$1,320',
@@ -36,7 +36,7 @@ function CenterCostLabs() {
     },
     {
       key: '4',
-      asignacion: 'PP PreCría 2',
+      asignacion: 'Tanque 2',
       codigo: '8573',
       valor: '$2,835',
       costo: '$997',
@@ -44,7 +44,7 @@ function CenterCostLabs() {
     },
     {
       key: '5',
-      asignacion: 'PP Piscina 3',
+      asignacion: 'Tanque 3',
       codigo: '8571',
       valor: '$3,850',
       costo: '$1,975',
@@ -107,12 +107,12 @@ function CenterCostLabs() {
   ];
 
   const dataLineChart = [
-    { x: 1, 'costo real': 20, 'costo proyectado': 25, precria: 0, optimo: 32 },
-    { x: 20, 'costo real': 35, 'costo proyectado': 30, precria: 0, optimo: 32 },
-    { x: 40, 'costo real': 50, 'costo proyectado': 45, precria: 0, optimo: 32 },
-    { x: 60, 'costo real': 65, 'costo proyectado': 60, precria: 20, optimo: 32 },
-    { x: 80, 'costo real': 75, 'costo proyectado': 70, precria: 65, optimo: 32 },
-    { x: 100, 'costo real': 85, 'costo proyectado': 80, precria: 75, optimo: 32 },
+    { x: 1, 'costo real': 20, 'costo proyectado': 25, crecimiento: 0, optimo: 32 },
+    { x: 20, 'costo real': 35, 'costo proyectado': 30, crecimiento: 0, optimo: 32 },
+    { x: 40, 'costo real': 50, 'costo proyectado': 45, crecimiento: 0, optimo: 32 },
+    { x: 60, 'costo real': 65, 'costo proyectado': 60, crecimiento: 20, optimo: 32 },
+    { x: 80, 'costo real': 75, 'costo proyectado': 70, crecimiento: 65, optimo: 32 },
+    { x: 100, 'costo real': 85, 'costo proyectado': 80, crecimiento: 75, optimo: 32 },
   ];
   return (
     <>

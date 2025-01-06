@@ -42,6 +42,9 @@ import AddInventoryLabs from '../../container/AQx-Labs/inventory/add-inventory-f
 import InventoryTableLabs from '../../container/AQx-Labs/inventory/view-inventory-farms';
 import CostRouteLab from './farmCost';
 import ClientRouteLab from './farmClient';
+import RealAndProjectedFeedingLab from '../../container/AQx-Labs/monitoring/real-vs-projected-feeding-lab';
+import ShrimpRouteLab from '../farm/farmLaboratory';
+import PanelLogisticLabs from '../../container/AQx-Labs/panel-logistic';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -60,16 +63,17 @@ const Farm = React.memo(() => {
       <Routes>
         <Route index element={<PanelFarmRoutes />} />     
         <Route path="/panel/*" element={<PanelLabs />} />  
+        <Route path="/panel-logistic/*" element={<PanelLogisticLabs />} />  
         <Route path="/analytics/*" element={<AnalyticRoutesLabs />} />  
         <Route path="/planning/*" element={<PlanningLabs />} />
         <Route path="/dispatch-reports/*" element={<DispatchReportLab />} />
         <Route path="/real-planning/*" element={<RealPlanning />} />
         <Route path="/monitoring/general/*" element={<GeneralMonitoringLab />} />
-        <Route path="/monitoring/actual-projected/*" element={<RealAndProjectedFeeding />} />
+        <Route path="/monitoring/actual-projected/*" element={<RealAndProjectedFeedingLab />} />
         <Route path="/crop/*" element={<CropRoutesLabs />} />
 
         <Route path="/culture-medium/*" element={<CultureMediumRoutesLab />} />
-        <Route path="/laboratory/*" element={<LaboratoryFarm/>} />
+        <Route path="/shrimp/*" element={<ShrimpRouteLab/>} />
         <Route path='/costs/*' element={<CostRouteLab />} />
         <Route path="/client/*" element={<ClientRouteLab />} />
         <Route path="/users/*" element={<UserRoutesFarm />} />

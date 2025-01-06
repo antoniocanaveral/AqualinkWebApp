@@ -92,7 +92,7 @@ function CostLabs() {
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>COSTO IND Ha. / día</span>,
+      title: <span style={{ fontSize: '11px' }}>COSTO IND Tanque/ día</span>,
       key: 'costoInd',
       align: 'center',
       render: (_, record) => (
@@ -450,7 +450,7 @@ function CostLabs() {
 
     const valoresPorHaRow = {
       key: 'valoresPorHa',
-      tipo: 'VALOR X HA',
+      tipo: 'VALOR X TANQUE',
       ...groupedByWeek.reduce((acc, week, index) => {
         acc[`semana${index + 1}`] = week.valorPorHa.toFixed(2); // Formateamos el valor por Ha
         return acc;

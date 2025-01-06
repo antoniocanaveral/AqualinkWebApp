@@ -54,7 +54,7 @@ function WaterFlowLabs() {
             </Suspense>
 
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Área de Piscina y Volumen de Agua" size="large" style={{ flex: 1, marginTop: 0 }}>
+              <Cards title="Área de Tanque y Volumen de Agua" size="large" style={{ flex: 1, marginTop: 0 }}>
                 <WaterFlowCycleChart />
               </Cards>
             </Suspense>
@@ -63,7 +63,7 @@ function WaterFlowLabs() {
           <Col xl={12} xs={24} style={{ display: 'flex' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Medio de Cultivo y Protocolos de Flujo" size="large">
-                <Typography.Title level={5} strong>Área de Piscina: {reportData.areaPiscina}</Typography.Title>
+                <Typography.Title level={5} strong>Área de Tanque: {reportData.areaPiscina}</Typography.Title>
 
                 {/* Superficie y Profundidad en la misma fila */}
                 <div className="report-section row-section">
@@ -111,6 +111,12 @@ function WaterFlowLabs() {
                 <div className="harvest-report-divider" />
                 <div className="report-section">
                   <Typography.Title level={5}>Volumen Operativo Ciclo</Typography.Title>
+                  <Row className="report-row">
+                    <Col span={24}>0 m3</Col>
+                  </Row>
+                </div>
+                <div className="report-section">
+                  <Typography.Title level={5}>Oxígeno</Typography.Title>
                   <Row className="report-row">
                     <Col span={24}>0 m3</Col>
                   </Row>

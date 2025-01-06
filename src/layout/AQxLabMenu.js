@@ -246,7 +246,7 @@ function AQXLabMenu({ toggleCollapsed }) {
 
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/crop/harvest`}>{t('Cosecha/Raleo')}</NavLink>
+            <NavLink to={`${path}/crop/harvest`}>{t('Cosecha')}</NavLink>
           </div>,
           'cultivo-cosecha',
           null,
@@ -282,6 +282,17 @@ function AQXLabMenu({ toggleCollapsed }) {
       null,
       'group',
     ),
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/panel-logistic`}>
+        {t('Panel de Logística')}
+      </NavLink>,
+      'panel-logitic',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/panel-logistic`}>
+          <UilDesktop />
+        </NavLink>
+      ),
+    ),
 
     getItem(t('Coordinación'), 'coordinacion', !topMenu && <UilCalendarAlt />, [
 
@@ -299,17 +310,17 @@ function AQXLabMenu({ toggleCollapsed }) {
     ]),
 
 
-    getItem(t('Laboratorios'), 'laboratorios', !topMenu && <UilFlaskPotion />, [
+    getItem(t('Camaroneras'), 'camaroneras', !topMenu && <UilFlaskPotion />, [
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/laboratory/view`}>
-          {t('Ver Laboratorios')}
+        <NavLink className="menuItem-icon" to={`${path}/shrimp/view`}>
+          {t('Ver Camaroneras')}
         </NavLink>,
         'ver-laboratorios',
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/laboratory/add`}>
-          {t('Añadir Laboratorio')}
+        <NavLink className="menuItem-icon" to={`${path}/shrimp/add`}>
+          {t('Añadir Camaroneras')}
         </NavLink>,
         'add-laboratorio',
         null,
@@ -371,7 +382,7 @@ function AQXLabMenu({ toggleCollapsed }) {
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/costs/indirect-add`}>{t('Añadir Costo Indirecto Tanque/día')}</NavLink>
+            <NavLink to={`${path}/costs/indirect-add`}>{t('Añadir Costo Indirecto ')}</NavLink>
           </div>,
           'costo-indirecto-add',
           null,
