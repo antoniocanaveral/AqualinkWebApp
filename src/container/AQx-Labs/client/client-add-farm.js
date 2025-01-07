@@ -125,25 +125,28 @@ function AddClientLab() {
         {
             title: 'Número de Tanques',
             content: (
-                <Tabs>
-                    {Array.from(
-                        { length: form.getFieldValue("numeroTanques") || 0 },
-                        (_, index) => (
-                            <TabPane
-                                tab={`Tanque ${index + 1}`}
-                                key={`tanque-${index + 1}`}
-                            >
-                                <TanqueEngordeInfrastructure
-                                    key={`tab-tanque-${index}`}
-                                    index={index}
-                                    alimentadores={alimentadoresEngorde}
-                                    handleAddAlimentador={handleAddAlimentadorEngorde}
-                                    form={form} // Pasar el formulario principal
-                                />
-                            </TabPane>
-                        )
-                    )}
-                </Tabs>
+
+                <div style={{ width: "100%" }}>
+                    <Tabs>
+                        {Array.from(
+                            { length: form.getFieldValue("numeroTanques") || 0 },
+                            (_, index) => (
+                                <TabPane
+                                    tab={`Tanque ${index + 1}`}
+                                    key={`tanque-${index + 1}`}
+                                >
+                                    <TanqueEngordeInfrastructure
+                                        key={`tab-tanque-${index}`}
+                                        index={index}
+                                        alimentadores={alimentadoresEngorde}
+                                        handleAddAlimentador={handleAddAlimentadorEngorde}
+                                        form={form} // Pasar el formulario principal
+                                    />
+                                </TabPane>
+                            )
+                        )}
+                    </Tabs>
+                </div>
             ),
         },
     ];
@@ -153,29 +156,31 @@ function AddClientLab() {
         // Paso 2: Registro Engorde
         if (currentStep === 0) {
 
-            const cantidadEngorde = form.getFieldValue("cantidadPiscinasEngorde") || 0;
+            const cantidadTanques = form.getFieldValue("numeroTanques") || 0;
 
-            const camposEngorde = Array.from({ length: cantidadEngorde }, (_, index) => [
-                `piscinaEngordeId-${index}`,
-                `extensionEngorde-${index}`,
-                `profundidadOperativaEngorde-${index}`,
-                `profundidadTransferenciaEngorde-${index}`,
-                `diasCrecimientoEngorde-${index}`,
-                `cantidadAlimentoEngorde-${index}`,
-                `metodoAlimentacionEngorde-${index}`,
+            const camposTanques = Array.from({ length: cantidadTanques }, (_, index) => [
+                `identificadorTanque-${index}`,
+                `dimensionesLargo-${index}`,
+                `dimensionesAncho-${index}`,
+                `profundidad-${index}`,
+                `nivelSiembra-${index}`,
+                `nivelCosecha-${index}`,
+                `aireacionMecanica-${index}`,
+                `metodoAlimentacion-${index}`,
             ]).flat();
-
+            
             const errorMessagesPaso2 = {
-                piscinaEngordeId: "El campo 'Piscina Engorde' es obligatorio.",
-                extensionEngorde: "El campo 'Extensión Engorde' debe ser mayor a 0.",
-                profundidadOperativaEngorde: "La 'Profundidad Operativa Engorde' debe ser mayor a 0.",
-                profundidadTransferenciaEngorde: "La 'Profundidad Transferencia Engorde' debe ser mayor a 0.",
-                diasCrecimientoEngorde: "Los 'Días de Crecimiento' deben ser mayores a 0.",
-                cantidadAlimentoEngorde: "La 'Cantidad de Alimento' debe ser mayor a 0.",
-                metodoAlimentacionEngorde: "Debes seleccionar un método de alimentación (Manual o Automático).",
+                identificadorTanque: "El campo 'Identificador de Tanque' es obligatorio.",
+                dimensionesLargo: "El campo 'Dimensiones Largo' debe ser mayor a 0.",
+                dimensionesAncho: "El campo 'Dimensiones Ancho' debe ser mayor a 0.",
+                profundidad: "El campo 'Profundidad' debe ser mayor a 0.",
+                nivelSiembra: "El campo 'Nivel de Siembra' debe ser mayor a 0.",
+                nivelCosecha: "El campo 'Nivel de Cosecha' debe ser mayor a 0.",
+                aireacionMecanica: "Debes seleccionar si la 'Aireación Mecánica' está presente.",
+                metodoAlimentacion: "Debes seleccionar un método de alimentación (Manual o Automático).",
             };
-
-            const camposConErroresPaso2 = camposEngorde.filter(campo => {
+            
+            const camposConErroresPaso2 = camposTanques.filter(campo => {
                 const valor = form.getFieldValue(campo);
                 const campoBase = campo.split('-')[0];
                 if (campoBase.includes("metodoAlimentacion")) {
@@ -267,7 +272,7 @@ function AddClientLab() {
                             <Cards headless>
                                 {/* Información Identificadora */}
                                 <Row gutter={16}>
-                                 
+
                                     <Col span={6}>
                                         <Form.Item label="Nombre del Laboratorio">
                                             <Input value={form.getFieldValue("nombreLaboratorio") || ""} disabled />
@@ -329,7 +334,7 @@ function AddClientLab() {
                                             ...Array.from({ length: form.getFieldValue("numeroModulos") || 0 }, (_, index) => ({
                                                 key: `Mo-${index + 1}`,
                                                 value: form.getFieldValue(`identificadorTanque-${index}`),
-                                                label: `Mo-${index+1}`,
+                                                label: `Mo-${index + 1}`,
                                             })).filter(({ value }) => value),
                                         ].map(({ key, value, label }) => (
                                             <Option key={key} value={value}>

@@ -1,0 +1,202 @@
+.container {
+    width: 100%;
+    height: calc(100vh / 6); /* Aproximadamente un sexto de la altura de la ventana */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--light-blue); /* Definir en :root o en un archivo de variables */
+    padding: 10px 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .headerCard {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    border-radius: 5px;
+    margin: 0 15px;
+    padding: 5px;
+    background-color: var(--solid-blue);
+  }
+  
+  .headerCardBodyText {
+    color: var(--white);
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .headerCardFooterText {
+    color: var(--white);
+    font-size: 12px;
+  }
+  
+  .imageContainer {
+    flex: 1;
+    margin-right: 10px;
+  }
+  
+  .imagePlaceholder {
+    width: 50px;
+    height: 50px;
+    background-color: #ccc; /* Color de placeholder */
+    border-radius: 5px;
+  }
+  
+  .iconContainer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .icon {
+    color: var(--white);
+  }
+  
+  .firstContainer {
+    flex: 0.7;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--light-blue);
+    padding: 0;
+    z-index: 2;
+    margin: 0 15px;
+  }
+  
+  .inputGroupContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .inputContainer {
+    width: calc((100% - 35px) / 2); /* Ajustar según sea necesario */
+    margin-bottom: 16px; /* Espaciado vertical para envolver elementos */
+  }
+  
+  .dropDownInput {
+    flex: 1;
+    border-radius: 5px;
+    border: 1px solid var(--white);
+  }
+  
+  .headerCardTitleBox {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    border-radius: 5px;
+    margin: 0 15px;
+    padding-top: 30px;
+  }
+  
+  .headerCardTitleText {
+    color: white;
+    font-size: 30px;
+    padding-left: 15px;
+    font-weight: bold;
+  }
+  
+  .headerCardTitleSufixText {
+    color: white;
+    font-size: 18px;
+    padding-left: 15px;
+    font-weight: bold;
+    padding-top: 13px;
+  }
+  
+  .headerTitleContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .headerTitleTextContainer {
+    flex: 1;
+    height: 100%;
+  }
+  
+  .headerTitleBackContainer {
+    width: 80px;
+  }
+  
+  .backBtn {
+    background-color: var(--light-blue);
+    flex: 1;
+    margin: 4px;
+    border-radius: 3px;
+    border: 1px solid var(--light-blue);
+    display: flex;
+    flex-direction: row;
+    height: 44px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .backBtnContainer {
+    flex: 1;
+    margin: 4px;
+    display: flex;
+    flex-direction: row;
+    height: 44px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .btnIconContainer {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    padding-left: 8px;
+    width: 30px;
+  }
+  
+  .btnIcon {
+    color: var(--white);
+    display: flex;
+    align-items: center;
+  }
+  
+  .spinner {
+    /* Estilo para el spinner personalizado si no usas Ant Design Spin */
+  }
+  
+  .setupIconButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .headerCardContent {
+    flex: 6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 16px;
+  }
+  
+  .subTextContainer {
+    width: 100%;
+    padding: 10px 15px;
+  }
+  
+  .subText {
+    color: white;
+    font-size: 16px;
+  }
+  
+  .customCmpContainer {
+    border: 0;
+    flex: 1;
+  }
+  

@@ -70,7 +70,7 @@ export const NaturalPersonForm = () => (
 
         {/* Separador: Información de Camaronera */}
         <div style={{ marginTop: '20px', marginBottom: '10px' }}>
-            <strong>● Información de Camaronera</strong>
+            <strong>● Información de Laboratorio</strong>
         </div>
 
         <Row gutter={16}>

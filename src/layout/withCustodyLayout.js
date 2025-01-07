@@ -9,39 +9,56 @@ import { Scrollbars } from '@pezhmanparsaee/react-custom-scrollbars';
 import { connect } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import AQxCustodyMenu from './AQxCustodyMenu';
 import { FooterStyle, LayoutContainer, SmallScreenAuthInfo, TopMenuSearch } from './Style';
 import TopMenu from './TopMenu';
 import Search from '../components/utilities/auth-info/Search';
 import AuthInfo from '../components/utilities/auth-info/info';
+import AQXLabMenu from './AQxLabMenu';
+import AQxCustodityMenu from './AQxCustodyMenu';
 
 const { theme } = require('../config/theme/themeVariables');
 
 const { Header, Sider, Content } = Layout;
 
 const ThemeLayout = (WrappedComponent) => {
-const { darkMode } = theme; // Accedemos directamente a darkMode
+  const { darkMode } = theme; // Accedemos directamente a darkMode
 
   class LayoutComponent extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        collapsed: true,
+        collapsed: window.visualViewport.width <= 1024,
         hide: true,
       };
       this.updateDimensions = this.updateDimensions.bind(this);
     }
-
+    
     componentDidMount() {
       window.addEventListener('resize', this.updateDimensions);
       this.updateDimensions();
-
+      
+      console.log('componentDidMount - window.visualViewport.width:', window.visualViewport.width);
+    
       // Aquí añadimos el cambio de estilo cuando el componente se monta
       const headerContent = document.querySelector('.ninjadash-header-content__left');
+      const isMobile = window.visualViewport.width <= 1024;
       if (headerContent) {
-        headerContent.style.backgroundColor = '#012E40';
+        console.log(isMobile)
+        console.log(window.visualViewport.width)
+        if (isMobile) {
+          headerContent.style.backgroundColor = '#ffffff';
+        } else {
+          headerContent.style.backgroundColor = '#012E40';
+        }
       }
     }
+    
+    updateDimensions() {
+      this.setState({
+        collapsed: window.visualViewport.width <= 1024,
+      });
+    }
+    
 
     componentWillUnmount() {
       window.removeEventListener('resize', this.updateDimensions);
@@ -49,9 +66,10 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
 
     updateDimensions() {
       this.setState({
-        collapsed: window.innerWidth <= 1200 && true,
+        collapsed: window.visualViewport.width <= 1024,
       });
     }
+    
 
     render() {
       const { collapsed, hide } = this.state;
@@ -78,7 +96,7 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
       };
 
       const toggleCollapsedMobile = () => {
-        if (window.innerWidth <= 990) {
+        if (window.visualViewport.width <= 1024) {
           this.setState({
             collapsed: !collapsed,
           });
@@ -143,19 +161,20 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
                 <div className="ninjadash-header-content__left">
                   <div className="navbar-brand align-cener-v">
                     <Link
-                      className={topMenu && window.innerWidth > 991 ? 'ninjadash-logo top-menu' : 'ninjadash-logo'}
+                      className={topMenu && window.visualViewport.width > 1024 ? 'ninjadash-logo top-menu' : 'ninjadash-logo'}
                       to="/"
                     >
                       <img
                         src={
-                          collapsed
+                          window.visualViewport.width <= 1024 ||
+                            collapsed
                             ? require(`../static/img/AQx-IMG/aqualink-dark.svg`).default
                             : require(`../static/img/AQx-IMG/aqualink-lite.svg`).default
                         }
                         alt=""
                       />
                     </Link>
-                    {!topMenu || window.innerWidth <= 991 ? (
+                    {!topMenu || window.visualViewport.width <= 1024 ? (
                       <Button type="link" onClick={toggleCollapsed}>
                         <img
                           src={require(`../static/img/icon/${collapsed ? 'left-bar.svg' : 'left-bar.svg'}`)}
@@ -167,10 +186,10 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
                 </div>
                 <div className="ninjadash-header-content__right d-flex">
                   <div className="ninjadash-navbar-menu d-flex align-center-v">
-                    {topMenu && window.innerWidth > 991 ? <TopMenu /> : ''}
+                    {topMenu && window.visualViewport.width > 1024 ? <TopMenu /> : ''}
                   </div>
                   <div className="ninjadash-nav-actions">
-                    {topMenu && window.innerWidth > 991 ? (
+                    {topMenu && window.visualViewport.width > 1024 ? (
                       <TopMenuSearch>
                         <div className="top-right-wrap d-flex">
                           <AuthInfo />
@@ -206,7 +225,7 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
               </Row>
             </div>
             <Layout>
-              {!topMenu || window.innerWidth <= 991 ? (
+              {!topMenu || window.visualViewport.width <= 1024 ? (
                 <ThemeProvider theme={darkMode}>
                   <Sider
                     width={280}
@@ -224,7 +243,7 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
                       renderView={renderView}
                       renderTrackVertical={(props) => <div {...props} className="ninjadash-track-vertical" />}
                     >
-                      <AQxCustodyMenu topMenu={topMenu} toggleCollapsed={toggleCollapsedMobile} />
+                      <AQxCustodityMenu topMenu={topMenu} toggleCollapsed={toggleCollapsedMobile} />
                     </Scrollbars>
                   </Sider>
                 </ThemeProvider>
@@ -239,14 +258,14 @@ const { darkMode } = theme; // Accedemos directamente a darkMode
                           © 2024<Link to="#">Aqualink</Link>
                         </span>
                       </Col>
-                     
+
                     </Row>
                   </FooterStyle>
                 </Content>
               </Layout>
             </Layout>
           </Layout>
-          {window.innerWidth <= 991 ? (
+          {window.visualViewport.width <= 1024 ? (
             <span className={collapsed ? 'ninjadash-shade' : 'ninjadash-shade show'} onClick={toggleCollapsed} />
           ) : (
             ''

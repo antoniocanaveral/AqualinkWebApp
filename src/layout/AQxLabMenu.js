@@ -313,7 +313,7 @@ function AQXLabMenu({ toggleCollapsed }) {
     getItem(t('Camaroneras'), 'camaroneras', !topMenu && <UilFlaskPotion />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/shrimp/view`}>
-          {t('Ver Camaroneras')}
+          {t('Cliente/Camaroneras')}
         </NavLink>,
         'ver-laboratorios',
         null,

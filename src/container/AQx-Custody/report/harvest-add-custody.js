@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Card, Form, Select, Input, Button, Steps, Modal, message } from 'antd';
+import { Row, Col, Card, Form, Select, Input, Button, Steps, Modal, message, InputNumber } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -41,7 +41,10 @@ function LoteAddCustody() {
         {
             title: 'Información del Lote',
             content: (
-                <Form layout="vertical" form={form}>
+                <Form layout="vertical" form={form}
+                    initialValues={{
+                        volumenIngreso: 0.00,
+                    }}>
                     <Form.Item
                         label="Fecha"
                         name="fecha"
@@ -83,7 +86,19 @@ function LoteAddCustody() {
                                 name="volumenIngreso"
                                 rules={[{ required: true, message: 'Debe ingresar el volumen de ingreso' }]}
                             >
-                                <Input type="number" placeholder="Volumen (litros)" min={0} />
+                                <Input
+                                    min={0}
+                                    style={{ width: '100%' }}
+                                    formatter={(value) =>
+                                        value !== undefined && value !== null
+                                            ? Number(value).toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            : '0.00'
+                                    }
+                                    parser={(value) => value.replace(/,/g, '')}
+                                    type="number" placeholder="Volumen (litros)" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -102,7 +117,16 @@ function LoteAddCustody() {
         {
             title: 'Entero',
             content: (
-                <Form layout="vertical" form={form}>
+                <Form
+                    layout="vertical"
+                    form={form}
+                    initialValues={{
+                        entero20_30: 0.00,
+                        entero30_40: 0.00,
+                        entero40_50: 0.00,
+                        entero50_60: 0.00,
+                    }}
+                >
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
@@ -110,7 +134,21 @@ function LoteAddCustody() {
                                 name="entero20_30"
                                 rules={[{ required: true, message: 'Debe ingresar el valor' }]}
                             >
-                                <Input type="number" placeholder="Ingrese el valor" />
+                                <InputNumber
+                                    placeholder="Ingrese el valor"
+                                    style={{ width: '100%' }}
+                                    min={0}
+                                    formatter={(value) =>
+                                        value !== undefined && value !== null
+                                            ? Number(value).toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            : '0.00'
+                                    }
+                                    parser={(value) => value.replace(/,/g, '')}
+                                    precision={2}
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -119,7 +157,21 @@ function LoteAddCustody() {
                                 name="entero30_40"
                                 rules={[{ required: true, message: 'Debe ingresar el valor' }]}
                             >
-                                <Input type="number" placeholder="Ingrese el valor" />
+                                <InputNumber
+                                    placeholder="Ingrese el valor"
+                                    style={{ width: '100%' }}
+                                    min={0}
+                                    formatter={(value) =>
+                                        value !== undefined && value !== null
+                                            ? Number(value).toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            : '0.00'
+                                    }
+                                    parser={(value) => value.replace(/,/g, '')}
+                                    precision={2}
+                                />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -130,7 +182,21 @@ function LoteAddCustody() {
                                 name="entero40_50"
                                 rules={[{ required: true, message: 'Debe ingresar el valor' }]}
                             >
-                                <Input type="number" placeholder="Ingrese el valor" />
+                                <InputNumber
+                                    placeholder="Ingrese el valor"
+                                    style={{ width: '100%' }}
+                                    min={0}
+                                    formatter={(value) =>
+                                        value !== undefined && value !== null
+                                            ? Number(value).toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            : '0.00'
+                                    }
+                                    parser={(value) => value.replace(/,/g, '')}
+                                    precision={2}
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -139,11 +205,26 @@ function LoteAddCustody() {
                                 name="entero50_60"
                                 rules={[{ required: true, message: 'Debe ingresar el valor' }]}
                             >
-                                <Input type="number" placeholder="Ingrese el valor" />
+                                <InputNumber
+                                    placeholder="Ingrese el valor"
+                                    style={{ width: '100%' }}
+                                    min={0}
+                                    formatter={(value) =>
+                                        value !== undefined && value !== null
+                                            ? Number(value).toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            : '0.00'
+                                    }
+                                    parser={(value) => value.replace(/,/g, '')}
+                                    precision={2}
+                                />
                             </Form.Item>
                         </Col>
                     </Row>
                 </Form>
+
             ),
         },
         {

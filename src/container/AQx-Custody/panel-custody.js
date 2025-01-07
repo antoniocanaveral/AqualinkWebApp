@@ -128,9 +128,9 @@ function PanelCustody() {
                 </Cards>
               }
             >
-              <AqualinkMaps width={'100%'} height={
-                window.innerWidth >= 2000 ? '600px' :
-                  '205px'
+              <AqualinkMaps height={
+                window.innerWidth >= 2000 ? 600 :
+                  230
               } />
             </Suspense>
           </Col>

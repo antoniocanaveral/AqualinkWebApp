@@ -110,7 +110,7 @@ export const LegalPersonForm = () => (
                             >
                                 <Select placeholder="Seleccione Tipo de Cliente">
                                     <Option value="GIV">GIV</Option>
-                                    <Option value="FPA">FPA</Option>
+                                    <Option value="GPA">GPA</Option>
                                     <Option value="FIN">FIN</Option>
                                     <Option value="LAB">LAB</Option>
                                     <Option value="PAK">PAK</Option>

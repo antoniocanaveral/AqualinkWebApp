@@ -67,8 +67,8 @@ function ShrimpViewLab() {
   return (
     <>
       <PageHeader
-        highlightText="AquaLink Producción"
-        title="Vista de Producciones"
+        highlightText="AquaLink Laboratorio"
+        title="Vista de Clientes"
       />
       <Main>
         <Row gutter={[25, 25]}>

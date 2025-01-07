@@ -259,47 +259,53 @@ function AddClientFarm() {
         {
             title: 'Registro Pre Engorde',
             content: (
-                <Tabs>
-                    {Array.from(
-                        { length: form.getFieldValue("cantidadPiscinasPreEngorde") || 0 },
-                        (_, index) => (
-                            <TabPane tab={`Pre Engorde ${index + 1}`} key={`pre-engorde-${index + 1}`}>
-                                <PreEngordeInfrastructure
-                                    key={`tab-pre-engorde-${index}`}
-                                    index={index}
-                                    alimentadores={alimentadoresPreEngorde}
-                                    handleAddAlimentador={handleAddAlimentadorPreEngorde}
-                                    form={form} // Pasar el formulario principal
-                                />
-                            </TabPane>
 
-                        )
-                    )}
-                </Tabs>
+                <div style={{ width: "100%" }}>
+                    <Tabs>
+                        {Array.from(
+                            { length: form.getFieldValue("cantidadPiscinasPreEngorde") || 0 },
+                            (_, index) => (
+                                <TabPane tab={`Pre Engorde ${index + 1}`} key={`pre-engorde-${index + 1}`}>
+                                    <PreEngordeInfrastructure
+                                        key={`tab-pre-engorde-${index}`}
+                                        index={index}
+                                        alimentadores={alimentadoresPreEngorde}
+                                        handleAddAlimentador={handleAddAlimentadorPreEngorde}
+                                        form={form} // Pasar el formulario principal
+                                    />
+                                </TabPane>
+
+                            )
+                        )}
+                    </Tabs>
+                </div>
             ),
         },
         {
             title: 'Registro Engorde',
             content: (
-                <Tabs>
-                    {Array.from(
-                        { length: form.getFieldValue("cantidadPiscinasEngorde") || 0 },
-                        (_, index) => (
-                            <TabPane
-                                tab={`Engorde ${index + 1}`}
-                                key={`engorde-${index + 1}`}
-                            >
-                                <EngordeInfrastructure
-                                    key={`tab-engorde-${index}`}
-                                    index={index}
-                                    alimentadores={alimentadoresEngorde}
-                                    handleAddAlimentador={handleAddAlimentadorEngorde}
-                                    form={form} // Pasar el formulario principal
-                                />
-                            </TabPane>
-                        )
-                    )}
-                </Tabs>
+
+                <div style={{ width: "100%" }}>
+                    <Tabs>
+                        {Array.from(
+                            { length: form.getFieldValue("cantidadPiscinasEngorde") || 0 },
+                            (_, index) => (
+                                <TabPane
+                                    tab={`Engorde ${index + 1}`}
+                                    key={`engorde-${index + 1}`}
+                                >
+                                    <EngordeInfrastructure
+                                        key={`tab-engorde-${index}`}
+                                        index={index}
+                                        alimentadores={alimentadoresEngorde}
+                                        handleAddAlimentador={handleAddAlimentadorEngorde}
+                                        form={form} // Pasar el formulario principal
+                                    />
+                                </TabPane>
+                            )
+                        )}
+                    </Tabs>
+                </div>
             ),
         },
     ];
@@ -355,7 +361,7 @@ function AddClientFarm() {
     return (
         <>
             <PageHeader
-                
+
                 highlightText="AquaLink Administración"
                 title="Añadir Clientes"
             />

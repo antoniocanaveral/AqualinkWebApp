@@ -244,7 +244,7 @@ function PanelLogisticLabs() {
           <Col xl={24} xs={24} >
             <center>
               <Typography.Title level={4} >
-                Lotes Activos
+                Detalle de Coordinaciones Activas
               </Typography.Title>
             </center>
             <TankCarouselLogistic tankData={tankData} />

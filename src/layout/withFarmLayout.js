@@ -26,7 +26,7 @@ const ThemeLayout = (WrappedComponent) => {
     constructor(props) {
       super(props);
       this.state = {
-        collapsed: window.innerWidth <= 1024,
+        collapsed: window.visualViewport.width <= 1024,
         hide: true,
       };
       this.updateDimensions = this.updateDimensions.bind(this);
@@ -36,12 +36,14 @@ const ThemeLayout = (WrappedComponent) => {
       window.addEventListener('resize', this.updateDimensions);
       this.updateDimensions();
       
-      console.log('componentDidMount - window.innerWidth:', window.innerWidth);
+      console.log('componentDidMount - window.visualViewport.width:', window.visualViewport.width);
     
       // Aquí añadimos el cambio de estilo cuando el componente se monta
       const headerContent = document.querySelector('.ninjadash-header-content__left');
-      const isMobile = window.innerWidth <= 1024;
+      const isMobile = window.visualViewport.width <= 1024;
       if (headerContent) {
+        console.log(isMobile)
+        console.log(window.visualViewport.width)
         if (isMobile) {
           headerContent.style.backgroundColor = '#ffffff';
         } else {
@@ -51,9 +53,8 @@ const ThemeLayout = (WrappedComponent) => {
     }
     
     updateDimensions() {
-      console.log('updateDimensions - window.innerWidth:', window.innerWidth);
       this.setState({
-        collapsed: window.innerWidth <= 1024,
+        collapsed: window.visualViewport.width <= 1024,
       });
     }
     
@@ -64,7 +65,7 @@ const ThemeLayout = (WrappedComponent) => {
 
     updateDimensions() {
       this.setState({
-        collapsed: window.innerWidth <= 1024,
+        collapsed: window.visualViewport.width <= 1024,
       });
     }
     
@@ -94,7 +95,7 @@ const ThemeLayout = (WrappedComponent) => {
       };
 
       const toggleCollapsedMobile = () => {
-        if (window.innerWidth <= 1024) {
+        if (window.visualViewport.width <= 1024) {
           this.setState({
             collapsed: !collapsed,
           });
@@ -159,12 +160,12 @@ const ThemeLayout = (WrappedComponent) => {
                 <div className="ninjadash-header-content__left">
                   <div className="navbar-brand align-cener-v">
                     <Link
-                      className={topMenu && window.innerWidth > 1024 ? 'ninjadash-logo top-menu' : 'ninjadash-logo'}
+                      className={topMenu && window.visualViewport.width > 1024 ? 'ninjadash-logo top-menu' : 'ninjadash-logo'}
                       to="/"
                     >
                       <img
                         src={
-                          window.innerWidth <= 1024 ||
+                          window.visualViewport.width <= 1024 ||
                             collapsed
                             ? require(`../static/img/AQx-IMG/aqualink-dark.svg`).default
                             : require(`../static/img/AQx-IMG/aqualink-lite.svg`).default
@@ -172,7 +173,7 @@ const ThemeLayout = (WrappedComponent) => {
                         alt=""
                       />
                     </Link>
-                    {!topMenu || window.innerWidth <= 1024 ? (
+                    {!topMenu || window.visualViewport.width <= 1024 ? (
                       <Button type="link" onClick={toggleCollapsed}>
                         <img
                           src={require(`../static/img/icon/${collapsed ? 'left-bar.svg' : 'left-bar.svg'}`)}
@@ -184,10 +185,10 @@ const ThemeLayout = (WrappedComponent) => {
                 </div>
                 <div className="ninjadash-header-content__right d-flex">
                   <div className="ninjadash-navbar-menu d-flex align-center-v">
-                    {topMenu && window.innerWidth > 1024 ? <TopMenu /> : ''}
+                    {topMenu && window.visualViewport.width > 1024 ? <TopMenu /> : ''}
                   </div>
                   <div className="ninjadash-nav-actions">
-                    {topMenu && window.innerWidth > 1024 ? (
+                    {topMenu && window.visualViewport.width > 1024 ? (
                       <TopMenuSearch>
                         <div className="top-right-wrap d-flex">
                           <AuthInfo />
@@ -223,7 +224,7 @@ const ThemeLayout = (WrappedComponent) => {
               </Row>
             </div>
             <Layout>
-              {!topMenu || window.innerWidth <= 1024 ? (
+              {!topMenu || window.visualViewport.width <= 1024 ? (
                 <ThemeProvider theme={darkMode}>
                   <Sider
                     width={280}
@@ -263,7 +264,7 @@ const ThemeLayout = (WrappedComponent) => {
               </Layout>
             </Layout>
           </Layout>
-          {window.innerWidth <= 1024 ? (
+          {window.visualViewport.width <= 1024 ? (
             <span className={collapsed ? 'ninjadash-shade' : 'ninjadash-shade show'} onClick={toggleCollapsed} />
           ) : (
             ''

@@ -98,7 +98,7 @@ export const LegalPersonForm = () => (
 
         {/* Separador: Información de Camaronera */}
         <div style={{ marginTop: '20px', marginBottom: '10px' }}>
-            <strong>● Información de Camaronera</strong>
+            <strong>● Información de Laboratorio</strong>
         </div>
 
         <Row gutter={16}>
@@ -110,7 +110,7 @@ export const LegalPersonForm = () => (
                 >
                     <Select placeholder="Seleccione Tipo de Cliente">
                         <Option value="GIV">GIV</Option>
-                        <Option value="FPA">FPA</Option>
+                        <Option value="GPA">GPA</Option>
                         <Option value="FIN">FIN</Option>
                         <Option value="LAB">LAB</Option>
                         <Option value="PAK">PAK</Option>
