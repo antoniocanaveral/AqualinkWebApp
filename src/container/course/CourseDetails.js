@@ -429,3 +429,4 @@ function CourseDetails() {
 }
 
 export default CourseDetails;
+

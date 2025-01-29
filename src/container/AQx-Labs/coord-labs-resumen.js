@@ -88,25 +88,39 @@ function CoordinationLabsResumen() {
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton paragraph={{ rows: 20 }} active />
-                </Cards>
-              }
-            >
+            <Suspense fallback={
+              <Cards headless>
+                <Skeleton paragraph={{ rows: 20 }} active />
+              </Cards>
+            }>
               <BasicFormWrapper className="mb-25">
-                <Cards headless>
-                <BasicFormWrapper style={{ width: '80%' }}>
-                  <div className="atbd-review-order" style={{ width: '100%' }}>
-                    <Heading as="h4">Resumen</Heading>
-                    <Cards bodyStyle={{ borderRadius: 10 }} headless>
-                      <div className="atbd-review-order__single">
-                        <Cards headless>
-                          <div className="atbd-review-order__shippingTitle">
-                            <Heading as="h5">
-                              Coordinación
-                            </Heading>
+                <div ref={reportRef}>
+                  <Row gutter={25}>
+                    <Col xl={10} xs={24} style={{ display: 'flex' }}>
+                      <Suspense
+                        fallback={
+                          <Cards headless>
+                            <Skeleton active />
+                          </Cards>
+                        }
+                      >
+                        <Cards
+                          icon={<UilArrowsResize />}
+                          title={`Coordinación `}
+                          size="large"
+                        >
+
+                          <div style={{ display: 'flex', flexDirection: "column", alignItems: 'center', textAlign: "center" }}>
+
+                            <Typography.Text style={{ fontSize: '14px' }}>
+                              <strong>Estado:</strong> {coordination?.statusWrapper?.statusName || '-'}
+                            </Typography.Text>
+                            <br />
+                            <Avatar style={{ backgroundColor: '#0e92e7', marginRight: '10px' }}>
+                              {coordination?.org_name?.[0] || 'E'}
+                            </Avatar>
+                            <Typography.Title level={5}>{coordination?.org_name || 'EcSSA Manabí'}</Typography.Title>
+                            {coordination?.pre_breeding_pool || 'Pre Cria 1'}
                           </div>
                           <article className="atbd-review-order__shippingInfo">
                             <OrderSummary>

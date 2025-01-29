@@ -1,0 +1,357 @@
+/* src/styles/TasksScreen.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: #FFFFFF;
+  border-top: 3px solid #0f95e9; /* generalStyles.colors.solidBlue */
+  height: 100vh;
+}
+
+.headers {
+    width: 100%; /* Asegúrate de que ocupe el ancho completo */
+    height: 60px;
+    background-color: #0f95e9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+.footer {
+  height: 60px;
+  background-color: #0f95e9; /* generalStyles.colors.solidBlue */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #FFFFFF;
+  font-size: 16px;
+}
+
+.bodyContainer {
+  flex: 1;
+  padding-top: 15px;
+  margin: 0 15px;
+  overflow-y: auto;
+}
+
+.separator {
+  height: 1px;
+  background-color: #CCCCCC;
+  margin: 10px 0;
+}
+
+.firstSeparator {
+  height: 15px;
+  background-color: #0f95e9; /* generalStyles.colors.lightBlue */
+  margin-top: calc(100vh / 6);
+}
+
+.weekSection {
+  margin-bottom: 10px;
+}
+
+.wsHeader {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.wsHeaderText {
+  color: black;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.dayCardsRow {
+  display: flex;
+  flex-direction: row;
+  height: 120px;
+  margin-bottom: 3px;
+}
+
+.dayCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 5px;
+  margin: 0 2px;
+  padding: 2px;
+  background-color: #F0F2F5; /* generalStyles.colors.lightGray1 */
+}
+
+.selectedDayCard {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 5px;
+  border: 1px solid #0f95e9; /* generalStyles.colors.lightBlue */
+  background-color: #FFFFFF; /* generalStyles.colors.white */
+}
+
+.dcHeader {
+  width: 100%;
+  padding-top: 5px;
+  height: 22%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dcHeaderRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.dcHeaderColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.dcBody {
+  min-height: 40%;
+  justify-content: flex-start;
+}
+
+.dcBodytext {
+  width: 100%;
+  font-weight: bold;
+  font-size: 28px;
+}
+
+.dcBodyOutsidetext {
+  width: 100%;
+  font-weight: bold;
+  font-size: 28px;
+  opacity: 0.5;
+  color: #D3D3D3; /* generalStyles.colors.lightGray */
+}
+
+.dcFooter {
+  flex: 1;
+  min-height: 40%;
+  width: 100%;
+  padding: 0 15%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.dcFooterBulletsContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-left: 5px;
+  overflow: hidden;
+}
+
+.dcFooterBullet {
+  width: 30%;
+  margin: 1px 0;
+  justify-content: center;
+}
+
+
+.badgesSection {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  grid-gap: 5px;
+  max-height: 150px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-right: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.badge1 {
+  padding: 5px 10px;
+  border-radius: 12px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+}
+
+.badge1:hover {
+  transform: scale(1.05);
+}
+
+.badgeText1 {
+  font-size: 14px;
+  font-weight: bold;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+
+.calendarSection {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.csHeader {
+  display: flex;
+}
+
+.csHeaderText {
+  color: black;
+  font-weight: bold;
+  font-size: 28px;
+}
+
+.lunarCalendarRow {
+  display: flex;
+  flex-direction: row;
+  margin: 2px 0;
+}
+
+.lunarCalendarColumn {
+  display: flex;
+  flex-direction: row;
+  margin-right: 10px;
+}
+
+.lunarCalendarBox {
+  margin: 20px 0;
+}
+
+.lunarCalendarText {
+  margin-left: 5px;
+  position: relative;
+  top: -2px;
+  font-size: 12px;
+}
+
+.csDaysLabels {
+  width: 100%;
+  height: 35px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #0f95e9; /* generalStyles.colors.lightBlue */
+}
+
+.csDayLabel {
+  color: #FFFFFF; /* generalStyles.colors.white */
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.csDayLabelBlack {
+  color: #000000; /* generalStyles.colors.black */
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.monthSelectorRow {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-left: 8px;
+  width: 40px;
+}
+
+.icon {
+  color: #000000; /* generalStyles.colors.black */
+  text-align: center;
+}
+
+.iconDisabled {
+  color: #D3D3D3; /* generalStyles.colors.lightGray */
+  text-align: center;
+}
+
+.errorContainer {
+  flex: 1;
+  margin-top: 50%;
+  align-items: center;
+}
+
+.errorText {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.centeredContainer {
+  display: flex;
+  flex: 1;
+  margin-top: 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContent {
+  width: 80%;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.modalBody {
+  margin-bottom: 20px;
+}
+
+.modalButton {
+  align-self: flex-end;
+  padding: 10px;
+  background-color: #0f95e9; /* generalStyles.colors.lightBlue */
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modalButtonText {
+  color: #FFFFFF; /* generalStyles.colors.white */
+  font-weight: bold;
+}
