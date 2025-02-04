@@ -1,10 +1,13 @@
+// src/components/PageHeader.js
+
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-return-assign */
 import React, { useState } from 'react';
 import { Breadcrumb, Dropdown, Menu, Select, Button } from 'antd';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { ReactSVG } from 'react-svg';
 import { HeaderWrapper, PageHeaderStyle } from './style';
-import { Link, useNavigate } from 'react-router-dom';
 import { DownOutlined, LeftOutlined } from '@ant-design/icons'; // Importar el ícono de izquierda
 
 const { Option } = Select;
@@ -20,26 +23,30 @@ function PageHeader(props) {
     className,
     organizations,
     selectedOrg,
+    selectedPool,
     handleOrgChange,
+    handlePoolChange, // Nueva prop para manejar cambios en Pool
     icon,
     highlightText,
-    selectOptions,
+    selectOptions, // Opciones para los selectores adicionales (Pools)
     onBack, // Nueva prop para el botón de regresar
   } = props;
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleMenuClick = (e) => {
-    const orgName = e.key;
-    const orgEmail = e.item.props.orgEmail;
-    handleOrgChange(orgName, orgEmail);
+    const orgId = Number(e.key); // Asegurarse de que orgId sea un número
+    const org = organizations.find(o => o.orgId === orgId);
+    if (org) {
+      handleOrgChange(org.orgId, org.orgEmail);
+    }
     setDropdownVisible(false);
   };
 
   const menu = organizations && organizations.length > 0 ? (
     <Menu onClick={handleMenuClick}>
       {organizations.map((org) => (
-        <Menu.Item key={org.orgName} orgEmail={org.orgEmail}>
+        <Menu.Item key={org.orgId} orgEmail={org.orgEmail}>
           {org.orgName}
         </Menu.Item>
       ))}
@@ -47,7 +54,7 @@ function PageHeader(props) {
   ) : null;
 
   const breadcrumb = routes ? (
-    <Breadcrumb separator={<span />}>
+    <Breadcrumb separator={<span className="ninjadash-seperator" />} >
       {routes.map((route, index) =>
         index + 1 === routes.length ? (
           <Breadcrumb.Item key={index}>
@@ -58,7 +65,8 @@ function PageHeader(props) {
                 visible={dropdownVisible}
                 trigger={['click']}
               >
-                <span style={{ cursor: 'pointer' }}>
+                <span style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                  {selectedOrg ? organizations.find(org => org.orgId === selectedOrg)?.orgName : 'Seleccionar Organización'}
                   <DownOutlined style={{ paddingTop: "4px", paddingLeft: "10px" }} />
                 </span>
               </Dropdown>
@@ -66,16 +74,8 @@ function PageHeader(props) {
           </Breadcrumb.Item>
         ) : (
           <Breadcrumb.Item key={index}>
-            <div style={{ width: "auto", display: "flex", alignItems: "center" }}>
-              <img
-                src={require(`../../static/img/AQx-IMG/shrimp16.svg`).default}
-                style={{ marginRight: 10 }}
-                alt="icon"
-              />
-              <Link to={route.path} style={{ display: 'contents' }}>
-                {route.breadcrumbName}
-              </Link>
-            </div>
+            <img src={require(`../../static/img/AQx-IMG/shrimp16.svg`).default} style={{marginRight: 10}}/> {' '}
+            <Link to={route.path} style={{display: "contents"}}>{route.breadcrumbName}</Link>
           </Breadcrumb.Item>
         ),
       )}
@@ -88,27 +88,38 @@ function PageHeader(props) {
     if (!selectOptions || selectOptions.length === 0) return null;
 
     return (
-      <div className="responsive-select-container">
-        {selectOptions.map((options, index) => (
-          <Select
-            key={index}
-            defaultValue={options[0]} // Seleccionar la primera opción por defecto
-            placeholder={`Seleccione ${["Camaronera", "Sector", "Piscina"][index] || `Opción ${index + 1}`}`}
-            className="responsive-select"
-          >
-            {options.map((option) => (
-              <Option key={option} value={option}>
-                {option}
-              </Option>
-            ))}
-          </Select>
-        ))}
+      <div className="responsive-select-container" style={{ display: 'flex', gap: '10px' }}>
+        {selectOptions.map((selectOption, index) => {
+          // Validar que selectOption tenga la propiedad 'options' y que sea un arreglo
+          if (!selectOption.options || !Array.isArray(selectOption.options)) {
+            console.warn(`selectOption at index ${index} is missing 'options' or it's not an array.`);
+            return null;
+          }
+
+          return (
+            <Select
+              key={index}
+              value={selectOption.value}
+              placeholder={selectOption.placeholder}
+              className="responsive-select"
+              onChange={selectOption.onChange}
+              style={{ minWidth: '150px' }}
+              disabled={selectOption.disabled || false}
+            >
+              {selectOption.options.map((option) => (
+                <Option key={option.value} value={option.value}>
+                  {option.label}
+                </Option>
+              ))}
+            </Select>
+          );
+        })}
       </div>
     );
   };
 
   return (
-    <HeaderWrapper style={{ backgroundColor: bgColor || '#f0f2f5', padding: '0px' }}>
+    <HeaderWrapper bgColor={bgColor}>
       <PageHeaderStyle
         className={className}
         title={
@@ -119,7 +130,7 @@ function PageHeader(props) {
                 onClick={onBack}
                 style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}
               >
-                <LeftOutlined color='black' /> 
+                <LeftOutlined /> {/* Removido el color ya que el ícono maneja su propio color */}
               </Button>
             )}
             {icon && <span className="icon">{icon}</span>}
@@ -136,7 +147,7 @@ function PageHeader(props) {
         subTitle={subTitle}
         extra={
           <>
-            {/* Cambiar alignItems a 'stretch' para permitir que los hijos ocupen el ancho completo */}
+            {/* Contenedor para los botones y selectores */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '10px' }}>
               {buttons}
               {renderSelectOptions()}
@@ -159,12 +170,32 @@ PageHeader.propTypes = {
   buttons: PropTypes.array,
   ghost: PropTypes.bool,
   organizations: PropTypes.arrayOf(PropTypes.object),
-  selectedOrg: PropTypes.string,
+  selectedOrg: PropTypes.number,
+  selectedPool: PropTypes.number,
   handleOrgChange: PropTypes.func,
+  handlePoolChange: PropTypes.func, // Nueva prop para manejar cambios en Pool
   icon: PropTypes.node,
   highlightText: PropTypes.string,
-  selectOptions: PropTypes.arrayOf(PropTypes.array),
+  selectOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      options: PropTypes.arrayOf(
+        PropTypes.shape({
+          value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+          label: PropTypes.string.isRequired,
+        })
+      ).isRequired,
+      onChange: PropTypes.func.isRequired,
+      placeholder: PropTypes.string.isRequired,
+      disabled: PropTypes.bool,
+    })
+  ),
   onBack: PropTypes.func, // Definir la nueva prop
+};
+
+// Definir valores por defecto para selectOptions y organizations
+PageHeader.defaultProps = {
+  selectOptions: [],
+  organizations: [],
 };
 
 export { PageHeader };

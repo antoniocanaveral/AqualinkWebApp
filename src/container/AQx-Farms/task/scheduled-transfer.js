@@ -1,145 +1,73 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-return-assign */
 import React, { useEffect, useState } from 'react';
-import { Table, Modal, Form, Input, Button } from 'antd';
+import { Table, Skeleton } from 'antd';
 import { Link } from 'react-router-dom';
-import UilTimes from '@iconscout/react-unicons/icons/uil-times';
-import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
-import { BasicFormWrapper, BorderLessHeading, TableDefaultStyle } from '../../styled';
+import { BorderLessHeading, TableDefaultStyle } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { UpcomingEventsStyleWrap } from '../../dashboard/Style';
+import PropTypes from 'prop-types'; // Importar PropTypes para validación
 
-const events = {
-  today: [
-    {
-      id: 1,
-      type: 'primary',
-      loteId: 'L001',
-      Tanque: 'T P001 -> T P-022', 
-      biomasa: 100,
-      date: '19 Marzo',
-    },
-    {
-      id: 2,
-      type: 'secondary',
-      loteId: 'L002',
-      Tanque: 'T P001 -> T P-022', 
-      biomasa: 200,
-      date: '19 Marzo',
-    },
-    {
-      id: 3,
-      type: 'info',
-      loteId: 'L003',
-      
-      Tanque: 'T P001 -> T P-022', 
-      biomasa: 150,
-      date: '19 Marzo',
-    },
-    {
-      id: 4,
-      type: 'warning',
-      loteId: 'L004',
-      
-      Tanque: 'T P001 -> T P-022', 
-      biomasa: 250,
-      date: '19 Marzo',
-    },
-  ],
-  week: [
-    {
-      id: 1,
-      type: 'primary',
-      loteId: 'L005',
-      
-      Tanque: 'T P001 -> T P-022', 
-      biomasa: 120,
-      date: '12 Septiembre',
-    },
-    {
-      id: 2,
-      type: 'info',
-      loteId: 'L006',
-      Tanque: 'PC06', Tanque: 'PF11',
-      biomasa: 180,
-      date: '16 Septiembre',
-    },
-    {
-      id: 3,
-      type: 'secondary',
-      loteId: 'L007',
-      Tanque: 'PC07', Tanque: 'PF11',
-      biomasa: 300,
-      date: '15 Septiembre',
-    },
-    {
-      id: 4,
-      type: 'warning',
-      loteId: 'L008',
-      Tanque: 'PC08', Tanque: 'PF11',
-      biomasa: 500,
-      date: '13 Septiembre',
-    },
-  ],
-  month: [
-    {
-      id: 1,
-      type: 'primary',
-      loteId: 'L009',
-      Tanque: 'PC09', Tanque: 'PF11',
-      biomasa: 400,
-      date: '24 Abril',
-    },
-    {
-      id: 2,
-      type: 'secondary',
-      loteId: 'L010',
-      Tanque: 'PC10', Tanque: 'PF11',
-      biomasa: 350,
-      date: '24 Abril',
-    },
-    {
-      id: 3,
-      type: 'info',
-      loteId: 'L011',
-      Tanque: 'PC11', Tanque: 'PF11',
-      biomasa: 270,
-      date: '24 Abril',
-    },
-    {
-      id: 4,
-      type: 'warning',
-      loteId: 'L012',
-      Tanque: 'PC12', Tanque: 'PF11',
-      biomasa: 600,
-      date: '28 Abril',
-    },
-  ],
-};
+function ScheduleTransfer({ plannedTransfers, loading, error }) {
+  // Añadir un console.log para verificar los props recibidos
+  console.log('ScheduleTransfer props:', { plannedTransfers });
 
-function ScheduleTransfer() {
-  const [form] = Form.useForm();
   const [state, setState] = useState({
     tabValue: 'today',
-    responsive: 0,
-    collapsed: false,
-    visible: false,
-    modalType: 'primary',
-    taskEditId: '',
-    editableItem: {},
   });
-  const { taskEditId, editableItem, visible } = state;
   const [eventState, setEventState] = useState(null);
+
+  // Definir los tipos en orden
+  const eventTypes = ['primary', 'secondary', 'info', 'warning'];
+
+  // Función para convertir mes numérico a nombre en español
+  const getMonthName = (monthNumber) => {
+    const monthNames = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ];
+    // Ajustar si el mes viene como número (1-12)
+    const monthIndex = parseInt(monthNumber, 10) - 1;
+    if (monthIndex >= 0 && monthIndex < 12) {
+      return monthNames[monthIndex];
+    }
+    return monthNumber; // Si ya está en texto o fuera de rango
+  };
 
   useEffect(() => {
     let unmounted = false;
 
     if (!unmounted) {
-      setEventState(events[state.tabValue]);
+      // Asignar eventState basado en el valor de la pestaña actual
+      switch (state.tabValue) {
+        case 'today':
+          setEventState(plannedTransfers);
+          break;
+        case 'week':
+          setEventState(plannedTransfers);
+          break;
+        case 'month':
+          setEventState(plannedTransfers);
+          break;
+        default:
+          setEventState([]);
+      }
     }
 
-    return () => (unmounted = true);
-  }, [state.tabValue]);
+    return () => {
+      unmounted = true;
+    };
+  }, [state.tabValue, plannedTransfers]);
 
   const tabChange = (value) => {
     setState({
@@ -148,43 +76,47 @@ function ScheduleTransfer() {
     });
   };
 
-  const showModal = (id, item) => {
-    setState({
-      ...state,
-      visible: true,
-      collapsed: false,
-      taskEditId: id,
-      editableItem: item,
-    });
-  };
+  // Optimización del mapeo de datos
+  const dataSource = eventState
+    ? eventState.map((value, index) => {
+      const {
+        SM_FishingNotification = 'N/A',
+        preebreedingpoolname = 'N/A',
+        SM_Pool = 'N/A',
+        SM_Biomass = 0,
+        SM_TransferDate = 'N/A',
+        id,
+      } = value;
 
-  const handleTaskDelete = (id) => {
-    events[state.tabValue] = events[state.tabValue].filter((item) => item.id !== id);
-    setEventState(eventState.filter((item) => item.id !== id));
-  };
+    
+    
+        // Supongamos que SM_PlannedDate viene en formato 'DD/MM' o 'DD-MM'
+        const dateParts = SM_TransferDate.split(/[/-]/);
+        const day = dateParts[2];
+        const month = dateParts[1];
+        const monthName = getMonthName(month);
 
-  const dataSource = [];
+      // Asignar el tipo de manera secuencial
+      const type = eventTypes[index % eventTypes.length];
 
-  if (eventState)
-    eventState.map((value) => {
-      const { loteId,  Tanque, biomasa, date, type, id } = value;
-      return dataSource.push({
+      return {
         key: id,
         name: (
-          <div className="ninjadash-event-details align-center-v" style={{minHeight:"80px"}}>
+          <div className="ninjadash-event-details align-center-v" style={{ minHeight: '80px' }}>
             <div className={`ninjadash-event-details__date ninjadash-event-${type}`}>
-              <span className="ninjadash-event-day">{date}</span>
+              <span className="ninjadash-event-day">{`${day} ${monthName}`}</span>
             </div>
             <article className="ninjadash-event-details__content">
-              <h4 className="ninjadash-event-details__title">{`Lote: ${loteId}`}</h4>
-              <h4 className="ninjadash-event-details__title">{`${Tanque}`}</h4>
-              <p className="ninjadash-event-details__time">{`Biomasa(lb): ${biomasa}`}</p>
+              <h4 className="ninjadash-event-details__title">{`Lote: `}</h4>
+              <p className="ninjadash-event-details__time">{`${SM_FishingNotification}`}</p>
+              <h4 className="ninjadash-event-details__title">{` ${preebreedingpoolname} => ${SM_Pool}`}</h4>
+              <p className="ninjadash-event-details__time">{`Biomasa(lb): ${SM_Biomass}`}</p>
             </article>
           </div>
         ),
-       
-      });
-    });
+      };
+    })
+    : [];
 
   const columns = [
     {
@@ -198,39 +130,6 @@ function ScheduleTransfer() {
       key: 'actions',
     },
   ];
-
-  const handleCancel = () => {
-    setState({
-      ...state,
-      visible: false,
-    });
-  };
-
-  const handleUpdate = (value) => {
-    events[state.tabValue].map((item) => {
-      if (item.id === taskEditId) {
-        return (item.loteId = value.loteId,  item.Tanque,  item.biomasa = value.biomasa);
-      }
-      return item;
-    });
-
-    eventState.map((item) => {
-      if (item.id === taskEditId) {
-        return (item.loteId = value.loteId,  item.Tanque, item.biomasa = value.biomasa);
-      }
-      return item;
-    });
-    return setState({
-      ...state,
-      visible: false,
-    });
-  };
-
-  useEffect(() => {
-    if (visible) {
-      form.setFieldsValue(editableItem);
-    }
-  }, [form, editableItem, visible]);
 
   return (
     <BorderLessHeading>
@@ -261,69 +160,44 @@ function ScheduleTransfer() {
           size="large"
         >
           <TableDefaultStyle>
-            <Table dataSource={dataSource} columns={columns} pagination={false} showHeader={false} />
+            <Table
+              dataSource={dataSource}
+              columns={columns}
+              pagination={false}
+              showHeader={false}
+              loading={loading} // Mostrar el estado de carga
+            />
+            {error && (
+              <div style={{ color: 'red', marginTop: '10px' }}>
+                {error}
+              </div>
+            )}
           </TableDefaultStyle>
         </Cards>
       </UpcomingEventsStyleWrap>
-      <Modal
-        title="Actualizar Siembra"
-        className="ninjadash_addTask-modal"
-        type={state.modalType}
-        visible={state.visible}
-        footer={null}
-        onCancel={handleCancel}
-      >
-        <div className="ninjadash_addTask-modal-inner">
-          <BasicFormWrapper>
-            <Form form={form} name="add-task" onFinish={handleUpdate}>
-              <Form.Item
-                rules={[{ required: true, message: 'Por favor, ingrese un Lote' }]}
-                name="loteId"
-                initialValue={editableItem.loteId}
-              >
-                <Input placeholder="Lote" />
-              </Form.Item>
-              <Form.Item
-                rules={[{ required: true, message: 'Por favor, ingrese el Tanque' }]}
-                name="Tanque"
-                initialValue={editableItem.Tanque}
-              >
-                <Input placeholder="PC" />
-              </Form.Item>
-              <Form.Item
-                rules={[{ required: true, message: 'Por favor, ingrese el Tanque' }]}
-                name="Tanque"
-                initialValue={editableItem.Tanque}
-              >
-                <Input placeholder="PC" />
-              </Form.Item>
-              <Form.Item
-                rules={[{ required: true, message: 'Por favor, ingrese la biomasa' }]}
-                name="biomasa"
-                initialValue={editableItem.biomasa}
-              >  <Input placeholder="Biomasa" />
-              </Form.Item>
-              <Form.Item
-                rules={[{ required: true, message: 'Por favor, ingrese una fecha' }]}
-                name="date"
-                initialValue={editableItem.date}
-              >
-                <Input placeholder="Fecha" />
-              </Form.Item>
-              <div className="ninjadash-modal-actions">
-                <Button size="small" type="primary" htmlType="submit">
-                  Actualizar
-                </Button>
-                <Button size="small" onClick={handleCancel}>
-                  Cancelar
-                </Button>
-              </div>
-            </Form>
-          </BasicFormWrapper>
-        </div>
-      </Modal>
     </BorderLessHeading>
   );
 }
+
+// Añadir PropTypes para validación de props
+ScheduleTransfer.propTypes = {
+  plannedTransfers: PropTypes.arrayOf(
+    PropTypes.shape({
+      SM_FishingNotification: PropTypes.string,
+      preebreedingpoolname: PropTypes.string,
+      SM_Pool: PropTypes.string,
+      SM_Biomass: PropTypes.number,
+      SM_TransferDate: PropTypes.string,
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    })
+  ).isRequired,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+};
+
+ScheduleTransfer.defaultProps = {
+  loading: false,
+  error: null,
+};
 
 export default ScheduleTransfer;

@@ -1,70 +1,123 @@
-import React, { useState } from 'react';
-import { Table, Select, Row, Col, Card, Modal, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Select, Row, Col, Card, Modal, Button, Tooltip } from 'antd';
 import { optionsInventory, sampleData } from './data.js';
 import { PageHeader } from '../../../components/page-headers/page-headers.js';
 import { Main } from '../../styled.js';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInventory } from '../../../redux/inventory/actionCreator.js';
+import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors.js';
+import Cookies from 'js-cookie';
 function InventoryTable() {
+    const dispatch = useDispatch();
+
+    const { categories } = useSelector((state) => state.inventory || {})
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
-    // Filtrar datos según la categoría seleccionada
-    const filteredData = selectedCategory === 'all'
-        ? sampleData
-        : sampleData.filter(item => item.categoria === selectedCategory);
+   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+    const organizations = useSelector((state) => state.auth.farmsOrgs);
 
-    // Columnas de la tabla
+    const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+  
+    const getFilteredData = () => {
+        if (selectedCategory === 'all') {
+            return Object.values(categories).flat();
+        } else {
+            return categories[selectedCategory] || [];
+        }
+    };
+
+    const filteredData = getFilteredData();
+
+    console.log('categories', JSON.stringify(categories));
+    useEffect(() => {
+        dispatch(fetchInventory());
+    }, [dispatch, selectedOrg]);
+
+
+    
+     const handleOrgChange = (orgId, orgEmail) => {
+        setSelectedOrg(orgId);
+        Cookies.set('orgId', orgId);
+        Cookies.set('orgEmail', orgEmail || '');
+        Cookies.remove('poolId');
+        console.log(JSON.stringify(farmsOrgsWithPools));
+      };
+    
+  const farmsSelectOptions = organizations.length > 0 ? [
+    {
+      options: farmsOrgsWithPools.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Farm',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+
+
+
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
+  ];
+
     const columns = [
         {
-            title: 'Categoría',
-            dataIndex: 'categoria',
-            key: 'categoria',
-            width: '15%'
-        },
-        {
             title: 'Código',
-            dataIndex: 'codigo',
-            key: 'codigo',
+            dataIndex: 'Value',
+            key: 'Value',
             width: '10%'
         },
         {
             title: 'Nombre',
-            dataIndex: 'nombre',
-            key: 'nombre',
+            dataIndex: 'product_name',
+            key: 'product_name',
             width: '16%'
         },
         {
-            title: 'Descripción',
-            dataIndex: 'descripcion',
-            key: 'descripcion',
-            width: '23%'
-        },
-        {
             title: 'Marca',
-            dataIndex: 'marca',
-            key: 'marca',
-            width: '10%'
+            dataIndex: 'Group1',
+            key: 'Group1',
+            width: '25%',
+            ellipsis: true,  // Corta con "..." si el texto es muy largo
+            render: (text) => (
+                <Tooltip title={text}>
+                    <span>{text}</span>
+                </Tooltip>
+            )
         },
         {
-            title: 'Modelo',
-            dataIndex: 'modelo',
-            key: 'modelo',
-            width: '10%'
+            title: 'Presentación',
+            key: 'Classification',
+            render: (_, record) => {
+                const classification = record.Classification || 'N/A';
+                const uomSymbol = record.UOMSymbol || '';
+                return `${classification} ${uomSymbol}`.trim();
+            },
+            width: '8%'
         },
         {
             title: 'Unidades',
-            dataIndex: 'disponibilidad_unidad',
-            key: 'disponibilidad_unidad',
-            render: (text) => text || 'N/A', // Valor por defecto si no está disponible
-            width: '10%'
+            dataIndex: 'QtyOnHand',
+            key: 'QtyOnHand',
+            render: (text) => text ?? 'N/A',
+            width: '8%'
         },
         {
             title: 'Volumen',
-            dataIndex: 'volumen_disponibilidad',
-            key: 'volumen_disponibilidad',
-            render: (text) => text || 'N/A', // Valor por defecto si no está disponible
-            width: '12%'
+            key: 'Volumen',
+            render: (_, record) => {
+                const qtyOnHand = parseFloat(record.QtyOnHand) || 0;
+                const classification = parseFloat(record.Classification) || 1;
+                const uomSymbol = record.UOMSymbol || '';
+    
+                const volumen = qtyOnHand * classification;
+                return `${volumen} ${uomSymbol}`.trim();
+            },
+            width: '8%'
         },
         {
             title: 'Detalles',
@@ -72,11 +125,11 @@ function InventoryTable() {
             render: (_, record) => (
                 <Button type="link" onClick={() => showDetails(record)}>Ver detalles</Button>
             ),
-            width: '8%'
+            width: '10%'
         }
     ];
-
-    // Función para mostrar el modal con los detalles adicionales
+    
+    
     const showDetails = (item) => {
         const additionalInfo = optionsInventory
             .find(option => option.categoria === item.categoria)
@@ -86,12 +139,10 @@ function InventoryTable() {
         setIsModalVisible(true);
     };
 
-    // Manejar el cambio de categoría
     const handleCategoryChange = (value) => {
         setSelectedCategory(value);
     };
 
-    // Cerrar el modal
     const handleCloseModal = () => {
         setIsModalVisible(false);
         setSelectedItem(null);
@@ -100,9 +151,11 @@ function InventoryTable() {
     return (
         <>
             <PageHeader
-                highlightText="Aqualink Camaroneras"
-                title="Inventario"
-            />
+                   highlightText="Aqualink Camaronera"
+                   title="Inventario"
+                   selectOptions={combinedSelectOptions}
+                   selectedOrg={selectedOrg}
+                 />
             <Main>
                 <Card title="Inventario de productos">
                     <Row gutter={16} style={{ marginBottom: '20px' }}>
@@ -113,11 +166,12 @@ function InventoryTable() {
                                 style={{ width: '100%' }}
                             >
                                 <Select.Option value="all">Todas las categorías</Select.Option>
-                                {optionsInventory.map(option => (
-                                    <Select.Option key={option.categoria} value={option.categoria}>
-                                        {option.categoria}
+                                {Object.keys(categories).map(categoryName => (
+                                    <Select.Option key={categoryName} value={categoryName}>
+                                        {categoryName}
                                     </Select.Option>
                                 ))}
+
                             </Select>
                         </Col>
                     </Row>
@@ -141,23 +195,25 @@ function InventoryTable() {
                         Cerrar
                     </Button>
                 ]}
-                width={800} // Aumenta el ancho del modal para mejor visualización
+                width={900} // Aumenta el ancho del modal para mejor visualización
             >
                 {selectedItem && (
-                    <div className="content-row" style={{display:"flex", flexWrap:"wrap"}}>
+                    <div className="content-row" style={{ display: "flex", flexWrap: "wrap" }}>
                         {/* Tabla principal con información clave */}
-                        <div >
+                        <div  >
                             <Table
                                 dataSource={[
-                                    { key: 'categoria', label: 'Categoría', value: selectedItem.categoria },
-                                    { key: 'codigo', label: 'Código', value: selectedItem.codigo },
-                                    { key: 'nombre', label: 'Nombre', value: selectedItem.nombre },
-                                    { key: 'descripcion', label: 'Descripción', value: selectedItem.descripcion },
-                                    { key: 'marca', label: 'Marca', value: selectedItem.marca },
-                                    { key: 'modelo', label: 'Modelo', value: selectedItem.modelo },
-                                    { key: 'disponibilidad_unidad', label: 'Disponibilidad por Unidad', value: selectedItem.disponibilidad_unidad || 'N/A' },
-                                    { key: 'volumen_disponibilidad', label: 'Volumen de Disponibilidad (lb)', value: selectedItem.volumen_disponibilidad || 'N/A' }
-                                ]}
+                                    { key: 'categoria', label: 'Categoría', value: selectedItem.product_category_identifier},
+                                    { key: 'codigo', label: 'Código', value: selectedItem.Value },
+                                    { key: 'codigo', label: 'RSU', value: selectedItem.rsu_code },
+                                    { key: 'nombre', label: 'Nombre', value: selectedItem.product_name },
+                                    { key: 'descripcion', label: 'Descripción', value: selectedItem.description_long },
+                                    { key: 'help_1', label: 'Forma Terapéutica', value: selectedItem.Help},
+                                    { key: 'documentnote', label: 'Clasificación Terapéutica', value: selectedItem.DocumentNote},
+                                    
+                                    { key: 'help_2', label: 'Tipo de Formulación', value: selectedItem.help_2},
+                                    { key: 'marca', label: 'Marca', value: selectedItem.Group1 },
+                                    ]}
                                 columns={[
                                     { title: 'Campo', dataIndex: 'label', key: 'label', width: '40%' },
                                     { title: 'Valor', dataIndex: 'value', key: 'value', width: '60%' }
@@ -168,47 +224,6 @@ function InventoryTable() {
                             />
                         </div>
 
-                        {/* Información adicional en formato de "cards" */}
-                        <div >
-                            <div className="information-grid">
-                                <div className="info-item">
-                                    <span className="info-label">Tipo</span>
-                                    <span className="info-value">{selectedItem.tipo || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Proteína</span>
-                                    <span className="info-value">{selectedItem.proteina || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Forma</span>
-                                    <span className="info-value">{selectedItem.forma || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Fase</span>
-                                    <span className="info-value">{selectedItem.fase || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Tamaño</span>
-                                    <span className="info-value">{selectedItem.tamanio || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Origen</span>
-                                    <span className="info-value">{selectedItem.origen || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Estado</span>
-                                    <span className="info-value">{selectedItem.estado || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Presentación</span>
-                                    <span className="info-value">{selectedItem.presentacion || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Certificación</span>
-                                    <span className="info-value">{selectedItem.certificacion || 'N/A'}</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 )}
             </Modal>

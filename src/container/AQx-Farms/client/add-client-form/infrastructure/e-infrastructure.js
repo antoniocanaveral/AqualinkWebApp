@@ -1,169 +1,155 @@
-import React, { useEffect, useState } from "react";
-import { Button, Col, Form, InputNumber, Row, Select, Switch } from "antd";
+// EngordeInfrastructure.js
+import React, { useState } from "react";
+import { Button, Col, Form, InputNumber, Row, Select, Switch, Input, message } from "antd";
 
 const { Option } = Select;
 
-export const EngordeInfrastructure = ({ index, alimentadores, handleAddAlimentador, form }) => {
-    const [metodoAlimentacion, setMetodoAlimentacion] = useState(""); // Estado para controlar el método de alimentación
+export const EngordeInfrastructure = ({ alimentadores, handleAddAlimentador, form, prefix, addedPiscinas }) => {
+  const [metodoAlimentacion, setMetodoAlimentacion] = useState("");
 
-    // Registrar campos dinámicos en el formulario al montar el componente
-    useEffect(() => {
-        form.setFieldsValue({
-            [`piscinaEngordeId-${index}`]: form.getFieldValue(`piscinaEngordeId-${index}`) || undefined,
-            [`extensionEngorde-${index}`]: form.getFieldValue(`extensionEngorde-${index}`) || undefined,
-            [`profundidadOperativaEngorde-${index}`]: form.getFieldValue(`profundidadOperativaEngorde-${index}`) || undefined,
-            [`profundidadTransferenciaEngorde-${index}`]: form.getFieldValue(`profundidadTransferenciaEngorde-${index}`) || undefined,
-            [`diasCrecimientoEngorde-${index}`]: form.getFieldValue(`diasCrecimientoEngorde-${index}`) || undefined,
-            [`cantidadAlimentoEngorde-${index}`]: form.getFieldValue(`cantidadAlimentoEngorde-${index}`) || undefined,
-            [`metodoAlimentacionEngorde-${index}`]: form.getFieldValue(`metodoAlimentacionEngorde-${index}`) || undefined,
-        });
-    }, [form, index]);
 
-    return (
-        <>
-            {/* Identificador de Piscina */}
-            <Row gutter={16}>
-                <Col span={12}>
-                    <Form.Item
-                        label={`Identificador de Piscina Engorde #${index + 1}`}
-                        name={`piscinaEngordeId-${index}`}
-                        rules={[{ required: true, message: "Ingrese el número de identificador" }]}
-                    >
-                        <InputNumber min={1} style={{ width: "100%" }} />
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
-                    <Form.Item
-                        label="Extensión (Has)"
-                        name={`extensionEngorde-${index}`}
-                        rules={[
-                            { required: true, message: "Ingrese la extensión (nunca cero)" },
-                            { type: "number", min: 0.01, message: "Debe ser mayor a 0" },
-                        ]}
-                    >
-                        <InputNumber min={0.01} style={{ width: "100%" }} />
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
-                    <Form.Item
-                        label="Profundidad Operativa (mts)"
-                        name={`profundidadOperativaEngorde-${index}`}
-                        rules={[
-                            { required: true, message: "Ingrese la profundidad operativa (nunca cero)" },
-                            { type: "number", min: 0.01, message: "Debe ser mayor a 0" },
-                        ]}
-                    >
-                        <InputNumber min={0.01} style={{ width: "100%" }} />
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
-                    <Form.Item
-                        label="Profundidad de Transferencia (mts)"
-                        name={`profundidadTransferenciaEngorde-${index}`}
-                        rules={[
-                            { required: true, message: "Ingrese la profundidad de transferencia (nunca cero)" },
-                            { type: "number", min: 0.01, message: "Debe ser mayor a 0" },
-                        ]}
-                    >
-                        <InputNumber min={0.01} style={{ width: "100%" }} />
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
-                    <Form.Item
-                        label="Días de Crecimiento"
-                        name={`diasCrecimientoEngorde-${index}`}
-                        rules={[
-                            { required: true, message: "Ingrese los días de crecimiento" },
-                            { type: "number", min: 1, message: "Debe ser mayor a 0" },
-                        ]}
-                    >
-                        <InputNumber min={1} style={{ width: "100%" }} />
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
-                    <Form.Item
-                        label="Cantidad de Alimento (Kg)"
-                        name={`cantidadAlimentoEngorde-${index}`}
-                        rules={[
-                            { required: true, message: "Ingrese la cantidad de alimento" },
-                            { type: "number", min: 0.01, message: "Debe ser mayor a 0" },
-                        ]}
-                    >
-                        <InputNumber min={0.01} style={{ width: "100%" }} />
-                    </Form.Item>
-                </Col>
+  return (
+    <>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="Número Manual"
+            name={[prefix, 'manualNumber']}
+            rules={[{ required: true, message: "Ingrese el número manual" }]}
+          >
+            <InputNumber min={1} style={{ width: "100%" }} />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="Extensión (Has)"
+            name={[prefix, 'extension']}
+            rules={[
+              { required: true, message: "Requerido" },
+              { type: "number", min: 0.01, message: "Mínimo 0.01" },
+            ]}
+          >
+            <InputNumber min={0.01} step={0.01} style={{ width: "100%" }} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Profundidad Operativa (mts)"
+            name={[prefix, 'profundidadOperativa']}
+            rules={[
+              { required: true, message: "Requerido" },
+              { type: "number", min: 0.1, message: "Mínimo 0.1" },
+            ]}
+          >
+            <InputNumber min={0.1} step={0.1} style={{ width: "100%" }} />
+          </Form.Item>
+        </Col>
+      </Row>
+      {/* En Engorde, se pueden incluir otros campos como: 
+          - Profundidad de Transferencia (si aplica)
+          - Días de Crecimiento
+          - Cantidad de Alimento (Kg)
+         Ajusta según tus requerimientos. */}
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="Días de Crecimiento"
+            name={[prefix, 'diasCrecimiento']}
+            rules={[
+              { required: true, message: "Requerido" },
+              { type: "number", min: 1, message: "Mínimo 1 día" },
+            ]}
+          >
+            <InputNumber min={1} style={{ width: "100%" }} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Cantidad de Alimento (Kg)"
+            name={[prefix, 'cantidadAlimento']}
+            rules={[
+              { required: true, message: "Requerido" },
+              { type: "number", min: 0.01, message: "Mínimo 0.01" },
+            ]}
+          >
+            <InputNumber min={0.01} step={0.1} style={{ width: "100%" }} />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item 
+            label="Aireación Mecánica (Hp/Ha)" 
+            name={[prefix, 'aireacionMecanica']}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Método de Alimentación"
+            name={[prefix, 'metodoAlimentacion']}
+            rules={[{ required: true, message: "Seleccione un método" }]}
+          >
+            <Select placeholder="Seleccione" onChange={setMetodoAlimentacion}>
+              <Option value="manual">Manual</Option>
+              <Option value="automatico">Automático</Option>
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
+      {metodoAlimentacion === "automatico" && (
+        <div>
+          <h4>Información del Alimentador</h4>
+          {Array.from({ length: alimentadores[prefix] || 1 }, (_, i) => (
+            <Row gutter={16} key={`${prefix}-alimentador-${i}`}>
+              <Col span={6}>
+                <Form.Item
+                  label={`Alimentador #${i + 1}`}
+                  name={[prefix, 'alimentadores', i, 'numero']}
+                  rules={[{ required: true, message: "Requerido" }]}
+                >
+                  <InputNumber min={1} style={{ width: "100%" }} />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item
+                  label="Marca"
+                  name={[prefix, 'alimentadores', i, 'marca']}
+                  rules={[{ required: true, message: "Seleccione" }]}
+                >
+                  <Select placeholder="Seleccione">
+                    <Option value="bluebox">BlueBox</Option>
+                    <Option value="jetfeeder">JetFeeder</Option>
+                    <Option value="biofeeder">BioFeeder</Option>
+                    <Option value="aq1">AQ1</Option>
+                    <Option value="eruvaka">Eruvaka</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item
+                  label="Integración"
+                  name={[prefix, 'alimentadores', i, 'integracion']}
+                  valuePropName="checked"
+                >
+                  <Switch checkedChildren="Sí" unCheckedChildren="No" />
+                </Form.Item>
+              </Col>
             </Row>
-
-            {/* Métodos y Alimentadores */}
-            <Row gutter={16}>
-                <Col span={12}>
-                    <Form.Item
-                        label="Método de Alimentación"
-                        name={`metodoAlimentacionEngorde-${index}`}
-                        rules={[{ required: true, message: "Seleccione un método de alimentación" }]}
-                    >
-                        <Select
-                            placeholder="Seleccione"
-                            onChange={(value) => setMetodoAlimentacion(value)} // Actualiza el estado al cambiar
-                        >
-                            <Option value="manual">Manual</Option>
-                            <Option value="automatico">Automático</Option>
-                        </Select>
-                    </Form.Item>
-                </Col>
-            </Row>
-
-            {/* Mostrar Información del Alimentador solo si el método es Automático */}
-            {metodoAlimentacion === "automatico" && (
-                <div>
-                    <h4>Información del Alimentador</h4>
-                    {Array.from({ length: alimentadores[index] || 1 }, (_, alimentadorIndex) => (
-                        <Row gutter={16} key={`alimentador-${index}-${alimentadorIndex}`}>
-                            <Col span={6}>
-                                <Form.Item
-                                    label={`Alimentador #${alimentadorIndex + 1}`}
-                                    name={`alimentadorNumeroEngorde-${index}-${alimentadorIndex}`}
-                                    rules={[{ required: true, message: "Ingrese el número del alimentador" }]}
-                                >
-                                    <InputNumber min={1} style={{ width: "100%" }} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={6}>
-                                <Form.Item
-                                    label="Marca"
-                                    name={`alimentadorMarcaEngorde-${index}-${alimentadorIndex}`}
-                                    rules={[{ required: true, message: "Seleccione una marca" }]}
-                                >
-                                    <Select placeholder="Seleccione">
-                                        <Option value="bluebox">BlueBox</Option>
-                                        <Option value="jetfeeder">JetFeeder</Option>
-                                        <Option value="biofeeder">BioFeeder</Option>
-                                        <Option value="aq1">AQ1</Option>
-                                        <Option value="eruvaka">Eruvaka</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={6}>
-                                <Form.Item
-                                    label="Integración"
-                                    name={`alimentadorIntegracionEngorde-${index}-${alimentadorIndex}`}
-                                    valuePropName="checked"
-                                >
-                                    <Switch checkedChildren="Sí" unCheckedChildren="No" />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    ))}
-                    {/* Botón para añadir más alimentadores */}
-                    <Button
-                        type="dashed"
-                        onClick={() => handleAddAlimentador(index)}
-                        style={{ marginTop: "10px" }}
-                    >
-                        Añadir Alimentador
-                    </Button>
-                </div>
-            )}
-        </>
-    );
+          ))}
+          <Button
+            type="dashed"
+            onClick={() => handleAddAlimentador(prefix)}
+            style={{ marginTop: 10 }}
+          >
+            Añadir Alimentador
+          </Button>
+        </div>
+      )}
+    </>
+  );
 };

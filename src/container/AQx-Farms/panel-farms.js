@@ -1,5 +1,5 @@
-import React, { lazy, Suspense, useRef } from 'react';
-import { Row, Col, Skeleton, Typography, Badge, Space, Table } from 'antd';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { Row, Col, Skeleton, Typography, Badge, Space, Table, notification } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
@@ -7,9 +7,114 @@ import ProjectionKgPanel from './panel/charts/projections-kg-panel';
 import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
 import { AqualinkMaps } from '../../components/maps/aqualink-map';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectFarmsOrgsWithPools } from '../../redux/authentication/selectors';
+import Cookies from 'js-cookie';
 
 function PanelFarms() {
 
+  const organizations = useSelector((state) => state.auth.farmsOrgs);
+  const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+  const [selectedSector, setSelectedSector] = useState(null);
+  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
+    setSelectedPool(null);
+    setSelectedSector(null);
+    console.log(JSON.stringify(farmsOrgsWithPools));
+  };
+
+  const handleSectorChange = (sectorId) => {
+    setSelectedSector(sectorId);
+    setSelectedPool(null);
+  };
+
+  const handlePoolChange = (poolId) => {
+    setSelectedPool(poolId);
+    Cookies.set('poolId', poolId);
+  };
+
+  const farmsSelectOptions = organizations.length > 0 ? [
+    {
+      options: farmsOrgsWithPools.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Farm',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+
+  const sectorsOptions = selectedOrg
+  ? farmsOrgsWithPools
+    .find(org => org.orgId === selectedOrg)?.pools
+    .reduce((acc, pool) => {
+      if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
+        acc.push({
+          value: pool.salesRegion.id,
+          label: pool.salesRegion.name,
+        });
+      }
+      return acc;
+    }, [])
+  : [];
+
+
+
+  const sectorSelectOptions = selectedOrg ? [
+    {
+      options: sectorsOptions,
+      onChange: handleSectorChange,
+      placeholder: 'Seleccione un Sector',
+      value: selectedSector || undefined,
+    },
+  ] : [];
+
+  const poolsOptions = selectedSector
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
+      .map(pool => ({
+        value: pool.poolId,
+        label: pool.poolName,
+      }))
+    : [];
+
+
+  const poolsSelectOptions = selectedSector ? [
+    {
+      options: poolsOptions,
+      onChange: handlePoolChange,
+      placeholder: 'Seleccione una Pool',
+      disabled: poolsOptions.length === 0,
+      value: selectedPool || undefined,
+    },
+  ] : [];
+
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
+    ...sectorSelectOptions,
+    ...poolsSelectOptions,
+  ];
+
+  const error = useSelector((state) => state.auth.error);
+
+  useEffect(() => {
+    if (error) {
+      notification.error({
+        message: 'Error',
+        description: error,
+      });
+    }
+  }, [error]);
 
   const navigate = useNavigate();
 
@@ -370,18 +475,16 @@ function PanelFarms() {
   return (
     <>
       <PageHeader
-        title="Control Panel"
         highlightText="Aqualink Camaronera"
-        selectOptions={[
-          ["Todas las camaroneras", "Camaronera 2", "Camaronera 3"],
-          ["Todos los Sectores", "Sector 1", "Sector 2", "Sector 3"],
-          ["Todas las Piscinas", "Piscina 1", "Piscina 2", "Piscina 3"]
-        ]}
-
+        title="Panel de Control"
+        selectOptions={combinedSelectOptions}
+        selectedOrg={selectedOrg}
+        selectedPool={selectedPool}
+        onBack={() => window.history.back()}
       />
 
       <Main>
-      
+
 
         <Row gutter={25}>
           <Col xl={12} xs={24} xxl={10} style={{ display: 'flex' }}>
@@ -392,10 +495,17 @@ function PanelFarms() {
                 </Cards>
               }
             >
-              <AqualinkMaps width={'100%'} height={
-                window.innerWidth >= 2000 ? '600px' :
-                  '305px'
-              } />
+              <AqualinkMaps
+                width={'100%'}
+                height={
+                  window.innerWidth >= 2000 ? '600px' :
+                    '305px'
+                }
+                selectedOrg={selectedOrg}
+                selectedSector={selectedSector}
+                selectedPool={selectedPool}
+                farmsOrgsWithPools={farmsOrgsWithPools} // Pasa farmsOrgsWithPools como prop
+              />
             </Suspense>
           </Col>
           <Col xl={12} xs={24} xxl={14} style={{ display: 'flex' }}>
@@ -424,7 +534,7 @@ function PanelFarms() {
               {/* Tabla de Coordinación de Cosechas */}
               <Cards title="Coordinación de Cosechas" size="large">
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                <div className="table-responsive">
+                  <div className="table-responsive">
                     <Table dataSource={harvestData} columns={harvestColumns} pagination={{ pageSize: 5 }} />
                   </div>
 
@@ -466,7 +576,7 @@ function PanelFarms() {
               }
             >
               <Cards title="Inventario de Productos" size="large" style={{ flex: 1 }}>
-                  <Table  dataSource={productData} columns={columns} pagination={{pageSize:5}} />
+                <Table dataSource={productData} columns={columns} pagination={{ pageSize: 5 }} />
               </Cards>
 
             </Suspense>

@@ -153,8 +153,8 @@ export const NaturalPersonForm = () => (
             </Col>
             <Col span={8}>
                 <Form.Item
-                    label="Certificado de Inocuidad (opcional)"
-                    name="certificadoInocuidad"
+                    label="N° de regitro scci"
+                    name="registro_scci"
                 >
                     <Input />
                 </Form.Item>
@@ -180,7 +180,7 @@ export const NaturalPersonForm = () => (
                     name="protocoloProduccion"
                     rules={[{ required: true, message: 'Seleccione el protocolo de producción' }]}
                 >
-                     <Select placeholder="Seleccione Protocolo de Producción">
+                    <Select placeholder="Seleccione Protocolo de Producción">
                         <Option value="biFasico">Mono Fásico (MF)</Option>
                     </Select>
                 </Form.Item>

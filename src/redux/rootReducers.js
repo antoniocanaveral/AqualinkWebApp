@@ -10,8 +10,6 @@ import { axiosCrudReducer, axiosSingleCrudReducer } from './crud/axios/reducers'
 import dataTable from './data-filter/reducers';
 import { emailReducer, SingleEmailReducer } from './email/reducers';
 import FileManager from './fileManager/reducers';
-import firebaseAuth from './firebase/auth/reducers';
-import { fsCrudReducer, fsSingleCrudReducer } from './firebase/firestore/reducers';
 import galleryReducer from './gallary/reducers';
 import { headerSearchReducer } from './headerSearch/reducers';
 import jobs from './jobs/reducers';
@@ -31,11 +29,11 @@ import ChangeLayoutMode from './themeLayout/reducers';
 import themeUsersReducer from './themeUsers/reducers';
 import Todo from './todo/reducers';
 import { userGroupReducer, userReducer } from './users/reducers';
+import {  operationReducer } from './operation/reducers';
+import { inventoryReducer } from './inventory/reducers';
+import { configurationReducer } from './configuration/reducers';
 
 const rootReducers = combineReducers({
-  crud: fsCrudReducer,
-  singleCrud: fsSingleCrudReducer,
-  firebaseAuth,
   themeUsers: themeUsersReducer,
   headerSearchData: headerSearchReducer,
   message: readMessageReducer,
@@ -47,6 +45,9 @@ const rootReducers = combineReducers({
   team: teamReducer,
   auth: authReducer,
   lab: labReducer,
+  operation: operationReducer,
+  inventory: inventoryReducer, 
+  configuration: configurationReducer,
   custody: custodyReducer,
   gallery: galleryReducer,
   email: emailReducer,

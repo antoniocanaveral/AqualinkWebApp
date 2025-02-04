@@ -1,23 +1,28 @@
-
 import React, { useEffect, useState } from 'react';
-import { Tabs, Form, Input, Select, Button, Upload, InputNumber, Row, Col, Switch, message } from 'antd';
+import { Tabs, Form, Input, Select, Button, Upload, InputNumber, Row, Col, Switch, message, Typography, Table, Modal } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
-import { WizardFour, WizardWrapper } from '../../pages/wizards/Style';
-import { Steps } from '../../../components/steps/steps';
 import { NaturalPersonForm } from './add-client-form/natural-person';
 import { LegalPersonForm } from './add-client-form/legal-person';
 import { PreCriaInfrastructure } from './add-client-form/infrastructure/pc-infrastructure';
 import { PreEngordeInfrastructure } from './add-client-form/infrastructure/pe-infrastructure';
 import { EngordeInfrastructure } from './add-client-form/infrastructure/e-infrastructure';
-
+import Cookies from 'js-cookie';
+import { useDispatch, useSelector } from 'react-redux';
+import { createAdOrg, fetchAdClient, fetchBusinessGroups, fetchCity, fetchRegions } from '../../../redux/configuration/actionCreator';
+import { useWatch } from 'antd/lib/form/Form';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
 function AddClientFarm() {
+    const dispatch = useDispatch();
+    const { businessGroups, adClient, cRegions, cCities, adOrg } = useSelector(state => state.configuration);
+
+
     const [form] = Form.useForm();
+
     const [perfilJuridico, setPerfilJuridico] = useState(null);
     const [activeTab, setActiveTab] = useState("1");
     const [generatedCode, setGeneratedCode] = useState("");
@@ -25,10 +30,21 @@ function AddClientFarm() {
     const [selectedPiscina, setSelectedPiscina] = useState(null);
     const [nodos, setNodos] = useState({});
 
-    const [alimentadores, setAlimentadores] = useState({}); // Estado para los alimentadores dinámicos
-    const [alimentadoresPreEngorde, setAlimentadoresPreEngorde] = useState({}); // Estado para los alimentadores dinámicos
-    const [alimentadoresEngorde, setAlimentadoresEngorde] = useState({}); // Estado para los alimentadores dinámicos
+    const selectedRegion = useWatch("c_region", form);
 
+    useEffect(() => {
+        console.log("camio")
+        if (selectedRegion) {
+            dispatch(fetchCity(selectedRegion));
+        }
+    }, [selectedRegion, dispatch]);
+
+    const [alimentadores, setAlimentadores] = useState({});
+    const [alimentadoresPreEngorde, setAlimentadoresPreEngorde] = useState({});
+    const [alimentadoresEngorde, setAlimentadoresEngorde] = useState({});
+
+    const [counters, setCounters] = useState({ pc: 0, pe: 0, e: 0 });
+    const Masteradmin = Cookies.get('MasterAdmin')
     const handleAddAlimentador = (index) => {
         setAlimentadores((prevState) => ({
             ...prevState,
@@ -41,7 +57,6 @@ function AddClientFarm() {
             ...prevState,
             [index]: (prevState[index] || 1) + 1,
         }));
-
     };
 
     const handleAddAlimentadorEngorde = (index) => {
@@ -50,142 +65,95 @@ function AddClientFarm() {
             [index]: (prevState[index] || 1) + 1,
         }));
     };
-
-
-    const fieldsNaturalPerson = [
-        "nombre", "cc", "direccionFiscal", "correo", "telefonoConvencional", "telefonoCelular",
-        "tipoCliente", "nombreCamaronera", "provincia", "canton", "tipoCamaronera", "acuerdoMinisterial",
-        "sistemaCultivo", "protocoloProduccion", "extensionProductiva", "extensionPreCrias", "cantidadPreCrias",
-        "extensionPiscinasPreEngorde", "cantidadPiscinasPreEngorde", "extensionPiscinasEngorde", "cantidadPiscinasEngorde",
-        "extensionCanalesReservorio"
-    ];
-
-    const fieldsLegalPerson = [
-        "razonSocial", "ruc", "direccionFiscal", "representanteLegal", "ccRepresentante", "correoRepresentante",
-        "correoGeneral", "telefonoConvencional", "telefonoCelular",
-        "tipoCliente", "nombreCamaronera", "provincia", "canton", "tipoCamaronera", "acuerdoMinisterial",
-        "sistemaCultivo", "protocoloProduccion", "extensionProductiva", "extensionPreCrias", "cantidadPreCrias",
-        "extensionPiscinasPreEngorde", "cantidadPiscinasPreEngorde", "extensionPiscinasEngorde", "cantidadPiscinasEngorde",
-        "extensionCanalesReservorio"
-    ];
-
-
     const getFirstTabFields = () => {
-        const perfil = form.getFieldValue("perfilJuridico");
+        const perfil = form.getFieldValue("legalentitytype");
         if (perfil === "natural") {
-            return fieldsNaturalPerson;
+            return [
+                "businessname",
+                "Name",
+                "taxid",
+                "sm_locationname",
+                "phone",
+                "phone2",
+                "c_region",
+                "c_city",
+                "SM_OrgType",
+                "water_system",
+                "sm_productiontype",
+                "sm_codigovap",
+                "sm_ministerialagreement"
+            ];
         }
-        if (perfil === "juridica") {
-            return fieldsLegalPerson;
+        if (perfil === "juridico") {
+            return [
+                "businessname",
+                "Name",
+                "taxid",
+                "sm_locationname",
+                "phone",
+                "phone2",
+                "c_region",
+                "c_city",
+                "SM_OrgType",
+                "water_system",
+                "sm_productiontype",
+                "sm_codigovap",
+                "sm_ministerialagreement",
+                "taxid_rl",
+                "name_rl",
+                "email_rl"
+            ];
         }
-        return ["perfilJuridico"]; // Solo valida el perfil si aún no se selecciona
+        return ["legalentitytype"];
     };
 
 
-    const validateCurrentStep = async () => {
 
-        // Paso 0: Registro Pre Crías
-        if (currentStep === 0) {
-            const cantidadPreCrias = form.getFieldValue("cantidadPreCrias") || 0;
+    const handleSubmit = async () => {
+        try {
+            await form.validateFields(getFirstTabFields());
 
-            const camposPreCrias = Array.from({ length: cantidadPreCrias }, (_, index) => [
-                `piscinaPreCriaId-${index}`,
-                `extensionPreCria-${index}`,
-                `profundidadOperativa-${index}`,
-                `profundidadSiembra-${index}`,
-                `profundidadTransferencia-${index}`,
-                `aireacionMecanica-${index}`,
-                `metodoAlimentacion-${index}`,
-            ]).flat();
+            const formData = form.getFieldsValue(true);
 
-            const errorMessages = {
-                piscinaPreCriaId: "El campo 'Piscina Pre Cría' es obligatorio.",
-                extensionPreCria: "El campo 'Extensión Pre Cría' debe ser mayor a 0.",
-                profundidadOperativa: "La 'Profundidad Operativa' debe ser mayor a 0.",
-                profundidadSiembra: "La 'Profundidad Siembra' debe ser mayor a 0.",
-                profundidadTransferencia: "La 'Profundidad Transferencia' debe ser mayor a 0.",
-                aireacionMecanica: "El campo 'Aireación Mecánica' debe ser mayor a 0.",
-                metodoAlimentacion: "Debes seleccionar un método de alimentación (Manual o Automático).",
+            const orgData = {
+                AD_Client_ID: adClient?.ad_client_id, 
+                Name: formData.Name,
+                business_group_id: formData.business_group_id,
+                legalentitytype: formData.legalentitytype,
+                businessname: formData.businessname,
+                taxid: formData.taxid,
+                sm_locationname: formData.sm_locationname,
+                phone: formData.phone,
+                phone2: formData.phone2,
+                sm_latitude: formData.sm_latitude,
+                sm_longitude: formData.sm_longitude,
+                c_region_id: formData.c_region, 
+                c_city_id: formData.c_city,     
+                SM_OrgType: formData.SM_OrgType,
+                water_system: formData.water_system,
+                sm_productiontype: formData.sm_productiontype,
+                sm_codigovap: formData.sm_codigovap,
+                sm_ministerialagreement: formData.sm_ministerialagreement,
+                sm_safetycertificate: formData.sm_safetycertificate,
+                taxid_rl: formData.taxid_rl,
+                name_rl: formData.name_rl,
+                email_rl: formData.email_rl,
             };
 
-            const camposConErrores = camposPreCrias.filter(campo => {
-                const valor = form.getFieldValue(campo);
-                const campoBase = campo.split('-')[0]; // Extraer nombre base
-                if (campoBase === "metodoAlimentacion") {
-                    return valor === undefined || valor === "";
-                }
-                return valor === undefined || valor <= 0;
-            });
+            const createdOrg = await dispatch(createAdOrg(orgData));
 
-            if (camposConErrores.length > 0) {
-                camposConErrores.forEach(campo => {
-                    const campoBase = campo.split('-')[0];
-                    const mensajeError = errorMessages[campoBase] || "Este campo es obligatorio.";
-                    message.error(mensajeError);
-                });
-                return false;
+            if (createdOrg) {
+                message.success("Organización creada exitosamente.");
+                setActiveTab("2");
             } else {
-                setCurrentStep(currentStep + 1);
-                return true;
+                message.error("No se pudo crear la organización. Inténtalo de nuevo.");
             }
+        } catch (error) {
+            console.error("Error en el envío del formulario:", error);
+            message.error("Error al enviar el formulario. Corrige los errores e inténtalo de nuevo.");
         }
-
-        // Paso 1: Registro Pre Engorde
-        if (currentStep === 1) {
-
-            const cantidadPreEngorde = form.getFieldValue("cantidadPiscinasPreEngorde") || 0;
-
-            const camposPreEngorde = Array.from({ length: cantidadPreEngorde }, (_, index) => [
-                `piscinaPreEngordeId-${index}`,
-                `extensionPreEngorde-${index}`,
-                `profundidadOperativaPreEngorde-${index}`,
-                `profundidadSiembraPreEngorde-${index}`,
-                `profundidadTransferenciaPreEngorde-${index}`,
-                `aireacionMecanicaPreEngorde-${index}`,
-                `metodoAlimentacionPreEngorde-${index}`,
-            ]).flat();
-
-            const errorMessagesPaso1 = {
-                piscinaPreEngordeId: "El campo 'Piscina Pre Engorde' es obligatorio.",
-                extensionPreEngorde: "El campo 'Extensión Pre Engorde' debe ser mayor a 0.",
-                profundidadOperativaPreEngorde: "La 'Profundidad Operativa Pre Engorde' debe ser mayor a 0.",
-                profundidadSiembraPreEngorde: "La 'Profundidad Siembra Pre Engorde' debe ser mayor a 0.",
-                profundidadTransferenciaPreEngorde: "La 'Profundidad Transferencia Pre Engorde' debe ser mayor a 0.",
-                aireacionMecanicaPreEngorde: "El campo 'Aireación Mecánica Pre Engorde' debe ser mayor a 0.",
-                metodoAlimentacionPreEngorde: "Debes seleccionar un método de alimentación (Manual o Automático).",
-            };
-
-            const camposConErroresPaso1 = camposPreEngorde.filter((campo) => {
-                const valor = form.getFieldValue(campo);
-                const campoBase = campo.split("-")[0]; // Extraer el nombre base del campo
-                if (campoBase.includes("metodoAlimentacionPreEngorde")) {
-                    return valor === undefined || valor === "";
-                }
-                return valor === undefined || valor <= 0;
-            });
-
-            if (camposConErroresPaso1.length > 0) {
-                camposConErroresPaso1.forEach((campo) => {
-                    const campoBase = campo.split("-")[0];
-                    const mensajeError = errorMessagesPaso1[campoBase] || "Este campo es obligatorio.";
-                    message.error(mensajeError);
-                });
-                return false;
-            } else {
-                setCurrentStep(currentStep + 1);
-                return true;
-            }
-        }
-
-
-
     };
 
-
-    const handlePrevStep = async () => {
-        setCurrentStep(prev => prev - 1);
-        return Promise.resolve(); // Asegura que la función sea una promesa.
-    };
 
 
     // Generar código automático
@@ -196,174 +164,219 @@ function AddClientFarm() {
 
     useEffect(() => {
         generateCode();
+        dispatch(fetchBusinessGroups());
+        dispatch(fetchAdClient())
+        dispatch(fetchRegions())
     }, []);
 
+    // Función para generar identificadores únicos
+    const generateIdentificador = (type) => {
+        let prefix;
+        switch (type) {
+            case 'pc':
+                prefix = 'Ppc';
+                break;
+            case 'pe':
+                prefix = 'Ppe';
+                break;
+            case 'e':
+                prefix = 'Pe';
+                break;
+            default:
+                prefix = 'Unknown';
+        }
+        const newCount = (counters[type] || 0) + 1;
+        setCounters({
+            ...counters,
+            [type]: newCount
+        });
+        return `${prefix}${newCount}`;
+    };
 
-    // Manejar navegación al siguiente tab
-    const handleNextTab = () => {
-        setActiveTab("2");
+    const handleNextTab = (id) => {
+        setActiveTab(`${id}`);
     };
 
     const addNodo = (piscina) => {
         setNodos((prev) => ({
             ...prev,
-            [piscina]: [...(prev[piscina] || []), {}], // Agregar un nuevo nodo
+            [piscina]: [...(prev[piscina] || []), {}],
         }));
     };
-
-
 
     const handlePerfilJuridicoChange = (value) => {
         setPerfilJuridico(value);
     };
 
-    const renderFields = () => {
+    const renderFields = (regions, cities) => {
         if (perfilJuridico === 'natural') {
             return (
-                <NaturalPersonForm />
+                <NaturalPersonForm regions={regions} cities={cities} clientType={adClient?.clienttype?.id} />
             );
         }
 
-        if (perfilJuridico === 'juridica') {
+        if (perfilJuridico === 'juridico') {
             return (
-                <LegalPersonForm />
+                <LegalPersonForm regions={regions} cities={cities} clientType={adClient?.clienttype?.id} />
             );
         }
         return null;
     };
 
-    const steps = [
+    const [selectedPoolType, setSelectedPoolType] = useState(null);
+    const [addedPiscinas, setAddedPiscinas] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    useEffect(() => {
+        const initialTotals = {
+            pc: { count: 0, extension: 0 },
+            pe: { count: 0, extension: 0 },
+            e: { count: 0, extension: 0 }
+        };
+
+        const totals = addedPiscinas.reduce((acc, curr) => {
+            if (curr.extension && !isNaN(curr.extension)) {
+                acc[curr.type].count++;
+                acc[curr.type].extension += Number(curr.extension);
+            }
+            return acc;
+        }, initialTotals);
+
+        form.setFieldsValue({
+            num_pc: totals.pc.count,
+            num_pe: totals.pe.count,
+            num_e: totals.e.count,
+            ex_pc: totals.pc.extension.toFixed(2),
+            ex_pe: totals.pe.extension.toFixed(2),
+            ex_e: totals.e.extension.toFixed(2)
+        });
+    }, [addedPiscinas, form]);
+
+    const handleAddPiscina = async () => {
+        try {
+          const type = selectedPoolType;
+          const formValues = form.getFieldsValue()[type] || {};
+      
+          if (!formValues.extension || !formValues.profundidadOperativa) {
+            throw new Error("Faltan campos requeridos");
+          }
+      
+          const manualNumber = form.getFieldValue([type, 'manualNumber']);
+          if (!manualNumber) {
+            throw new Error("Debe ingresar el número manual para la piscina.");
+          }
+      
+          const isDuplicate = addedPiscinas.some(p => p.type === type && p.manualNumber === manualNumber);
+          if (isDuplicate) {
+            message.error("Ese número ya se ha usado para este tipo de piscina.");
+            return;
+          }
+      
+          let prefix;
+          switch (type) {
+            case 'pc':
+              prefix = 'Ppc';
+              break;
+            case 'pe':
+              prefix = 'Ppe';
+              break;
+            case 'e':
+              prefix = 'Pe';
+              break;
+            default:
+              prefix = 'Unknown';
+          }
+      
+          const identificador = `${prefix}${manualNumber}`;
+      
+          const newPiscina = {
+            key: `${type}-${Date.now()}`,
+            type,
+            manualNumber, 
+            identificador,
+            extension: Number(formValues.extension),
+            profundidadOperativa: Number(formValues.profundidadOperativa),
+            alimentacion: formValues.metodoAlimentacion === 'automatico',
+            aireacion: formValues.aireacionMecanica || 0,
+          };
+      
+          setAddedPiscinas([...addedPiscinas, newPiscina]);
+          form.resetFields([type]);
+        } catch (error) {
+          console.error("Error al validar campos:", error);
+          message.error("Por favor complete todos los campos requeridos");
+        }
+      };
+      
+
+    const handleDeletePiscina = (key) => {
+        setAddedPiscinas(addedPiscinas.filter(p => p.key !== key));
+    };
+
+    const columns = [
         {
-            title: 'Registro Pre Crías',
-            content: (
-                <div style={{ width: "100%" }}>
-                    <Tabs>
-                        {Array.from(
-                            { length: form.getFieldValue("cantidadPreCrias") || 0 },
-                            (_, index) => (
-                                <TabPane tab={`Pre Cría ${index + 1}`} key={`pre-cria-${index + 1}`}>
-                                    <PreCriaInfrastructure
-                                        key={`tab-pre-cria-${index}`}
-                                        index={index}
-                                        alimentadores={alimentadores}
-                                        handleAddAlimentador={handleAddAlimentador}
-                                        form={form} // Pasar el formulario principal
-                                    />
-                                </TabPane>
-                            )
-                        )}
-                    </Tabs>
-                </div>
-            ),
+            title: 'Tipo',
+            dataIndex: 'type',
+            key: 'type',
+            align: 'center', // Centrar el título
+            render: (t) => ({
+                pc: 'Pre Cría',
+                pe: 'Pre Engorde',
+                e: 'Engorde'
+            }[t])
         },
         {
-            title: 'Registro Pre Engorde',
-            content: (
-
-                <div style={{ width: "100%" }}>
-                    <Tabs>
-                        {Array.from(
-                            { length: form.getFieldValue("cantidadPiscinasPreEngorde") || 0 },
-                            (_, index) => (
-                                <TabPane tab={`Pre Engorde ${index + 1}`} key={`pre-engorde-${index + 1}`}>
-                                    <PreEngordeInfrastructure
-                                        key={`tab-pre-engorde-${index}`}
-                                        index={index}
-                                        alimentadores={alimentadoresPreEngorde}
-                                        handleAddAlimentador={handleAddAlimentadorPreEngorde}
-                                        form={form} // Pasar el formulario principal
-                                    />
-                                </TabPane>
-
-                            )
-                        )}
-                    </Tabs>
-                </div>
-            ),
+            title: 'ID',
+            dataIndex: 'identificador',
+            key: 'identificador',
+            align: 'center', // Centrar el título
+            sorter: (a, b) => a.identificador.localeCompare(b.identificador)
         },
         {
-            title: 'Registro Engorde',
-            content: (
-
-                <div style={{ width: "100%" }}>
-                    <Tabs>
-                        {Array.from(
-                            { length: form.getFieldValue("cantidadPiscinasEngorde") || 0 },
-                            (_, index) => (
-                                <TabPane
-                                    tab={`Engorde ${index + 1}`}
-                                    key={`engorde-${index + 1}`}
-                                >
-                                    <EngordeInfrastructure
-                                        key={`tab-engorde-${index}`}
-                                        index={index}
-                                        alimentadores={alimentadoresEngorde}
-                                        handleAddAlimentador={handleAddAlimentadorEngorde}
-                                        form={form} // Pasar el formulario principal
-                                    />
-                                </TabPane>
-                            )
-                        )}
-                    </Tabs>
-                </div>
-            ),
+            title: 'Extensión (ha)',
+            dataIndex: 'extension',
+            key: 'extension',
+            align: 'center', // Centrar el título
+            render: (val) => val?.toFixed(2)
         },
+        {
+            title: 'Profundidad (m)',
+            dataIndex: 'profundidadOperativa',
+            key: 'profundidad',
+            align: 'center', // Centrar el título
+            render: (val) => val?.toFixed(2)
+        },
+        {
+            title: 'Alimentación',
+            dataIndex: 'alimentacion',
+            key: 'alimentacion',
+            align: 'center', // Centrar el título
+            render: (val) => val ? 'Automática' : 'Manual'
+        },
+        {
+            title: 'Aireación (Hp/Ha)',
+            dataIndex: 'aireacion',
+            key: 'aireacion',
+            align: 'center', // Centrar el título
+            render: (val) => val || 'N/A'
+        },
+        {
+            title: 'Acciones',
+            key: 'actions',
+            align: 'center', // Centrar el título
+            render: (_, record) => (
+                <Button danger onClick={() => handleDeletePiscina(record.key)}>
+                    Eliminar
+                </Button>
+            )
+        }
     ];
 
-
-    const done = () => {
-        // Paso 2: Registro Engorde
-        if (currentStep === 2) {
-
-            const cantidadEngorde = form.getFieldValue("cantidadPiscinasEngorde") || 0;
-
-            const camposEngorde = Array.from({ length: cantidadEngorde }, (_, index) => [
-                `piscinaEngordeId-${index}`,
-                `extensionEngorde-${index}`,
-                `profundidadOperativaEngorde-${index}`,
-                `profundidadTransferenciaEngorde-${index}`,
-                `diasCrecimientoEngorde-${index}`,
-                `cantidadAlimentoEngorde-${index}`,
-                `metodoAlimentacionEngorde-${index}`,
-            ]).flat();
-
-            const errorMessagesPaso2 = {
-                piscinaEngordeId: "El campo 'Piscina Engorde' es obligatorio.",
-                extensionEngorde: "El campo 'Extensión Engorde' debe ser mayor a 0.",
-                profundidadOperativaEngorde: "La 'Profundidad Operativa Engorde' debe ser mayor a 0.",
-                profundidadTransferenciaEngorde: "La 'Profundidad Transferencia Engorde' debe ser mayor a 0.",
-                diasCrecimientoEngorde: "Los 'Días de Crecimiento' deben ser mayores a 0.",
-                cantidadAlimentoEngorde: "La 'Cantidad de Alimento' debe ser mayor a 0.",
-                metodoAlimentacionEngorde: "Debes seleccionar un método de alimentación (Manual o Automático).",
-            };
-
-            const camposConErroresPaso2 = camposEngorde.filter(campo => {
-                const valor = form.getFieldValue(campo);
-                const campoBase = campo.split('-')[0];
-                if (campoBase.includes("metodoAlimentacion")) {
-                    return valor === undefined || valor === "";
-                }
-                return valor === undefined || valor <= 0;
-            });
-
-            if (camposConErroresPaso2.length > 0) {
-                camposConErroresPaso2.forEach(campo => {
-                    const campoBase = campo.split('-')[0];
-                    const mensajeError = errorMessagesPaso2[campoBase] || "Este campo es obligatorio.";
-                    message.error(mensajeError);
-                });
-                return false;
-            } else {
-                setActiveTab("3");
-            }
-        }
-    };
     return (
         <>
             <PageHeader
-
                 highlightText="AquaLink Administración"
-                title="Añadir Clientes"
+                title="Configuracióm Camaronera"
             />
             <Main>
                 <Form form={form} layout="vertical" onFinish={(values) => console.log('Formulario completado:', values)}>
@@ -371,100 +384,269 @@ function AddClientFarm() {
                         {/* Tab 1: Información */}
                         <TabPane tab="Información" key="1">
                             <Cards headless>
-                                {/* Contenido del primer tab */}
                                 <Form.Item label="Subir Logo (opcional)" name="imagen">
                                     <Upload beforeUpload={() => false}>
                                         <Button icon={<UploadOutlined />}>Subir Logotipo</Button>
                                     </Upload>
                                 </Form.Item>
 
-                                <Form.Item
-                                    label="Perfil Jurídico"
-                                    name="perfilJuridico"
-                                    rules={[{ required: true, message: 'Seleccione un perfil jurídico' }]}
-                                >
-                                    <Select
-                                        placeholder="Seleccione Perfil Jurídico"
-                                        onChange={handlePerfilJuridicoChange}
-                                    >
-                                        <Option value="natural">Persona Natural</Option>
-                                        <Option value="juridica">Persona Jurídica</Option>
-                                    </Select>
-                                </Form.Item>
+                                <Row gutter={16}>
+                                    <Col span={4}>
+                                        <Form.Item
+                                            label="Cliente"
+                                            name="client"
+                                        >
+                                            <Input value={adClient?.Name} defaultValue={adClient?.Name} disabled />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={2}>
+                                        <Form.Item
+                                            label="Tipo"
+                                            name="decription"
+                                        >
+                                            <Input value={adClient?.clienttype?.id} defaultValue={adClient?.clienttype?.id} disabled />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={5}>
+                                        <Form.Item
+                                            label="Email"
+                                            name="email"
+                                        >
+                                            <Input value={adClient?.clientemail?.id} defaultValue={adClient?.clientemail?.id} disabled />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={5}>
+                                        <Form.Item
+                                            label="Nombre Master Admin"
+                                            name="name_master_admin"
 
-                                {renderFields()}
+                                        >
+                                            <Input value={Masteradmin}
+                                                defaultValue={Masteradmin}
+                                                disabled
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={4}>
+                                        <Form.Item
+                                            label="Grupo Empresarial"
+                                            name="business_group_id"
+                                        >
+                                            <Select size='large' placeholder="Seleccione un grupo empresarial">
+                                                {businessGroups.map((group) => (
+                                                    <Select.Option key={group.id} value={group.id}>
+                                                        {group.Name}
+                                                    </Select.Option>
+                                                ))}
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={4}>
+                                        <Form.Item
+                                            label="Perfil Jurídico"
+                                            name="legalentitytype"
+                                            rules={[{ required: true, message: 'Seleccione un perfil jurídico' }]}
+                                        >
+                                            <Select size='large'
+                                                placeholder="Seleccione Perfil Jurídico"
+                                                onChange={handlePerfilJuridicoChange}
+                                            >
+                                                <Option value="natural">Persona Natural</Option>
+                                                <Option value="juridico">Persona Jurídica</Option>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
 
-                                {generatedCode && (
-                                    <Row gutter={16} style={{ marginTop: "20px" }}>
-                                        <Col span={24}>
-                                            <Form.Item label="Código Generado">
-                                                <Input value={generatedCode} disabled />
-                                            </Form.Item>
-                                        </Col>
-                                    </Row>
-                                )}
-
+                                {renderFields(cRegions, cCities)}
                                 <Form.Item>
-                                    <Button
-                                        type="primary"
-                                        onClick={async () => {
-                                            try {
-                                                const fieldsToValidate = getFirstTabFields(); // Campos condicionales según el perfil
-                                                await form.validateFields(fieldsToValidate);
-                                                await handleNextTab(); // Cambia al siguiente tab
-                                            } catch (error) {
-                                                console.error("Errores en el formulario:", error);
-                                            }
-                                        }}
-                                    >
+                                    <Button type="primary" onClick={handleSubmit}>
                                         Siguiente
                                     </Button>
                                 </Form.Item>
-
                             </Cards>
                         </TabPane>
 
                         {/* Tab 2: Infraestructura y Recursos */}
                         <TabPane tab="Infraestructura y Recursos" key="2">
                             <Cards headless>
-                                {/* Información Identificadora */}
-                                <Row gutter={16}>
-                                    <Col span={6}>
-                                        <Form.Item label="Nombre de Cliente">
-                                            <Input value={form.getFieldValue("nombre") || ""} disabled />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={6}>
-                                        <Form.Item label="Nombre de Finca (Camaronera)">
-                                            <Input value={form.getFieldValue("nombreCamaronera") || ""} disabled />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={6}>
-                                        <Form.Item label="Código Cliente">
-                                            <Input value={generatedCode || "AQLK-0000"} disabled />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={6}>
-                                        <Form.Item label="Tipo de Cliente">
-                                            <Input value={form.getFieldValue("tipoCliente") || ""} disabled />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
+                                <div style={{ display: "flex", flexDirection: "row" }}>
+                                    <div>
+                                        <Row gutter={16}>
+                                            <Col span={6}>
+                                                <Form.Item label="Cliente">
+                                                    <Input value={adOrg?.AD_Client_ID?.identifier || ""} disabled />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={6}>
+                                                <Form.Item label="Tipo de Cliente">
+                                                    <Input value={adClient?.clienttype?.id || ""} disabled />
+                                                </Form.Item>
+                                            </Col>
 
-                                <WizardWrapper className="ninjadash-wizard-page">
-                                    <WizardFour>
-                                        <Steps
-                                            isvertical
-                                            isswitch
-                                            current={currentStep}
-                                            direction="vertical"
-                                            steps={steps}
-                                            onNext={validateCurrentStep}
-                                            onPrev={handlePrevStep}
-                                            onDone={done}
+                                            <Col span={6}>
+                                                <Form.Item label="Código Cliente">
+                                                    <Input value={adOrg?.Value || "AQLK-0000"} disabled />
+                                                </Form.Item>
+                                            </Col>
+
+                                            <Col span={6}>
+                                                <Form.Item label="Camaronera">
+                                                    <Input value={adOrg?.Name || ""} disabled />
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
+                                        <hr></hr>
+                                        <Row gutter={16}>
+                                            <Col span={7}>
+                                                <Form.Item label="# de Pre Crías"
+                                                    name="num_pc">
+                                                    <Input disabled />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={7}>
+                                                <Form.Item label="# de Pre Engorde"
+                                                    name="num_pe">
+                                                    <Input disabled />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={7}>
+                                                <Form.Item label="# de Engorde Final"
+                                                    name="num_e">
+                                                    <Input disabled />
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
+
+                                        <Row gutter={16}>
+                                            <Col span={7}>
+                                                <Form.Item label="ext. Pre Crías"
+                                                    name="ex_pc">
+                                                    <Input disabled />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={7}>
+                                                <Form.Item label="ext. Pre Engorde"
+                                                    name="ex_pe">
+                                                    <Input disabled />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={7}>
+                                                <Form.Item label="ext. Engorde Final"
+                                                    name="ex_e">
+                                                    <Input disabled />
+                                                </Form.Item>
+                                            </Col>
+                                        </Row>
+                                        <hr></hr>
+
+                                        <Typography.Title level={5}>Configuración de Infraestructura Camaronera</Typography.Title>
+                                        <Select
+                                            placeholder="Selecciona el Tipo de Piscina"
+                                            onChange={setSelectedPoolType}
+                                            style={{ width: 200, marginBottom: 20 }}
+                                        >
+                                            <Option value="pc">Pre Cría</Option>
+                                            <Option value="pe">Pre Engorde</Option>
+                                            <Option value="e">Engorde</Option>
+                                        </Select>
+
+                                        {selectedPoolType === 'pc' && (
+                                            <PreCriaInfrastructure
+                                                form={form}
+                                                prefix="pc"
+                                                alimentadores={alimentadores}
+                                                handleAddAlimentador={handleAddAlimentador}
+                                            />
+                                        )}
+
+                                        {selectedPoolType === 'pe' && (
+                                            <PreEngordeInfrastructure
+                                                form={form}
+                                                prefix="pe"
+                                                alimentadores={alimentadoresPreEngorde}
+                                                handleAddAlimentador={handleAddAlimentadorPreEngorde}
+                                                showAlimentadores={false}
+                                            />
+                                        )}
+
+                                        {selectedPoolType === 'e' && (
+                                            <EngordeInfrastructure
+                                                form={form}
+                                                prefix="e"
+                                                alimentadores={alimentadoresEngorde}
+                                                handleAddAlimentador={handleAddAlimentadorEngorde}
+                                            />
+                                        )}
+                                    </div>
+                                    <div style={{ marginLeft: "20px", flex: 1 }}>
+                                        <Table
+                                            columns={columns}
+                                            dataSource={addedPiscinas}
+                                            rowKey="key"
+                                            pagination={false}
+                                            bordered
+                                            style={{ marginBottom: 20 }}
                                         />
-                                    </WizardFour>
-                                </WizardWrapper>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <Button
+                                        onClick={handleAddPiscina}
+                                        disabled={!selectedPoolType}
+                                        style={{ marginBottom: 20 }}
+                                    >
+                                        Añadir Piscina
+                                    </Button>
+                                </div>
+
+                                <center>
+                                    <Button
+                                        type="primary"
+                                        onClick={() => setIsModalVisible(true)}
+                                        disabled={addedPiscinas.length === 0}
+                                    >
+                                        Guardar Infraestructura
+                                    </Button>
+                                </center>
+                                <div>
+
+                                </div>
+
+                                <Modal
+                                    title="Confirmar Acción"
+                                    visible={isModalVisible}
+                                    onCancel={() => setIsModalVisible(false)} // Cierra el modal sin hacer nada
+                                    footer={[
+                                        <Button key="cancel" onClick={() => setIsModalVisible(false)}>
+                                            Cancelar
+                                        </Button>,
+                                        <Button
+                                            key="addNodes"
+                                            type="default"
+                                            onClick={() => {
+                                                setIsModalVisible(false);
+                                                handleNextTab(3); // Ir a georreferenciación sin guardar
+                                            }}
+                                        >
+                                            Añadir Nodos para Georreferenciación
+                                        </Button>,
+                                        <Button
+                                            key="save"
+                                            type="primary"
+                                            onClick={() => {
+                                                setIsModalVisible(false);
+                                                console.log('Piscinas guardadas:', addedPiscinas);
+                                                message.success("Infraestructura guardada con éxito");
+                                            }}
+                                        >
+                                            Guardar
+                                        </Button>,
+                                    ]}
+                                >
+                                    <p>¿Qué acción deseas realizar con las {addedPiscinas.length} piscinas configuradas?</p>
+                                </Modal>
 
                                 <Row justify="space-between" style={{ marginTop: "20px" }}>
                                     <Col>
@@ -487,38 +669,16 @@ function AddClientFarm() {
                                     name="georeferenciacionPiscina"
                                     rules={[{ required: true, message: "Seleccione un identificador de piscina" }]}
                                 >
-                                    <Select placeholder="Seleccione un identificador"
+                                    <Select
+                                        placeholder="Seleccione un identificador"
                                         onChange={(value) => setSelectedPiscina(value)}
                                     >
-                                        {[
-                                            // Identificadores de Pre Cría
-                                            ...Array.from({ length: form.getFieldValue("cantidadPreCrias") || 0 }, (_, index) => ({
-                                                key: `Ppc-${index + 1}`,
-                                                value: form.getFieldValue(`piscinaPreCriaId-${index}`),
-                                                label: `Ppc- ${form.getFieldValue(`piscinaPreCriaId-${index}`)}`,
-                                            })).filter(({ value }) => value), // Filtrar valores nulos o undefined
-
-                                            // Identificadores de Pre Engorde
-                                            ...Array.from({ length: form.getFieldValue("cantidadPiscinasPreEngorde") || 0 }, (_, index) => ({
-                                                key: `Ppe-${index + 1}`,
-                                                value: form.getFieldValue(`piscinaPreEngordeId-${index}`),
-                                                label: `Ppe- ${form.getFieldValue(`piscinaPreEngordeId-${index}`)}`,
-                                            })).filter(({ value }) => value),
-
-                                            // Identificadores de Engorde
-                                            ...Array.from({ length: form.getFieldValue("cantidadPiscinasEngorde") || 0 }, (_, index) => ({
-                                                key: `Pef-${index + 1}`,
-                                                value: form.getFieldValue(`piscinaEngordeId-${index}`),
-                                                label: `Pef-${form.getFieldValue(`piscinaEngordeId-${index}`)}`,
-                                            })).filter(({ value }) => value),
-                                        ].map(({ key, value, label }) => (
-                                            <Option key={key} value={value}>
-                                                {label}
+                                        {addedPiscinas.map(piscina => (
+                                            <Option key={piscina.key} value={piscina.identificador}>
+                                                {piscina.identificador}
                                             </Option>
                                         ))}
                                     </Select>
-
-
                                 </Form.Item>
                                 {selectedPiscina && (
                                     <div style={{ marginTop: "20px" }}>
@@ -535,7 +695,6 @@ function AddClientFarm() {
                                                 </Form.Item>
                                             </Col>
                                             <Col span={12}>
-
                                                 <Form.Item
                                                     label="Nodo Inicial - Latitud"
                                                     name={`${selectedPiscina}-nodo-inicial-latitude`}
@@ -546,11 +705,9 @@ function AddClientFarm() {
                                             </Col>
                                         </Row>
 
-
                                         {/* Nodos Dinámicos */}
                                         {Array.from({ length: nodos[selectedPiscina]?.length || 0 }).map((_, nodeIndex) => (
                                             <Row gutter={16} key={`dynamic-nodo-${selectedPiscina}-${nodeIndex}`}>
-
                                                 <Col span={12}>
                                                     <Form.Item
                                                         label={`Nodo ${nodeIndex + 1} - Longitud`}
@@ -561,7 +718,6 @@ function AddClientFarm() {
                                                     </Form.Item>
                                                 </Col>
                                                 <Col span={12}>
-
                                                     <Form.Item
                                                         label={`Nodo ${nodeIndex + 1} - Latitud`}
                                                         name={`${selectedPiscina}-nodo-${nodeIndex + 1}-latitude`}
@@ -607,10 +763,8 @@ function AddClientFarm() {
                         </TabPane>
                     </Tabs>
                 </Form>
-
-            </Main>
+            </Main >
         </>
     );
 }
-
 export default AddClientFarm;

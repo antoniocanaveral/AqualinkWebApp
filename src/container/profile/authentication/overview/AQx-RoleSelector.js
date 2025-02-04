@@ -38,7 +38,7 @@ function RoleSelector() {
 
   const onClick = () => {
     if(roleId) {
-      dispatch(selectRole(roleId, selectedClientId, (isCompleted) => {
+      dispatch(selectRole(roles, roleId, selectedClientId, (isCompleted) => {
         if(isCompleted) {
           navigate('/', {replace: true});
         }

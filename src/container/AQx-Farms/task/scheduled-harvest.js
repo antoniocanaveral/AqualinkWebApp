@@ -7,82 +7,12 @@ import UilTimes from '@iconscout/react-unicons/icons/uil-times';
 import { BorderLessHeading, TableDefaultStyle } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { UpcomingEventsStyleWrap } from '../../dashboard/Style';
+import PropTypes from 'prop-types'; // Importar PropTypes para validación
 
-const events = {
-  today: [
-    {
-      id: 1,
-      type: 'primary',
-      idCoordinacion: '00034-NP',
-      peso: '1000lb',
-      clasificacion: 'PL-11',
-      date: '19 Marzo',
-    },
-    {
-      id: 2,
-      type: 'secondary',
-      idCoordinacion: '00032-NP',
-      peso: '1050lb',
-      clasificacion: 'PL-12',
-      date: '19 Marzo',
-    },
-    {
-      id: 3,
-      type: 'info',
-      idCoordinacion: '00033-NP',
-      peso: '1100lb',
-      clasificacion: 'PL-12',
-      date: '19 Marzo',
-    },
-    {
-      id: 4,
-      type: 'warning',
-      idCoordinacion: '00031-NP',
-      peso: '1150lb',
-      clasificacion: 'PL-12',
-      date: '19 Marzo',
-    },
-  ],
-  week: [
-    {
-      id: 1,
-      type: 'primary',
-      idCoordinacion: '00035-NP',
-      peso: '950lb',
-      clasificacion: '30-40',
-      date: '12 Septiembre',
-    },
-    {
-      id: 2,
-      type: 'info',
-      idCoordinacion: '00036-NP',
-      peso: '1100lb',
-      clasificacion: '50-60',
-      date: '16 Septiembre',
-    },
-  ],
-  month: [
-    {
-      id: 1,
-      type: 'primary',
-      idCoordinacion: '00037-NP',
-      peso: '1200lb',
-      clasificacion: '60-70',
-      date: '24 Abril',
-    },
-    {
-      id: 2,
-      type: 'secondary',
-      idCoordinacion: '00038-NP',
-      peso: '1150lb',
-      clasificacion: '55-65',
-      date: '24 Abril',
-    },
-  ],
-};
+function ScheduleHarvest({ plannedHarvesting }) {
+  // Añadir un console.log para verificar los props recibidos
+  console.log('ScheduleHarvest props:', { plannedHarvesting });
 
-function ScheduleHarvest() {
-  const [form] = Form.useForm();
   const [state, setState] = useState({
     tabValue: 'today',
     responsive: 0,
@@ -92,18 +22,73 @@ function ScheduleHarvest() {
     taskEditId: '',
     editableItem: {},
   });
-  const { taskEditId, editableItem, visible } = state;
   const [eventState, setEventState] = useState(null);
+
+  // Definir los tipos en orden
+  const eventTypes = ['primary', 'secondary', 'info', 'warning'];
+
+  // Función para convertir mes numérico a nombre en español
+  const getMonthName = (monthNumber) => {
+    const monthNames = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ];
+    // Ajustar si el mes viene como número (1-12)
+    const monthIndex = parseInt(monthNumber, 10) - 1;
+    if (monthIndex >= 0 && monthIndex < 12) {
+      return monthNames[monthIndex];
+    }
+    return monthNumber; // Si ya está en texto o fuera de rango
+  };
+
+  // Función para formatear la fecha ISO a "DD Mes"
+const formatDate = (isoDate) => {
+  if (!isoDate || isoDate === 'N/A') return 'N/A';
+
+  const date = new Date(isoDate);
+  if (isNaN(date)) return 'N/A';
+
+  const day = date.getDate();
+  const month = getMonthName(date.getMonth() + 1); // getMonth() retorna 0-11
+
+  return `${day} ${month}`;
+};
+
 
   useEffect(() => {
     let unmounted = false;
 
     if (!unmounted) {
-      setEventState(events[state.tabValue]);
+      // Asignar eventState basado en el valor de la pestaña actual
+      switch (state.tabValue) {
+        case 'today':
+          setEventState(plannedHarvesting);
+          break;
+        case 'week':
+          setEventState(plannedHarvesting);
+          break;
+        case 'month':
+          setEventState(plannedHarvesting);
+          break;
+        default:
+          setEventState([]);
+      }
     }
 
-    return () => (unmounted = true);
-  }, [state.tabValue]);
+    return () => {
+      unmounted = true;
+    };
+  }, [state.tabValue, plannedHarvesting]);
 
   const tabChange = (value) => {
     setState({
@@ -112,49 +97,43 @@ function ScheduleHarvest() {
     });
   };
 
-  const showModal = (id, item) => {
-    setState({
-      ...state,
-      visible: true,
-      collapsed: false,
-      taskEditId: id,
-      editableItem: item,
-    });
-  };
+  // Optimización del mapeo de datos
+  const dataSource = eventState
+    ? eventState.map((value, index) => {
+        const {
+          SM_FishingNotification = 'N/A',
+          SM_FishingVolume = 'N/A',
+          SM_RequestedPL = 'N/A',
+          SM_FishingDate = 'N/A',
+          id,
+        } = value;
 
-  const handleTaskDelete = (id) => {
-    events[state.tabValue] = events[state.tabValue].filter((item) => item.id !== id);
-    setEventState(eventState.filter((item) => item.id !== id));
-  };
+      
+         // Formatear la fecha
+      const formattedDate = formatDate(SM_FishingDate);
 
-  const dataSource = [];
 
-  if (eventState)
-    eventState.map((value) => {
-      const { idCoordinacion, peso, clasificacion, date, type, id } = value;
-      return dataSource.push({
-        key: id,
-        name: (
-          <div className="ninjadash-event-details align-center-v" style={{ minHeight: '80px' }}>
-            <div className={`ninjadash-event-details__date ninjadash-event-${type}`}>
-              <span className="ninjadash-event-day">{date}</span>
+        // Asignar el tipo de manera secuencial
+        const type = eventTypes[index % eventTypes.length];
+
+        return {
+          key: id,
+          name: (
+            <div className="ninjadash-event-details align-center-v" style={{ minHeight: '80px' }}>
+              <div className={`ninjadash-event-details__date ninjadash-event-${type}`}>
+                <span className="ninjadash-event-day">{`${formattedDate}`}</span>
+              </div>
+              <article className="ninjadash-event-details__content">
+              <h4 className="ninjadash-event-details__title">{`Lote: `}</h4>
+              <p className="ninjadash-event-details__time">{`${SM_FishingNotification}`}</p>
+                <h4 className="ninjadash-event-details__title">{`Peso: ${SM_FishingVolume}`}</h4>
+                <p className="ninjadash-event-details__time">{`Clasificación: ${SM_RequestedPL}`}</p>
+              </article>
             </div>
-            <article className="ninjadash-event-details__content">
-              <h4 className="ninjadash-event-details__title">{`ID Coordinación: ${idCoordinacion}`}</h4>
-              <h4 className="ninjadash-event-details__title">{`Peso: ${peso}`}</h4>
-              <h4 className="ninjadash-event-details__title">{`Clasificación: ${clasificacion}`}</h4>
-            </article>
-          </div>
-        ),
-        actions: (
-          <div className="ninjadash-event-details-action">
-            <Link to="#" className="ninjadash-event-details-action__delete" onClick={() => handleTaskDelete(id)}>
-              <UilTimes />
-            </Link>
-          </div>
-        ),
-      });
-    });
+          ),
+        };
+      })
+    : [];
 
   const columns = [
     {
@@ -168,12 +147,6 @@ function ScheduleHarvest() {
       key: 'actions',
     },
   ];
-
-  useEffect(() => {
-    if (visible) {
-      form.setFieldsValue(editableItem);
-    }
-  }, [form, editableItem, visible]);
 
   return (
     <BorderLessHeading>
@@ -203,13 +176,24 @@ function ScheduleHarvest() {
           title="Cosechas Planificadas"
           size="large"
         >
-          <TableDefaultStyle>
             <Table dataSource={dataSource} columns={columns} pagination={false} showHeader={false} />
-          </TableDefaultStyle>
         </Cards>
       </UpcomingEventsStyleWrap>
     </BorderLessHeading>
   );
 }
+
+// Añadir PropTypes para validación de props
+ScheduleHarvest.propTypes = {
+  plannedHarvesting: PropTypes.arrayOf(
+    PropTypes.shape({
+      SM_FishingNotification: PropTypes.string,
+      SM_FishingVolume: PropTypes.string,
+      SM_RequestedPL: PropTypes.string,
+      SM_PlannedDate: PropTypes.string,
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    })
+  ).isRequired,
+};
 
 export default ScheduleHarvest;

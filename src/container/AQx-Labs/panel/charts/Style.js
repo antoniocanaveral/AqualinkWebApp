@@ -1261,8 +1261,8 @@ const UpcomingEventsStyleWrap = Styled.div`
             justify-content: center;
             flex-direction: column;
             color: ${({ theme }) => theme['white-color']};
-            min-width: 60px;
-            min-height: 60px;
+            min-width: 50px;
+            min-height: 85px;
             padding: 0 10px;
             border-radius: 6px;
             &.ninjadash-event-primary{

@@ -406,14 +406,14 @@ function AQXLabMenu({ toggleCollapsed }) {
       [
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/client/view`}>{t('Ficha Cliente')}</NavLink>
+            <NavLink to={`${path}/client/view`}>{t('Laboratorio')}</NavLink>
           </div>,
           'cliente-ficha',
           null,
         ),
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/client/add`}>{t('Añadir Cliente')}</NavLink>
+            <NavLink to={`${path}/client/add`}>{t('Configuración')}</NavLink>
           </div>,
           'cliente-usuarios',
           null,

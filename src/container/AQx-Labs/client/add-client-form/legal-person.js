@@ -181,8 +181,8 @@ export const LegalPersonForm = () => (
             </Col>
             <Col span={8}>
                 <Form.Item
-                    label="Certificado de Inocuidad (opcional)"
-                    name="certificadoInocuidad"
+                    label="N° de regitro scci"
+                    name="registro_scci"
                 >
                     <Input />
                 </Form.Item>

@@ -1,10 +1,10 @@
-import { Row, Col, Table, } from 'antd';
+import { Row, Col, Table } from 'antd';
 import { Main } from '../../styled';
 import ComparativeDispatchPerformanceBarChart from './charts/ComparativeDispatchPerformanceBarChart';
 import { PageHeader } from '../../../components/page-headers/page-headers';
+import React from 'react';
 
 function DispatchReportLab() {
-
     // Filas fijas (Fecha de siembra programada y Lote ID)
     const stickyRows = [
         {
@@ -15,6 +15,7 @@ function DispatchReportLab() {
             siembra3: '2024-08-10',
             siembra4: '2024-09-15',
             siembra5: '2024-10-20',
+            type: 'data',
         },
         {
             key: 'lote_id',
@@ -24,6 +25,7 @@ function DispatchReportLab() {
             siembra3: 'L-003',
             siembra4: 'L-004',
             siembra5: 'L-005',
+            type: 'data',
         },
     ];
 
@@ -37,6 +39,7 @@ function DispatchReportLab() {
             siembra3: '1,400,000,000',
             siembra4: '1,500,000,000',
             siembra5: '1,600,000,000',
+            type: 'data',
         },
         {
             key: 'volumen_despachado',
@@ -46,6 +49,7 @@ function DispatchReportLab() {
             siembra3: '1,300,000,000',
             siembra4: '1,400,000,000',
             siembra5: '1,500,000,000',
+            type: 'data',
         },
         {
             key: 'pl_gramo_solicitado',
@@ -55,6 +59,7 @@ function DispatchReportLab() {
             siembra3: '88 g',
             siembra4: '94 g',
             siembra5: '95 g',
+            type: 'data',
         },
         {
             key: 'pl_gramo',
@@ -64,6 +69,7 @@ function DispatchReportLab() {
             siembra3: '83 g',
             siembra4: '89 g',
             siembra5: '90 g',
+            type: 'data',
         },
         {
             key: 'variacion',
@@ -73,58 +79,26 @@ function DispatchReportLab() {
             siembra3: '+100 kg',
             siembra4: '+150 kg',
             siembra5: '+150 kg',
+            type: 'data',
         },
     ];
 
-    // Columnas para la tabla fija
+    // Combinar ambas fuentes de datos
+    const combinedData = [...stickyRows, ...mainTableData];
+
+    // Columnas para la tabla
     const columns = [
         {
-            title: '',
+            title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
             width: 250, // Aumentado para acomodar textos más largos
             fixed: 'left',
-        },
-        {
-            title: 'Siembra 1',
-            dataIndex: 'siembra1',
-            key: 'siembra1',
-            width: 150,
-        },
-        {
-            title: 'Siembra 2',
-            dataIndex: 'siembra2',
-            key: 'siembra2',
-            width: 150,
-        },
-        {
-            title: 'Siembra 3',
-            dataIndex: 'siembra3',
-            key: 'siembra3',
-            width: 150,
-        },
-        {
-            title: 'Siembra 4',
-            dataIndex: 'siembra4',
-            key: 'siembra4',
-            width: 150,
-        },
-        {
-            title: 'Siembra 5',
-            dataIndex: 'siembra5',
-            key: 'siembra5',
-            width: 150,
-        },
-    ];
-
-    // Columnas para la tabla desplazable (misma estructura, sin encabezado)
-    const columns2 = [
-        {
-            title: '',
-            dataIndex: 'descripcion',
-            key: 'descripcion',
-            fixed: 'left',
-            width: 250,
+            render: (text, record) => (
+                <span style={{ fontWeight: record.type === 'sticky' ? 'bold' : 'normal' }}>
+                    {text}
+                </span>
+            ),
         },
         {
             title: 'Siembra 1',
@@ -173,39 +147,20 @@ function DispatchReportLab() {
             <Main>
                 <Row gutter={10}>
                     <Col xxl={24} xs={24}>
-                        {/* Tabla fija con filas sticky */}
                         <Table
                             columns={columns}
-                            dataSource={stickyRows}
+                            dataSource={combinedData}
                             pagination={false}
                             bordered
-                            showHeader={true}
                             rowKey="key"
                             className="custom-table-padding-table-1 table-responsive"
                             tableLayout="fixed"
+                            scroll={{ y: 400, x: 1000 }} // Ajusta la altura y el ancho según tus necesidades
                         />
-                        <div
-                            style={{
-                                height: '170px', 
-                                overflowY: 'auto',
-                                overflowX: 'hidden',
-                            }}
-                        >
-                            <Table
-                                columns={columns2}
-                                dataSource={mainTableData}
-                                pagination={false}
-                                bordered
-                                showHeader={false}
-                                rowKey="key"
-                                className="custom-table-padding-table-1 table-responsive"
-                                tableLayout="fixed"
-                            />
-                        </div>
                     </Col>
                 </Row>
 
-                <Row gutter={10}>
+                <Row gutter={10} style={{ marginTop: '20px' }}>
                     <Col xl={24} xs={24} style={{ display: 'flex' }}>
                         <ComparativeDispatchPerformanceBarChart />
                     </Col>

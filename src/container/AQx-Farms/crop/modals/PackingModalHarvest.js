@@ -34,7 +34,8 @@ const PackingModalHarvest = ({ visible, onClose}) => {
                 color: "A3",
                 olor: "normal",
                 sabor: "normal",
-                pruebaCoccion: "cabeza roja"
+                pruebaCoccion: "cabeza roja",
+                controlador: "Controlador A"
             }
         };
 
@@ -120,6 +121,9 @@ const PackingModalHarvest = ({ visible, onClose}) => {
                     </Col>
                     <Col xs={24} sm={12}>
                         <Text><strong style={{ color: '#012e40' }}>Prueba de Cocción:</strong> {dataSource.controlCalidad.pruebaCoccion}</Text>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                        <Text><strong style={{ color: '#012e40' }}>Controlador:</strong> {dataSource.controlCalidad.controlador}</Text>
                     </Col>
                 </Row>
             </Main>

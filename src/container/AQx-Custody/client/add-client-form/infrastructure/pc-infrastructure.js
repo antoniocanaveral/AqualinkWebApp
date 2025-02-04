@@ -40,10 +40,10 @@ export const PreCriaInfrastructure = ({ index, alimentadores, handleAddAlimentad
                         name={`extensionPreCria-${index}`}
                         rules={[
                             { required: true, message: "Ingrese la extensión (nunca cero)" },
-                            { type: "number", min: 0.01, message: "Debe ser mayor a 0" },
+                            { type: "number", min: 1, message: "Debe ser mayor a 0" },
                         ]}
                     >
-                        <InputNumber min={0.01} style={{ width: "100%" }} />
+                        <InputNumber min={1} style={{ width: "100%" }} />
                     </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -52,10 +52,10 @@ export const PreCriaInfrastructure = ({ index, alimentadores, handleAddAlimentad
                         name={`profundidadOperativa-${index}`}
                         rules={[
                             { required: true, message: "Ingrese la profundidad operativa (nunca cero)" },
-                            { type: "number", min: 0.01, message: "Debe ser mayor a 0" },
+                            { type: "number", min: 1, message: "Debe ser mayor a 0" },
                         ]}
                     >
-                        <InputNumber min={0.01} style={{ width: "100%" }} />
+                        <InputNumber min={1} style={{ width: "100%" }} />
                     </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -64,10 +64,10 @@ export const PreCriaInfrastructure = ({ index, alimentadores, handleAddAlimentad
                         name={`profundidadSiembra-${index}`}
                         rules={[
                             { required: true, message: "Ingrese la profundidad de siembra (nunca cero)" },
-                            { type: "number", min: 0.01, message: "Debe ser mayor a 0" },
+                            { type: "number", min: 1, message: "Debe ser mayor a 0" },
                         ]}
                     >
-                        <InputNumber min={0.01} style={{ width: "100%" }} />
+                        <InputNumber min={1} style={{ width: "100%" }} />
                     </Form.Item>
                 </Col>
             </Row>
@@ -82,7 +82,7 @@ export const PreCriaInfrastructure = ({ index, alimentadores, handleAddAlimentad
                             { type: "number", min: 0.01, message: "Debe ser mayor a 0" },
                         ]}
                     >
-                        <InputNumber min={0.01} style={{ width: "100%" }} />
+                        <InputNumber min={1} style={{ width: "100%" }} />
                     </Form.Item>
                 </Col>
                 <Col span={12}>

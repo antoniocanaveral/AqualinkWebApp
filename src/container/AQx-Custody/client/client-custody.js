@@ -41,7 +41,6 @@ function ClientCustody() {
         { key: '9', categoria: 'Extensión Pre Crias', valor: '' },
         { key: '10', categoria: 'Extensión Piscinas Engorde', valor: '' },
         { key: '11', categoria: 'Extensión Piscinas Pre Engorde', valor: '' },
-        { key: '12', categoria: 'Extensión Canales y Reservorio', valor: '' },
     ];
 
 

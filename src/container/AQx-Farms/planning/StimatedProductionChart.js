@@ -17,7 +17,7 @@ function StimatedProductionChart({ scenarios }) {
         datasets: [
             {
                 label: 'Producción Estimada (lb)',
-                data: scenarios.map(scenario => scenario.stimated_production_lb),
+                data: scenarios.map(scenario => scenario.estimated_production_lb),
                 backgroundColor: '#FFCE56', // Color de las barras
                 barPercentage: 0.6,
             },

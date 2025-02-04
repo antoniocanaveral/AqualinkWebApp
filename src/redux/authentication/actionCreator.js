@@ -16,24 +16,24 @@ const login = (values, callback) => {
 
       const client = response.data.clients[0];
       const rolesResponse = await DataService.get(`/auth/roles?client=${client.id}`, true);
-
+      console.log(rolesResponse)
       let selectedRoleId = null;
-      if(rolesResponse.data.roles.length === 1) {
+      if (rolesResponse.data.roles.length === 1) {
         selectedRoleId = rolesResponse.data.roles[0].id;
         Cookies.set('selectedRoleId', selectedRoleId);
       }
-      
+
       Cookies.set('selectedClientId', client.id);
       Cookies.set('roles', JSON.stringify(rolesResponse.data.roles));
       Cookies.set('logedIn', true);
-      
-      if(selectedRoleId !== null) {
+
+      if (selectedRoleId !== null) {
         await selectRoleUtil(selectedRoleId, client.id);
         callback(selectedRoleId);
       } else {
         callback(selectedRoleId !== null);
       }
-      dispatch(loginSuccess({success: true, roles: rolesResponse.data.roles, selectedRoleId: selectedRoleId, selectedClientId: client.id}));
+      dispatch(loginSuccess({ success: true, roles: rolesResponse.data.roles, selectedRoleId: selectedRoleId, selectedClientId: client.id }));
     } catch (err) {
       dispatch(loginErr(err));
       callback(false, err);
@@ -48,6 +48,7 @@ const findRoles = (callback) => {
       const clientsJSON = Cookies.get('clients');
       const clients = JSON.parse(clientsJSON);
       const response = await DataService.get(`/auth/roles?client=${clients[0].id}`, true);
+      console.log(response.data)
       dispatch(rolesSuccess(true));
       callback(response.data);
     } catch (err) {
@@ -57,12 +58,13 @@ const findRoles = (callback) => {
   };
 };
 
-const selectRole = (roleId, clientId) => {
+const selectRole = (roles, roleId, clientId) => {
   return async (dispatch) => {
     dispatch(rolesBegin());
     try {
       await selectRoleUtil(roleId, clientId);
-      dispatch(rolesSuccess({success: true, selectedRoleId: roleId}));
+      Cookies.set('MasterAdmin', roles.find(rol => rol.id === roleId).name)
+      dispatch(rolesSuccess({ success: true, selectedRoleId: roleId }));
     } catch (err) {
       dispatch(rolesErr(err));
       dispatch(netWorkError(err));
@@ -78,6 +80,7 @@ const selectRoleUtil = async (roleId, clientId) => {
       organizationId: 0,
       language: "en"
     }, true);
+    console.log(response.data)
     Cookies.set('access_token', response.data.token);
     Cookies.set('refresh_token', response.data.refresh_token);
     Cookies.set('selectedRoleId', roleId);
@@ -89,7 +92,6 @@ const selectRoleUtil = async (roleId, clientId) => {
 const loadUserAccess = () => {
   return async (dispatch) => {
     try {
-
       const roleId = Cookies.get('selectedRoleId');
       const clientId = Cookies.get('selectedClientId');
 
@@ -104,60 +106,182 @@ const loadUserAccess = () => {
       let farmsOrgs = [];
       let controlsOrgs = [];
 
-      if(orgResponse && orgResponse.data && orgResponse.data.organizations) {
+      if (orgResponse && orgResponse.data && orgResponse.data.organizations) {
         let params = "";
         let i = 0;
         const orgMap = {};
-        for(let org of orgResponse.data.organizations) {
-          if(i ++ > 0) {
+
+        for (let org of orgResponse.data.organizations) {
+          if (i++ > 0) {
             params += " OR ";
           }
           params += `AD_Org_ID eq ${org.id}`;
           orgMap[org.id] = org;
         }
+
         const orgInfoResponse = await DataService.get(`/models/ad_orginfo?$filter=${params}`);
 
-        if(orgInfoResponse && orgInfoResponse.data && orgInfoResponse.data.records) {
-          for(let info of orgInfoResponse.data.records) {
-            if(info.AD_OrgType_ID) {
-              if(info.AD_OrgType_ID.identifier === "FARM") {
-                withFarms = true;
-                farmsOrgs.push({
-                  orgId: info.id,
-                  orgName: orgMap[info.id].name,
-                  orgEmail: info.EMail
-                });
-              }
-              if(info.AD_OrgType_ID.identifier === "LAB") {
-                withLabs = true;
-                labsOrgs.push({
-                  orgId: info.id,
-                  orgName: orgMap[info.id].name,
-                  orgEmail: info.EMail
-                });
-              }
-              if(info.AD_OrgType_ID.identifier === "CUSTODY") {
-                withCustody = true;
-                console.log( '>> ' +  JSON.stringify(info) );
-                custodyOrgs.push({
-                  orgId: info.id,
-                  orgName: orgMap[info.id].name,
-                  orgEmail: info.EMail
-                });
-              }
-              if(info.AD_OrgType_ID.identifier === "CONTROL") {
-                withControl = true;
-                controlsOrgs.push({
-                  orgId: info.id,
-                  orgName: orgMap[info.id].name,
-                  orgEmail: info.EMail
-                });
+        if (orgInfoResponse && orgInfoResponse.data && orgInfoResponse.data.records) {
+          const orgIds = orgInfoResponse.data.records.map(info => info.id);
+          const adOrgFilter = orgIds.map(id => `AD_Org_ID eq ${id}`).join(" or ");
+          const orgLocationResponse = await DataService.get(`/models/ad_org?$filter=${adOrgFilter}`);
+
+          const locationMap = {};
+          if (orgLocationResponse && orgLocationResponse.data && orgLocationResponse.data.records) {
+            console.log('Organizations Location:', JSON.stringify(orgLocationResponse.data.records));
+            for (let org of orgLocationResponse.data.records) {
+              locationMap[org.id] = {
+                latitude: org.SM_Latitude || null,
+                longitude: org.SM_Longitude || null
+              };
+            }
+          }
+
+          for (let info of orgInfoResponse.data.records) {
+            const location = locationMap[info.id] || { latitude: null, longitude: null };
+
+            if (info.AD_OrgType_ID) {
+              switch (info.AD_OrgType_ID.identifier) {
+                case "FARM":
+                  withFarms = true;
+                  farmsOrgs.push({
+                    orgId: info.id,
+                    orgName: orgMap[info.id].name,
+                    orgEmail: info.EMail,
+                    latitude: location.latitude,
+                    longitude: location.longitude
+                  });
+                  break;
+                case "LAB":
+                  withLabs = true;
+                  labsOrgs.push({
+                    orgId: info.id,
+                    orgName: orgMap[info.id].name,
+                    orgEmail: info.EMail,
+                    latitude: location.latitude,
+                    longitude: location.longitude
+                  });
+                  break;
+                case "CUSTODY":
+                  withCustody = true;
+                  custodyOrgs.push({
+                    orgId: info.id,
+                    orgName: orgMap[info.id].name,
+                    orgEmail: info.EMail,
+                    latitude: location.latitude,
+                    longitude: location.longitude
+                  });
+                  break;
+                case "CONTROL":
+                  withControl = true;
+                  controlsOrgs.push({
+                    orgId: info.id,
+                    orgName: orgMap[info.id].name,
+                    orgEmail: info.EMail,
+                    latitude: location.latitude,
+                    longitude: location.longitude
+                  });
+                  break;
+                default:
+                  break;
               }
             }
           }
+
         }
       }
-      dispatch(loadAccess({success: true, withFarms, withLabs, withCustody, withControl, labsOrgs, custodyOrgs, farmsOrgs, controlsOrgs}));
+
+
+      const farmsPoolsPromises = farmsOrgs.map(async (farm) => {
+        try {
+          const response = await DataService.get(`/models/m_warehouse?$filter=AD_Org_ID eq ${farm.orgId} AND IsActive eq true `);
+          if (response.data && response.data.records) {
+            const pools = response.data.records.map((record) => ({
+              poolId: record.id,
+              poolName: record.Name,
+              location: {
+                id: record.C_Location_ID?.id || null,
+                address: record.C_Location_ID?.identifier || '',
+                city: record.C_Location_ID?.C_City_ID?.identifier || '',
+                country: record.C_Location_ID?.C_Country_ID?.identifier || '',
+                region: record.C_Location_ID?.RegionName || '',
+              },
+              organization: {
+                id: record.AD_Org_ID?.id || null,
+                name: record.AD_Org_ID?.identifier || '',
+              },
+              tenant: {
+                id: record.AD_Client_ID?.id || null,
+                name: record.AD_Client_ID?.identifier || '',
+              },
+              dimensions: {
+                length: record.SM_Lenght || 0,
+                width: record.SM_Width || 0,
+                depth: record.SM_Depth || 0,
+                diameter: record.SM_Diameter || 0,
+              },
+              waterFlow: record.SM_OperatingWaterFlow || 0,
+              waterVolume: record.SM_OperatingWaterVolume || 0,
+              poolSize: record.SM_PoolSize || 0,
+              entranceGateVolume: record.SM_EntranceGateVolume || 0,
+              exitGateVolume: record.SM_ExitGateVolume || 0,
+              plantingDepth: record.SM_PlantingDepth || 0,
+              batchSequence: record.SM_BatchSequence || 0,
+              poolType: {
+                id: record.SM_PoolType?.id || '',
+                identifier: record.SM_PoolType?.identifier || '',
+              },
+              salesRegion: {
+                id: record.C_SalesRegion_ID?.id || null,
+                name: record.C_SalesRegion_ID?.identifier || '',
+              },
+              geoLocation: record.SM_Geolocation ? JSON.parse(record.SM_Geolocation) : [],
+              createdBy: {
+                id: record.CreatedBy?.id || null,
+                name: record.CreatedBy?.identifier || '',
+              },
+              updatedBy: {
+                id: record.UpdatedBy?.id || null,
+                name: record.UpdatedBy?.identifier || '',
+              },
+              isActive: record.IsActive || false,
+              isInTransit: record.IsInTransit || false,
+              value: record.Value || '',
+            }));
+
+            return {
+              ...farm,
+              pools
+            };
+          } else {
+            return {
+              ...farm,
+              pools: []
+            };
+          }
+        } catch (err) {
+          console.error(`Error fetching pools for Farm ID ${farm.orgId}:`, err);
+          return {
+            ...farm,
+            pools: [],
+            error: err.message || 'Error al cargar piscinas'
+          };
+        }
+      });
+
+      const farmsOrgsWithPools = await Promise.all(farmsPoolsPromises);
+
+      dispatch(loadAccess({
+        success: true,
+        withFarms,
+        withLabs,
+        withCustody,
+        withControl,
+        labsOrgs,
+        custodyOrgs,
+        farmsOrgs: farmsOrgsWithPools,
+        controlsOrgs
+      }));
     } catch (err) {
       dispatch(rolesErr(err));
       dispatch(netWorkError(err));
@@ -172,7 +296,7 @@ const selectModule = (moduleId, orgInfo, callback) => {
       Cookies.set('orgId', orgInfo.orgId);
       Cookies.set('orgName', orgInfo.orgName);
       Cookies.set('orgEmail', orgInfo.orgEmail);
-      dispatch(moduleSelection({success: true, selectedModule: moduleId}));
+      dispatch(moduleSelection({ success: true, selectedModule: moduleId }));
       callback(true);
     } catch (err) {
       dispatch(rolesErr(err));
@@ -244,8 +368,8 @@ const logOut = (callback) => {
 
 const netWorkError = (err) => {
   return async (dispatch) => {
-    if(err.invalidTokenError) {
-      dispatch(logOut(()=>{}));
+    if (err.invalidTokenError) {
+      dispatch(logOut(() => { }));
     }
   };
 }
