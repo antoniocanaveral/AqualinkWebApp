@@ -5,38 +5,78 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 import { GoogleMaps } from '../../../components/maps/google-maps';
 import { Main } from '../../styled';
 import DonutChartComponent from '../../../components/charts/donut/DonutChartComponent';
+import { useSelector } from 'react-redux';
+import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+import Cookies from 'js-cookie';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 const { TabPane } = Tabs;
 
 function ClientFarm() {
     // Estado local para controlar la renderización del gráfico
     const [showChart, setShowChart] = useState(false);
+    const [selectedFarmOrg, setSelectedFarmOrg] = useState(null)
+    const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+    console.log("orgcon pool", farmsOrgsWithPools)
 
-    // Datos de la primera tabla
-    const clientInfo = [
-        { key: '1', categoria: 'Razón Social', valor: '' },
-        { key: '2', categoria: 'RUC', valor: '' },
-        { key: '3', categoria: 'Dirección Fiscal', valor: '' },
-        { key: '4', categoria: 'Representante Legal', valor: '' },
-        { key: '5', categoria: 'CC (RL)', valor: '' },
-        { key: '6', categoria: 'Correo Electrónico (RL)', valor: '' },
-        { key: '7', categoria: 'Web Site', valor: '' },
-        { key: '8', categoria: 'Teléfono (Convencional)', valor: '' },
-        { key: '9', categoria: 'Teléfono (Celular)', valor: '' },
-        { key: '10', categoria: 'Código SCI', valor: '' },
-        { key: '11', categoria: 'Nombre de Cliente', valor: '' },
-        { key: '12', categoria: 'Código Cliente', valor: '' },
-        { key: '13', categoria: 'ROOT Cliente', valor: '' },
+    const organizations = useSelector((state) => state.auth.farmsOrgs);
+
+    const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+
+    const handleOrgChange = (orgId, orgEmail) => {
+        setSelectedOrg(orgId);
+        Cookies.set('orgId', orgId);
+        Cookies.set('orgEmail', orgEmail || '');
+    };
+
+
+
+    useEffect(() => {
+        const farm = farmsOrgsWithPools.find(org => org.orgId === selectedOrg);
+        setSelectedFarmOrg(farm)
+    }, [selectedOrg]);
+
+    const farmsSelectOptions = organizations.length > 0 ? [
+        {
+            options: farmsOrgsWithPools.map(org => ({
+                value: org.orgId,
+                label: org.orgName,
+                email: org.orgEmail,
+            })),
+            onChange: handleOrgChange,
+            placeholder: 'Seleccione una Farm',
+            value: selectedOrg || undefined,
+        },
+    ] : [];
+
+    const combinedSelectOptions = [
+        ...farmsSelectOptions
     ];
 
-    // Datos de la segunda tabla
+
+
+    const clientInfo = [
+        { key: '1', categoria: 'Razón Social', valor: selectedFarmOrg?.orgName || 'N/A' },
+        { key: '2', categoria: 'RUC', valor: selectedFarmOrg?.TaxID || 'N/A' },
+        { key: '3', categoria: 'Dirección Fiscal', valor: `${selectedFarmOrg?.SM_LocationName}, ${selectedFarmOrg?.City_Identifier}` },
+        { key: '4', categoria: 'Representante Legal', valor: selectedFarmOrg?.name_rl || 'N/A' },
+        { key: '5', categoria: 'CC (RL)', valor: selectedFarmOrg?.taxid_rl || 'N/A' },
+        { key: '6', categoria: 'Correo Electrónico (RL)', valor: selectedFarmOrg?.email_rl || 'N/A' },
+        { key: '7', categoria: 'Teléfono (Convencional)', valor: selectedFarmOrg?.Phone || 'N/A' },
+        { key: '8', categoria: 'Teléfono (Celular)', valor: selectedFarmOrg?.Phone2 || 'N/A' },
+        { key: '9', categoria: 'Código SCI', valor: selectedFarmOrg?.SM_CodigoVAP || 'N/A' },
+        { key: '11', categoria: 'Nombre de Cliente', valor: selectedFarmOrg?.AD_Client_Identifier },
+        { key: '12', categoria: 'Código Aqualink', valor: selectedFarmOrg?.Value || 'N/A' },
+    ];
+
+
+
     const farmInfo = [
-        { key: '1', categoria: 'Provincia', valor: '' },
-        { key: '2', categoria: 'Cantón', valor: '' },
-        { key: '3', categoria: 'Tipo de suelo', valor: 'Tierra firme' },
-        { key: '5', categoria: 'Acuerdo Ministerial', valor: '' },
-        { key: '6', categoria: 'Certificado Ambiental', valor: '' },
-        { key: '7', categoria: 'Certificado de Inocuidad', valor: '' },
+        { key: '1', categoria: 'Provincia', valor: selectedFarmOrg?.Region_Identifier || 'N/A' },
+        { key: '2', categoria: 'Cantón', valor: selectedFarmOrg?.City_Identifier || 'N/A' },
+        { key: '3', categoria: 'Tipo de suelo', valor: selectedFarmOrg?.SM_MainlandOrIsland_Identifier || 'N/A' },
+        { key: '4', categoria: 'Acuerdo Ministerial', valor: selectedFarmOrg?.SM_MinisterialAgreement || 'N/A' },
+        { key: '5', categoria: 'Certificado de Inocuidad', valor: selectedFarmOrg?.SM_SafetyCertificate || 'N/A' },
         { key: '8', categoria: 'Extensión Productiva (Total)', valor: '' },
         { key: '9', categoria: 'Extensión Pre Crias', valor: '' },
         { key: '10', categoria: 'Extensión Piscinas Engorde', valor: '' },
@@ -44,53 +84,24 @@ function ClientFarm() {
     ];
 
 
-    const infrastructureData = [
-        {
-            key: '1',
-            identificador: 'Ppc #1',
-            extension: '10 Has',
-            profundidadOperativa: '1.5 mts',
-            profundidadSiembra: '1.0 mts',
-            profundidadPesca: '1.2 mts',
-            sistemaProduccion: 'TF / BF',
-            aireacionHpHa: '4',
-            aireacionHpTotal: '16',
-            ras: 'No',
-            aguaVolOp: '2000 m³',
-            aguaVolSiembra: '1500 m³',
-            aguaVolPesca: '1200 m³',
-        },
-        {
-            key: '2',
-            identificador: 'Ppe #1',
-            extension: '15 Has',
-            profundidadOperativa: '2.0 mts',
-            profundidadSiembra: '1.8 mts',
-            profundidadPesca: '1.6 mts',
-            sistemaProduccion: 'TF',
-            aireacionHpHa: '5',
-            aireacionHpTotal: '20',
-            ras: 'Sí',
-            aguaVolOp: '2500 m³',
-            aguaVolSiembra: '2000 m³',
-            aguaVolPesca: '1800 m³',
-        },
-        {
-            key: '3',
-            identificador: 'Pef #2',
-            extension: '12 Has',
-            profundidadOperativa: '1.7 mts',
-            profundidadSiembra: '1.5 mts',
-            profundidadPesca: '1.4 mts',
-            sistemaProduccion: 'TF / BF',
-            aireacionHpHa: '4.5',
-            aireacionHpTotal: '18',
-            ras: 'No',
-            aguaVolOp: '2200 m³',
-            aguaVolSiembra: '1800 m³',
-            aguaVolPesca: '1500 m³',
-        },
-    ];
+    const infrastructureData = selectedFarmOrg?.pools?.map((pool, index) => ({
+        key: index + 1,
+        identificador: pool.poolName,
+        extension: `${pool.poolSize} Ha`,
+        profundidadOperativa: `${pool.SM_OppDepth || 0} mts`,
+        profundidadSiembra: `${pool.plantingDepth} mts`,
+        profundidadPesca: `${pool.sm_transferdepth} mts`,
+        sistemaProduccion: selectedFarmOrg?.SM_ProductionType_Identifier || 'N/A',
+        metodoAlimentacion: `${pool.feeding_method}`,
+        aireacionHpHa: `${pool.sm_mechanicalaeration} `,
+        aireacionHpTotal: `${pool.sm_mechanicalaeration * pool.poolSize} `,
+        ras: `${selectedFarmOrg?.water_system === "RECIRCULATION" ? "✅" : ""} `,
+
+        aguaVolOp: `${pool.SM_OppDepth * (pool.poolSize * 10000)} m³`,
+        aguaVolSiembra: `${pool.plantingDepth * (pool.poolSize * 10000)} m³`,
+        aguaVolPesca: `${pool.sm_transferdepth * (pool.poolSize * 10000)} m³`,
+    })) || [];
+
 
     const columns = [
         {
@@ -103,7 +114,7 @@ function ClientFarm() {
             title: 'Valor',
             dataIndex: 'valor',
             key: 'valor',
-            render: (text) => text || 'N/A', // Valor por defecto si no está disponible
+            render: (text) => text || 'N/A', 
             width: '30%',
         },
     ];
@@ -145,6 +156,9 @@ function ClientFarm() {
             key: 'sistemaProduccion',
             width: '10%',
         },
+
+
+
         {
             title: 'Aireación Hp/Ha',
             dataIndex: 'aireacionHpHa',
@@ -155,6 +169,13 @@ function ClientFarm() {
             title: 'Aireación Hp/Total',
             dataIndex: 'aireacionHpTotal',
             key: 'aireacionHpTotal',
+            width: '10%',
+        },
+
+        {
+            title: 'Método de Alimentación',
+            dataIndex: 'metodoAlimentacion',
+            key: 'metodoAlimentacion',
             width: '10%',
         },
         {
@@ -184,47 +205,51 @@ function ClientFarm() {
     ];
 
 
-    const geolocationData = [
-        {
-            key: '1',
-            identificador: 'Ppc #1',
-            extension: '10 Has',
-            nodo1: '12.345, -67.890',
-            nodo2: '12.346, -67.891',
-            nodo3: '12.347, -67.892',
-            nodo4: '12.348, -67.893',
-            nodo5: '12.349, -67.894',
-            nodo6: '12.350, -67.895',
-            nodo7: '12.351, -67.896',
-            nodo8: '12.352, -67.897',
-        },
-        {
-            key: '2',
-            identificador: 'Ppe #1',
-            extension: '15 Has',
-            nodo1: '13.345, -68.890',
-            nodo2: '13.346, -68.891',
-            nodo3: '13.347, -68.892',
-            nodo4: '13.348, -68.893',
-            nodo5: '13.349, -68.894',
-            nodo6: '13.350, -68.895',
-            nodo7: '13.351, -68.896',
-            nodo8: '13.352, -68.897',
-        },
-        {
-            key: '3',
-            identificador: 'Pef #2',
-            extension: '12 Has',
-            nodo1: '14.345, -69.890',
-            nodo2: '14.346, -69.891',
-            nodo3: '14.347, -69.892',
-            nodo4: '14.348, -69.893',
-            nodo5: '14.349, -69.894',
-            nodo6: '14.350, -69.895',
-            nodo7: '14.351, -69.896',
-            nodo8: '14.352, -69.897',
-        },
-    ];
+    const maxNodos = selectedFarmOrg?.pools?.reduce((max, pool) => {
+        return Math.max(max, pool.geoLocation?.length || 0);
+    }, 0) || 0;
+
+    const geolocationData = selectedFarmOrg?.pools?.map((pool, index) => {
+        const nodoData = {};
+
+        for (let i = 0; i < maxNodos; i++) {
+            nodoData[`nodo${i + 1}`] = pool.geoLocation?.[i]
+                ? `${pool.geoLocation[i].latitude}, ${pool.geoLocation[i].longitude}`
+                : 'N/A';
+        }
+
+        return {
+            key: index + 1,
+            identificador: pool.poolName,
+            extension: `${pool.poolSize} Ha`,
+            ...nodoData 
+        };
+    }) || [];
+
+    const poolTypesData = selectedFarmOrg?.pools?.reduce((acc, pool) => {
+        const type = pool.poolType?.identifier;
+        acc[type] = (acc[type] || 0) + (pool.poolSize || 0);
+        return acc;
+    }, {});
+
+
+    const data = Object.entries(poolTypesData || {}).map(([label, value]) => ({
+        label,
+        value
+    }));
+
+    const waterVolumeData = selectedFarmOrg?.pools?.reduce((acc, pool) => {
+        const type = pool.poolType?.identifier || 'Desconocido';
+        const volume = (pool.SM_OppDepth || 0) * (pool.poolSize * 10000); 
+
+        acc[type] = (acc[type] || 0) + volume; 
+        return acc;
+    }, {});
+
+    const waterVolumeChartData = Object.entries(waterVolumeData || {}).map(([label, value]) => ({
+        label,
+        value
+    }));
 
 
     const geolocationColumns = [
@@ -240,109 +265,51 @@ function ClientFarm() {
             key: 'extension',
             width: '10%',
         },
-        {
-            title: 'Nodo 1',
-            dataIndex: 'nodo1',
-            key: 'nodo1',
+        ...Array.from({ length: maxNodos }, (_, i) => ({
+            title: `Nodo ${i + 1}`,
+            dataIndex: `nodo${i + 1}`,
+            key: `nodo${i + 1}`,
             width: '10%',
-        },
-        {
-            title: 'Nodo 2',
-            dataIndex: 'nodo2',
-            key: 'nodo2',
-            width: '10%',
-        },
-        {
-            title: 'Nodo 3',
-            dataIndex: 'nodo3',
-            key: 'nodo3',
-            width: '10%',
-        },
-        {
-            title: 'Nodo 4',
-            dataIndex: 'nodo4',
-            key: 'nodo4',
-            width: '10%',
-        },
-        {
-            title: 'Nodo 5',
-            dataIndex: 'nodo5',
-            key: 'nodo5',
-            width: '10%',
-        },
-        {
-            title: 'Nodo 6',
-            dataIndex: 'nodo6',
-            key: 'nodo6',
-            width: '10%',
-        },
-        {
-            title: 'Nodo 7',
-            dataIndex: 'nodo7',
-            key: 'nodo7',
-            width: '10%',
-        },
-        {
-            title: 'Nodo 8',
-            dataIndex: 'nodo8',
-            key: 'nodo8',
-            width: '10%',
-        },
+        }))
     ];
 
 
     useEffect(() => {
-        // Introduce un retraso de 1 segundo antes de renderizar el gráfico
         const timer = setTimeout(() => {
             setShowChart(true);
-        }, 1000); // 1000 milisegundos = 1 segundo
-
-        // Limpia el timeout si el componente se desmonta antes de que termine
+        }, 1000); 
         return () => clearTimeout(timer);
     }, []);
     return (
         <>
             <PageHeader
-
-                highlightText={"AquaLink Administración"}
+                highlightText="Aqualink Administración"
                 title="Ficha de Camaronera"
+                selectOptions={combinedSelectOptions}
+                selectedOrg={selectedOrg}
             />
             <Main>
                 <Tabs defaultActiveKey="1" type="line">
                     {/* Tab 1: Información */}
                     <TabPane tab="Información" key="1">
                         <Row gutter={25}>
-                            <Col xl={11} xs={24} style={{ display: "flex" }}>
-                                <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-                                    <Cards title="Geolocalización" size="large">
-                                        <Row gutter={[25, 25]} align="top">
-                                            <Col xs={24} md={24}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: "20px" }}>
-                                                    <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                                                    <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                                                </div>
-                                                <GoogleMaps height="400px" />
-                                            </Col>
-                                            <Col xs={24} md={24}>
-                                                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                                                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                                                        <div className="content-block">
-                                                            <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                                                            <Typography.Text>Área: 307.35 ha</Typography.Text>
-                                                        </div>
-                                                        <div className="content-block">
-                                                            <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                                                            <Typography.Text>Área: 5.35 ha</Typography.Text>
-                                                        </div>
-                                                        <div className="content-block">
-                                                            <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                                                            <Typography.Text>Área: 1.35 ha</Typography.Text>
-                                                        </div>
-                                                    </div>
-                                                </Space>
-                                            </Col>
-                                        </Row>
-                                    </Cards>
+                            <Col xl={11} xs={24} xxl={10} style={{ display: 'flex' }}>
+                                <Suspense
+                                    fallback={
+                                        <Cards headless>
+                                            <Skeleton active />
+                                        </Cards>
+                                    }
+                                >
+                                    <AqualinkMaps
+                                        width={'100%'}
+                                        height={
+                                            window.innerWidth >= 2000 ? '600px' :
+                                                '305px'
+                                        }
+                                        selectedOrg={selectedOrg}
+                                        farmsOrgsWithPools={farmsOrgsWithPools} // Pasa farmsOrgsWithPools como prop
+                                    />
                                 </Suspense>
                             </Col>
                             <Col xl={13} xs={24} style={{ display: "flex" }}>
@@ -377,11 +344,7 @@ function ClientFarm() {
                                         <div style={{ width: "85%", margin: "auto" }}>
                                             {showChart && (
                                                 <DonutChartComponent
-                                                    data={[
-                                                        { label: 'Ppc', value: 7 },
-                                                        { label: 'Ppe', value: 50 },
-                                                        { label: 'Pef', value: 67 },
-                                                    ]}
+                                                    data={data}
                                                     titleText="Relación Has"
                                                     subtitleText="Por Piscina"
                                                     height={200}
@@ -396,18 +359,14 @@ function ClientFarm() {
                                     <Cards title="Volumen de agua operativo por tipo de piscina" size="large" style={{ flex: 1, marginTop: 0 }}>
                                         <div style={{ width: "85%", margin: "auto" }}>
                                             {showChart && (
-                                                <DonutChartComponent
-                                                    data={[
-                                                        { label: 'Ppc', value: 4 },
-                                                        { label: 'Ppe', value: 17 },
-                                                        { label: 'Pef', value: 77 },
-                                                        { label: 'R&C', value: 2 },
-                                                    ]}
-                                                    titleText="Porcentaje"
-                                                    subtitleText="Agua por Piscina"
-                                                    height={200}
-                                                    width={200}
-                                                />
+                                               <DonutChartComponent
+                                               data={waterVolumeChartData}  
+                                               titleText="Volumen de Agua"
+                                               subtitleText="Por Tipo de Piscina"
+                                               height={200}
+                                               width={200}
+                                           />
+                                           
                                             )}
                                         </div>
                                     </Cards>

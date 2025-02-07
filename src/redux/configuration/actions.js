@@ -92,3 +92,33 @@ export const adOrgError = (error) => ({
   type: AD_ORG_ERROR,
   payload: { error },
 });
+
+// src/redux/operation/actions.js
+export const POOLS_LOADING = 'POOLS_LOADING';
+export const POOLS_CREATED = 'POOLS_CREATED';
+export const POOLS_ERROR = 'POOLS_ERROR';
+
+export const poolsLoading = () => ({ type: POOLS_LOADING });
+export const poolsCreated = (pools) => ({ type: POOLS_CREATED, payload: pools });
+export const poolsError = (error) => ({ type: POOLS_ERROR, payload: { error } });
+
+
+// src/redux/operation/actions.js
+
+export const SM_BRAND_FEEDERS_LOADING = 'SM_BRAND_FEEDERS_LOADING';
+export const SM_BRAND_FEEDERS_LOADED = 'SM_BRAND_FEEDERS_LOADED';
+export const SM_BRAND_FEEDERS_ERROR = 'SM_BRAND_FEEDERS_ERROR';
+
+export const smBrandFeedersLoading = () => ({
+  type: SM_BRAND_FEEDERS_LOADING,
+});
+
+export const smBrandFeedersLoaded = (brandFeeders) => ({
+  type: SM_BRAND_FEEDERS_LOADED,
+  payload: brandFeeders,
+});
+
+export const smBrandFeedersError = (error) => ({
+  type: SM_BRAND_FEEDERS_ERROR,
+  payload: { error },
+});

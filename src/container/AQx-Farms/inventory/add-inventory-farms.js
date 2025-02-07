@@ -434,7 +434,7 @@ function AddInventoryFarms() {
             </Cards>
           </Col>
         </Row>
-      </Main>
+      </Main>            
     </>
   );
 }

@@ -11,21 +11,20 @@ import { PreEngordeInfrastructure } from './add-client-form/infrastructure/pe-in
 import { EngordeInfrastructure } from './add-client-form/infrastructure/e-infrastructure';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
-import { createAdOrg, fetchAdClient, fetchBusinessGroups, fetchCity, fetchRegions } from '../../../redux/configuration/actionCreator';
+import { createAdOrg, createPools, fetchAdClient, fetchBrandFeeders, fetchBusinessGroups, fetchCity, fetchRegions } from '../../../redux/configuration/actionCreator';
 import { useWatch } from 'antd/lib/form/Form';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
 function AddClientFarm() {
     const dispatch = useDispatch();
-    const { businessGroups, adClient, cRegions, cCities, adOrg } = useSelector(state => state.configuration);
+    const { businessGroups, adClient, cRegions, cCities, adOrg, brandFeeders } = useSelector(state => state.configuration);
 
 
     const [form] = Form.useForm();
 
     const [perfilJuridico, setPerfilJuridico] = useState(null);
     const [activeTab, setActiveTab] = useState("1");
-    const [generatedCode, setGeneratedCode] = useState("");
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedPiscina, setSelectedPiscina] = useState(null);
     const [nodos, setNodos] = useState({});
@@ -33,38 +32,14 @@ function AddClientFarm() {
     const selectedRegion = useWatch("c_region", form);
 
     useEffect(() => {
-        console.log("camio")
         if (selectedRegion) {
             dispatch(fetchCity(selectedRegion));
         }
     }, [selectedRegion, dispatch]);
 
-    const [alimentadores, setAlimentadores] = useState({});
-    const [alimentadoresPreEngorde, setAlimentadoresPreEngorde] = useState({});
-    const [alimentadoresEngorde, setAlimentadoresEngorde] = useState({});
-
-    const [counters, setCounters] = useState({ pc: 0, pe: 0, e: 0 });
     const Masteradmin = Cookies.get('MasterAdmin')
-    const handleAddAlimentador = (index) => {
-        setAlimentadores((prevState) => ({
-            ...prevState,
-            [index]: (prevState[index] || 1) + 1,
-        }));
-    };
+    const CreatedOrg =  null
 
-    const handleAddAlimentadorPreEngorde = (index) => {
-        setAlimentadoresPreEngorde((prevState) => ({
-            ...prevState,
-            [index]: (prevState[index] || 1) + 1,
-        }));
-    };
-
-    const handleAddAlimentadorEngorde = (index) => {
-        setAlimentadoresEngorde((prevState) => ({
-            ...prevState,
-            [index]: (prevState[index] || 1) + 1,
-        }));
-    };
     const getFirstTabFields = () => {
         const perfil = form.getFieldValue("legalentitytype");
         if (perfil === "natural") {
@@ -116,7 +91,7 @@ function AddClientFarm() {
             const formData = form.getFieldsValue(true);
 
             const orgData = {
-                AD_Client_ID: adClient?.ad_client_id, 
+                AD_Client_ID: adClient?.ad_client_id,
                 Name: formData.Name,
                 business_group_id: formData.business_group_id,
                 legalentitytype: formData.legalentitytype,
@@ -127,14 +102,15 @@ function AddClientFarm() {
                 phone2: formData.phone2,
                 sm_latitude: formData.sm_latitude,
                 sm_longitude: formData.sm_longitude,
-                c_region_id: formData.c_region, 
-                c_city_id: formData.c_city,     
+                c_region_id: formData.c_region,
+                c_city_id: formData.c_city,
                 SM_OrgType: formData.SM_OrgType,
                 water_system: formData.water_system,
                 sm_productiontype: formData.sm_productiontype,
                 sm_codigovap: formData.sm_codigovap,
                 sm_ministerialagreement: formData.sm_ministerialagreement,
                 sm_safetycertificate: formData.sm_safetycertificate,
+                SM_MainlandOrIsland: formData.SM_MainlandOrIsland,
                 taxid_rl: formData.taxid_rl,
                 name_rl: formData.name_rl,
                 email_rl: formData.email_rl,
@@ -156,53 +132,85 @@ function AddClientFarm() {
 
 
 
-    // Generar código automático
-    const generateCode = () => {
-        const randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, "0");
-        setGeneratedCode(`AQLK-${randomNumber}`);
+    const handleSubmitPools = async () => {
+        const piscinas = await handleFinalizar()
+        console.log("piss", piscinas)
+        try {
+            if (!piscinas || piscinas.length === 0) {
+                message.warning("No hay piscinas para guardar");
+                return;
+            }
+
+            const result = await dispatch(createPools(piscinas));
+
+            if (result) {
+                message.success(`Piscinas creadas exitosamente`)
+                Cookies.remove('CreatedOrg');
+                Cookies.remove('CreatedOrgState');
+                handleNextTab(1)
+                setAddedPiscinas([])
+
+            }
+        } catch (error) {
+            console.error("Error creando piscinas:", error);
+            message.error("Error al guardar piscinas: " + error.message);
+        }
     };
 
     useEffect(() => {
-        generateCode();
         dispatch(fetchBusinessGroups());
-        dispatch(fetchAdClient())
-        dispatch(fetchRegions())
+        dispatch(fetchAdClient());
+        dispatch(fetchRegions());
+        dispatch(fetchBrandFeeders());
     }, []);
 
-    // Función para generar identificadores únicos
-    const generateIdentificador = (type) => {
-        let prefix;
-        switch (type) {
-            case 'pc':
-                prefix = 'Ppc';
-                break;
-            case 'pe':
-                prefix = 'Ppe';
-                break;
-            case 'e':
-                prefix = 'Pe';
-                break;
-            default:
-                prefix = 'Unknown';
-        }
-        const newCount = (counters[type] || 0) + 1;
-        setCounters({
-            ...counters,
-            [type]: newCount
-        });
-        return `${prefix}${newCount}`;
-    };
 
     const handleNextTab = (id) => {
         setActiveTab(`${id}`);
     };
 
-    const addNodo = (piscina) => {
-        setNodos((prev) => ({
-            ...prev,
-            [piscina]: [...(prev[piscina] || []), {}],
-        }));
+
+
+    // En el formulario de georreferenciación (Tab 3)
+    // Función para finalizar y actualizar cada piscina con sus nodos
+    const handleFinalizar = () => {
+        // Obtiene todos los valores del formulario
+        const formValues = form.getFieldsValue();
+
+        // Recorre cada piscina agregada
+        const updatedPiscinas = addedPiscinas.map(pool => {
+            // Lee el nodo inicial
+            const initialNode = {
+                latitude: formValues[`${pool.identificador}-nodo-inicial-latitude`],
+                longitude: formValues[`${pool.identificador}-nodo-inicial-longitude`],
+                label: "P-1"
+            };
+
+            // Lee los nodos dinámicos guardados en el Form.List (si existen)
+            const dynamicNodes = formValues[`${pool.identificador}-nodos`] || [];
+
+            // Genera los nodos dinámicos asignando etiquetas a partir del segundo nodo
+            const formattedDynamicNodes = dynamicNodes.map((node, index) => ({
+                ...node,
+                label: `P-${index + 2}`
+            }));
+
+            // Junta el nodo inicial con los nodos dinámicos
+            const nodes = [initialNode, ...formattedDynamicNodes];
+
+            // Filtra nodos válidos (que tengan ambos valores: latitud y longitud)
+            const validNodes = nodes.filter(n => n.latitude !== undefined && n.longitude !== undefined);
+
+            return {
+                ...pool,
+                nodes: validNodes.length > 0 ? validNodes : null
+            };
+        });
+
+        console.log("Piscinas actualizadas:", updatedPiscinas);
+        return updatedPiscinas;
     };
+
 
     const handlePerfilJuridicoChange = (value) => {
         setPerfilJuridico(value);
@@ -229,85 +237,95 @@ function AddClientFarm() {
 
     useEffect(() => {
         const initialTotals = {
-            pc: { count: 0, extension: 0 },
-            pe: { count: 0, extension: 0 },
-            e: { count: 0, extension: 0 }
+            PC: { count: 0, sm_poolsize: 0 },
+            PE: { count: 0, sm_poolsize: 0 },
+            E: { count: 0, sm_poolsize: 0 }
         };
 
         const totals = addedPiscinas.reduce((acc, curr) => {
-            if (curr.extension && !isNaN(curr.extension)) {
+            if (curr.sm_poolsize && !isNaN(curr.sm_poolsize)) {
                 acc[curr.type].count++;
-                acc[curr.type].extension += Number(curr.extension);
+                acc[curr.type].sm_poolsize += Number(curr.sm_poolsize);
             }
             return acc;
         }, initialTotals);
 
         form.setFieldsValue({
-            num_pc: totals.pc.count,
-            num_pe: totals.pe.count,
-            num_e: totals.e.count,
-            ex_pc: totals.pc.extension.toFixed(2),
-            ex_pe: totals.pe.extension.toFixed(2),
-            ex_e: totals.e.extension.toFixed(2)
+            num_pc: totals.PC.count,
+            num_pe: totals.PE.count,
+            num_e: totals.E.count,
+            ex_pc: totals.PC.sm_poolsize.toFixed(2),
+            ex_pe: totals.PE.sm_poolsize.toFixed(2),
+            ex_e: totals.E.sm_poolsize.toFixed(2)
         });
     }, [addedPiscinas, form]);
 
     const handleAddPiscina = async () => {
         try {
-          const type = selectedPoolType;
-          const formValues = form.getFieldsValue()[type] || {};
-      
-          if (!formValues.extension || !formValues.profundidadOperativa) {
-            throw new Error("Faltan campos requeridos");
-          }
-      
-          const manualNumber = form.getFieldValue([type, 'manualNumber']);
-          if (!manualNumber) {
-            throw new Error("Debe ingresar el número manual para la piscina.");
-          }
-      
-          const isDuplicate = addedPiscinas.some(p => p.type === type && p.manualNumber === manualNumber);
-          if (isDuplicate) {
-            message.error("Ese número ya se ha usado para este tipo de piscina.");
-            return;
-          }
-      
-          let prefix;
-          switch (type) {
-            case 'pc':
-              prefix = 'Ppc';
-              break;
-            case 'pe':
-              prefix = 'Ppe';
-              break;
-            case 'e':
-              prefix = 'Pe';
-              break;
-            default:
-              prefix = 'Unknown';
-          }
-      
-          const identificador = `${prefix}${manualNumber}`;
-      
-          const newPiscina = {
-            key: `${type}-${Date.now()}`,
-            type,
-            manualNumber, 
-            identificador,
-            extension: Number(formValues.extension),
-            profundidadOperativa: Number(formValues.profundidadOperativa),
-            alimentacion: formValues.metodoAlimentacion === 'automatico',
-            aireacion: formValues.aireacionMecanica || 0,
-          };
-      
-          setAddedPiscinas([...addedPiscinas, newPiscina]);
-          form.resetFields([type]);
+            const type = selectedPoolType;
+            const formValues = form.getFieldsValue()[type] || {};
+
+            if (!formValues.sm_poolsize || !formValues.sm_oppdepth) {
+                throw new Error("Faltan campos requeridos");
+            }
+
+            const manualNumber = form.getFieldValue([type, 'manualNumber']);
+            if (!manualNumber) {
+                throw new Error("Debe ingresar el número manual para la piscina.");
+            }
+
+            const isDuplicate = addedPiscinas.some(p => p.type === type && p.manualNumber === manualNumber);
+            if (isDuplicate) {
+                message.error("Ese número ya se ha usado para este tipo de piscina.");
+                return;
+            }
+
+            let prefix;
+            switch (type) {
+                case 'PC':
+                    prefix = 'Ppc';
+                    break;
+                case 'PE':
+                    prefix = 'Ppe';
+                    break;
+                case 'E':
+                    prefix = 'Pe';
+                    break;
+                default:
+                    prefix = 'Unknown';
+            }
+
+            const identificador = `${prefix}${manualNumber}`;
+
+            let feeders = [];
+            if (formValues.feeding_method === "AUTOMATIC") {
+                feeders = formValues.alimentadores || [];
+            }
+
+            const newPiscina = {
+                key: `${type}-${Date.now()}`,
+                type,
+                manualNumber,
+                identificador,
+                growth_days: formValues.growth_days,
+                food_quantity: formValues.food_quantity,
+                sm_poolsize: Number(formValues.sm_poolsize),
+                sm_oppdepth: Number(formValues.sm_oppdepth),
+                sm_plantingdepth: Number(formValues.sm_plantingdepth),
+                sm_transferdepth: formValues.sm_transferdepth,
+                sm_mechanicalaeration: formValues.sm_mechanicalaeration || 0,
+                feeding_method: formValues.feeding_method === 'AUTOMATIC',
+                feeders: feeders
+            };
+            console.log(newPiscina)
+            setAddedPiscinas([...addedPiscinas, newPiscina]);
+            form.resetFields([type]);
         } catch (error) {
-          console.error("Error al validar campos:", error);
-          message.error("Por favor complete todos los campos requeridos");
+            console.error("Error al validar campos:", error);
+            message.error("Por favor complete todos los campos requeridos");
         }
-      };
-      
+    };
+
 
     const handleDeletePiscina = (key) => {
         setAddedPiscinas(addedPiscinas.filter(p => p.key !== key));
@@ -334,29 +352,29 @@ function AddClientFarm() {
         },
         {
             title: 'Extensión (ha)',
-            dataIndex: 'extension',
-            key: 'extension',
+            dataIndex: 'sm_poolsize',
+            key: 'sm_poolsize',
             align: 'center', // Centrar el título
             render: (val) => val?.toFixed(2)
         },
         {
             title: 'Profundidad (m)',
-            dataIndex: 'profundidadOperativa',
-            key: 'profundidad',
+            dataIndex: 'sm_oppdepth',
+            key: 'sm_oppdepth',
             align: 'center', // Centrar el título
             render: (val) => val?.toFixed(2)
         },
         {
             title: 'Alimentación',
-            dataIndex: 'alimentacion',
-            key: 'alimentacion',
+            dataIndex: 'feeding_method',
+            key: 'feeding_method',
             align: 'center', // Centrar el título
-            render: (val) => val ? 'Automática' : 'Manual'
+            render: (val) => val ? 'AUTOMATIC' : 'MANUAL'
         },
         {
             title: 'Aireación (Hp/Ha)',
-            dataIndex: 'aireacion',
-            key: 'aireacion',
+            dataIndex: 'sm_mechanicalaeration',
+            key: 'sm_mechanicalaeration',
             align: 'center', // Centrar el título
             render: (val) => val || 'N/A'
         },
@@ -475,12 +493,12 @@ function AddClientFarm() {
                                         <Row gutter={16}>
                                             <Col span={6}>
                                                 <Form.Item label="Cliente">
-                                                    <Input value={adOrg?.AD_Client_ID?.identifier || ""} disabled />
+                                                    <Input value={adOrg?.AD_Client_ID?.identifier || CreatedOrg?.AD_Client_ID?.identifier || ""} disabled />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={6}>
                                                 <Form.Item label="Tipo de Cliente">
-                                                    <Input value={adClient?.clienttype?.id || ""} disabled />
+                                                    <Input value={adClient?.clienttype?.id || CreatedOrg?.clienttype?.id || ""} disabled />
                                                 </Form.Item>
                                             </Col>
 
@@ -492,7 +510,7 @@ function AddClientFarm() {
 
                                             <Col span={6}>
                                                 <Form.Item label="Camaronera">
-                                                    <Input value={adOrg?.Name || ""} disabled />
+                                                    <Input value={CreatedOrg?.Name || ""} disabled />
                                                 </Form.Item>
                                             </Col>
                                         </Row>
@@ -546,36 +564,34 @@ function AddClientFarm() {
                                             onChange={setSelectedPoolType}
                                             style={{ width: 200, marginBottom: 20 }}
                                         >
-                                            <Option value="pc">Pre Cría</Option>
-                                            <Option value="pe">Pre Engorde</Option>
-                                            <Option value="e">Engorde</Option>
+                                            <Option value="PC">Pre Cría</Option>
+                                            <Option value="PE">Pre Engorde</Option>
+                                            <Option value="E">Engorde</Option>
                                         </Select>
 
-                                        {selectedPoolType === 'pc' && (
+                                        {selectedPoolType === 'PC' && (
                                             <PreCriaInfrastructure
                                                 form={form}
-                                                prefix="pc"
-                                                alimentadores={alimentadores}
-                                                handleAddAlimentador={handleAddAlimentador}
+                                                prefix="PC"
+                                                brandFeeders={brandFeeders}
                                             />
                                         )}
 
-                                        {selectedPoolType === 'pe' && (
+                                        {selectedPoolType === 'PE' && (
                                             <PreEngordeInfrastructure
                                                 form={form}
-                                                prefix="pe"
-                                                alimentadores={alimentadoresPreEngorde}
-                                                handleAddAlimentador={handleAddAlimentadorPreEngorde}
-                                                showAlimentadores={false}
+                                                prefix="PE"
+                                                brandFeeders={brandFeeders}
+
                                             />
                                         )}
 
-                                        {selectedPoolType === 'e' && (
+                                        {selectedPoolType === 'E' && (
                                             <EngordeInfrastructure
                                                 form={form}
-                                                prefix="e"
-                                                alimentadores={alimentadoresEngorde}
-                                                handleAddAlimentador={handleAddAlimentadorEngorde}
+                                                prefix="E"
+                                                brandFeeders={brandFeeders}
+
                                             />
                                         )}
                                     </div>
@@ -635,8 +651,9 @@ function AddClientFarm() {
                                         <Button
                                             key="save"
                                             type="primary"
-                                            onClick={() => {
+                                            onClick={async () => {
                                                 setIsModalVisible(false);
+                                                await handleSubmitPools();
                                                 console.log('Piscinas guardadas:', addedPiscinas);
                                                 message.success("Infraestructura guardada con éxito");
                                             }}
@@ -661,6 +678,8 @@ function AddClientFarm() {
                             </Cards>
                         </TabPane>
 
+
+                        {/* Tab 3: Georeferenciación */}
                         {/* Tab 3: Georeferenciación */}
                         <TabPane tab="Georeferenciación" key="3">
                             <Cards headless>
@@ -680,69 +699,55 @@ function AddClientFarm() {
                                         ))}
                                     </Select>
                                 </Form.Item>
-                                {selectedPiscina && (
-                                    <div style={{ marginTop: "20px" }}>
-                                        <h4>Nodos para {selectedPiscina}</h4>
-                                        <Row gutter={16}>
-                                            {/* Nodo Inicial */}
-                                            <Col span={12}>
-                                                <Form.Item
-                                                    label="Nodo Inicial - Longitud"
-                                                    name={`${selectedPiscina}-nodo-inicial-longitude`}
-                                                    rules={[{ required: true, message: "Ingrese la longitud del nodo inicial" }]}
-                                                >
-                                                    <InputNumber placeholder="Longitud" style={{ width: "100%" }} />
-                                                </Form.Item>
-                                            </Col>
-                                            <Col span={12}>
-                                                <Form.Item
-                                                    label="Nodo Inicial - Latitud"
-                                                    name={`${selectedPiscina}-nodo-inicial-latitude`}
-                                                    rules={[{ required: true, message: "Ingrese la latitud del nodo inicial" }]}
-                                                >
-                                                    <InputNumber placeholder="Latitud" style={{ width: "100%" }} />
-                                                </Form.Item>
-                                            </Col>
-                                        </Row>
 
-                                        {/* Nodos Dinámicos */}
-                                        {Array.from({ length: nodos[selectedPiscina]?.length || 0 }).map((_, nodeIndex) => (
-                                            <Row gutter={16} key={`dynamic-nodo-${selectedPiscina}-${nodeIndex}`}>
-                                                <Col span={12}>
-                                                    <Form.Item
-                                                        label={`Nodo ${nodeIndex + 1} - Longitud`}
-                                                        name={`${selectedPiscina}-nodo-${nodeIndex + 1}-longitude`}
-                                                        rules={[{ required: true, message: "Ingrese la longitud" }]}
-                                                    >
-                                                        <InputNumber placeholder="Longitud" style={{ width: "100%" }} />
+                                {/* Renderiza los Form.List para todas las piscinas, pero muestra solo la seleccionada */}
+                                {addedPiscinas.map(pool => (
+                                    <div
+                                        key={pool.identificador}
+                                        style={{ display: selectedPiscina === pool.identificador ? "block" : "none" }}
+                                    >
+                                        <h4>Nodos para {pool.identificador}</h4>
+                                        <Form.List name={`${pool.identificador}-nodos`} preserve>
+                                            {(fields, { add, remove }) => (
+                                                <>
+                                                    {fields.map((field, index) => (
+                                                        <Row gutter={16} key={field.key}>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    {...field}
+                                                                    label={`Nodo ${index + 1} - Longitud`}
+                                                                    name={[field.name, 'longitude']}
+                                                                    fieldKey={[field.fieldKey, 'longitude']}
+                                                                    rules={[{ required: true, message: "Ingrese la longitud" }]}
+                                                                    preserve
+                                                                >
+                                                                    <InputNumber placeholder="Longitud" style={{ width: "100%" }} />
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    {...field}
+                                                                    label={`Nodo ${index + 1} - Latitud`}
+                                                                    name={[field.name, 'latitude']}
+                                                                    fieldKey={[field.fieldKey, 'latitude']}
+                                                                    rules={[{ required: true, message: "Ingrese la latitud" }]}
+                                                                    preserve
+                                                                >
+                                                                    <InputNumber placeholder="Latitud" style={{ width: "100%" }} />
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                    ))}
+                                                    <Form.Item>
+                                                        <Button type="dashed" onClick={() => add()} block>
+                                                            Añadir Nodo
+                                                        </Button>
                                                     </Form.Item>
-                                                </Col>
-                                                <Col span={12}>
-                                                    <Form.Item
-                                                        label={`Nodo ${nodeIndex + 1} - Latitud`}
-                                                        name={`${selectedPiscina}-nodo-${nodeIndex + 1}-latitude`}
-                                                        rules={[{ required: true, message: "Ingrese la latitud" }]}
-                                                    >
-                                                        <InputNumber placeholder="Latitud" style={{ width: "100%" }} />
-                                                    </Form.Item>
-                                                </Col>
-                                            </Row>
-                                        ))}
-
-                                        {/* Botón para añadir nodos */}
-                                        <Row>
-                                            <Col>
-                                                <Button
-                                                    type="dashed"
-                                                    onClick={() => addNodo(selectedPiscina)}
-                                                    style={{ marginTop: "10px" }}
-                                                >
-                                                    Añadir Nodo
-                                                </Button>
-                                            </Col>
-                                        </Row>
+                                                </>
+                                            )}
+                                        </Form.List>
                                     </div>
-                                )}
+                                ))}
 
                                 <Row justify="space-between" style={{ marginTop: "20px" }}>
                                     <Col>
@@ -754,13 +759,20 @@ function AddClientFarm() {
                                         </Button>
                                     </Col>
                                     <Col>
-                                        <Button type="primary" htmlType="submit">
+                                        <Button
+                                            type="primary"
+                                            onClick={async () => {
+                                                await handleSubmitPools();
+                                            }}
+                                        >
                                             Finalizar
                                         </Button>
                                     </Col>
                                 </Row>
                             </Cards>
                         </TabPane>
+
+
                     </Tabs>
                 </Form>
             </Main >

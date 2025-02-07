@@ -124,9 +124,12 @@ const loadUserAccess = () => {
         if (orgInfoResponse && orgInfoResponse.data && orgInfoResponse.data.records) {
           const orgIds = orgInfoResponse.data.records.map(info => info.id);
           const adOrgFilter = orgIds.map(id => `AD_Org_ID eq ${id}`).join(" or ");
+          console.log("adfilter", adOrgFilter)
           const orgLocationResponse = await DataService.get(`/models/ad_org?$filter=${adOrgFilter}`);
-
+          console.log("adfilterloca", orgLocationResponse)
           const locationMap = {};
+          const orgDetailsMap = {};
+
           if (orgLocationResponse && orgLocationResponse.data && orgLocationResponse.data.records) {
             console.log('Organizations Location:', JSON.stringify(orgLocationResponse.data.records));
             for (let org of orgLocationResponse.data.records) {
@@ -134,12 +137,15 @@ const loadUserAccess = () => {
                 latitude: org.SM_Latitude || null,
                 longitude: org.SM_Longitude || null
               };
+              orgDetailsMap[org.id] = org; // Guardar toda la información de la organización
             }
           }
-
           for (let info of orgInfoResponse.data.records) {
             const location = locationMap[info.id] || { latitude: null, longitude: null };
-
+            const orgDetails = orgDetailsMap[info.id] || {};
+        
+            console.log("infooooo", info);
+        
             if (info.AD_OrgType_ID) {
               switch (info.AD_OrgType_ID.identifier) {
                 case "FARM":
@@ -149,8 +155,46 @@ const loadUserAccess = () => {
                     orgName: orgMap[info.id].name,
                     orgEmail: info.EMail,
                     latitude: location.latitude,
-                    longitude: location.longitude
+                    longitude: location.longitude,
+                    businessname: info.businessname,
+                    AD_Client_ID: orgDetails.AD_Client_ID?.id,
+                    AD_Client_Identifier: orgDetails.AD_Client_ID?.identifier,
+                    C_City_ID: orgDetails.C_City_ID?.id,
+                    City_Identifier: orgDetails.C_City_ID?.identifier,
+                    C_Region_ID: orgDetails.C_Region_ID?.id,
+                    Region_Identifier: orgDetails.C_Region_ID?.identifier,
+                    Created: orgDetails.Created,
+                    CreatedBy_ID: orgDetails.CreatedBy?.id,
+                    CreatedBy_Identifier: orgDetails.CreatedBy?.identifier,
+                    IsActive: orgDetails.IsActive,
+                    IsSummary: orgDetails.IsSummary,
+                    Name: orgDetails.Name,
+                    Phone: orgDetails.Phone,
+                    Phone2: orgDetails.Phone2,
+                    SM_CodigoVAP: orgDetails.SM_CodigoVAP,
+                    SM_Latitude: orgDetails.SM_Latitude,
+                    SM_LocationName: orgDetails.SM_LocationName,
+                    SM_Longitude: orgDetails.SM_Longitude,
+                    SM_MainlandOrIsland_ID: orgDetails.SM_MainlandOrIsland?.id,
+                    SM_MainlandOrIsland_Identifier: orgDetails.SM_MainlandOrIsland?.identifier,
+                    SM_MinisterialAgreement: orgDetails.SM_MinisterialAgreement,
+                    SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
+                    SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
+                    SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
+                    TaxID: orgDetails.TaxID,
+                    Updated: orgDetails.Updated,
+                    UpdatedBy_ID: orgDetails.UpdatedBy?.id,
+                    UpdatedBy_Identifier: orgDetails.UpdatedBy?.identifier,
+                    Value: orgDetails.Value,
+                    business_group_id: orgDetails.business_group_id,
+                    email_rl: orgDetails.email_rl,
+                    legalentitytype: orgDetails.legalentitytype,
+                    name_rl: orgDetails.name_rl,
+                    taxid_rl: orgDetails.taxid_rl,
+                    uid: orgDetails.uid,
+                    water_system: orgDetails.water_system
                   });
+
                   break;
                 case "LAB":
                   withLabs = true;
@@ -226,10 +270,15 @@ const loadUserAccess = () => {
               entranceGateVolume: record.SM_EntranceGateVolume || 0,
               exitGateVolume: record.SM_ExitGateVolume || 0,
               plantingDepth: record.SM_PlantingDepth || 0,
+              SM_OppDepth: record.SM_OppDepth || 0,
+              sm_transferdepth: record.sm_transferdepth || 0,
+              feeding_method: record.feeding_method          || 0,
+              sm_mechanicalaeration: record.sm_mechanicalaeration || 0,
+              water_system: record.water_system || 0,
               batchSequence: record.SM_BatchSequence || 0,
               poolType: {
-                id: record.SM_PoolType?.id || '',
-                identifier: record.SM_PoolType?.identifier || '',
+                id: record.sm_pooltype || '',
+                identifier: record.sm_pooltype || '',
               },
               salesRegion: {
                 id: record.C_SalesRegion_ID?.id || null,

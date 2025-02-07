@@ -4,8 +4,8 @@ import { SalesOverviewStyleWrap2 } from '../../../container/dashboard/Style';
 import DoughnutChart from '../DoughnutChart';
 
 const DonutChartComponent = ({
-  data = [], // Datos en formato [{label: 'Label1', value: 60}, {label: 'Label2', value: 25}]
-  colors = [], // Colores personalizados (opcional)
+  data = [], 
+  colors = [], 
   titleText = 'Default Title',
   subtitleText = 'Default Subtitle',
   height = 150,
@@ -15,23 +15,20 @@ const DonutChartComponent = ({
     mainContent: state.ChangeLayoutMode.mode,
   }));
 
-  // Paleta de colores por defecto
   const defaultColors = [
     '#0372CE', '#00AAFF', '#FA8B0C', '#1ABC9C', '#3498DB',
     '#9B59B6', '#F39C12', '#E74C3C', '#2ECC71', '#34495E',
   ];
 
-  // Usar colores personalizados o colores por defecto
   const backgroundColors = colors.length ? colors : defaultColors;
 
-  // Generar etiquetas y valores dinámicamente a partir de `data`
   const labels = data.map((item) => item.label);
   const values = data.map((item) => item.value);
 
   const datasets = [
     {
       data: values,
-      backgroundColor: backgroundColors.slice(0, data.length), // Usar solo los colores necesarios
+      backgroundColor: backgroundColors.slice(0, data.length), 
       centerText: titleText,
       centerTextLabel: subtitleText,
     },
@@ -40,7 +37,7 @@ const DonutChartComponent = ({
   const options = {
     cutout: 62,
     borderWidth: 2,
-    borderColor: '#ffffff', // Borde blanco por defecto
+    borderColor: '#ffffff', 
     maintainAspectRatio: false,
     responsive: false,
     plugins: {
@@ -70,7 +67,8 @@ const DonutChartComponent = ({
           tooltip={{
             backgroundColor: '#FFF',
             titleFontSize: 16,
-            titleFontColor: '#0066ff',
+            titleColor: '#000000',      
+            bodyColor: '#000000',
             bodyFontColor: '#000',
             bodyFontSize: 14,
             displayColors: false,
@@ -97,7 +95,7 @@ const DonutChartComponent = ({
         <div className="ninjadash-overview-box align-center-v justify-content-between">
           {datasets[0].data.map((value, index) => (
             <div className="ninjadash-overview-box-item" key={index}>
-              <h4>{value}%</h4>
+              <h4>{value}</h4>
               <p>{labels[index]}</p>
             </div>
           ))}

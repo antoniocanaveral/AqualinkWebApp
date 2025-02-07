@@ -45,6 +45,8 @@ const AqualinkMaps = ({
     email: organization.orgEmail,
   }] : [];
 
+  console.log("Markers", markers)
+
   // Obtiene todas las piscinas de la organización seleccionada
   const organizationPools = organization ? organization.pools : [];
 
@@ -69,7 +71,8 @@ const AqualinkMaps = ({
       };
     }
     groups[typeId].pools.push(pool);
-    console.log(groups);
+    console.log("grupos", groups);
+    console.log("org", pool);
     return groups;
   }, {});
 
@@ -77,7 +80,7 @@ const AqualinkMaps = ({
   const calculateTotalArea = (pools) => {
     console.log("Para area:", pools); // Verificar
     return pools.reduce((total, pool) => {
-      const area = (pool.dimensions.length || 0) * (pool.dimensions.width || 0);
+      const area = (pool.poolSize );
       return total + area;
     }, 0);
   };
@@ -137,7 +140,7 @@ const AqualinkMaps = ({
                 return (
                   <div className="content-block" key={poolTypeId}>
                     <Title level={5}>
-                      {group.name === 'Pre Cria' ? 'Piscinas Pre Cría'
+                      {group.name === 'PC' ? 'Piscinas Pre Cría'
                         : group.name === 'PE' ? 'Piscinas de Engorde'
                           : "Piscinas Engorde"}
                     </Title>

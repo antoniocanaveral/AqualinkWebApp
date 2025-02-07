@@ -18,6 +18,12 @@ import {
   adOrgLoading,
   adOrgCreated,
   adOrgError,
+  poolsLoading,
+  poolsCreated,
+  poolsError,
+  smBrandFeedersLoading,
+  smBrandFeedersLoaded,
+  smBrandFeedersError,
 } from './actions';
 
 export const fetchBusinessGroups = () => async (dispatch) => {
@@ -122,6 +128,7 @@ export const createAdOrg = (orgData) => async (dispatch) => {
       SM_CodigoVAP: orgData.sm_codigovap,
       SM_MinisterialAgreement: orgData.sm_ministerialagreement,
       SM_SafetyCertificate: orgData.sm_safetycertificate,
+      SM_MainlandOrIsland: orgData.SM_MainlandOrIsland,
       taxid_rl: orgData.taxid_rl,
       name_rl: orgData.name_rl,
       email_rl: orgData.email_rl,
@@ -135,6 +142,12 @@ export const createAdOrg = (orgData) => async (dispatch) => {
       dispatch(adOrgCreated(response.data));
       Cookies.set('CreatedOrg', JSON.stringify(response.data));
       Cookies.set('CreatedOrgState', 'pending');
+      const payload2={
+        AD_OrgType_ID: 1000001
+      }
+
+      const responseinfo = await DataService.put(`/models/ad_orginfo/${response.data.id}`, payload2);
+      console.log(responseinfo.data)
 
       return response;
     } else {
@@ -145,5 +158,92 @@ export const createAdOrg = (orgData) => async (dispatch) => {
   } catch (err) {
     dispatch(adOrgError(err.message || 'Error al crear la organización.'));
     throw err;
+  }
+};
+
+
+// src/redux/operation/actionCreator.js
+
+export const createPools = (pools) => async (dispatch) => {
+  const selectedClientId = Cookies.get('selectedClientId');
+  const CreatedOrg = JSON.parse(Cookies.get('CreatedOrg'));
+  const currentUserId = selectedClientId;
+
+  try {
+    dispatch(poolsLoading());
+    
+    const transformedPools = pools.map(pool => ({
+      AD_Client_ID: selectedClientId,
+      AD_Org_ID: CreatedOrg.id,
+      Name: pool.identificador,
+      sm_pooltype: pool.type,
+      SM_PoolSize: pool.sm_poolsize,
+      SM_OppDepth: pool.sm_oppdepth,
+      SM_PlantingDepth: pool.sm_plantingdepth,
+      sm_transferdepth: pool.sm_transferdepth,
+      sm_mechanicalaeration: pool.sm_mechanicalaeration,
+      feeding_method: pool.feeding_method ? "AUTOMATIC" : "MANUAL", 
+      food_quantity: pool.food_quantity,
+      growth_days: pool.growth_days,
+      SM_Geolocation: pool.nodes ? JSON.stringify(pool.nodes) : null
+    }));
+
+    const poolResponses = await Promise.all(
+      transformedPools.map(pool => 
+        DataService.post('/models/m_warehouse', pool)
+      )
+    );
+    const createdPools = poolResponses.map(res => res.data);
+
+    const createdFeeders = await Promise.all(
+      pools.map(async (pool, index) => {
+        const poolId = createdPools[index].id; 
+        const feeders = pool.feeders || [];
+        console.log("feeders", feeders)
+        return Promise.all(
+          feeders.map(feeder => 
+            DataService.post('/models/SM_Feeders', {
+              AD_Client_ID: selectedClientId,
+              AD_Org_ID: CreatedOrg?.id,
+              sm_brand_feeders_id: feeder?.marca,
+              integration: !!feeder?.integration,
+              code: feeder?.numero,
+              M_Warehouse_ID: poolId,
+              createdBy: currentUserId,
+              updatedBy: currentUserId
+            })
+          )
+        );
+      })
+    ).then(results => results.flat()); 
+
+    dispatch(poolsCreated({ 
+      pools: createdPools,
+      feeders: createdFeeders.map(res => res.data) 
+    }));
+    
+    return { pools: createdPools, feeders: createdFeeders };
+
+  } catch (err) {
+    dispatch(poolsError(err.message || 'Error al crear piscinas y/o alimentadores'));
+    throw err;
+  }
+};
+
+
+export const fetchBrandFeeders = () => async (dispatch) => {
+  try {
+    dispatch(smBrandFeedersLoading());
+
+    // Hacer la solicitud a la API
+    const response = await DataService.get('/models/SM_Brand_Feeders');
+
+    if (response.data && response.data.records) {
+      dispatch(smBrandFeedersLoaded(response.data.records));
+    } else {
+      dispatch(smBrandFeedersError('No se encontraron registros de marcas de alimentadores.'));
+    }
+  } catch (err) {
+    dispatch(smBrandFeedersError(err.message || 'Error al cargar las marcas de alimentadores.'));
   }
 };

@@ -1,4 +1,4 @@
-import { GoogleApiWrapper, InfoWindow, Map, Marker } from 'google-maps-react-18-support';
+import { GoogleApiWrapper, InfoWindow, Map, Marker, Polygon } from 'google-maps-react-18-support';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { GmapWraper } from './map-style';
@@ -12,11 +12,12 @@ const GoogleMaps = GoogleApiWrapper({
     latitude,
     longitude,
     google,
-    width = '100%', // Valor predeterminado
-    height = '100%', // Cambiado de '305px' a '100%'
+    width = '100%',
+    height = '100%',
     zoom,
     mapStyles,
-    place,
+    markers = [],
+    polygons = [],
     styles,
     infoWindow,
   } = property;
@@ -56,27 +57,41 @@ const GoogleMaps = GoogleApiWrapper({
         onClick={onMapClicked}
         styles={mapStyles}
         google={google}
-        style={{ ...styles, width, height }} // Asegúrate de que width y height sean '100%'
-        center={{ lat: parseFloat(latitude), lng: parseFloat(longitude) }} // Convertir a números
+        style={{ ...styles, width, height }}
+        center={{ lat: parseFloat(markers[0].position.lat), lng: parseFloat(markers[0].position.lng) }}
         zoom={zoom}
       >
-        {place !== undefined ? (
-          place.map((item) => (
-            <Marker
-              key={item.id}
-              onClick={onMarkerClick}
-              position={{ lat: parseFloat(item.latitude), lng: parseFloat(item.longitude) }} // Convertir a números
-              icon={require(`../../static/img/map/mpc.png`)}
-            />
-          ))
-        ) : (
+        {/* Renderizar marcadores */}
+        {markers.map((marker) => (
           <Marker
+            key={marker.id}
             onClick={onMarkerClick}
-            position={{ lat: parseFloat(latitude), lng: parseFloat(longitude) }}
+            position={marker.position}
             icon={require(`../../static/img/map/mpc.png`)}
           />
-        )}
-        <InfoWindow onClose={onInfoWindowClose} marker={state.activeMarker} visible={state.showingInfoWindow}>
+        ))}
+
+        {/* Renderizar polígonos */}
+        {polygons.map((polygon) => (
+          <Polygon
+            key={polygon.id}
+            paths={polygon.paths}
+            options={{
+              fillColor: polygon.color,
+              strokeColor: polygon.color,
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillOpacity: 0.35,
+            }}
+          />
+        ))}
+
+        {/* InfoWindow */}
+        <InfoWindow
+          onClose={onInfoWindowClose}
+          marker={state.activeMarker}
+          visible={state.showingInfoWindow}
+        >
           {infoWindow}
         </InfoWindow>
       </Map>
@@ -85,17 +100,18 @@ const GoogleMaps = GoogleApiWrapper({
 });
 
 GoogleMaps.defaultProps = {
-  latitude: '-2.19616 ',
+  latitude: '-2.19616',
   longitude: '-79.88621',
   width: '100%',
-  height: '100%', // Cambiado de '305px' a '100%'
+  height: '100%',
   zoom: 13,
+  markers: [], 
+  polygons: [], 
   infoWindow: (
     <div>
       <h1>Hello world</h1>
     </div>
   ),
-
   styles: {
     width: '100%',
     height: '100%',
@@ -107,11 +123,25 @@ GoogleMaps.defaultProps = {
 GoogleMaps.propTypes = {
   latitude: PropTypes.string,
   longitude: PropTypes.string,
-  google: PropTypes.object, // Cambiado de 'string' a 'object' ya que GoogleApiWrapper proporciona el objeto
+  google: PropTypes.object,
   width: PropTypes.string,
   height: PropTypes.string,
   zoom: PropTypes.number,
-  place: PropTypes.arrayOf(PropTypes.object),
+  markers: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    position: PropTypes.shape({
+      lat: PropTypes.number.isRequired,
+      lng: PropTypes.number.isRequired,
+    }).isRequired,
+  })),
+  polygons: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    paths: PropTypes.arrayOf(PropTypes.shape({
+      lat: PropTypes.number.isRequired,
+      lng: PropTypes.number.isRequired,
+    })).isRequired,
+    color: PropTypes.string.isRequired,
+  })),
   infoWindow: PropTypes.node,
 };
 

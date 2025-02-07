@@ -17,6 +17,12 @@ import {
   AD_ORG_ERROR,
   AD_ORG_CREATED,
   AD_ORG_LOADING,
+  POOLS_LOADING,
+  POOLS_CREATED,
+  POOLS_ERROR,
+  SM_BRAND_FEEDERS_ERROR,
+  SM_BRAND_FEEDERS_LOADED,
+  SM_BRAND_FEEDERS_LOADING,
 } from './actions';
 
 const initialState = {
@@ -43,11 +49,20 @@ const initialState = {
   cCities: [],
   cCityError: null,
 
-  // Nueva parte para ad_org
+  //AD ORG
   adOrgLoading: false,
   adOrg: null,
   adOrgError: null,
 
+  //Pools
+  poolsLoading: false,
+  createdPools: [],
+  poolsError: null,
+
+  //Brand feeders
+  brandFeedersLoading: false,
+  brandFeeders: [],
+  brandFeedersError: null,
 };
 
 export const configurationReducer = (state = initialState, action) => {
@@ -171,6 +186,54 @@ export const configurationReducer = (state = initialState, action) => {
         adOrg: null,
         adOrgError: action.payload.error,
       };
+    case POOLS_LOADING:
+      return {
+        ...state,
+        poolsLoading: true,
+        createdPools: [],
+        poolsError: null
+      };
+
+    case POOLS_CREATED:
+      return {
+        ...state,
+        poolsLoading: false,
+        createdPools: action.payload,
+        poolsError: null
+      };
+
+    case POOLS_ERROR:
+      return {
+        ...state,
+        poolsLoading: false,
+        createdPools: [],
+        poolsError: action.payload.error
+      };
+
+    case SM_BRAND_FEEDERS_LOADING:
+      return {
+        ...state,
+        brandFeedersLoading: true,
+        brandFeeders: [],
+        brandFeedersError: null,
+      };
+
+    case SM_BRAND_FEEDERS_LOADED:
+      return {
+        ...state,
+        brandFeedersLoading: false,
+        brandFeeders: action.payload,
+        brandFeedersError: null,
+      };
+
+    case SM_BRAND_FEEDERS_ERROR:
+      return {
+        ...state,
+        brandFeedersLoading: false,
+        brandFeeders: [],
+        brandFeedersError: action.payload.error,
+      };
+
     default:
       return state;
   }

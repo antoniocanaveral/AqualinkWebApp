@@ -1,12 +1,10 @@
-// PreCriaInfrastructure.js
 import React, { useState } from "react";
-import { Button, Col, Form, InputNumber, Row, Select, Switch, Input, message } from "antd";
+import { Button, Col, Form, InputNumber, Row, Select, Switch, Input } from "antd";
 
 const { Option } = Select;
 
-export const PreCriaInfrastructure = ({ alimentadores, handleAddAlimentador, form, prefix, addedPiscinas }) => {
+export const PreCriaInfrastructure = ({ form, prefix, brandFeeders }) => {
   const [metodoAlimentacion, setMetodoAlimentacion] = useState("");
-
 
   return (
     <>
@@ -27,7 +25,7 @@ export const PreCriaInfrastructure = ({ alimentadores, handleAddAlimentador, for
         <Col span={12}>
           <Form.Item
             label="Extensión (Has)"
-            name={[prefix, 'extension']}
+            name={[prefix, 'sm_poolsize']}
             rules={[
               { required: true, message: "Ingrese la extensión" },
               { type: "number", min: 0.01, message: "Mínimo 0.01" },
@@ -39,33 +37,36 @@ export const PreCriaInfrastructure = ({ alimentadores, handleAddAlimentador, for
         <Col span={12}>
           <Form.Item
             label="Profundidad Operativa (mts)"
-            name={[prefix, 'profundidadOperativa']}
+            name={[prefix, 'sm_oppdepth']}
             rules={[
               { required: true, message: "Requerido" },
               { type: "number", min: 0.1, message: "Mínimo 0.1" },
+              { type: "number", max: 5, message: "Máximo 5" },
             ]}
           >
-            <InputNumber min={0.1} step={0.1} style={{ width: "100%" }} />
+            <InputNumber min={0.1} max={5} step={0.1} style={{ width: "100%" }} />
           </Form.Item>
         </Col>
       </Row>
+
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item
             label="Profundidad de Siembra (mts)"
-            name={[prefix, 'profundidadSiembra']}
+            name={[prefix, 'sm_plantingdepth']}
             rules={[
               { required: true, message: "Requerido" },
               { type: "number", min: 0.1, message: "Mínimo 0.1" },
+              { type: "number", max: 1, message: "Máximo 1" }
             ]}
           >
-            <InputNumber min={0.1} step={0.1} style={{ width: "100%" }} />
+            <InputNumber min={0.1} max={1} step={0.1} style={{ width: "100%" }} />
           </Form.Item>
         </Col>
         <Col span={12}>
           <Form.Item
             label="Profundidad de Transferencia (mts)"
-            name={[prefix, 'profundidadTransferencia']}
+            name={[prefix, 'sm_transferdepth']}
             rules={[
               { required: true, message: "Requerido" },
               { type: "number", min: 0.1, message: "Mínimo 0.1" },
@@ -75,11 +76,12 @@ export const PreCriaInfrastructure = ({ alimentadores, handleAddAlimentador, for
           </Form.Item>
         </Col>
       </Row>
+
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item 
-            label="Aireación Mecánica (Hp/Ha)" 
-            name={[prefix, 'aireacionMecanica']}
+          <Form.Item
+            label="Aireación Mecánica (Hp/Ha)"
+            name={[prefix, 'sm_mechanicalaeration']}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
@@ -87,63 +89,78 @@ export const PreCriaInfrastructure = ({ alimentadores, handleAddAlimentador, for
         <Col span={12}>
           <Form.Item
             label="Método de Alimentación"
-            name={[prefix, 'metodoAlimentacion']}
+            name={[prefix, 'feeding_method']}
             rules={[{ required: true, message: "Seleccione un método" }]}
           >
             <Select placeholder="Seleccione" onChange={setMetodoAlimentacion}>
-              <Option value="manual">Manual</Option>
-              <Option value="automatico">Automático</Option>
+              <Option value="MANUAL">Manual</Option>
+              <Option value="AUTOMATIC">Automático</Option>
             </Select>
           </Form.Item>
         </Col>
       </Row>
-      {metodoAlimentacion === "automatico" && (
+
+      {metodoAlimentacion === "AUTOMATIC" && (
         <div>
           <h4>Información del Alimentador</h4>
-          {Array.from({ length: alimentadores[prefix] || 1 }, (_, i) => (
-            <Row gutter={16} key={`${prefix}-alimentador-${i}`}>
-              <Col span={6}>
-                <Form.Item
-                  label={`Alimentador #${i + 1}`}
-                  name={[prefix, 'alimentadores', i, 'numero']}
-                  rules={[{ required: true, message: "Requerido" }]}
-                >
-                  <InputNumber min={1} style={{ width: "100%" }} />
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item
-                  label="Marca"
-                  name={[prefix, 'alimentadores', i, 'marca']}
-                  rules={[{ required: true, message: "Seleccione" }]}
-                >
-                  <Select placeholder="Seleccione">
-                    <Option value="bluebox">BlueBox</Option>
-                    <Option value="jetfeeder">JetFeeder</Option>
-                    <Option value="biofeeder">BioFeeder</Option>
-                    <Option value="aq1">AQ1</Option>
-                    <Option value="eruvaka">Eruvaka</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item
-                  label="Integración"
-                  name={[prefix, 'alimentadores', i, 'integracion']}
-                  valuePropName="checked"
-                >
-                  <Switch checkedChildren="Sí" unCheckedChildren="No" />
-                </Form.Item>
-              </Col>
-            </Row>
-          ))}
-          <Button
-            type="dashed"
-            onClick={() => handleAddAlimentador(prefix)}
-            style={{ marginTop: 10 }}
-          >
-            Añadir Alimentador
-          </Button>
+          <Form.List name={[prefix, 'alimentadores']}>
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(field => (
+                  <Row gutter={16} key={field.key} align="middle">
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        label="Alimentador"
+                        name={[field.name, 'numero']}
+                        fieldKey={[field.fieldKey, 'numero']}
+                        rules={[{ required: true, message: "Requerido" }]}
+                      >
+                        <Input style={{ width: "100%" }} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        label="Marca"
+                        name={[field.name, 'marca']}
+                        fieldKey={[field.fieldKey, 'marca']}
+                        rules={[{ required: true, message: "Seleccione" }]}
+                      >
+                        <Select placeholder="Seleccione">
+                          {brandFeeders?.map((group) => (
+                            <Select.Option key={group?.id} value={group?.id}>
+                              {group?.Name}
+                            </Select.Option>
+                          ))
+                          }
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        label="Integración"
+                        name={[field.name, 'integracion']}
+                        fieldKey={[field.fieldKey, 'integracion']}
+                        valuePropName="checked"
+                      >
+                        <Switch checkedChildren="Sí" unCheckedChildren="No" />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Button type="dashed" danger onClick={() => remove(field.name)}>
+                        Eliminar
+                      </Button>
+                    </Col>
+                  </Row>
+                ))}
+                <Button type="dashed" onClick={() => add()} style={{ marginTop: 10 }}>
+                  Añadir Alimentador
+                </Button>
+              </>
+            )}
+          </Form.List>
         </div>
       )}
     </>

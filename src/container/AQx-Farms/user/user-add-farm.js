@@ -131,7 +131,7 @@ const AddUserFarm = () => {
                                     {selectedArea && (
                                         <>
                                             <Col span={8}>
-                                                <Form.Item label="Usuario" name="usuario" rules={[{ required: true, message: 'Por favor, selecciona un usuario' }]}>
+                                                <Form.Item label="Rol" name="usuario" rules={[{ required: true, message: 'Por favor, selecciona un usuario' }]}>
                                                     <Select onChange={handleUserChange} placeholder="Selecciona un usuario">
                                                         {usuariosPorArea[selectedArea]?.map(user => (
                                                             <Select.Option key={user} value={user}>

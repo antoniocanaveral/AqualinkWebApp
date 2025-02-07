@@ -148,7 +148,7 @@ export const NaturalPersonForm = ({ regions, cities, clientType }) => {
                 <Col span={4}>
                     <Form.Item
                         label="Tipo de Camaronera"
-                        name="tipoCamaronera"
+                        name="SM_MainlandOrIsland"
                         rules={[{ required: true, message: 'Seleccione el tipo de camaronera' }]}
                     >
                         <Select size="large" placeholder="Seleccione Tipo de Camaronera">
