@@ -109,7 +109,8 @@ function AddClientCustodia() {
                 email_rl: formData.email_rl,
                 sm_protocolharvest: formData.sm_protocolharvest,
                 sm_processingcapacityweekly: formData.sm_processingcapacityweekly,
-                sm_processingcapacitydaily: formData.sm_processingcapacitydaily
+                sm_processingcapacitydaily: formData.sm_processingcapacitydaily,
+                sm_installedcapacitylarva: formData.sm_installedcapacitylarva
             };
 
             const createdOrg = await dispatch(createAdOrg(orgData, "CUSTODY"));

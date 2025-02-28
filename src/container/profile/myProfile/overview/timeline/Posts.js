@@ -13,8 +13,6 @@ import Picker from 'emoji-picker-react';
 import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { LightBox } from 'react-lightbox-pack';
-import 'react-lightbox-pack/dist/style.css';
 
 import { AllPosts, BackShadowEmoji, Title } from './style';
 import { Cards } from '../../../../../components/cards/frame/cards-frame';
@@ -243,17 +241,7 @@ function Posts({ postId, from, time, img, like, comment, content, author }) {
             ) : null}
           </div>
 
-          <LightBox
-            state={toggle}
-            event={lightBoxHandler}
-            data={dataImages}
-            imageWidth="600px"
-            imageHeight="500px"
-            thumbnailHeight={50}
-            thumbnailWidth={50}
-            setImageIndex={setSIndex}
-            imageIndex={sIndex}
-          />
+          
           <div className="post-text">
             <p>{content}</p>
           </div>

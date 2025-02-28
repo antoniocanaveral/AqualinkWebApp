@@ -155,14 +155,25 @@ export const NaturalPersonForm = ({ regions, cities, clientType }) => {
                         <Input />
                     </Form.Item>
                 </Col>
-                <Col span={10}>
+                <Col span={5}>
+
                     <Form.Item
-                        label="Certificado Ambiental (opcional)"
+                        label="Capacidad  Instalada"
+                        name="sm_installedcapacitylarva"
+                        rules={[{ required: true, message: 'Ingrese la capacidad instalada de larva' }]}
+                    >
+                        <InputNumber size="large" style={{ width: '100%' }} placeholder="Ingrese cantidad de larva" />
+                    </Form.Item>
+                </Col>
+                <Col span={5}>
+                    <Form.Item
+                        label="Certificado Ambiental "
                         name="sm_safetycertificate"
                     >
                         <Input />
                     </Form.Item>
                 </Col>
+
 
             </Row>
 
