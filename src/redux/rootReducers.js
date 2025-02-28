@@ -32,6 +32,12 @@ import { userGroupReducer, userReducer } from './users/reducers';
 import {  operationReducer } from './operation/reducers';
 import { inventoryReducer } from './inventory/reducers';
 import { configurationReducer } from './configuration/reducers';
+import { rolesReducer } from './user/reducers';
+import { supportReducer } from './support/reducers';
+import { directoriesReducer } from './directories/reducers';
+import { carrierReducer } from './carriers/reducers';
+import { orgBinsReducer } from './bines-drawers/reducer';
+import { labanalysisReducer } from './labanalysis/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -48,7 +54,13 @@ const rootReducers = combineReducers({
   operation: operationReducer,
   inventory: inventoryReducer, 
   configuration: configurationReducer,
+  roles: rolesReducer,
+  support: supportReducer,
+  directories: directoriesReducer,
+  carriers: carrierReducer,
   custody: custodyReducer,
+  bin_drawers: orgBinsReducer,
+  labanalysis: labanalysisReducer,
   gallery: galleryReducer,
   email: emailReducer,
   emailSingle: SingleEmailReducer,

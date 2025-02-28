@@ -57,7 +57,7 @@ function CenterCostFarm() {
 
   const columns = [
     {
-      title: <Text style={{ fontSize: '12px' }}>Asignación </Text>,
+      title: <Text style={{ fontSize: '12px' }}>Lote ID </Text>,
       dataIndex: 'asignacion',
       key: 'asignacion',
       render: (text) => <Text style={{ fontSize: '12px' }}>{text}</Text>,

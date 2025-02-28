@@ -1,147 +1,140 @@
-import React, { useState } from 'react';
-import { Row, Col, Avatar, Modal, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Avatar, Table, Input } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import Heading from '../../../components/heading/heading';
 import { GoogleMaps } from '../../../components/maps/google-maps';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchDirectories } from '../../../redux/directories/actionCreator';
 
 function PackingViewFarm() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedLogistics, setSelectedLogistics] = useState(null);
+  const dispatch = useDispatch();
 
-  const empacadoras = [
+  const { directories, directoriesLoading, directoriesError } = useSelector(
+    (state) => state.directories
+  );
+
+  // Estado para el texto de búsqueda
+  const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    dispatch(fetchDirectories('CUSTODY'));
+  }, [dispatch]);
+
+  // Filtramos la data según el texto de búsqueda en "Name"
+  const filteredData = directories.filter((item) => {
+    return item.Name?.toLowerCase().includes(searchText.toLowerCase());
+  });
+
+  // Definimos las columnas de la tabla
+  const columns = [
+
     {
-      codigoPPA: 'PPA-001',
-      tipo: 'GIV',
-      razonSocial: 'EMPACADORA ALFA S.A.',
-      ruc: '0991234567',
-      direccion: 'Calle Principal 123, Guayaquil',
-      capacidadInstalada: '1000 toneladas',
-      telefono: '+593987654321',
-      personaContacto: 'Juan Pérez',
-      tipoContenedor: 'bines',
-      tipoPesca: 'convencional',
-      geoDatos: 'Ubicación 1 (Google Maps)',
+      title: 'Nombre',
+      dataIndex: 'Name',
+      key: 'Name',
+      render: (text, record) => {
+        const initials = record.Name
+          ? record.Name.split(' ')
+            .map((word) => word[0]) // Tomamos la primera letra de cada palabra
+            .join('')
+            .slice(0, 4) // Limita a 4 caracteres
+            .toUpperCase()
+          : 'N/A';
+
+        return (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{width: "50px"}}>
+              <Avatar
+                size={40} // ancho/alto fijo
+                style={{
+                  backgroundColor: '#b5b5b5',
+                  verticalAlign: 'middle',
+                  marginRight: 10,
+                  min_width: "80px"
+                }}
+              >
+                {initials}
+              </Avatar>
+            </div>
+            <span>{record.Name}</span>
+          </div>
+        );
+      },
     },
     {
-      codigoPPA: 'PP-102',
-      tipo: 'GP',
-      razonSocial: 'EMPACADORA BETA CÍA. LTDA.',
-      ruc: '0997654321',
-      direccion: 'Av. Secundaria 456, Quito',
-      capacidadInstalada: '800 toneladas',
-      telefono: '+593123456789',
-      personaContacto: 'Carlos Martínez',
-      tipoContenedor: 'gavetas',
-      tipoPesca: 'hielo_liquido',
-      geoDatos: 'Ubicación 2 (Google Maps)',
+      title: 'Código SCI',
+      dataIndex: 'sci_code',
+      key: 'sci_code',
+      width: '10%',
     },
     {
-      codigoPPA: 'PPA-210',
-      tipo: 'LAB',
-      razonSocial: 'EMPACADORA GAMMA S.A.',
-      ruc: '0991122334',
-      direccion: 'Calle Secundaria 789, Cuenca',
-      capacidadInstalada: '1200 toneladas',
-      telefono: '+593112233445',
-      personaContacto: 'Luisa Rodríguez',
-      tipoContenedor: 'bines',
-      tipoPesca: 'convencional',
-      geoDatos: 'Ubicación 3 (Google Maps)',
+      title: 'Dirección',
+      dataIndex: 'Address',
+      key: 'Address',
+      width: '25%',
     },
+    {
+      title: 'Teléfono',
+      dataIndex: 'Phone',
+      key: 'Phone',
+      width: '10%',
+    },
+    {
+      title: 'Contacto',
+      dataIndex: 'contact_name',
+      key: 'contact_name',
+      width: '20%',
+    },
+    // Si quisieras mostrar el tipo (org_type):
+    // {
+    //   title: 'Tipo',
+    //   dataIndex: 'org_type',
+    //   key: 'org_type',
+    // },
   ];
 
-  const showModal = (logistica) => {
-    setSelectedLogistics(logistica);
-    setIsModalVisible(true);
-  };
+  if (directoriesLoading) {
+    return <p>Cargando datos...</p>;
+  }
 
-  const closeModal = () => {
-    setIsModalVisible(false);
-    setSelectedLogistics(null);
-  };
+  if (directoriesError) {
+    return <p>Ocurrió un error al cargar los directorios.</p>;
+  }
 
   return (
     <>
       <PageHeader
-        
-        highlightText="AquaLink Empacadora"
-        title="Vista de Empacadoras"
+        highlightText="AquaLink Camaronera"
+        title="Directorio de Empacadoras"
       />
       <Main>
-        <Row gutter={[25, 25]}>
-          {empacadoras.map((empacadora, index) => (
-            <Col key={index} xl={8} lg={8} md={12} sm={24} xs={24} className="empacadora-card">
-              <Cards headless>
-                <div className="empacadora-card-header">
-                  <Heading as="h4">{empacadora.razonSocial}</Heading>
-                </div>
-                <div className="empacadora-card-body" style={{ textAlign: 'center' }}>
-                  <Avatar
-                    style={{
-                      backgroundColor: '#b5b5b5',
-                      verticalAlign: 'middle',
-                      marginRight: '10px',
-                    }}
-                    size={64}
-                  >
-                    {empacadora.razonSocial.split(' ').map((word) => word[0]).join('')}
-                  </Avatar>
-                  <p>
-                    <strong>Código PPA:</strong> {empacadora.codigoPPA}
-                  </p>
-                  <p>
-                    <strong>RUC:</strong> {empacadora.ruc}
-                  </p>
-                  <p>
-                    <strong>Dirección:</strong> {empacadora.direccion}
-                  </p>
-                  <p>
-                    <strong>Teléfono:</strong> {empacadora.telefono}
-                  </p>
-                  <p>
-                    <strong>Persona de Contacto:</strong> {empacadora.personaContacto}
-                  </p>
-                  <p>
-                    <strong>Capacidad Instalada:</strong> {empacadora.capacidadInstalada}
-                  </p>
-                  <Button
-                    type="primary"
-                    style={{ marginTop: '10px', borderRadius: '5px' }}
-                    onClick={() => showModal(empacadora)}
-                  >
-                    Ver Logística
-                  </Button>
-                </div>
-                <div className="empacadora-card-map">
-                  <strong>Mapa de Geolocalización:</strong>
-                  <GoogleMaps location={empacadora.geoDatos} height="200px" />
-                </div>
-              </Cards>
-            </Col>
-          ))}
+        {/* Input para buscar por nombre */}
+        <Row style={{ marginBottom: 16 }}>
+          <Col>
+            <Input
+              placeholder="Buscar por nombre..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              style={{ width: 300 }}
+            />
+          </Col>
         </Row>
 
-        {/* Modal para Logística */}
-        <Modal
-          title="Logística de Transporte"
-          visible={isModalVisible}
-          onCancel={closeModal}
-          footer={<Button onClick={closeModal}>Cerrar</Button>}
-        >
-          {selectedLogistics && (
-            <>
-              <p>
-                <strong>Tipo de Contenedor:</strong> {selectedLogistics.tipoContenedor}
-              </p>
-              <p>
-                <strong>Tipo de Pesca:</strong>{' '}
-                {selectedLogistics.tipoPesca === 'convencional' ? 'Convencional' : 'Hielo Líquido'}
-              </p>
-            </>
-          )}
-        </Modal>
+        <Row gutter={[25, 25]}>
+          <Col span={24}>
+            <Cards headless>
+              <Heading as="h4">Listado de Empacadoras</Heading>
+              <Table
+                rowKey="id"
+                columns={columns}
+                dataSource={filteredData}
+                pagination={{ pageSize: 5 }}
+              />
+            </Cards>
+          </Col>
+        </Row>
       </Main>
     </>
   );

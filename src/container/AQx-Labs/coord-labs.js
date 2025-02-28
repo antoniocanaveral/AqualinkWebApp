@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useState, useEffect, useLayoutEffect } from 'react';
 import { PageHeader } from '../../components/page-headers/page-headers';
-import { Row, Col, Form, Input, Select, Skeleton, message, Spin, DatePicker, TimePicker, InputNumber, Table, Typography, Avatar } from 'antd';
+import { Row, Col, Form, Input, Select, Skeleton, message, Spin, DatePicker, TimePicker, InputNumber, Avatar, Typography } from 'antd';
 import { Button } from '../../components/buttons/buttons';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,7 @@ import UilCheck from '@iconscout/react-unicons/icons/uil-check';
 import UilUsersAlt from '@iconscout/react-unicons/icons/uil-users-alt';
 import UilFileCheckAlt from '@iconscout/react-unicons/icons/uil-file-check-alt';
 import UilCheckCircle from '@iconscout/react-unicons/icons/uil-check-circle';
+import { Steps } from '../../components/steps/steps';
 import Heading from '../../components/heading/heading';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Checkbox } from '../../components/checkbox/checkbox';
@@ -18,16 +19,11 @@ import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { formatNumber, inputFormatter, parserNumber } from '../../utility/utility';
 import { StepsCoords } from '../../components/steps/stepsCoords';
+import CustomTable from './CustomTable';
 
 const { Option } = Select;
 
 function CoordinationLabs() {
-
-  const handleBack = () => {
-    navigate(-1);
-  };
-
-
   const PageRoutes = [
     {
       path: 'index',
@@ -38,10 +34,11 @@ function CoordinationLabs() {
       breadcrumbName: 'Coordinación',
     },
   ];
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { id } = useParams();
 
+  let { id } = useParams();
   const coordination = useSelector((state) => state.lab.coordination);
   const loading = useSelector((state) => state.lab.loading);
 
@@ -52,16 +49,8 @@ function CoordinationLabs() {
     isFinished: false,
     current: 0,
     form: {
-      answeredDate: coordination
-        ? coordination.answered_date
-          ? moment(coordination.answered_date)
-          : moment(coordination.planned_date)
-        : moment(),
-      answeredTime: coordination
-        ? coordination.answered_date
-          ? moment(coordination.answered_date)
-          : moment(coordination.planned_date)
-        : moment(),
+      answeredDate: coordination ? (coordination.answered_date ? coordination.answered_date : coordination.planned_date) : moment(),
+      answeredTime: coordination ? (coordination.answered_date ? coordination.answered_date : coordination.planned_date) : moment(),
       module: coordination ? coordination.SM_Module : "",
       tank: coordination ? coordination.SM_Tank : "",
       tankTotal: coordination ? coordination.SM_TankTotalPlanting : "",
@@ -70,13 +59,11 @@ function CoordinationLabs() {
       pl: coordination ? coordination.SM_AnsweredPL : "",
       salinity: coordination ? coordination.SM_ConfirmedSalinity : "",
       methodName: coordination && coordination.SM_ShippingMethod ? coordination.SM_ShippingMethod.id : "",
-      oxygenOnTheGo: coordination ? coordination.SM_OxygenOnTheGo : false,
-      foodOnTheGo: coordination ? coordination.SM_FoodOnTheGo : false,
+      oxygenOnTheGo: coordination?.SM_OxygenOnTheGo ?? false,
+      foodOnTheGo: coordination?.SM_FoodOnTheGo ?? false,
+      unitPerPack: coordination ? coordination.unitPerPack : ""
     }
   });
-
-  console.log("------->>>>>>>>>");
-  console.log(JSON.stringify(coordination));
 
   const { status, isFinished, current } = state;
 
@@ -87,7 +74,6 @@ function CoordinationLabs() {
   useLayoutEffect(() => {
     const activeElement = document.querySelectorAll('.ant-steps-item-active');
     const successElement = document.querySelectorAll('.ant-steps-item-finish');
-
     activeElement.forEach((element) => {
       if (element.previousSibling) {
         const bgImage = element.previousSibling;
@@ -99,7 +85,6 @@ function CoordinationLabs() {
         bgImage.classList.add('wizard-steps-item-active');
       }
     });
-
     successElement.forEach((element) => {
       if (element.previousSibling) {
         const bgImage = element.previousSibling;
@@ -107,38 +92,7 @@ function CoordinationLabs() {
         bgImage.classList.add('success-step-item');
       }
     });
-  }, []);
-
-  // Función auxiliar para manejar cambios en campos de texto e inputs
-  const handleInputChange = (field, value) => {
-    setState(prevState => ({
-      ...prevState,
-      form: {
-        ...prevState.form,
-        [field]: value,
-      },
-    }));
-  };
-
-  // Función para manejar cambios en el método de envío
-  const handleMethodChange = (value) => {
-    handleInputChange('methodName', value);
-    if (value !== 'TANQUES') {
-      // Resetear los checkboxes si el método no es Tanques Transporte
-      handleInputChange('oxygenOnTheGo', false);
-      handleInputChange('foodOnTheGo', false);
-    }
-  };
-
-  // Función para manejar cambios en los checkboxes
-  const handleCheckboxChange = (field, e) => {
-    handleInputChange(field, e.target.checked);
-  };
-
-  // Función para manejar cambios en DatePicker y TimePicker
-  const handleDateChange = (field, value) => {
-    handleInputChange('answeredDate', value);
-  };
+  });
 
   const next = () => {
     return new Promise((resolve, reject) => {
@@ -153,7 +107,7 @@ function CoordinationLabs() {
         }).catch(er => {
           message.error("Revise los datos requeridos!");
           reject(er);
-        })
+        });
       } else {
         reject();
       }
@@ -189,573 +143,417 @@ function CoordinationLabs() {
         } else {
           message.error('Ocurrió al enviar la coordinación.');
         }
-      }))
-
+      }));
     }
   };
 
-  const onCancel = () => {
-    const confirm = window.confirm('Estás seguro de querer rechazar esta coordinación ?');
-    if (confirm) {
-      dispatch(cancelLabCoord(id, (success) => {
-        console.log(success);
-        if (success) {
-          message.success('Coordinación Rechazada.');
-          navigate("/lab/coordinacion");
-        } else {
-          message.error('Ocurrió un error.');
-        }
-      }));
-    }
-  }
-
   const coordData = [
-    { key: '4', label: 'Fecha de Siembra Solicitada:', value: coordination ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-' },
-    { key: '5', label: 'Salinidad Solicitada:', value: coordination ? `${coordination.requested_salinity} ppm` : '20 ppm' },
-    { key: '6', label: 'Cantidad Solicitada:', value: coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '1.000.000 larvas' },
-    { key: '7', label: 'Alcalinidad Piscina Pre Cría:', value: coordination?.coord_alkalinity || '140 ppm' },
-    { key: '8', label: 'PH Piscina de Pre Cría:', value: coordination?.coord_pre_breeding_pool_ph || '5 ppm' },
+    { key: '1', label: 'Camaronera:', value: coordination ? coordination.org_name : '-' },
+    { key: '2', label: 'Piscina:', value: coordination ? coordination.pre_breeding_pool : '-' },
+    { key: '3', label: 'Dirección:', value: coordination ? `${coordination.City} ${coordination.Address1}, ${coordination.Address2}` : '-' },
+    { key: '4', label: 'Notificación:', value: coordination ? coordination.SM_FishingNotification : '-' },
+    { key: '5', label: 'Fecha de Siembra Solicitada:', value: coordination ? moment(coordination.planned_date).format('DD-MM-YYYY / HH:mm A') : '-' },
+    { key: '6', label: 'PL Solicitado:', value: coordination ? formatNumber(coordination.requested_pl) : '-' },
+    { key: '7', label: 'Salinidad Solicitada:', value: coordination ? `${coordination.requested_salinity} ppm` : '-' },
+    { key: '8', label: 'Cantidad Solicitada:', value: coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '-' },
+    { key: '9', label: 'Días de Maduración del Agua:', value: coordination ? `${coordination.water_ripening_days} días` : '-' }
   ];
 
-  const columns = [
-    {
-      title: '', dataIndex: 'label', key: 'label', width: '55%', render: (text) => (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span
-            style={{
-              height: '5px',
-              width: '5px',
-              backgroundColor: '#012e40', // Elige el color del dot
-              borderRadius: '50%',
-              display: 'inline-block',
-              marginRight: '8px', // Espacio entre el dot y el texto
-            }}
-          />
-          <span>{text}</span>
-        </div>
-      ),
-    },
-    { title: '', dataIndex: 'value', key: 'value', width: '45%' },
+  const coordDataSummary = [
+    { key: '1', label: 'Camaronera:', value: coordination ? coordination.org_name : '-' },
+    { key: '2', label: 'Piscina:', value: coordination ? coordination.pre_breeding_pool : '-' },
+    { key: '4', label: 'Notificación:', value: coordination ? coordination.SM_FishingNotification : '-' },
+    { key: '5', label: 'Fecha de Siembra Solicitada:', value: coordination ? moment(coordination.planned_date).format('DD-MM-YYYY / HH:mm A') : '-' },
+    { key: '7', label: 'Salinidad Solicitada:', value: coordination ? `${coordination.requested_salinity} ppm` : '-' },
+    { key: '8', label: 'Cantidad Solicitada:', value: coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '-' }
+  ];
+
+  const sendSummaryData = [
+    { key: '1', label: 'Fecha - Hora:', value: state.form.answeredDate ? moment(state.form.answeredDate).format('DD-MM-YYYY / HH:mm A') : '-' },
+    { key: '2', label: 'Módulo:', value: state.form.module || '-' },
+    { key: '3', label: 'Tanque:', value: state.form.tank || '-' },
+    { key: '4', label: 'Total Tanque:', value: state.form.tankTotal ? `${formatNumber(state.form.tankTotal)} larvas` : '-' },
+    { key: '5', label: 'Total Confirmado:', value: state.form.confirmedTotal ? `${formatNumber(state.form.confirmedTotal)} larvas` : '-' },
+    { key: '6', label: 'Conteo Preliminar Lab:', value: state.form.labCount ? `${formatNumber(state.form.labCount)} larvas/gramo` : '-' },
+    { key: '7', label: 'PL:', value: state.form.pl || '-' },
+    { key: '8', label: 'Salinidad:', value: state.form.salinity ? `${state.form.salinity} ppm` : '-' },
+    { key: '9', label: 'Método de Envío:', value: state.form.methodName || '-' },
+    { key: '10', label: 'Unidades por Empaque:', value: state.form.unitPerPack ? `${formatNumber(state.form.unitPerPack)} larvas` : '-' },
+    { key: '11', label: 'Óxigeno en Camino:', value: state.form.oxygenOnTheGo ? 'Sí' : 'No' },
+    { key: '12', label: 'Comida en Camino:', value: state.form.foodOnTheGo ? 'Sí' : 'No' }
   ];
 
 
-
+  useEffect(() => {
+    const { confirmedTotal, unitPerPack } = state.form;
+    if (confirmedTotal != null && unitPerPack != null && unitPerPack > 0) {
+      const newTotal = Math.ceil(confirmedTotal / unitPerPack);
+      setState((prevState) => ({
+        ...prevState,
+        form: {
+          ...prevState.form,
+          total: newTotal,
+        },
+      }));
+      form.setFieldsValue({
+        total: newTotal,
+      });
+    }
+  }, [state.form.confirmedTotal, state.form.unitPerPack]);
+  
 
   return (
     <>
-      <PageHeader
-        onBack={handleBack}
-        title={`Responder Coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} routes={PageRoutes} />
+      <PageHeader className="ninjadash-page-header-main" title={`Responder Coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} routes={PageRoutes} />
       <Main>
-        <Row gutter={10}>
+        <Row gutter={25}>
           <Col sm={24} xs={24}>
-            <Suspense
-              fallback={
+            <Suspense fallback={<Cards headless><Skeleton paragraph={{ rows: 20 }} active /></Cards>}>
+              <WizardBlock>
                 <Cards headless>
-                  <Skeleton paragraph={{ rows: 20 }} active />
-                </Cards>
-              }
-            >
-              <Cards headless>
-                <Row justify="center">
-                  <Col xxl={20} xs={24}>
-                    <WizardTwo>
-                      <StepsCoords
-                        isswitch
-                        current={current}
-                        status={status}
-                        steps={[
-                          {
-                            title: 'Coordinación',
-                            className: 'wizard-step-item',
-                            icon: <UilUsersAlt className="steps-icon" />,
-                            content: (
-                              <BasicFormWrapper style={{ width: '100%' }}>
-                                <div className="atbd-form-checkout">
-                                  <Row>
-                                    <Col sm={22} xs={24}>
-                                      <div className="create-account-form" style={{ marginTop: "10px" }}>
-                                        <Heading as="h4">1. Datos de la Coordinación {loading && <Spin />}</Heading>
-                                        <Form form={form} name="account" style={{ marginTop: '10px' }} layout="vertical">
-                                          {/* Primera fila de tres columnas de datos */}
-                                          <Row gutter={25}>
-                                            <Col sm={24} xs={24}>
-                                              <Suspense fallback={
-                                                <Cards headless>
-                                                  <Skeleton paragraph={{ rows: 20 }} active />
-                                                </Cards>
-                                              }>
-                                                <BasicFormWrapper className="mb-25">
-                                                  <div >
-                                                    <Row gutter={25}>
-                                                      <Col xl={24} xs={24}>
-                                                        <Suspense
-                                                          fallback={
-                                                            <Cards headless>
-                                                              <Skeleton active />
-                                                            </Cards>
-                                                          }
-                                                        >
-                                                          <Cards
-                                                            title={``}
-                                                            size="large"
-                                                          >
-                                                            <div style={{ display: 'flex', flexDirection: "column", alignItems: 'center', textAlign: "center" }}>
-                                                              <Avatar style={{ backgroundColor: '#0e92e7', marginRight: '10px' }}>
-                                                                {coordination?.org_name?.[0] || 'E'}
-                                                              </Avatar>
-                                                              <Typography.Title level={5}>{coordination?.org_name || 'EcSSA Manabí'}</Typography.Title>
-                                                              {coordination?.pre_breeding_pool || 'Pre Cria 1'}
-                                                            </div>
-                                                            <br />
+                  <Row justify="center">
+                    <Col xxl={20} xs={24}>
+                      <WizardWrapper className="ninjadash-wizard-page">
+                        <WizardTwo>
+                          <StepsCoords
+                            isswitch
+                            current={current}
+                            status={status}
+                            steps={[
+                              {
+                                title: 'Coordinación',
+                                className: 'wizard-step-item',
+                                icon: <UilUsersAlt className="steps-icon" />,
+                                content: (
+                                  <BasicFormWrapper style={{ width: '100%' }}>
+                                    <div className="atbd-form-checkout">
+                                      <Row>
+                                        <Col sm={22} xs={24}>
+                                          <div className="create-account-form" style={{ marginTop: "-30px" }}>
+                                            <Heading as="h4">1. Datos de la Coordinación {loading && <Spin />}</Heading>
+                                            <Form form={form} name="account" style={{ marginTop: '-10px' }} layout="vertical">
+                                              <div style={{ display: 'flex', flexDirection: "column", alignItems: 'center', textAlign: "center" }}>
+                                                <Avatar style={{ backgroundColor: '#0e92e7', marginRight: '10px' }}>
+                                                  {coordination?.org_name?.[0] || 'E'}
+                                                </Avatar>
+                                                <Typography.Title level={5}>{coordination?.org_name || ''}</Typography.Title>
+                                              </div>
+                                              <CustomTable data={coordData} pairsPerRow={3} />
+                                            </Form>
+                                          </div>
+                                        </Col>
+                                      </Row>
+                                    </div>
+                                  </BasicFormWrapper>
+                                ),
+                              },
+                              {
+                                title: 'Información de Laboratorio',
+                                className: 'wizard-step-item',
+                                icon: <UilFileCheckAlt className="steps-icon" />,
+                                content: (
+                                  <BasicFormWrapper style={{ width: '100%' }}>
+                                    <div className="atbd-form-checkout">
+                                      <Row>
+                                        <Col sm={22} xs={24}>
+                                          <div className="shipping-form" style={{ marginTop: "-30px" }}>
+                                            <Heading as="h4">2. Información de Laboratorio</Heading>
+                                            <Form form={form} name="address" layout="vertical" style={{ marginTop: '-10px' }}>
+                                              <Row gutter={16}>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="responsed_date" label="Fecha Propuesta" initialValue={state.form.answeredDate ? moment(state.form.answeredDate) : moment()} rules={[{ required: true, message: 'Por favor seleccione una Fecha' }]}>
+                                                    <DatePicker value={state.form.answeredDate} onChange={(value) => {
+                                                      let currentDate = '';
+                                                      if (value) {
+                                                        currentDate = moment(state.form.answeredDate);
+                                                        currentDate.set({ year: value.year(), month: value.month(), date: value.date() });
+                                                      }
+                                                      setState({
+                                                        ...state,
+                                                        form: {
+                                                          ...state.form,
+                                                          answeredDate: currentDate,
+                                                        },
+                                                      });
+                                                    }} />
+                                                  </Form.Item>
+                                                  <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? moment(coordination.planned_date).format("DD-MM-YYYY") : "-"}]</div>
+                                                </Col>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="response-time" label="Hora Propuesta" initialValue={moment(state.form.answeredDate ? moment(state.form.answeredDate).format("HH:mm") : "00:00", 'HH:mm')} rules={[{ required: true, message: 'Por favor seleccione una Hora' }]}>
+                                                    <TimePicker value={state.form.answeredDate} onChange={(value) => {
+                                                      let currentTime = moment(state.form.answeredDate);
+                                                      currentTime.set({ hour: value.hour(), minute: value.minute(), second: 0, millisecond: 0 });
+                                                      setState({
+                                                        ...state,
+                                                        form: {
+                                                          ...state.form,
+                                                          answeredDate: currentTime,
+                                                        },
+                                                      });
+                                                    }} />
+                                                  </Form.Item>
+                                                  <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? moment(coordination.planned_date).format("HH:mm A") : "-"}]</div>
+                                                </Col>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="module" label="Módulo" rules={[{ required: true, message: 'Por favor agregue un Módulo' }]}>
+                                                    <Input
+                                                      value={state.form.module}
+                                                      onChange={(e) => {
+                                                        setState({
+                                                          ...state,
+                                                          form: {
+                                                            ...state.form,
+                                                            module: e.target.value,
+                                                          },
+                                                        });
+                                                      }}
+                                                    />
+                                                  </Form.Item>
+                                                </Col>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="tank" label="Tanque" rules={[{ required: true, message: 'Por favor agregue un Tanque' }]}>
+                                                    <Input
+                                                      value={state.form.tank}
+                                                      onChange={(e) => {
+                                                        setState({
+                                                          ...state,
+                                                          form: {
+                                                            ...state.form,
+                                                            tank: e.target.value,
+                                                          },
+                                                        });
+                                                      }}
+                                                    />
+                                                  </Form.Item>
+                                                </Col>
+                                              </Row>
+                                              <Row gutter={16}>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="tankTotal" label="Total Tanque (Larvas)" rules={[{ required: true, message: 'Por favor agregue el Total Tanque' }]}>
+                                                    <InputNumber
+                                                      value={state.form.tankTotal}
+                                                      formatter={(value) => inputFormatter(value)}
+                                                      parser={(value) => parserNumber(value)}
+                                                      onChange={(value) => {
+                                                        setState({
+                                                          ...state,
+                                                          form: {
+                                                            ...state.form,
+                                                            tankTotal: value,
+                                                          },
+                                                        });
+                                                      }}
+                                                    />
+                                                  </Form.Item>
+                                                  <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]</div>
+                                                </Col>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="confirmedTotal" label="Total Confirmado (Larvas)" rules={[{ required: true, message: 'Por favor agregue el Total Confirmado' }]}>
+                                                    <InputNumber
+                                                      value={state.form.confirmedTotal}
+                                                      formatter={(value) => inputFormatter(value)}
+                                                      parser={(value) => parserNumber(value)}
+                                                      onChange={(value) => {
+                                                        setState({
+                                                          ...state,
+                                                          form: {
+                                                            ...state.form,
+                                                            confirmedTotal: value,
+                                                          },
+                                                        });
+                                                      }}
+                                                    />
+                                                  </Form.Item>
+                                                  <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]</div>
+                                                </Col>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="labCount" label="Conteo Preliminar Lab (pl/gr)" rules={[{ required: true, message: 'Por favor agregue el Conteo Preliminar' }]}>
+                                                    <Input
+                                                      value={state.form.labCount}
+                                                      onChange={(e) => {
+                                                        setState({
+                                                          ...state,
+                                                          form: {
+                                                            ...state.form,
+                                                            labCount: e.target.value,
+                                                          },
+                                                        });
+                                                      }}
+                                                    />
+                                                  </Form.Item>
+                                                </Col>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="salinity" label="Salinidad (ppm)" rules={[{ required: true, message: 'Por favor agregue la Salinidad' }]}>
+                                                    <Input
+                                                      value={state.form.salinity}
+                                                      onChange={(e) => {
+                                                        setState({
+                                                          ...state,
+                                                          form: {
+                                                            ...state.form,
+                                                            salinity: e.target.value,
+                                                          },
+                                                        });
+                                                      }}
+                                                    />
+                                                  </Form.Item>
+                                                  <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? `${formatNumber(coordination.requested_salinity)} ppm` : "-"}]</div>
 
-                                                            <Col xs={24} md={24}>
-                                                              <Table
-                                                                className='custom-table_lab'
-                                                                dataSource={coordData}
-                                                                columns={columns}
-                                                                pagination={false}
-                                                                showHeader={false}
-                                                                bordered
-                                                                rowClassName={() => 'custom-table-row'}
-                                                              />
-                                                            </Col>
-                                                          </Cards>
-                                                        </Suspense>
-                                                      </Col>
+                                                </Col>
+                                              </Row>
+                                              <Row gutter={16}>
 
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="methodName" initialValue={state.form.methodName} label="Método de Envío" rules={[{ required: true, message: 'Por favor seleccione un Método de Envío' }]}>
+                                                    <Select
+                                                      style={{ width: '100%' }}
+                                                      onChange={(v) => {
+                                                        setState({
+                                                          ...state,
+                                                          form: {
+                                                            ...state.form,
+                                                            methodName: v,
+                                                            oxygenOnTheGo: v === "FUNDAS" ? false : state.form.oxygenOnTheGo,
+                                                            foodOnTheGo: v === "FUNDAS" ? false : state.form.foodOnTheGo,
+                                                          },
+                                                        });
+                                                      }}
+                                                    >
+                                                      <Option value="FUNDAS">Fundas</Option>
+                                                      <Option value="TANQUES">Tanques Transporte</Option>
+                                                    </Select>
+                                                  </Form.Item>
+                                                </Col>
 
-                                                    </Row>
-                                                  </div>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="unitPerPack" label="Unidades por Empaque" rules={[{ required: true, message: 'Por favor agregue Unidades por Empaque' }]}>
+                                                    <InputNumber
+                                                      value={state.form.unitPerPack}
+                                                      formatter={(value) => inputFormatter(value)}
+                                                      parser={(value) => parserNumber(value)}
+                                                      onChange={(value) => {
+                                                        setState({
+                                                          ...state,
+                                                          form: {
+                                                            ...state.form,
+                                                            unitPerPack: value,
+                                                          },
+                                                        });
+                                                      }}
+                                                    />
+                                                  </Form.Item>
+                                                </Col>
 
-                                                </BasicFormWrapper>
-                                              </Suspense>
-                                            </Col>
-                                          </Row>
-                                          <Row gutter={16}>
+                                                <Col xs={24} sm={6}>
+                                                  <Form.Item name="total" label="Total de Fundas/Tanque">
+                                                    <InputNumber
+                                                      value={state.form.total}
+                                                      formatter={(value) => inputFormatter(value)}
+                                                      parser={(value) => parserNumber(value)}
+                                                      disabled 
+                                                    />
+                                                  </Form.Item>
+                                                </Col>
 
-                                            <Col xs={24} sm={18}></Col> {/* Espacio en blanco ocupando tres cuartos de ancho */}
-                                            <Col xs={24} sm={6} style={{ textAlign: 'right', marginTop: '20px' }}>
-                                              <Button size="default" type="danger" onClick={() => onCancel()}>
-                                                Rechazar la Coordinación
-                                              </Button>
-                                            </Col>
-                                          </Row>
-                                        </Form>
-                                      </div>
-                                    </Col>
-                                  </Row>
-                                </div>
-                              </BasicFormWrapper>
-
-
-                            ),
-                          },
-                          {
-                            title: 'Información de Laboratorio',
-                            className: 'wizard-step-item',
-                            icon: <UilFileCheckAlt className="steps-icon" />,
-                            content: (
-                              <BasicFormWrapper style={{ width: '100%' }}>
-                                <div className="atbd-form-checkout">
-                                  <Row>
-                                    <Col sm={22} xs={24}>
-                                      <div className="shipping-form" style={{ marginTop: "10px" }}>
-                                        <Heading as="h4">2. Información de Laboratorio</Heading>
-                                        <Form form={form} name="address" layout="vertical" style={{ marginTop: '-10px' }}>
-                                          <Row gutter={16}>
-                                            {/* Primera fila de tres columnas */}
-                                            <Col xs={24} sm={8}>
-                                              <Form.Item name="responsed_date" label="Fecha Propuesta" initialValue={state.form.answeredDate ? moment(state.form.answeredDate) : moment()} rules={[{ required: true, message: 'Por favor seleccione una Fecha' }]}>
-                                                <DatePicker style={{ width: "100%" }} value={state.form.answeredDate} onChange={(value) => {
-                                                  let current = '';
-                                                  if (value) {
-                                                    current = moment(state.form.answeredDate);
-                                                    current.set({ year: value.year(), month: value.month(), date: value.date() });
-                                                  }
-                                                  setState({
-                                                    ...state,
-                                                    form: {
-                                                      ...state.form,
-                                                      answeredDate: current,
-                                                    },
-                                                  });
-                                                }} />
-                                              </Form.Item>
-                                              <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? moment(coordination.planned_date).format("DD-MM-YYYY") : "-"}]</div>
-                                            </Col>
-                                            <Col xs={24} sm={8}>
-                                              <Form.Item name="response-time" label="Hora Propuesta" initialValue={moment(state.form.answeredDate ? moment(state.form.answeredDate).format("HH:mm") : "00:00", 'HH:mm')} rules={[{ required: true, message: 'Por favor seleccione una Hora' }]}>
-                                                <TimePicker style={{ width: "100%" }} value={state.form.answeredDate} onChange={(value) => {
-                                                  let current = moment(state.form.answeredDate);
-                                                  current.set({ hour: value.hour(), minute: value.minute(), second: 0, millisecond: 0 });
-                                                  setState({
-                                                    ...state,
-                                                    form: {
-                                                      ...state.form,
-                                                      answeredDate: current,
-                                                    },
-                                                  });
-                                                }} />
-                                              </Form.Item>
-                                              <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? moment(coordination.planned_date).format("HH:mm A") : "-"}]</div>
-                                            </Col>
-                                            <Col xs={24} sm={8}>
-                                              <Form.Item name="module" label="Módulo" rules={[{ required: true, message: 'Por favor agregue un Módulo' }]}>
-                                                <Input
-                                                  value={state.form.module}
-                                                  onChange={(e) => {
-                                                    setState({
-                                                      ...state,
-                                                      form: {
-                                                        ...state.form,
-                                                        module: e.target.value,
-                                                      },
-                                                    });
-                                                  }}
-                                                />
-                                              </Form.Item>
-                                            </Col>
-
-                                          </Row>
-
-                                          <Row gutter={16}>
-                                            {/* Segunda fila de tres columnas */}
-                                            <Col xs={24} sm={8}>
-                                              <Form.Item name="tank" label="Tanque" rules={[{ required: true, message: 'Por favor agregue un Tanque' }]}>
-                                                <Input
-                                                  value={state.form.tank}
-                                                  onChange={(e) => {
-                                                    setState({
-                                                      ...state,
-                                                      form: {
-                                                        ...state.form,
-                                                        tank: e.target.value,
-                                                      },
-                                                    });
-                                                  }}
-                                                />
-                                              </Form.Item>
-                                            </Col>
-                                            <Col xs={24} sm={8}>
-                                              <Form.Item name="tankTotal" label="Total Tanque (Larvas)" rules={[{ required: true, message: 'Por favor agregue el Total Tanque' }]}>
-                                                <InputNumber
-                                                  value={state.form.tankTotal}
-                                                  formatter={(value) => inputFormatter(value)}
-                                                  parser={(value) => parserNumber(value)}
-                                                  onChange={(value) => {
-                                                    setState({
-                                                      ...state,
-                                                      form: {
-                                                        ...state.form,
-                                                        tankTotal: value,
-                                                      },
-                                                    });
-                                                  }}
-                                                />
-                                              </Form.Item>
-                                              <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]</div>
-                                            </Col>
-                                            <Col xs={24} sm={8}>
-                                              <Form.Item name="confirmedTotal" label="Total Asignado (Larvas)" rules={[{ required: true, message: 'Por favor agregue el Total Confirmado' }]}>
-                                                <InputNumber
-                                                  value={state.form.confirmedTotal}
-                                                  formatter={(value) => inputFormatter(value)}
-                                                  parser={(value) => parserNumber(value)}
-                                                  onChange={(value) => {
-                                                    setState({
-                                                      ...state,
-                                                      form: {
-                                                        ...state.form,
-                                                        confirmedTotal: value,
-                                                      },
-                                                    });
-                                                  }}
-                                                />
-                                              </Form.Item>
-                                              <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]</div>
-                                            </Col>
-                                          </Row>
-
-                                          <Row gutter={16}>
-                                            {/* Tercera fila de tres columnas */}
-                                            <Col xs={24} sm={8}>
-                                              <Form.Item name="labCount" label="Conteo Preliminar Laboratorio (Larvas/gramo)" rules={[{ required: true, message: 'Por favor agregue el Conteo Preliminar' }]}>
-                                                <Input
-                                                  value={state.form.labCount}
-                                                  onChange={(e) => {
-                                                    setState({
-                                                      ...state,
-                                                      form: {
-                                                        ...state.form,
-                                                        labCount: e.target.value,
-                                                      },
-                                                    });
-                                                  }}
-                                                />
-                                              </Form.Item>
-                                            </Col>
-                                            <Col xs={24} sm={8}>
-                                              <Form.Item name="pl" label="PL" initialValue={state.form.pl} rules={[{ required: true, message: 'Por favor agregue PL' }]}>
-                                                <Select
-                                                  style={{ width: '100%' }}
-                                                  onChange={(v) => {
-                                                    setState({
-                                                      ...state,
-                                                      form: {
-                                                        ...state.form,
-                                                        pl: v,
-                                                      },
-                                                    });
-                                                  }}
-                                                >
-                                                  <Option value="">Seleccione</Option>
-                                                  <Option value="PL8">PL 8</Option>
-                                                  <Option value="PL10">PL 10</Option>
-                                                  <Option value="PL12">PL 12</Option>
-                                                  <Option value="PL14">PL 14</Option>
-                                                  <Option value="PL16">PL 16</Option>
-                                                  <Option value="PL20">PL 20</Option>
-                                                </Select>
-                                              </Form.Item>
-                                            </Col>
-                                            <Col xs={24} sm={8}>
-                                              <Form.Item name="salinity" label="Salinidad (ppm)" rules={[{ required: true, message: 'Por favor agregue la Salinidad' }]}>
-                                                <Input
-                                                  value={state.form.salinity}
-                                                  onChange={(e) => {
-                                                    setState({
-                                                      ...state,
-                                                      form: {
-                                                        ...state.form,
-                                                        salinity: e.target.value,
-                                                      },
-                                                    });
-                                                  }}
-                                                />
-                                              </Form.Item>
-                                            </Col>
-                                          </Row>
-
-                                          {/* Cuarta fila con los checkboxes */}
-                                          <Row gutter={16}>
-                                            <Col xs={24} sm={12}>
-                                              <Form.Item
-                                                name="methodName"
-                                                label="Método de Envío"
-                                                initialValue={state.form.methodName}
-                                                rules={[{ required: true, message: 'Por favor seleccione un Método de Envío' }]}
-                                              >
-                                                <Select
-                                                  style={{ width: '100%' }}
-                                                  value={state.form.methodName}
-                                                  onChange={handleMethodChange}
-                                                >
-                                                  <Option value="">Seleccione</Option>
-                                                  <Option value="FUNDAS">Fundas</Option>
-                                                  <Option value="TANQUES">Tanques Transporte</Option>
-                                                </Select>
-                                              </Form.Item>
-                                            </Col>
-                                            <Col xs={24} sm={12}>
-                                              <Form.Item
-                                                name="unitPerPack"
-                                                label="Unidades por Empaque"
-                                                rules={[{ required: true, message: 'Por favor agregue Unidades por Empaque' }]}
-                                              >
-                                                <InputNumber
-                                                  style={{ width: '100%' }}
-                                                  value={state.form.unitPerPack}
-                                                  formatter={(value) => inputFormatter(value)}
-                                                  parser={(value) => parserNumber(value)}
-                                                  onChange={(value) => handleInputChange('unitPerPack', value)}
-                                                />
-                                              </Form.Item>
-                                            </Col>
-                                          </Row>
-
-                                          {/* Quinta fila para checkboxes */}
-                                          <Row gutter={16}>
-                                            <Col xs={24} sm={12}>
-                                              <Form.Item name="oxygenOnTheGo">
-                                                <Checkbox
-                                                  checked={state.form.oxygenOnTheGo}
-                                                  disabled={state.form.methodName !== 'TANQUES'}
-                                                  onChange={(e) => handleCheckboxChange('oxygenOnTheGo', e)}
-                                                >
-                                                  Oxígeno en Trayecto
-                                                </Checkbox>
-                                              </Form.Item>
-                                            </Col>
-                                            <Col xs={24} sm={12}>
-                                              <Form.Item name="foodOnTheGo">
-                                                <Checkbox
-                                                  checked={state.form.foodOnTheGo}
-                                                  disabled={state.form.methodName !== 'TANQUES'}
-                                                  onChange={(e) => handleCheckboxChange('foodOnTheGo', e)}
-                                                >
-                                                  Alimentación en Trayecto
-                                                </Checkbox>
-                                              </Form.Item>
-                                            </Col>
-                                          </Row>
-                                        </Form>
-                                      </div>
-                                    </Col>
-                                  </Row>
-                                </div>
-                              </BasicFormWrapper>
-
-                            ),
-                          },
-                          {
-                            title: 'Resumen',
-                            className: 'wizard-step-item',
-                            icon: <UilCheckCircle className="steps-icon" />,
-                            content:
-                              status !== 'finish' ? (
-                                <BasicFormWrapper style={{ width: '80%' }}>
-                                  <div className="atbd-review-order" style={{ width: '100%' }}>
-                                    <Heading as="h4">3. Resumen</Heading>
-                                    <Cards bodyStyle={{ borderRadius: 10 }} headless>
-                                      <div className="atbd-review-order__single">
+                                                {state.form.methodName === "TANQUES" && (
+                                                  <Col xs={24} sm={6}>
+                                                    <Form.Item name="oxygenOnTheGo">
+                                                      <Checkbox
+                                                        checked={state.form.oxygenOnTheGo}
+                                                        onChange={(value) => {
+                                                          setState({
+                                                            ...state,
+                                                            form: {
+                                                              ...state.form,
+                                                              oxygenOnTheGo: value,
+                                                            },
+                                                          });
+                                                        }}
+                                                      >
+                                                        Oxígeno en Camino
+                                                      </Checkbox>
+                                                    </Form.Item>
+                                                    <Form.Item name="foodOnTheGo">
+                                                      <Checkbox
+                                                        checked={state.form.foodOnTheGo}
+                                                        onChange={(value) => {
+                                                          setState({
+                                                            ...state,
+                                                            form: {
+                                                              ...state.form,
+                                                              foodOnTheGo: value,
+                                                            },
+                                                          });
+                                                        }}
+                                                      >
+                                                        Alimentación en Camino
+                                                      </Checkbox>
+                                                    </Form.Item>
+                                                  </Col>
+                                                )}
+                                              </Row>
+                                            </Form>
+                                          </div>
+                                        </Col>
+                                      </Row>
+                                    </div>
+                                  </BasicFormWrapper>
+                                ),
+                              },
+                              {
+                                title: 'Resumen',
+                                className: 'wizard-step-item',
+                                icon: <UilCheckCircle className="steps-icon" />,
+                                content:
+                                  status !== 'finish' ? (
+                                    <BasicFormWrapper style={{ width: '100%' }}>
+                                      <Heading as="h4">3. Resumen</Heading>
+                                      <Cards bodyStyle={{ borderRadius: 10 }} headless>
                                         <Cards headless>
                                           <div className="atbd-review-order__shippingTitle">
-                                            <Heading as="h5">
-                                              Coordinación
-                                            </Heading>
+                                            <Heading as="h5">Coordinación Solicitada</Heading>
                                           </div>
-                                          <article className="atbd-review-order__shippingInfo">
-                                            <OrderSummary>
-                                              <div className="invoice-summary-inner">
-                                                <ul className="summary-list">
-                                                  <li>
-                                                    <span className="summary-list-title">Camaronera :</span>
-                                                    <span className="summary-list-text">{coordination ? coordination.org_name : "-"}</span>
-                                                  </li>
-                                                  <li>
-                                                    <span className="summary-list-title">Piscina :</span>
-                                                    <span className="summary-list-text">{coordination ? coordination.pre_breeding_pool : "-"}</span>
-                                                  </li>
-                                                  <li>
-                                                    <span className="summary-list-title">Notificación de Siembra :</span>
-                                                    <span className="summary-list-text">{coordination ? coordination.SM_FishingNotification : "-"}</span>
-                                                  </li>
-                                                  <li>
-                                                    <span className="summary-list-title">Fecha de Siembra Solicitada:</span>
-                                                    <span className="summary-list-text">{coordination ? moment(coordination.planned_date).format("DD-MM-YYYY HH:mm A") : "-"}</span>
-                                                  </li>
-                                                  <li>
-                                                    <span className="summary-list-title">Salinidad Solicitada:</span>
-                                                    <span className="summary-list-text">{coordination ? coordination.requested_salinity + " ppm" : "-"}</span>
-                                                  </li>
-                                                  <li>
-                                                    <span className="summary-list-title">Cantidad Solicitada :</span>
-                                                    <span className="summary-list-text">{coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}</span>
-                                                  </li>
-                                                </ul>
-                                              </div>
-                                            </OrderSummary>
-                                          </article>
+                                          <CustomTable data={coordDataSummary} pairsPerRow={3} />
                                         </Cards>
-                                      </div>
-                                      <div className="atbd-review-order__single">
                                         <Cards headless>
                                           <div>
                                             <Heading as="h5">Información del Laboratorio</Heading>
                                           </div>
-                                          <OrderSummary>
-                                            <div className="invoice-summary-inner">
-                                              <ul className="summary-list">
-                                                <li>
-                                                  <span className="summary-list-title">Fecha :</span>
-                                                  <span className="summary-list-text">{moment(state.form.answeredDate).format("DD-MM-YYYY HH:mm A")}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Módulo :</span>
-                                                  <span className="summary-list-text">{state.form.module}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Tanque :</span>
-                                                  <span className="summary-list-text">{state.form.tank}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Total Tanque :</span>
-                                                  <span className="summary-list-text">{`${formatNumber(state.form.tankTotal)} larvas`}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Total Confirmado :</span>
-                                                  <span className="summary-list-text">{`${formatNumber(state.form.confirmedTotal)} larvas`}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Conteo Preliminar Lab :</span>
-                                                  <span className="summary-list-text">{`${formatNumber(state.form.labCount)} larvas/gramo`}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">PL :</span>
-                                                  <span className="summary-list-text">{state.form.pl}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Salinidad :</span>
-                                                  <span className="summary-list-text">{`${state.form.salinity} ppm`}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Método de Envío :</span>
-                                                  <span className="summary-list-text">{state.form.methodName}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Unidades por Empaque :</span>
-                                                  <span className="summary-list-text">{`${formatNumber(state.form.unitPerPack)} larvas`}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Óxigeno en Camino :</span>
-                                                  <span className="summary-list-text">{state.form.oxygenOnTheGo ? "Si" : "No"}</span>
-                                                </li>
-                                                <li>
-                                                  <span className="summary-list-title">Comida en Camino :</span>
-                                                  <span className="summary-list-text">{state.form.foodOnTheGo ? "Si" : "No"}</span>
-                                                </li>
-                                              </ul>
-                                            </div>
-                                          </OrderSummary>
-                                        </Cards>
-                                      </div>
-                                    </Cards>
-                                  </div>
-                                </BasicFormWrapper>
-                              ) : (
-                                <Row justify="center" style={{ width: '100%' }}>
-                                  <Col xl={21} xs={24}>
-                                    <div className="checkout-successful">
-                                      <Cards
-                                        headless
-                                        bodyStyle={{
-                                          borderRadius: '20px',
-                                        }}
-                                      >
-                                        <Cards headless>
-                                          <span className="icon-success">
-                                            <UilCheck />
-                                          </span>
-                                          <Heading as="h3">Respuesta enviada</Heading>
-                                          <p>Tiene 2 días hábiles para cancelar la solicitud antes de que la camaronera envíe su desición.</p>
+                                          <CustomTable data={sendSummaryData} pairsPerRow={3} />
                                         </Cards>
                                       </Cards>
-                                    </div>
-                                  </Col>
-                                </Row>
-                              ),
-                          },
-                        ]}
-                        onNext={next}
-                        onPrev={prev}
-                        onDone={done}
-                        isfinished={isFinished}
-                      />
-                    </WizardTwo>
-                  </Col>
-                </Row>
-              </Cards>
+                                    </BasicFormWrapper>
+                                  ) : (
+                                    <Row justify="center" style={{ width: '100%' }}>
+                                      <Col xl={21} xs={24}>
+                                        <div className="checkout-successful">
+                                          <Cards headless bodyStyle={{ borderRadius: '20px' }}>
+                                            <Cards headless>
+                                              <span className="icon-success">
+                                                <UilCheck />
+                                              </span>
+                                              <Heading as="h3">Respuesta enviada</Heading>
+                                              <p>Tiene 2 días hábiles para cancelar la solicitud antes de que la camaronera envíe su desición.</p>
+                                            </Cards>
+                                          </Cards>
+                                        </div>
+                                      </Col>
+                                    </Row>
+                                  ),
+                              },
+                            ]}
+                            onNext={next}
+                            onPrev={prev}
+                            onDone={done}
+                            isfinished={isFinished}
+                          />
+                        </WizardTwo>
+                      </WizardWrapper>
+                    </Col>
+                  </Row>
+                </Cards>
+              </WizardBlock>
             </Suspense>
           </Col>
         </Row>

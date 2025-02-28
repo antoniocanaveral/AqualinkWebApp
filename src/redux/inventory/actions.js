@@ -61,3 +61,39 @@ export const opAddProductError = (error) => ({
   type: OP_ADD_PRODUCT_ERROR,
   payload: { error },
 });
+
+
+export const FETCH_SECURITY_KITS_LOADING = 'FETCH_SECURITY_KITS_LOADING';
+export const FETCH_SECURITY_KITS_SUCCESS = 'FETCH_SECURITY_KITS_SUCCESS';
+export const FETCH_SECURITY_KITS_ERROR = 'FETCH_SECURITY_KITS_ERROR';
+
+export const fetchSecurityKitsLoading = () => ({
+  type: FETCH_SECURITY_KITS_LOADING,
+});
+
+export const fetchSecurityKitsSuccess = (kits) => ({
+  type: FETCH_SECURITY_KITS_SUCCESS,
+  payload: kits,
+});
+
+export const fetchSecurityKitsError = (error) => ({
+  type: FETCH_SECURITY_KITS_ERROR,
+  payload: { error },
+});
+
+
+export const ADD_SECURITY_KIT_LOADING = 'ADD_SECURITY_KIT_LOADING';
+export const ADD_SECURITY_KIT_SUCCESS = 'ADD_SECURITY_KIT_SUCCESS';
+export const ADD_SECURITY_KIT_ERROR = 'ADD_SECURITY_KIT_ERROR';
+
+export const addSecurityKitLoading = () => ({ type: ADD_SECURITY_KIT_LOADING });
+
+export const addSecurityKitSuccess = (kit) => ({
+  type: ADD_SECURITY_KIT_SUCCESS,
+  payload: kit,
+});
+
+export const addSecurityKitError = (error) => ({
+  type: ADD_SECURITY_KIT_ERROR,
+  payload: { error },
+});

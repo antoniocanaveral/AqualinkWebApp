@@ -12,15 +12,17 @@ import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
 import UilListOlAlt from '@iconscout/react-unicons/icons/uil-list-ol-alt';
 import moment from 'moment';
 
+import {
+  UilBell,
+} from '@iconscout/react-unicons';
 import Cookies from 'js-cookie';
 
 function CoordinationsLabs() {
-  const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName')); // Organización seleccionada
-  const selectedModule = useSelector((state) => state.auth.selectedModule); // Obtener el módulo seleccionado desde Redux
+  const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName'));
+  const selectedModule = useSelector((state) => state.auth.selectedModule);
 
-  const location = useLocation(); // Hook para obtener la ruta actual
-  const currentPath = location.pathname; // Obtener la ruta como string
-
+  const location = useLocation();
+  const currentPath = location.pathname;
   const PageRoutes = [
     {
       path: '/lab',
@@ -33,29 +35,26 @@ function CoordinationsLabs() {
   ];
 
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.lab.loading);
   const coordinations = useSelector((state) => state.lab.coordinations);
-  const organizations = useSelector((state) => state.auth.labsOrgs); // Lista de organizaciones
+  const organizations = useSelector((state) => state.auth.labsOrgs);
 
   useLayoutEffect(() => {
     dispatch(loadLabCoordinations(selectedOrg, (isCompleted, error) => {
-      console.log(`loadLabCoordinations ${isCompleted} for organization: ${selectedOrg}`);
     }));
-  }, [dispatch, selectedOrg]); // Carga coordinaciones cada vez que cambia la organización seleccionada
+  }, [dispatch, selectedOrg]);
 
   const handleOrgChange = (value, orgEmail) => {
-    setSelectedOrg(value); // Cambiar la organización seleccionada visualmente
-    Cookies.set('orgName', value); // Actualizar en cookies el nombre de la organización
-    Cookies.set('orgEmail', orgEmail); // Asegúrate de actualizar también el email de la organización en la cookie
-    dispatch(loadLabCoordinations(value, (isCompleted, error) => {
-      console.log(`loadLabCoordinations ${isCompleted} for organization: ${value}`);
-    })); // Recargar las coordinaciones para la nueva organización
+    setSelectedOrg(value);
+    Cookies.set('orgName', value);
+    Cookies.set('orgEmail', orgEmail);
+    dispatch(loadLabCoordinations());
   };
 
-  // Función para determinar la clase de estado
   const getStatusClass = (status) => {
     switch (status.toLowerCase()) {
       case 'confirmado':
-        return 'ninjadash-status-confirmed';
+        return 'ninjadash-status-completed';
       case 'asignado':
         return 'ninjadash-status-asigned';
       case 'por revisar':
@@ -65,29 +64,24 @@ function CoordinationsLabs() {
       case 'despachado':
         return 'ninjadash-status-despached';
       default:
-        return 'ninjadash-status-undefined'; // Clase para estados indefinidos
+        return 'ninjadash-status-completed';
     }
   };
 
-  // Determinar si se debe usar "Lab Seleccionado" o "Finca Seleccionada"
   const labOrFarm = selectedModule !== 'FARM' ? 'Finca Seleccionada' : 'Lab Seleccionado';
 
-  // Determinar si la ruta actual es '/farm/seeding-coords'
   const isFarmSeedingCoords = currentPath === '/farm/seeding-coords';
 
-  // Generar los datos de la tabla de manera reactiva usando useMemo
   const tableDataScource = useMemo(() => {
     if (!coordinations || coordinations.length === 0) return [];
 
     return coordinations
-      // Filtrar si es la ruta específica y excluir estados "Por Revisar"
       .filter(item => {
         if (isFarmSeedingCoords) {
           return item.statusWrapper.statusName.toLowerCase() !== 'por revisar';
         }
         return true;
-      })
-      .map((item) => {
+      }).map((item) => {
         const itemStatus = item.statusWrapper;
         return {
           id: `${item.SM_FishingNotification || 'Sin Lote ID'}`, // LOTE id
@@ -106,18 +100,20 @@ function CoordinationsLabs() {
             </span>
           ), // ESTADO
           action: (
-            <div className="table-actions" style={{ minWidth: "50px", textAlign: "center" }}>
+            <div className="table-actions" style={{ minWidth: "50px !important", textAlign: "center" }}>
               {!itemStatus.showEditFrom && <Link className="view" to={`./${item.id}/view`}><UilEye /></Link>}
-              {itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/param`}><UilEdit /></Link>}
+              {itemStatus.showEditFrom && <Link className="edit" to={`./${item.id}/edit`}><UilEdit /></Link>}
               {itemStatus.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}><UilListOlAlt /></Link>}
-             
+              <Link className="notification" to={`./notification/${item.id}/view`}>
+                <UilBell />
+              </Link> 
             </div>
           ),
         };
       });
-  }, [coordinations, labOrFarm, isFarmSeedingCoords]); // Añadimos isFarmSeedingCoords a las dependencias
+  }, [coordinations, labOrFarm]); 
 
-  // Definición de las columnas
+
   const dataTableColumn = [
     {
       title: 'Fecha de Siembra',
@@ -150,7 +146,7 @@ function CoordinationsLabs() {
       key: 'pl',
     },
     {
-      title: labOrFarm, // Cambia dinámicamente entre "Lab Seleccionado" y "Finca Seleccionada"
+      title: labOrFarm,
       dataIndex: 'lab',
       key: 'lab',
     },
@@ -166,11 +162,11 @@ function CoordinationsLabs() {
       width: '90px',
     },
   ];
-
   return (
     <>
       <PageHeader
         highlightText="Aqualink"
+        className="ninjadash-page-header-main"
         title="Coordinaciones Siembra"
         routes={PageRoutes}
         organizations={organizations} // Lista de organizaciones
@@ -191,7 +187,7 @@ function CoordinationsLabs() {
               <BorderLessHeading>
                 <Cards title="Coordinaciones de Siembra">
                   <DataTable
-                    key={`${selectedOrg}-${isFarmSeedingCoords}`} // Forzar el re-renderizado cuando cambie la organización o la ruta
+                    key={selectedOrg} // Forzar el re-renderizado cuando cambie la organización seleccionada
                     tableData={tableDataScource}
                     columns={dataTableColumn}
                     rowSelection={false}

@@ -52,7 +52,8 @@ function CoordinationsCustody() {
 
   const handleOrgChange = (value, orgEmail) => {
     setSelectedOrg(value);
-    Cookies.set('orgName', value);
+    Cookies.set('orgId', value);
+
     Cookies.set('orgEmail', orgEmail);
     dispatch(loadCustodyCoordinations(value, (isCompleted, error) => {
       console.log(`loadCustodyCoordinations ${isCompleted} for organization: ${value}`);
@@ -70,10 +71,15 @@ function CoordinationsCustody() {
         return 'ninjadash-status-waiting';
       case 'ejecutado':
         return 'ninjadash-status-executed';
+      case 'espera bines':
+        return 'ninjadash-status-waiting-bines'; // Nuevo estado
+      case 'espera gavetas':
+        return 'ninjadash-status-waiting-drawers'; // Nuevo estado
       default:
         return 'ninjadash-status-undefined';
     }
   };
+  
 
   // Generar los datos de la tabla con useMemo
   const tableDataScource = useMemo(() => {

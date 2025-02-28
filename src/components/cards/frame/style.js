@@ -63,20 +63,19 @@ const BtnWraper = (theme) => `
 const CardFrame = Styled(Card)`
 
   ${({ isbutton, theme }) => isbutton && BtnWraper(theme)}
-  margin-bottom: 25px !important;
+  margin-bottom: 15px !important;
 
   background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
   .ant-card-head{
     border-color: ${({ theme }) => theme[theme.mainContent]['border-color-default']};
     .ant-card-head-title{
-      padding: 18px 0;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 600;
       color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
     }
   }
   .ant-card-body{
-    padding: ${({ bodypadding }) => (bodypadding ? `${bodypadding} !important` : '25px !important')};
+    padding: ${({ bodypadding }) => (bodypadding ? `${bodypadding} !important` : '15px !important')};
     @media only screen and (max-width: 575px){
       padding: ${({ bodypadding }) => (bodypadding ? `${bodypadding} !important` : '15px !important')};
     }

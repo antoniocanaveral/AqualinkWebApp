@@ -13,6 +13,7 @@ import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import DataTable from '../../components/table/DataTable';
 import { GoogleMaps } from '../../components/maps/google-maps';
+import { fetchFishingDrawerInfo } from '../../redux/bines-drawers/actionCreator';
 
 // Definición de columnas para las tablas
 const binesDataTableColumnMain = [
@@ -20,6 +21,11 @@ const binesDataTableColumnMain = [
     title: 'No. Bin',
     dataIndex: 'bin',
     key: 'bin',
+  },
+  {
+    title: 'Kit de Seguridad',
+    dataIndex: 'sm_kitcode',
+    key: 'sm_kitcode',
   },
   {
     title: 'Sello 1',
@@ -61,6 +67,16 @@ const drawerDataTableColumnMain = [
   }
 ];
 
+const furgonesColumns = [
+  { title: 'Furgón', dataIndex: 'van', key: 'van' },
+  { title: 'Kit de Seguridad', dataIndex: 'kitCode', key: 'kitCode' },
+  { title: 'Sello 1', dataIndex: 'seal1', key: 'seal1' },
+  { title: 'Sello 2', dataIndex: 'seal2', key: 'seal2' },
+  { title: 'Gavetas Caladas', dataIndex: 'drawerCaladas', key: 'drawerCaladas' },
+  { title: 'Gavetas Sólidas', dataIndex: 'drawerSolidas', key: 'drawerSolidas' },
+];
+
+
 const coordinationDataColumns = [
   {
     title: '', dataIndex: 'label', key: 'label', width: '45%', render: (text) => (
@@ -84,6 +100,26 @@ const coordinationDataColumns = [
 
 // Componente principal de CoordinationCustodyResumen
 function CoordinationCustodyResumen() {
+  const { organizationSecurityKits = [], organizationFishingDrawerStamp = [], fishingDrawerInfo, fishingDrawerInfoLoading, treaters, treatersLoading } = useSelector((state) => state.bin_drawers || {});
+
+  // Nuevo state para almacenar los furgones agregados
+  const [addedFurgones, setAddedFurgones] = useState([]);
+
+  useEffect(() => {
+    if (!fishingDrawerInfoLoading && fishingDrawerInfo.length > 0) {
+      // Mapeo de los datos a la estructura esperada
+      const formattedData = fishingDrawerInfo.map(item => ({
+        van: item.sm_furgon, // "1 - GEL-7774"
+        kitCode: item.sm_kitcode, // "Kit123456"
+        seal1: item.SM_Stamp1, // "11"
+        seal2: item.SM_Stamp2, // "1"
+        drawerCaladas: item.sm_kdrawerscount, // 10
+        drawerSolidas: item.sm_sdrawerscount, // 10
+      }));
+
+      setAddedFurgones(formattedData);
+    }
+  }, [fishingDrawerInfo, fishingDrawerInfoLoading]);
   const PageRoutes = [
     {
       path: 'index',
@@ -103,7 +139,7 @@ function CoordinationCustodyResumen() {
   const bines = useSelector((state) => state.custody.bines);
   const drawer = useSelector((state) => state.custody.drawer);
   const drawerStamps = useSelector((state) => state.custody.drawerStamps);
-
+  console.log(bines)
   const [state, setState] = useState({
     status: 'process',
     isFinished: false,
@@ -112,14 +148,16 @@ function CoordinationCustodyResumen() {
   });
 
   useEffect(() => {
-    dispatch(loadCustodyCoord(id, () => {}));
-    dispatch(loadBinesByCoord(id, () => {}));
-    dispatch(loadDrawerByCoord(id, () => {}));
-    dispatch(loadDrawerStampByCoord(id, () => {}));
+    dispatch(loadCustodyCoord(id, () => { }));
+    dispatch(loadBinesByCoord(id, () => { }));
+    dispatch(loadDrawerByCoord(id, () => { }));
+    dispatch(loadDrawerStampByCoord(id, () => { }));
+    dispatch(fetchFishingDrawerInfo(id))
   }, [dispatch, id]);
 
   const binesTableDataScource = bines ? bines.map((item) => ({
-    bin: <span>{item.Name}</span>,
+    bin: <span>{item.bin_name}</span>,
+    sm_kitcode: <span>{item.sm_kitcode || "NA"}</span>,
     seal1: <span>{item.SM_Stamp1}</span>,
     seal2: <span>{item.SM_Stamp2}</span>,
     seal3: <span>{item.SM_Stamp3}</span>,
@@ -149,10 +187,10 @@ function CoordinationCustodyResumen() {
 
   return (
     <>
-      <PageHeader  title={`Coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} routes={PageRoutes} />
+      <PageHeader onBack={() => window.history.back()} title={`Coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} routes={PageRoutes} />
       <Main>
         <Row gutter={25}>
-          <Col xl={10} xs={24}>
+          <Col xl={10} xs={24} style={{ display: "flex" }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -172,7 +210,7 @@ function CoordinationCustodyResumen() {
                   {coordination?.warehouse_name || ''}
                 </div>
                 <br />
-               
+
                 <Col xs={24} md={24}>
                   <Table
                     className='custom-table_lab'
@@ -215,16 +253,33 @@ function CoordinationCustodyResumen() {
 
                 {coordination?.container_type === 'BINES' && (
                   <div className="atbd-review-order__single">
+                    <OrderSummary>
+                      <div className="invoice-summary-inner">
+                        <ul className="summary-list">
+                          <li>
+                            <span className="summary-list-title">Tratador:</span>
+                            <span className="summary-list-text">{coordination?.user_name}</span>
+                          </li>
+                          <li>
+                            <span className="summary-list-title">Hielo (#Sacos) :</span>
+                            <span className="summary-list-text">{coordination?.SM_Ice ? `${coordination?.SM_Ice} saco${coordination?.SM_Ice > 1 ? 's' : ''}` : ""}</span>
+                          </li>
+                          <li>
+                            <span className="summary-list-title">Metabisulfitos (kg) :</span>
+                            <span className="summary-list-text">{coordination?.sm_metabisulfite ? `${coordination?.sm_metabisulfite} kg` : ""}</span>
+                          </li>
+                        </ul>
+                      </div>
+                     
+                    </OrderSummary>
                     <Cards headless>
                       <Heading as="h5">Información de Bines</Heading>
-                      <OrderSummary>
-                        <DataTable
-                          tableData={binesTableDataScource}
-                          columns={binesDataTableColumnMain}
-                          key="bin"
-                          rowSelection={false}
-                        />
-                      </OrderSummary>
+                      <DataTable
+                        tableData={binesTableDataScource}
+                        columns={binesDataTableColumnMain}
+                        key="bin"
+                        rowSelection={false}
+                      />
                     </Cards>
                   </div>
                 )}
@@ -237,23 +292,23 @@ function CoordinationCustodyResumen() {
                         <div className="invoice-summary-inner">
                           <ul className="summary-list">
                             <li>
-                              <span className="summary-list-title">Cantidad de Gavetas :</span>
-                              <span className="summary-list-text">{getDrawersCount()}</span>
+                              <span className="summary-list-title">Tratador:</span>
+                              <span className="summary-list-text">{coordination?.user_name}</span>
                             </li>
                             <li>
                               <span className="summary-list-title">Hielo (#Sacos) :</span>
-                              <span className="summary-list-text">{drawer?.SM_Ice ? `${drawer.SM_Ice} saco${drawer.SM_Ice > 1 ? 's' : ''}` : ""}</span>
+                              <span className="summary-list-text">{coordination?.SM_Ice ? `${coordination?.SM_Ice} saco${coordination?.SM_Ice > 1 ? 's' : ''}` : ""}</span>
                             </li>
                             <li>
                               <span className="summary-list-title">Metabisulfitos (kg) :</span>
-                              <span className="summary-list-text">{drawer?.SM_Metabisulfito ? `${drawer.SM_Metabisulfito} kg` : ""}</span>
+                              <span className="summary-list-text">{coordination?.sm_metabisulfite ? `${coordination?.sm_metabisulfite} kg` : ""}</span>
                             </li>
                           </ul>
                         </div>
                         <DataTable
-                          tableData={drawerTableDataScource}
-                          columns={drawerDataTableColumnMain}
-                          key="bin"
+                          tableData={addedFurgones}
+                          columns={furgonesColumns}
+                          key="furgon"
                           rowSelection={false}
                         />
                       </OrderSummary>

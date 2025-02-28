@@ -1,21 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Select } from 'antd';
 import propTypes from 'prop-types';
 import { Button } from '../../components/buttons/buttons';
 import { Modal } from '../../components/modals/antd-modals';
 import { BasicFormWrapper } from '../styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { createRequest, fetchCategories } from '../../redux/support/actionCreator';
 
 const { Option } = Select;
 
-function SupportCreate({ visible, onCancel, handleSubmit }) {
-  // const [form] = Form.useForm();
+function SupportCreate({ visible, onCancel, onSuccess }) {
+  const dispatch = useDispatch();
+  const { categories, categoriesLoading } = useSelector((state) => state.support);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const handleOk = (value) => {
-    handleSubmit(value);
-  };
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const handleCancel = () => {
     onCancel();
+  };
+
+  const handleCategoryChange = (categoryId) => {
+    const category = categories.find((cat) => cat.id === categoryId);
+    setSelectedCategory(category ? category.Name : null);
+  };
+
+  const handleOk = async (formData) => {
+    try {
+      const response = await dispatch(createRequest(formData, selectedCategory));
+      console.log('Ticket creado:', response);
+      // Llamamos a onSuccess para refrescar la lista en el padre
+      onSuccess();
+    } catch (error) {
+      console.error('Error al crear el ticket:', error);
+    }
   };
 
   return (
@@ -31,65 +51,59 @@ function SupportCreate({ visible, onCancel, handleSubmit }) {
         <BasicFormWrapper>
           <Form name="supportCreate" onFinish={handleOk}>
             <Form.Item
-              name="email"
-              label="Email"
+              name="R_Category_ID"
+              label="Asunto"
+              rules={[{ required: true, message: 'Por favor selecciona una categoría' }]}
+            >
+              <Select
+                loading={categoriesLoading}
+                style={{ width: '100%' }}
+                onChange={handleCategoryChange}
+              >
+                {categories.map((cat) => (
+                  <Option key={cat.id} value={cat.id}>
+                    {cat.Name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="Priority"
+              label="Priority"
+              initialValue="seleccione"
               rules={[
                 {
                   required: true,
-                  type: 'email',
+                  message: 'Por favor, selecciona una prioridad',
                 },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="subject"
-              label="Subject"
-              rules={[
                 {
-                  required: true,
+                  validator: (_, value) =>
+                    value === 'seleccione'
+                      ? Promise.reject('Debes seleccionar una prioridad válida')
+                      : Promise.resolve(),
                 },
               ]}
             >
-              <Select style={{ width: '100%' }} defaultValue="Registro de datos AquaLink App">
-                <Option value="Registro de datos AquaLink App">Registro de datos AquaLink App</Option>
-                <Option value="Registro de inventario AquaLink Web App">Registro de inventario AquaLink Web App</Option>
-                <Option value="Registro de costo indirecto Ha/dia">Registro de costo indirecto Ha/dia</Option>
-                <Option value="Coordinación de Siembra Camaronera">Coordinación de Siembra Camaronera</Option>
-                <Option value="Coordinacion de Siembra Laboratorio">Coordinacion de Siembra Laboratorio</Option>
-                <Option value="Coordinación de Cosecha Camaronera">Coordinación de Cosecha Camaronera</Option>
-                <Option value="Coordinacion de Cosecha Empacadora">Coordinacion de Cosecha Empacadora</Option>
-                <Option value="Reporte de malfuniconamiento DO AquaLink">Reporte de malfuniconamiento DO AquaLink</Option>
-                <Option value="Reporte de malfuncionamiento de WaterLink">Reporte de malfuncionamiento de WaterLink</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name="priority" initialValue="high" label="Priority">
               <Select style={{ width: '100%' }}>
-                <Option value="high">High</Option>
-                <Option value="medium">Medium</Option>
-                <Option value="low">Low</Option>
+                <Select.Option value="seleccione" disabled>
+                  Seleccione
+                </Select.Option>
+                <Select.Option value="3">High</Select.Option>
+                <Select.Option value="5">Medium</Select.Option>
+                <Select.Option value="7">Low</Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item name="status" initialValue="open" label="Status">
-              <Select style={{ width: '100%' }}>
-                <Option value="open">Open</Option>
-                <Option value="close">Close</Option>
-                <Option value="pending">Pending</Option>
-              </Select>
-            </Form.Item>
+
             <Form.Item
-              name="description"
+              name="Summary"
               label="Description"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
+              rules={[{ required: true }]}
             >
               <Input.TextArea rows={4} />
             </Form.Item>
             <Form.Item>
-              <Button size="default" htmlType="submit" type="primary" key="submit" onClick={() => handleOk}>
+              <Button size="default" htmlType="submit" type="primary" key="submit">
                 Submit Ticket
               </Button>
             </Form.Item>
@@ -103,7 +117,7 @@ function SupportCreate({ visible, onCancel, handleSubmit }) {
 SupportCreate.propTypes = {
   visible: propTypes.bool.isRequired,
   onCancel: propTypes.func.isRequired,
-  handleSubmit: propTypes.func.isRequired,
+  onSuccess: propTypes.func.isRequired,
 };
 
 export default SupportCreate;

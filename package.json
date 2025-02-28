@@ -26,6 +26,7 @@
     "js-cookie": "^2.2.1",
     "jspdf": "^2.5.2",
     "moment": "^2.29.1",
+    "papaparse": "^5.5.2",
     "peity-react": "0.0.7",
     "prop-types": "^15.8.1",
     "qrcode.react": "^4.2.0",

@@ -64,6 +64,7 @@ function Steps({
     boxShadow: '0px -1px 0 0 #e8e8e8 inset',
   };
 
+
   // console.log(steps);
   const onChanges = (curr) => {
     // console.log('onChange:', current);

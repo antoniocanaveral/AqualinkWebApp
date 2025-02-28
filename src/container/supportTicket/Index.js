@@ -1,77 +1,236 @@
 import React, { lazy, useState, useEffect, Suspense } from 'react';
-import { Row, Col, Input, Select, Table, Popconfirm, Skeleton } from 'antd';
+import { Row, Col, Table, Popconfirm, Skeleton } from 'antd';
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import UilEdit from '@iconscout/react-unicons/icons/uil-edit';
 import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
 import UilTrashAlt from '@iconscout/react-unicons/icons/uil-trash-alt';
-import { SearchOutlined } from '@ant-design/icons';
+import { Button } from '../../components/buttons/buttons';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { TicketBox } from './Style';
 import SupportCreate from './SupportCreate';
 import SupportUpdate from './SupportUpdate';
-import { PageHeader } from '../../components/page-headers/page-headers';
 import { Main, TableWrapper } from '../styled';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import Heading from '../../components/heading/heading';
-import { Button } from '../../components/buttons/buttons';
-import { idGenerator } from '../../utility/utility';
-import { ticketReadData, ticketUpdateData, ticketUpdateSearch } from '../../redux/supportTickets/actionCreator';
+import { ticketUpdateData } from '../../redux/supportTickets/actionCreator';
+import { PageHeader } from '../../components/page-headers/page-headers';
+import { fetchRequestsByClient } from '../../redux/support/actionCreator';
+import SupportView from './SupportView';
+import Cookies from 'js-cookie';
+import { selectFarmsOrgsWithPools } from '../../redux/authentication/selectors';
 
 const OverviewDataList = lazy(() => import('./overview/OverviewDataList'));
 
-const PageRoutes = [
-  {
-    path: 'index',
-    breadcrumbName: 'Dashboard',
-  },
-  {
-    path: 'app',
-    breadcrumbName: 'Apps',
-  },
-  {
-    path: 'first',
-    breadcrumbName: 'Tickets',
-  },
-];
+const getStatusLabel = (identifier) => {
+  if (!identifier) return 'Pendiente';
+  const parts = identifier.split('_');
+  return parts[1] ? parts[1] : identifier;
+};
 
 function SupportTicket() {
-  const { dataState } = useSelector((state) => {
-    return {
-      dataState: state.tickets.data,
-    };
-  });
-
+  const { requests } = useSelector((state) => state.support);
   const dispatch = useDispatch();
 
-  const [visible, setVisible] = useState(false);
-  const [visibleEdit, setVisibleEdit] = useState(false);
-  const [editableData, setEditableData] = useState(false);
+  const [visibleCreate, setVisibleCreate] = useState(false);
+  const [visibleUpdate, setVisibleUpdate] = useState(false);
+  const [visibleView, setVisibleView] = useState(false);
+  const [editableData, setEditableData] = useState(null);
+  const [viewData, setViewData] = useState(null);
 
-  const dataSource = [];
+  const organizations = useSelector((state) => state.auth.farmsOrgs);
 
-  useEffect(() => {
-    if (dispatch) {
-      dispatch(ticketReadData());
+  const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
+    console.log(JSON.stringify(farmsOrgsWithPools));
+  };
+
+
+
+  const farmsSelectOptions = organizations.length > 0 ? [
+    {
+      options: farmsOrgsWithPools.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Farm',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+
+
+
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
+  ];
+
+
+  const overviewData = [
+    {
+      id: 1,
+      type: "primary",
+      icon: "ticket.svg",
+      label: "Tickets Web App",
+      total: requests.filter(
+        (ticket) =>
+          ticket.R_Category_ID?.identifier &&
+          !ticket.R_Category_ID?.identifier.includes("App")
+      ).length,
+      suffix: "",
+      prefix: ""
+    },
+    {
+      id: 2,
+      type: "secondary",
+      icon: "ticket.svg",
+      label: "Tickets App Campo",
+      total: requests.filter(
+        (ticket) =>
+          ticket.R_Category_ID?.identifier &&
+          ticket.R_Category_ID?.identifier.includes("App")
+      ).length,
+      suffix: "",
+      prefix: ""
+    },
+    {
+      id: 3,
+      type: "warning",
+      icon: "clock.svg",
+      label: "Tickets en Proceso",
+      total: requests.filter(
+        (ticket) => ticket.R_Status_ID?.identifier === "2_In Progress"
+      ).length,
+      suffix: "",
+      prefix: ""
+    },
+    {
+      id: 4,
+      type: "success",
+      icon: "check-circle.svg",
+      label: "Tickets Resueltos",
+      total: requests.filter(
+        (ticket) => ticket.R_Status_ID?.identifier === "3_Closed"
+      ).length,
+      suffix: "",
+      prefix: ""
     }
+  ];
+
+  // Se hace la carga inicial una única vez
+  useEffect(() => {
+    dispatch(fetchRequestsByClient());
   }, [dispatch]);
 
-  const confirm = (id) => {
-    const deleteData = dataState.filter((ticket) => ticket.id !== id);
+  const confirmDelete = (id) => {
+    const deleteData = requests.filter((ticket) => ticket.id !== id);
     dispatch(ticketUpdateData(deleteData));
   };
 
-  const cancel = () => {};
+  const cancelDelete = () => { };
 
-  const prefix = (
-    <SearchOutlined
-      style={{
-        fontSize: 16,
-        color: '#1890ff',
-      }}
-    />
-  );
+  const showModalUpdate = (ticket) => {
+    setEditableData(ticket);
+    setVisibleUpdate(true);
+  };
+
+  const showModalView = (ticket) => {
+    setViewData(ticket);
+    setVisibleView(true);
+  };
+
+  const dataSource = [];
+  if (requests.length) {
+    requests.forEach((item) => {
+      const {
+        id,
+        AD_User_ID,
+        R_Category_ID,
+        Priority,
+        R_Status_ID,
+        Created,
+      } = item;
+      dataSource.push({
+        key: `${id}`,
+        id: `#${id}`,
+        requestedBy: AD_User_ID?.identifier || 'Desconocido',
+        subject: R_Category_ID?.identifier || 'Sin Asunto',
+        priority: Priority?.identifier || 'N/A',
+        status: (
+          <span
+            className={`ninjadash-support-status ninjadash-support-status-${getStatusLabel(
+              R_Status_ID?.identifier === "1_Open"
+                ? "open"
+                : R_Status_ID?.identifier === "3_Closed"
+                  ? "close"
+                  : "pending"
+            ).toLowerCase()}`}
+          >
+            {getStatusLabel(R_Status_ID?.identifier)}
+          </span>
+        ),
+        createdDate: moment(Created).format('YYYY-MM-DD'),
+        action: (
+          <div className="table-actions">
+            <Link onClick={() => showModalView(item)} className="view" to="#">
+              <UilEye />
+            </Link>
+            <Link onClick={() => showModalUpdate(item)} className="edit" to="#">
+              <UilEdit />
+            </Link>
+            <Popconfirm
+              title="¿Estás seguro de eliminar este ticket?"
+              onConfirm={() => confirmDelete(id)}
+              onCancel={cancelDelete}
+              okText="Sí"
+              cancelText="No"
+            >
+              <Link className="delete" to="#">
+                <UilTrashAlt />
+              </Link>
+            </Popconfirm>
+          </div>
+        ),
+      });
+    });
+  }
+
+  const showModalCreate = () => {
+    setVisibleCreate(true);
+  };
+
+  // Ahora, estos métodos solo cierran el modal sin refrescar la data.
+  const onCancelCreate = () => {
+    setVisibleCreate(false);
+  };
+
+  const onCancelUpdate = () => {
+    setVisibleUpdate(false);
+  };
+
+  const onCancelView = () => {
+    setVisibleView(false);
+  };
+
+  // Estas funciones se ejecutarán al tener éxito en la operación de crear o actualizar
+  const onCreateSuccess = () => {
+    setVisibleCreate(false);
+    dispatch(fetchRequestsByClient());
+  };
+
+  const onUpdateSuccess = () => {
+    setVisibleUpdate(false);
+    dispatch(fetchRequestsByClient());
+  };
 
   const columns = [
     {
@@ -81,8 +240,8 @@ function SupportTicket() {
     },
     {
       title: 'Requested By',
-      dataIndex: 'requested',
-      key: 'requested',
+      dataIndex: 'requestedBy',
+      key: 'requestedBy',
     },
     {
       title: 'Subject',
@@ -101,148 +260,29 @@ function SupportTicket() {
     },
     {
       title: 'Created Date',
-      dataIndex: 'createAt',
-      key: 'createAt',
+      dataIndex: 'createdDate',
+      key: 'createdDate',
     },
     {
       title: 'Actions',
       dataIndex: 'action',
       key: 'action',
-      width: '90px',
+      width: '120px',
     },
   ];
 
-  const showModalEdit = (values) => {
-    setEditableData(values);
-    setVisibleEdit(true);
-  };
-
-  const onCancelEdit = () => {
-    setVisibleEdit(false);
-  };
-
-  if (dataState.length) {
-    dataState.map((item) => {
-      const { id, user, status, subject, priority, createAt } = item;
-      return dataSource.push({
-        key: `${id}`,
-        id: `#${id}`,
-        requested: (
-          <div className="ninjadash-info-element align-center-v">
-            <div className="ninjadash-info-element__media">
-              <img src={require(`../../${user.img}`)} alt="" />
-            </div>
-            <div className="ninjadash-info-element__content">
-              <p>{user.name}</p>
-            </div>
-          </div>
-        ),
-        status: <span className={`ninjadash-support-status ninjadash-support-status-${status}`}>{status}</span>,
-        subject: <span className="ninjadash-ticket-subject">{subject}</span>,
-        priority,
-        createAt,
-        action: (
-          <div className="table-actions">
-            <Link className="view" to={`/admin/app/support/ticketDetails/${id}`}>
-              <UilEye />
-            </Link>
-            <Link onClick={() => showModalEdit(item)} className="edit" to="#">
-              <UilEdit />
-            </Link>
-            <Popconfirm
-              title="Are you sure to delete this task?"
-              onConfirm={(e) => confirm(id, e)}
-              onCancel={cancel}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Link className="delete" to="#">
-                <UilTrashAlt />
-              </Link>
-            </Popconfirm>
-          </div>
-        ),
-      });
-    });
-  }
-
-  const showModal = () => {
-    setVisible(true);
-  };
-
-  const onCancel = () => {
-    setVisible(false);
-  };
-
-  const handleSubmit = (values) => {
-    const id = idGenerator(dataState, 2);
-    dispatch(
-      ticketUpdateData(
-        dataState.concat({
-          ...values,
-          user: {
-            name: 'Kellie Marquot',
-            img: 'static/img/avatar/profileImage.png',
-            conversations: [],
-          },
-          createAt: moment().format('MM-DD-yyyy'),
-          id,
-        }),
-      ),
-    );
-    setVisible(false);
-  };
-
-  const handleUpdate = (values) => {
-    const newData = dataState.map((item) => {
-      setVisibleEdit(false);
-      if (item.id === values.id) {
-        const newItem = { ...item };
-
-        newItem.subject = values.subject;
-        newItem.email = values.email;
-        newItem.priority = values.priority;
-        newItem.status = values.status;
-        newItem.description = values.description;
-        return newItem;
-      }
-      return item;
-    });
-
-    dispatch(ticketUpdateData(newData));
-  };
-
-  const handleIdSearch = (e) => {
-    const id = e.currentTarget.value;
-    dispatch(ticketUpdateSearch(id, 'id'));
-  };
-
-  const handleStatusSearch = (value) => {
-    dispatch(ticketUpdateSearch(value, 'status'));
-  };
-
-  const handleSubjectSearch = (e) => {
-    const { value } = e.currentTarget;
-    dispatch(ticketUpdateSearch(value, 'subject'));
-  };
-
   return (
     <>
-      <PageHeader 
-      highlightText="Aqualink Soporte"
-      title="Tickets" />
+      <PageHeader
+        title="Tickets de Soporte"
+        selectOptions={combinedSelectOptions}
+        selectedOrg={selectedOrg} />
       <Main>
         <TicketBox>
           <Row justify="center">
             <Col xs={24}>
-              <Suspense
-                fallback={
-                  <Cards headless>
-                    <Skeleton active />
-                  </Cards>
-                }
-              >
-                <OverviewDataList />
+              <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
+                <OverviewDataList overviewData={overviewData} />
               </Suspense>
             </Col>
           </Row>
@@ -251,29 +291,9 @@ function SupportTicket() {
               <Cards headless>
                 <div className="ninjadash-support-content-top">
                   <Heading as="h4">Todos los Tickets</Heading>
-                  <Button onClick={showModal} size="default" type="primary">
+                  <Button onClick={showModalCreate} size="default" type="primary">
                     <UilPlus /> Crear Ticket
                   </Button>
-                </div>
-                <div className="ninjadash-support-content-filter">
-                  <div className="ninjadash-support-content-filter__left">
-                    <div className="ninjadash-support-content-filter__input">
-                      <span className="label">Id:</span>
-                      <Input onChange={handleIdSearch} placeholder="Search with Id" />
-                    </div>
-                    <div className="ninjadash-support-content-filter__input">
-                      <span className="label">Status:</span>
-                      <Select onChange={handleStatusSearch} style={{ width: 200 }} defaultValue="">
-                        <Select.Option value="">All</Select.Option>
-                        <Select.Option value="Open">Open</Select.Option>
-                        <Select.Option value="Pending">Pending</Select.Option>
-                        <Select.Option value="Close">Close</Select.Option>
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="ninjadash-support-content-filter__right">
-                    <Input onChange={handleSubjectSearch} size="default" placeholder="Search" prefix={prefix} />
-                  </div>
                 </div>
                 <div className="ninjadash-support-content-table">
                   <TableWrapper className="table-data-view table-responsive">
@@ -289,13 +309,10 @@ function SupportTicket() {
           </Row>
         </TicketBox>
       </Main>
-      <SupportCreate onCancel={onCancel} handleSubmit={handleSubmit} visible={visible} />
-      <SupportUpdate
-        onCancel={onCancelEdit}
-        editableData={editableData}
-        handleSubmit={handleUpdate}
-        visible={visibleEdit}
-      />
+      {/* Se pasa onCreateSuccess y onUpdateSuccess para refrescar solo cuando se produzca el cambio */}
+      <SupportCreate onCancel={onCancelCreate} onSuccess={onCreateSuccess} visible={visibleCreate} />
+      <SupportUpdate onCancel={onCancelUpdate} onSuccess={onUpdateSuccess} editableData={editableData} visible={visibleUpdate} />
+      <SupportView onCancel={onCancelView} ticket={viewData} visible={visibleView} />
     </>
   );
 }

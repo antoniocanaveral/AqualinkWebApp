@@ -1,104 +1,125 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Select } from 'antd';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Button } from '../../components/buttons/buttons';
 import { Modal } from '../../components/modals/antd-modals';
 import { BasicFormWrapper } from '../styled';
+import { useDispatch } from 'react-redux';
+import { updateRequestStatus } from '../../redux/support/actionCreator';
 
 const { Option } = Select;
 
-function SupportCreate({ visible, onCancel, handleSubmit, editableData }) {
+function SupportUpdate({ visible, onCancel, onSuccess, editableData }) {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    form.setFieldsValue(editableData);
-  }, [form, editableData]);
+    if (editableData) {
+      // Inicializa el formulario con datos actuales del ticket, incluyendo response_text si existe.
+      form.setFieldsValue({
+        status: editableData.R_Status_ID?.identifier,
+        description: editableData.Summary || '',
+        response_text: editableData.response_text || '',
+      });
+    }
+  }, [editableData, form]);
 
-  const handleOk = (value) => {
-    handleSubmit({ ...value, id: editableData.id });
-  };
-
-  const handleCancel = () => {
-    onCancel();
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      // Se arma el payload base
+      const payload = {
+        id: editableData.id,
+        R_Status_ID: {
+          id: values.status === "2_In Progress" ? 101 : 102,
+          identifier: values.status,
+        },
+      };
+      // Solo se agrega response_text si el estado es Closed
+      if (values.status === "3_Closed") {
+        payload.response_text = values.response_text;
+      }
+      await dispatch(updateRequestStatus(payload));
+      // Se notifica el éxito para refrescar la lista
+      onSuccess();
+    } catch (error) {
+      console.error('Error updating ticket:', error);
+    }
   };
 
   return (
     <Modal
       getContainer={false}
       type="primary"
-      title="Create Support"
+      title="Actualizar Ticket"
       visible={visible}
+      onCancel={onCancel}
       footer={null}
-      onCancel={handleCancel}
     >
-      <div className="project-modal">
-        <BasicFormWrapper>
-          <Form form={form} name="supportCreate" onFinish={handleOk}>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[
-                {
-                  required: true,
-                  type: 'email',
-                },
-              ]}
-            >
-              <Input size="large" />
-            </Form.Item>
-            <Form.Item
-              name="subject"
-              label="Subject"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input size="large" />
-            </Form.Item>
-            <Form.Item name="priority" initialValue="high" label="Priority">
-              <Select style={{ width: '100%' }}>
-                <Option value="high">High</Option>
-                <Option value="medium">Medium</Option>
-                <Option value="low">Low</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name="status" initialValue="open" label="Status">
-              <Select style={{ width: '100%' }}>
-                <Option value="open">Open</Option>
-                <Option value="close">Close</Option>
-                <Option value="pending">Pending</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="description"
-              label="Description"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input.TextArea rows={4} />
-            </Form.Item>
-            <Form.Item>
-              <Button size="default" htmlType="submit" type="primary" key="submit" onClick={() => handleOk}>
-                Submit Ticket
-              </Button>
-            </Form.Item>
-          </Form>
-        </BasicFormWrapper>
-      </div>
+      <BasicFormWrapper>
+        <Form form={form} layout="vertical" name="supportUpdate">
+          <Form.Item
+            name="status"
+            label="Estado"
+            initialValue="seleccione"
+            rules={[
+              {
+                required: true,
+                message: 'Por favor selecciona un estado',
+              },
+              {
+                validator: (_, value) =>
+                  value === 'seleccione'
+                    ? Promise.reject('Debes seleccionar un estado válido')
+                    : Promise.resolve(),
+              },
+            ]}
+          >
+            <Select style={{ width: '100%' }}>
+              <Select.Option value="seleccione" disabled>
+                Seleccione
+              </Select.Option>
+              <Select.Option value="2_In Progress">In Progress</Select.Option>
+              <Select.Option value="3_Closed">Closed</Select.Option>
+            </Select>
+          </Form.Item>
+
+          {/* Se utiliza Form.Item con shouldUpdate para renderizar el campo de respuesta cuando el estado es "Closed" */}
+          <Form.Item shouldUpdate={(prevValues, currentValues) => prevValues.status !== currentValues.status}>
+            {({ getFieldValue }) =>
+              getFieldValue('status') === '3_Closed' && (
+                <Form.Item
+                  name="response_text"
+                  label="Respuesta"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Por favor, ingresa la respuesta',
+                    },
+                  ]}
+                >
+                  <Input.TextArea rows={4} />
+                </Form.Item>
+              )
+            }
+          </Form.Item>
+
+          <Form.Item>
+            <Button size="default" type="primary" onClick={handleOk}>
+              Actualizar Ticket
+            </Button>
+          </Form.Item>
+        </Form>
+      </BasicFormWrapper>
     </Modal>
   );
 }
 
-SupportCreate.propTypes = {
-  visible: propTypes.bool.isRequired,
-  onCancel: propTypes.func.isRequired,
-  handleSubmit: propTypes.func.isRequired,
-  editableData: propTypes.oneOf([propTypes.object, false]),
+SupportUpdate.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
+  editableData: PropTypes.object,
 };
 
-export default SupportCreate;
+export default SupportUpdate;

@@ -141,7 +141,7 @@ const AqualinkMaps = ({
                   <div className="content-block" key={poolTypeId}>
                     <Title level={5}>
                       {group.name === 'PC' ? 'Piscinas Pre Cría'
-                        : group.name === 'PE' ? 'Piscinas de Engorde'
+                        : group.name === 'PE' ? 'Piscinas Pre Engorde'
                           : "Piscinas Engorde"}
                     </Title>
                     <Text># Piscinas: {group.pools.length}</Text>

@@ -376,13 +376,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         'ver-laboratorios',
         null,
       ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/laboratory/add`}>
-          {t('Añadir Laboratorio')}
-        </NavLink>,
-        'add-laboratorio',
-        null,
-      ),
+     
     ]),
 
 
@@ -394,13 +388,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         'ver-empacadora',
         null,
       ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/packing/add`}>
-          {t('Añadir Empacadora')}
-        </NavLink>,
-        'add-empacadora',
-        null,
-      ),
+      
     ]),
 
 

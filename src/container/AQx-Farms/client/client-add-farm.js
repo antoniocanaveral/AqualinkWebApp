@@ -18,9 +18,9 @@ const { Option } = Select;
 
 function AddClientFarm() {
     const dispatch = useDispatch();
-    const { businessGroups, adClient, cRegions, cCities, adOrg, brandFeeders } = useSelector(state => state.configuration);
+    const { businessGroups, adClient, cRegions, cCities, adOrg, brandFeeders, createdSalesRegions } = useSelector(state => state.configuration);
 
-
+    const [selectedSalesRegion, setSelectedSalesRegion] = useState(null);
     const [form] = Form.useForm();
 
     const [perfilJuridico, setPerfilJuridico] = useState(null);
@@ -37,8 +37,11 @@ function AddClientFarm() {
         }
     }, [selectedRegion, dispatch]);
 
+
+
+
     const Masteradmin = Cookies.get('MasterAdmin')
-    const CreatedOrg =  null
+    const CreatedOrg = null
 
     const getFirstTabFields = () => {
         const perfil = form.getFieldValue("legalentitytype");
@@ -114,9 +117,10 @@ function AddClientFarm() {
                 taxid_rl: formData.taxid_rl,
                 name_rl: formData.name_rl,
                 email_rl: formData.email_rl,
+                c_sales_region: formData.c_sales_region
             };
 
-            const createdOrg = await dispatch(createAdOrg(orgData));
+            const createdOrg = await dispatch(createAdOrg(orgData, "FARM"));
 
             if (createdOrg) {
                 message.success("Organización creada exitosamente.");
@@ -315,7 +319,8 @@ function AddClientFarm() {
                 sm_transferdepth: formValues.sm_transferdepth,
                 sm_mechanicalaeration: formValues.sm_mechanicalaeration || 0,
                 feeding_method: formValues.feeding_method === 'AUTOMATIC',
-                feeders: feeders
+                feeders: feeders,
+                c_salesregion_id: selectedSalesRegion
             };
             console.log(newPiscina)
             setAddedPiscinas([...addedPiscinas, newPiscina]);
@@ -394,7 +399,7 @@ function AddClientFarm() {
         <>
             <PageHeader
                 highlightText="AquaLink Administración"
-                title="Configuracióm Camaronera"
+                title="Configuración Camaronera"
             />
             <Main>
                 <Form form={form} layout="vertical" onFinish={(values) => console.log('Formulario completado:', values)}>
@@ -459,23 +464,27 @@ function AddClientFarm() {
                                             </Select>
                                         </Form.Item>
                                     </Col>
-                                    <Col span={4}>
-                                        <Form.Item
-                                            label="Perfil Jurídico"
-                                            name="legalentitytype"
-                                            rules={[{ required: true, message: 'Seleccione un perfil jurídico' }]}
-                                        >
-                                            <Select size='large'
-                                                placeholder="Seleccione Perfil Jurídico"
-                                                onChange={handlePerfilJuridicoChange}
-                                            >
-                                                <Option value="natural">Persona Natural</Option>
-                                                <Option value="juridico">Persona Jurídica</Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
 
+                                </Row>
+                                {/* Separador: Información de Camaronera */}
+                                <div style={{ marginTop: '20px', marginBottom: '10px' }}>
+                                    <strong>● Configuración de Camaronera</strong>
+                                </div>
+                                <Col span={4}>
+                                    <Form.Item
+                                        label="Perfil Jurídico"
+                                        name="legalentitytype"
+                                        rules={[{ required: true, message: 'Seleccione un perfil jurídico' }]}
+                                    >
+                                        <Select size='large'
+                                            placeholder="Seleccione Perfil Jurídico"
+                                            onChange={handlePerfilJuridicoChange}
+                                        >
+                                            <Option value="natural">Persona Natural</Option>
+                                            <Option value="juridico">Persona Jurídica</Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
                                 {renderFields(cRegions, cCities)}
                                 <Form.Item>
                                     <Button type="primary" onClick={handleSubmit}>
@@ -560,6 +569,16 @@ function AddClientFarm() {
 
                                         <Typography.Title level={5}>Configuración de Infraestructura Camaronera</Typography.Title>
                                         <Select
+                                            placeholder="Selecciona un Sector"
+                                            onChange={setSelectedSalesRegion}
+                                            disabled={!createdSalesRegions?.length}
+                                            style={{ width: 250, marginBottom: 20 }}
+                                        >
+                                            {createdSalesRegions?.map(region => (
+                                                <Option key={region.id} value={region.id}>{region.Name}</Option>
+                                            ))}
+                                        </Select>
+                                        <Select
                                             placeholder="Selecciona el Tipo de Piscina"
                                             onChange={setSelectedPoolType}
                                             style={{ width: 200, marginBottom: 20 }}
@@ -573,6 +592,7 @@ function AddClientFarm() {
                                             <PreCriaInfrastructure
                                                 form={form}
                                                 prefix="PC"
+                                                selectedSalesRegion={selectedSalesRegion}
                                                 brandFeeders={brandFeeders}
                                             />
                                         )}
@@ -581,6 +601,7 @@ function AddClientFarm() {
                                             <PreEngordeInfrastructure
                                                 form={form}
                                                 prefix="PE"
+                                                selectedSalesRegion={selectedSalesRegion}
                                                 brandFeeders={brandFeeders}
 
                                             />
@@ -590,6 +611,7 @@ function AddClientFarm() {
                                             <EngordeInfrastructure
                                                 form={form}
                                                 prefix="E"
+                                                selectedSalesRegion={selectedSalesRegion}
                                                 brandFeeders={brandFeeders}
 
                                             />
@@ -680,7 +702,6 @@ function AddClientFarm() {
 
 
                         {/* Tab 3: Georeferenciación */}
-                        {/* Tab 3: Georeferenciación */}
                         <TabPane tab="Georeferenciación" key="3">
                             <Cards headless>
                                 <Form.Item
@@ -700,7 +721,6 @@ function AddClientFarm() {
                                     </Select>
                                 </Form.Item>
 
-                                {/* Renderiza los Form.List para todas las piscinas, pero muestra solo la seleccionada */}
                                 {addedPiscinas.map(pool => (
                                     <div
                                         key={pool.identificador}

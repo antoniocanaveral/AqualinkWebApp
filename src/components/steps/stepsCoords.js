@@ -91,7 +91,7 @@ function StepsCoords({
         <div className="steps-wrapper">
           <div
             className="steps-content"
-            style={ {display: 'flex', justifyContent: 'center', marginTop: 2 }}
+            style={{ minHeight: height, display: 'flex', justifyContent: 'center', marginTop: 100 }}
           >
             {steps[state.currents].content}
           </div>
@@ -119,7 +119,7 @@ function StepsCoords({
 
                         {state.currents === steps.length - 1 && (
                           <Button type="primary" onClick={onDone}>
-                            Enviar
+                            Terminar
                           </Button>
                         )}
                       </div>
@@ -134,7 +134,7 @@ function StepsCoords({
         <>
           <div
             className="steps-content"
-            style={{ minHeight: height, display: 'flex', justifyContent: 'center', marginTop: 2 }}
+            style={{ minHeight: height, display: 'flex', justifyContent: 'center', marginTop: 100 }}
           >
             {steps[state.currents].content}
           </div>

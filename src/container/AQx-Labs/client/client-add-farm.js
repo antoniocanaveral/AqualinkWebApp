@@ -9,7 +9,7 @@ import { WizardFour, WizardWrapper } from '../../pages/wizards/Style';
 import { Steps } from '../../../components/steps/steps';
 import { NaturalPersonForm } from './add-client-form/natural-person';
 import { LegalPersonForm } from './add-client-form/legal-person';
-import { EngordeInfrastructure, TanqueEngordeInfrastructure } from './add-client-form/infrastructure/e-infrastructure';
+import { EngordeInfrastructure, TanqueEngordeInfrastructure, } from './add-client-form/infrastructure/e-infrastructure';
 
 const { TabPane } = Tabs;
 const { Option } = Select;

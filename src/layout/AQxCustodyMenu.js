@@ -212,7 +212,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
 
 
-    getItem(t('Suministros'), 'suministros', !topMenu && <UilCube />, [
+    getItem(t('Inventario y Suministros'), 'suministros', !topMenu && <UilCube />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/supply/inventary/view`}>
           {t('Ver Inventario')}
@@ -221,12 +221,27 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         null,
       ),
       getItem(
-        <NavLink className="menuItem-icon" to={`${path}/supply/inventary/add`}>
-          {t('Añadir Productos')}
+        <NavLink className="menuItem-icon" to={`${path}/supply/inventary/add-product`}>
+          {t('Añadir Inventario')}
         </NavLink>,
-        'add-productos',
+        'add-product',
         null,
       ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/supply/inventary/add-supply`}>
+          {t('Añadir Suministro')}
+        </NavLink>,
+        'add-supply',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/supply/inventary/add`}>
+          {t('Añadir Suministros')}
+        </NavLink>,
+        'add-productoss',
+        null,
+      ),
+
     ]),
 
     getItem(t('Transporte'), 'transporte', !topMenu && <UilTruck />, [
@@ -244,13 +259,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         'add-transportista',
         null,
       ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/transport/seguridad`}>
-          {t('Añadir Seguridad')}
-        </NavLink>,
-        'add-seguridad',
-        null,
-      ),
+    
     ]),
 
     getItem(t('Análisis de Laboratorio'), 'analisis-laboratorio', !topMenu && <UilFlaskPotion />, [
@@ -325,9 +334,16 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       [
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/client/view`}>{t('Camaronera')}</NavLink>
+            <NavLink to={`${path}/client/view`}>{t('Empacadora')}</NavLink>
           </div>,
           'cliente-ficha',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/client/add-custody`}>{t('Configuración Empacadora')}</NavLink>
+          </div>,
+          'cliente-custody',
           null,
         ),
         getItem(

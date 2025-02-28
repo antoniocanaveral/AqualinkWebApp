@@ -8,13 +8,6 @@ export const NaturalPersonForm = ({ regions, cities, clientType }) => {
 
     return (
         <>
-
-
-            {/* Separador: Información de Camaronera */}
-            <div style={{ marginTop: '20px', marginBottom: '10px' }}>
-                <strong>● Información de Camaronera</strong>
-            </div>
-
             {/* Información General */}
             <Row gutter={16}>
                 <Col span={5}>
@@ -228,6 +221,15 @@ export const NaturalPersonForm = ({ regions, cities, clientType }) => {
                         <InputNumber size="large" style={{ width: '100%' }} />
                     </Form.Item>
                 </Col>
+                <Col span={5}>
+                <Form.Item
+                    label="Número de Sectores"
+                    name="c_sales_region"
+                    rules={[{ required: true, message: 'Ingrese sectores' }]}
+                >
+                    <InputNumber size="large" style={{ width: '100%' }} />
+                </Form.Item>
+            </Col> 
             </Row>
 
         </>)

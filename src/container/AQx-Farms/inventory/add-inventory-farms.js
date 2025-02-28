@@ -26,13 +26,12 @@ function AddInventoryFarms() {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
-   
-  const [classificationOptions, setClassificationOptions] = useState([]);
-  const [description, setDescription] = useState('');
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
 
- const handleOrgChange = (orgId, orgEmail) => {
+
+  const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
     Cookies.set('orgEmail', orgEmail || '');
@@ -41,6 +40,30 @@ function AddInventoryFarms() {
   };
 
 
+
+
+
+  // Filtrar pools: solo las que tienen salesRegion nulo o cuyo id sea nulo
+  const poolsOptions =
+    selectedOrg && farmsOrgsWithPools
+      ? (farmsOrgsWithPools.find((org) => org.orgId === selectedOrg)?.pools || [])
+        .filter((pool) => {
+          return !pool.salesRegion || (pool.salesRegion && pool.salesRegion.id === null);
+        })
+        .map((pool) => ({
+          value: pool.poolId,
+          label: pool.poolName,
+        }))
+      : [];
+
+
+
+  const handlePoolChange = (value) => {
+    console.log(poolsOptions)
+    console.log(value)
+    setSelectedPool(value);
+    Cookies.set('poolId', value);
+  };
 
   const farmsSelectOptions = organizations.length > 0 ? [
     {
@@ -72,8 +95,6 @@ function AddInventoryFarms() {
     setFilteredGroups([]);
     setFilteredProducts([]);
     setSelectedProduct(null);
-    setClassificationOptions([]);
-    setDescription('');
     form.resetFields(['group', 'producto', 'classification', 'description']);
 
     if (value && value !== 'all') {
@@ -90,8 +111,6 @@ function AddInventoryFarms() {
   const handleGroupChange = (value) => {
     setSelectedGroup(value);
     setSelectedProduct(null);
-    setClassificationOptions([]);
-    setDescription('');
     form.resetFields(['producto', 'classification', 'description']);
 
     let products = [];
@@ -108,7 +127,6 @@ function AddInventoryFarms() {
   const handleProductSelect = (value) => {
     const product = filteredProducts.find((p) => p.Value === value);
     setSelectedProduct(product);
-    setDescription(product ? product.Description : '');
     console.log(product)
     form.setFieldsValue({
       description: product ? product.Description : '',
@@ -134,17 +152,23 @@ function AddInventoryFarms() {
       value: cls,
     }));
 
-    setClassificationOptions(classificationOptionsFormatted);
     form.resetFields(['classification']);
   };
 
   const handleSubmit = async (values) => {
+    const selectedPoolData = farmsOrgsWithPools
+      .flatMap(org => org.pools) 
+      .find(pool => pool.poolId === selectedPool); 
+
+    const M_Locator_ID = selectedPoolData?.locators?.[0] || null;
     const productData = {
       M_Product_ID: selectedProduct.M_Product_ID.id,
       C_BPartner_ID: selectedProduct.C_BPartner_ID.id,
       C_BPartner_Location_ID: selectedProduct.C_BPartner_Location_ID.id,
       priceList: parseFloat(values.precio_lista), // Cambio aquí
       quantity: parseInt(values.cantidad, 10),
+      M_Warehouse_ID: selectedPool,
+      M_Locator_ID: M_Locator_ID
     };
 
     const success = await dispatch(addProductToInventory(productData));
@@ -395,7 +419,7 @@ function AddInventoryFarms() {
                       </>
                     ) : (
                       <>
-                        <Col xl={8}>
+                        <Col xl={4}>
                           <Form.Item
                             label="Precio Lista"
                             name="precio_lista"
@@ -405,13 +429,31 @@ function AddInventoryFarms() {
                           </Form.Item>
                         </Col>
 
-                        <Col xl={8}>
+                        <Col xl={4}>
                           <Form.Item
                             label="Cantidad"
                             name="cantidad"
                             rules={[{ required: true, message: 'Ingrese la cantidad' }]}
                           >
                             <Input placeholder="Cantidad" type="number" />
+                          </Form.Item>
+                        </Col>
+
+
+                        <Col xl={5}>
+                          <Form.Item
+                            label="Almacén"
+                            name="M_Warehouse_ID"
+                            rules={[{ required: true, message: 'Ingrese la cantidad' }]}
+                          >
+                            <Select
+                              options={poolsOptions}
+                              onChange={handlePoolChange}
+                              placeholder="Seleccione una Almacén"
+                              value={poolsOptions.find((opt) => opt.value === selectedPool) || undefined}
+                              allowClear
+                              disabled={!selectedOrg || poolsOptions.length === 0}
+                            />
                           </Form.Item>
                         </Col>
 
@@ -434,7 +476,7 @@ function AddInventoryFarms() {
             </Cards>
           </Col>
         </Row>
-      </Main>            
+      </Main>
     </>
   );
 }

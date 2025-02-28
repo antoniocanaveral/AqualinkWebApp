@@ -1,44 +1,24 @@
-import React, { useState } from 'react';
-import { Row, Col, Avatar, Modal, Button, Typography, Form, Input, Select, List } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Row, Col, Avatar, Modal, Button, Typography, Form, Input } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import Heading from '../../../components/heading/heading';
+import { fetchCarriers } from '../../../redux/carriers/actionCreator';
 
 const { Paragraph, Title } = Typography;
-const { Option } = Select;
 
 function CarriersViewCustody() {
+  const dispatch = useDispatch();
+  const { carriers, loading, error } = useSelector((state) => state.carriers);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCarrier, setSelectedCarrier] = useState(null);
-  const [carriers, setCarriers] = useState([
-    {
-      codigoTR: 'TR-001',
-      nombre: 'TRANSPORTES ALFA S.A.',
-      ruc: '0991234567',
-      vehiculos: [
-        { tipo: 'Camión Refrigerado', matricula: 'XYZ-123', modelo: 'Ford F-150', conductor: 'Juan Pérez' },
-        { tipo: 'Camión Refrigerado', matricula: 'ABC-111', modelo: 'Chevrolet Silverado', conductor: 'Carlos López' },
-      ],
-    },
-    {
-      codigoTR: 'TR-002',
-      nombre: 'TRANSPORTES BETA CÍA. LTDA.',
-      ruc: '0997654321',
-      vehiculos: [
-        { tipo: 'Van de Carga', matricula: 'ABC-789', modelo: 'Mercedes Sprinter', conductor: 'Carlos Martínez' },
-        { tipo: 'Camioneta', matricula: 'LMN-345', modelo: 'Toyota Hilux', conductor: 'Ana Gómez' },
-      ],
-    },
-    {
-      codigoTR: 'TR-003',
-      nombre: 'TRANSPORTES GAMMA S.A.',
-      ruc: '0991122334',
-      vehiculos: [
-        { tipo: 'Furgón', matricula: 'DEF-456', modelo: 'Chevrolet N300', conductor: 'Luisa Rodríguez' },
-      ],
-    },
-  ]);
+
+  // Cargar los transportistas al montar el componente
+  useEffect(() => {
+    dispatch(fetchCarriers());
+  }, [dispatch]);
 
   const showModal = (carrier) => {
     setSelectedCarrier({ ...carrier });
@@ -53,39 +33,33 @@ function CarriersViewCustody() {
   const handleAddVehicle = () => {
     setSelectedCarrier((prev) => ({
       ...prev,
-      vehiculos: [...prev.vehiculos, { tipo: '', matricula: '', modelo: '', conductor: '' }],
+      sm_vehicle: [...prev.sm_vehicle, { SM_VehicleType: '', sm_platenumber: '', SM_Model: '', SM_DriverName: '' }],
     }));
   };
 
   const handleRemoveVehicle = (index) => {
     setSelectedCarrier((prev) => ({
       ...prev,
-      vehiculos: prev.vehiculos.filter((_, i) => i !== index),
+      sm_vehicle: prev.sm_vehicle.filter((_, i) => i !== index),
     }));
   };
 
   const handleVehicleChange = (index, field, value) => {
-    const updatedVehicles = [...selectedCarrier.vehiculos];
+    const updatedVehicles = [...selectedCarrier.sm_vehicle];
     updatedVehicles[index][field] = value;
     setSelectedCarrier((prev) => ({
       ...prev,
-      vehiculos: updatedVehicles,
+      sm_vehicle: updatedVehicles,
     }));
   };
 
   const saveChanges = () => {
-    setCarriers((prev) =>
-      prev.map((carrier) =>
-        carrier.codigoTR === selectedCarrier.codigoTR ? selectedCarrier : carrier
-      )
-    );
+    // Aquí puedes implementar la lógica para guardar los cambios en el backend
     closeModal();
   };
 
-  const getUniqueVehicleTypes = (vehicles) => {
-    const types = vehicles.map((vehicle) => vehicle.tipo);
-    return [...new Set(types)];
-  };
+  if (loading) return <p>Cargando transportistas...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <>
@@ -96,7 +70,7 @@ function CarriersViewCustody() {
             <Col key={index} xl={8} lg={8} md={12} sm={24} xs={24}>
               <Cards headless>
                 <div className="carrier-card-header">
-                  <Heading as="h4">{carrier.nombre}</Heading>
+                  <Heading as="h4">{carrier.Name}</Heading>
                 </div>
                 <div className="carrier-card-body" style={{ textAlign: 'center' }}>
                   <Avatar
@@ -107,21 +81,20 @@ function CarriersViewCustody() {
                     }}
                     size={64}
                   >
-                    {carrier.nombre
+                    {carrier.Name
                       .split(' ')
                       .map((word) => word[0])
                       .join('')
                       .toUpperCase()}
                   </Avatar>
                   <Paragraph>
-                    <strong>RUC:</strong> {carrier.ruc}
+                    <strong>RUC:</strong> {carrier.TaxID}
                   </Paragraph>
                   <Paragraph>
-                    <strong>Código TR:</strong> {carrier.codigoTR}
+                    <strong>Código TR:</strong> {carrier.SM_Code}
                   </Paragraph>
                   <Paragraph>
-                    <strong># Vehículos:</strong>
-                    {carrier.vehiculos.length}
+                    <strong># Vehículos:</strong> {carrier.sm_vehicle ? carrier.sm_vehicle.length : 0}
                   </Paragraph>
                   <Button type="primary" onClick={() => showModal(carrier)} style={{ marginTop: '10px' }}>
                     Ver Detalles
@@ -144,20 +117,20 @@ function CarriersViewCustody() {
               Guardar
             </Button>,
           ]}
-          width={900} // Más amplio
+          width={900}
         >
           {selectedCarrier && (
             <>
-              <Title level={4}>{selectedCarrier.nombre}</Title>
+              <Title level={4}>{selectedCarrier.Name}</Title>
               <Paragraph>
-                <strong>RUC:</strong> {selectedCarrier.ruc}
+                <strong>RUC:</strong> {selectedCarrier.TaxID}
               </Paragraph>
               <Paragraph>
-                <strong>Código TR:</strong> {selectedCarrier.codigoTR}
+                <strong>Código TR:</strong> {selectedCarrier.SM_Code}
               </Paragraph>
               <Title level={5}>Vehículos</Title>
               <Row gutter={[16, 16]}>
-                {selectedCarrier.vehiculos.map((vehiculo, index) => (
+                {selectedCarrier.sm_vehicle && selectedCarrier.sm_vehicle.map((vehiculo, index) => (
                   <Col span={24} key={index}>
                     <div style={{ border: '1px solid #f0f0f0', padding: '16px', borderRadius: '4px' }}>
                       <Row gutter={[16, 16]}>
@@ -165,8 +138,8 @@ function CarriersViewCustody() {
                           <Form.Item label="Tipo">
                             <Input
                               placeholder="Tipo"
-                              value={vehiculo.tipo}
-                              onChange={(e) => handleVehicleChange(index, 'tipo', e.target.value)}
+                              value={vehiculo.SM_VehicleType}
+                              onChange={(e) => handleVehicleChange(index, 'SM_VehicleType', e.target.value)}
                             />
                           </Form.Item>
                         </Col>
@@ -174,8 +147,8 @@ function CarriersViewCustody() {
                           <Form.Item label="Matrícula">
                             <Input
                               placeholder="Matrícula"
-                              value={vehiculo.matricula}
-                              onChange={(e) => handleVehicleChange(index, 'matricula', e.target.value)}
+                              value={vehiculo.sm_platenumber}
+                              onChange={(e) => handleVehicleChange(index, 'sm_platenumber', e.target.value)}
                             />
                           </Form.Item>
                         </Col>
@@ -183,8 +156,8 @@ function CarriersViewCustody() {
                           <Form.Item label="Modelo">
                             <Input
                               placeholder="Modelo"
-                              value={vehiculo.modelo}
-                              onChange={(e) => handleVehicleChange(index, 'modelo', e.target.value)}
+                              value={vehiculo.SM_Model}
+                              onChange={(e) => handleVehicleChange(index, 'SM_Model', e.target.value)}
                             />
                           </Form.Item>
                         </Col>
@@ -192,16 +165,12 @@ function CarriersViewCustody() {
                           <Form.Item label="Conductor">
                             <Input
                               placeholder="Conductor"
-                              value={vehiculo.conductor}
-                              onChange={(e) => handleVehicleChange(index, 'conductor', e.target.value)}
+                              value={vehiculo.SM_DriverName}
+                              onChange={(e) => handleVehicleChange(index, 'SM_DriverName', e.target.value)}
                             />
                           </Form.Item>
                         </Col>
-                        <Col span={24} style={{ textAlign: 'right' }}>
-                          <Button danger onClick={() => handleRemoveVehicle(index)}>
-                            Eliminar
-                          </Button>
-                        </Col>
+                       
                       </Row>
                     </div>
                   </Col>

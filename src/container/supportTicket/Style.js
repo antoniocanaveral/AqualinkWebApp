@@ -135,17 +135,17 @@ export const TicketBox = styled.div`
       border-radius: 4px;
       text-transform: capitalize;
       &.ninjadash-support-status-open {
+        color: ${({ theme }) => theme['warning-color']};
+        background-color: ${({ theme }) => theme['warning-color']}15;
+      }
+      &.ninjadash-support-status-close {
         color: ${({ theme }) => theme['success-color']};
         background-color: ${({ theme }) => theme['success-color']}15;
       }
-      &.ninjadash-support-status-close {
-        color: ${({ theme }) => theme['primary-color']};
-        background-color: ${({ theme }) => theme['primary-color']}15;
-      }
       &.ninjadash-support-status-pending {
-        color: ${({ theme }) => theme['warning-color']};
+        color: ${({ theme }) => theme['primary-color']};
 
-        background-color: ${({ theme }) => theme['warning-color']}15;
+        background-color: ${({ theme }) => theme['primary-color']}15;
       }
     }
     .table-actions {

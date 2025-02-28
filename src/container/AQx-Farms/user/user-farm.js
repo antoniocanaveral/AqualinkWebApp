@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Row, Col, Skeleton, Typography, Badge, Space, Table, Tabs, Button, Avatar, Form, Switch, Modal, Input, message } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -9,6 +9,8 @@ import { UserCard } from '../../pages/style';
 import Heading from '../../../components/heading/heading';
 import { UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUsersByClient } from '../../../redux/user/actionCreator';
 
 // Datos de ejemplo
 const data = [
@@ -58,7 +60,16 @@ const data = [
 function UserFarm() {
     const [visiblePermisos, setVisiblePermisos] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+
+    const dispatch = useDispatch();
+    const { users } = useSelector((state) => state.roles);
+    console.log("users", users)
     
+    useEffect(() => {
+        dispatch(fetchUsersByClient());
+      }, [dispatch]);
+
+      
     // Nuevos estados para el modal de Recuperar Clave
     const [visibleRecoverPassword, setVisibleRecoverPassword] = useState(false);
     const [selectedUserRecover, setSelectedUserRecover] = useState(null);
@@ -120,7 +131,7 @@ function UserFarm() {
             />
             <Main>
                 <Row gutter={25}>
-                    {data.map(user => (
+                    {users.map(user => (
                         <Col key={user.id + 1} xxl={8} md={12} sm={24} xs={24}>
                             <UserCard key={user.id}>
                                 <div className="card user-card theme-list">
@@ -130,32 +141,35 @@ function UserFarm() {
                                             <figcaption>
                                                 <div className="card__content">
                                                     <Heading className="card__name" as="h6">
-                                                        {user.name}
+                                                        {user.Name}
                                                     </Heading>
+                                                    <p className="card-info">
+                                                        <span className="user-meta">
+                                                            <strong>Organización: </strong>{user.AD_Org_ID.identifier}
+                                                        </span>
+                                                    </p>
                                                     <div className='flex-row'>
-                                                        <p className="card__designation">{user.designation}- {user.area}</p>
-                                                    </div>
-
-                                                    <div className='flex-row'>
-                                                        <p className="card__designation">{user.ambiente}</p>
+                                                        <p className="card__designation">{user?.ad_user_roles_json?.map(roles => (
+                                                            <>
+                                                             {roles.role.description}
+                                                            </>
+                                                        ))} </p>
                                                     </div>
 
                                                     <p className="card-info">
                                                         <span className="user-meta">
-                                                            <strong>Email: </strong>{user.email}
+                                                            <strong>Email: </strong>{user.EMail}
                                                         </span>
                                                     </p>
                                                     <p className="card-info">
                                                         <span className="user-meta">
-                                                            <strong>Phone: </strong>{user.phone}
+                                                            <strong>Phone: </strong>{user.Phone}
                                                         </span>
                                                     </p>
                                                 </div>
 
                                                 <div className="card__actions">
-                                                    <Button size="default" type="white" onClick={() => showPermisosModal(user)}>
-                                                        Ver Permisos
-                                                    </Button>
+                                                  
                                                     {/* Nuevo Botón para Recuperar Clave */}
                                                     <Button size="default" type="primary" onClick={() => showRecoverPasswordModal(user)} style={{ marginLeft: '10px' }}>
                                                         Recuperar Clave

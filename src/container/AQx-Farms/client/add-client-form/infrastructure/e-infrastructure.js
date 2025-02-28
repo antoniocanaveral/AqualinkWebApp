@@ -3,7 +3,7 @@ import { Button, Col, Form, InputNumber, Row, Select, Switch, Input } from "antd
 
 const { Option } = Select;
 
-export const EngordeInfrastructure = ({ form, prefix, brandFeeders }) => {
+export const EngordeInfrastructure = ({ form, prefix, brandFeeders, selectedSalesRegion }) => {
   const [metodoAlimentacion, setMetodoAlimentacion] = useState("");
 
   return (
@@ -94,6 +94,15 @@ export const EngordeInfrastructure = ({ form, prefix, brandFeeders }) => {
               <Option value="MANUAL">Manual</Option>
               <Option value="AUTOMATIC">Automático</Option>
             </Select>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            hidden
+            label="Sector"
+            name={[prefix, 'c_salesregion_id']}
+          >
+            <Input value={selectedSalesRegion} defaultValue={selectedSalesRegion} style={{ width: "100%" }} />
           </Form.Item>
         </Col>
       </Row>

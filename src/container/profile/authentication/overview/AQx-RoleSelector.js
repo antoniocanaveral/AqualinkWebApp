@@ -39,16 +39,16 @@ function RoleSelector() {
   const onClick = () => {
     if(roleId) {
       dispatch(selectRole(roles, roleId, selectedClientId, (isCompleted) => {
+        console.log('Role selected:', isCompleted);
         if(isCompleted) {
-          navigate('/', {replace: true});
+          navigate('/ecosystem', { replace: true });
         }
       }));
     } else {
-      dispatch(logOut(() => {
-      }));
+      dispatch(logOut(() => {}));
     }
-  }
-
+  };
+  
   const renderOptions = (item) => {
     return (<div key={item.id}><Radio value={item.id}>{item.name}</Radio></div>);
   }

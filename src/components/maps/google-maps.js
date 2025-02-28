@@ -58,7 +58,7 @@ const GoogleMaps = GoogleApiWrapper({
         styles={mapStyles}
         google={google}
         style={{ ...styles, width, height }}
-        center={{ lat: parseFloat(markers[0].position.lat), lng: parseFloat(markers[0].position.lng) }}
+        center={{ lat: parseFloat(markers[0]?.position.lat), lng: parseFloat(markers[0]?.position.lng) }}
         zoom={zoom}
       >
         {/* Renderizar marcadores */}
@@ -66,7 +66,7 @@ const GoogleMaps = GoogleApiWrapper({
           <Marker
             key={marker.id}
             onClick={onMarkerClick}
-            position={marker.position}
+            position={marker?.position }
             icon={require(`../../static/img/map/mpc.png`)}
           />
         ))}

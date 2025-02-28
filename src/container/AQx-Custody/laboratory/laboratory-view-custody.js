@@ -1,156 +1,140 @@
-import React from 'react';
-import { Table, Tag, Row } from 'antd';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Table, Row, Modal, Button } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLabanalysis } from '../../../redux/labanalysis/actionCreator';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
-import UilBell from '@iconscout/react-unicons/icons/uil-bell';
-import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import { Cards } from '../../../components/cards/frame/cards-frame';
+import Cookies from 'js-cookie';
+
 
 const LaboratoryViewCustody = () => {
-    const getStatusClass = (status) => {
-        switch (status.toLowerCase()) {
-            case 'pendiente':
-                return 'ninjadash-status-pending';
-            case 'en proceso':
-                return 'ninjadash-status-in-process';
-            case 'finalizado':
-                return 'ninjadash-status-completed';
-            default:
-                return 'ninjadash-status-undefined';
-        }
+    const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName'));
+    const PageRoutes = [
+        {
+            path: '/custody',
+            breadcrumbName: selectedOrg,
+        },
+        {
+            path: 'first',
+            breadcrumbName: 'Coordinaciones',
+        },
+    ];
+    const dispatch = useDispatch();
+    const organizations = useSelector((state) => state.auth.farmsOrgs);
+    const { labanalysisList, loading } = useSelector((state) => state.labanalysis);
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [selectedData, setSelectedData] = useState([]);
+
+    const handleOrgChange = (value, orgEmail) => {
+        setSelectedOrg(value);
+        Cookies.set('orgId', value);
+
+        Cookies.set('orgEmail', orgEmail);
+        dispatch(fetchLabanalysis());
+    };
+
+    const openModal = (title, data) => {
+        setModalTitle(title);
+        setSelectedData(data);
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+        setSelectedData([]);
     };
 
     const columns = [
-        { title: 'Proveedor', dataIndex: 'proveedor', key: 'proveedor' },
-        { title: 'Lote ID', dataIndex: 'loteID', key: 'loteID' },
-        { title: 'Fecha Recepción', dataIndex: 'fechaRecepcion', key: 'fechaRecepcion' },
-        { title: 'Clasificación', dataIndex: 'clasificacion', key: 'clasificacion' },
-        { title: 'Volumen', dataIndex: 'peso', key: 'peso', render: (peso) => `${peso} kg` },
+        { title: 'Organización', dataIndex: 'organization_name', key: 'organization_name' },
+        { title: 'Lote ID', dataIndex: 'SM_FishingNotification', key: 'SM_FishingNotification' },
+        { title: 'Fecha Recepción', dataIndex: 'registration_date', key: 'registration_date' },
+        { title: 'Volumen (kg)', dataIndex: 'SM_FishingVolume', key: 'SM_FishingVolume', render: (vol) => `${vol} kg` },
 
+        {
+            title: 'Test Cocción',
+            dataIndex: 'test_coccion',
+            key: 'test_coccion',
+            render: (data) => data ? <Button onClick={() => openModal("Test Cocción", data)}>Ver</Button> : 'N/A'
+        },
         {
             title: 'Organoléptico',
             dataIndex: 'organoleptico',
             key: 'organoleptico',
-            render: (status) => (
-                <Tag className={getStatusClass(status)} style={{ borderRadius: '8px', fontWeight: 'bold' }}>
-                    {status}
-                </Tag>
-            ),
+            render: (data) => data ? <Button onClick={() => openModal("Organoléptico", data)}>Ver</Button> : 'N/A'
         },
         {
             title: 'Sulfitos',
             dataIndex: 'sulfitos',
             key: 'sulfitos',
-            render: (status) => (
-                <Tag className={getStatusClass(status)} style={{ borderRadius: '8px', fontWeight: 'bold' }}>
-                    {status}
-                </Tag>
-            ),
-        },
-        {
-            title: 'Análisis Químico',
-            dataIndex: 'quimico',
-            key: 'quimico',
-            render: (status) => (
-                <Tag className={getStatusClass(status)} style={{ borderRadius: '8px', fontWeight: 'bold' }}>
-                    {status}
-                </Tag>
-            ),
+            render: (data) => data ? <Button onClick={() => openModal("Sulfitos", data)}>Ver</Button> : 'N/A'
         },
         {
             title: 'Microbiológico',
-            dataIndex: 'microbiologico',
-            key: 'microbiologico',
-            render: (status) => (
-                <Tag className={getStatusClass(status)} style={{ borderRadius: '8px', fontWeight: 'bold' }}>
-                    {status}
-                </Tag>
-            ),
+            dataIndex: 'microbiologicos',
+            key: 'microbiologicos',
+            render: (data) => data ? <Button onClick={() => openModal("Microbiológico", data)}>Ver</Button> : 'N/A'
         },
         {
-            title: 'Acción',
-            key: 'accion',
-            render: (_, record) => (
-                <div className="table-actions" style={{ minWidth: "50px !important", textAlign: "center" }}>
-                    <Link to={`/coords/${record.loteID}`} style={{ marginRight: '10px' }}>
-                        <UilEye />
-                    </Link>
-                    <Link to={`/coords/${record.loteID}`}>
-                        <UilBell />
-                    </Link>
-                </div>
-            ),
+            title: 'Químico',
+            dataIndex: 'quimicos',
+            key: 'quimicos',
+            render: (data) => data ? <Button onClick={() => openModal("Químico", data)}>Ver</Button> : 'N/A'
         },
     ];
 
-    const data = [
-        {
-            key: '1',
-            proveedor: 'Proveedor A',
-            ubicacion: 'Guayaquil',
-            categoria: 'Crustáceos',
-            clasificacion: 'Camaron',
-            peso: 120,
-            loteID: 'L001',
-            fechaRecepcion: '2024-12-01',
-            organoleptico: 'en proceso',
-            sulfitos: 'pendiente',
-            quimico: 'finalizado',
-            microbiologico: 'en proceso',
-        },
-        {
-            key: '2',
-            proveedor: 'Proveedor B',
-            ubicacion: 'Manta',
-            categoria: 'Moluscos',
-            clasificacion: 'Ostra',
-            peso: 200,
-            loteID: 'L002',
-            fechaRecepcion: '2024-12-02',
-            organoleptico: 'finalizado',
-            sulfitos: 'pendiente',
-            quimico: 'en proceso',
-            microbiologico: 'finalizado',
-        },
-        {
-            key: '3',
-            proveedor: 'Proveedor C',
-            ubicacion: 'Esmeraldas',
-            categoria: 'Peces',
-            clasificacion: 'Tilapia',
-            peso: 300,
-            loteID: 'L003',
-            fechaRecepcion: '2024-12-03',
-            organoleptico: 'pendiente',
-            sulfitos: 'en proceso',
-            quimico: 'en proceso',
-            microbiologico: 'finalizado',
-        },
+    const modalColumns = [
+        { title: 'Parámetro', dataIndex: 'parameter', key: 'parameter' },
+        { title: 'Valor', dataIndex: 'value', key: 'value' },
+        { title: 'Unidad', dataIndex: 'unit', key: 'unit' },
+        { title: 'Rango', dataIndex: 'range', key: 'range' },
     ];
 
     return (
         <>
+
             <PageHeader
-                highlightText="AquaLink Empacadora"
-                title="Vista de Laboratorios"
-                selectOptions={[
-                    ["Todas las Empacadoras", "Empacadora 1", "Empacadora 3"],
-                ]}
+                highlightText="Aqualink Empacadora"
+                title="Análisis de Laboratorio"
+                routes={PageRoutes}
+                organizations={organizations}
+                selectedOrg={selectedOrg}
+                handleOrgChange={handleOrgChange}
             />
             <Main>
                 <Row gutter={25}>
                     <Cards headless>
                         <Table
                             columns={columns}
-                            dataSource={data}
+                            dataSource={labanalysisList}
+                            loading={loading}
                             pagination={{ pageSize: 5 }}
-                            className="table-responsive"
+                            rowKey="id"
                             style={{ marginTop: '20px' }}
                         />
                     </Cards>
                 </Row>
             </Main>
+
+            <Modal
+                title={`Detalles - ${modalTitle}`}
+                visible={modalVisible}
+                onCancel={closeModal}
+                footer={[<Button key="close" onClick={closeModal}>Cerrar</Button>]}
+                width={700}
+            >
+                {selectedData.length > 0 ? (
+                    <Table
+                        columns={modalColumns}
+                        dataSource={selectedData.map((item, index) => ({ ...item, key: index }))}
+                        pagination={false}
+                    />
+                ) : (
+                    <p>No hay datos disponibles</p>
+                )}
+            </Modal>
         </>
     );
 };

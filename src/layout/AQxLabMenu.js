@@ -313,18 +313,12 @@ function AQXLabMenu({ toggleCollapsed }) {
     getItem(t('Camaroneras'), 'camaroneras', !topMenu && <UilFlaskPotion />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/shrimp/view`}>
-          {t('Cliente/Camaroneras')}
+          {t('Directorio/Camaroneras')}
         </NavLink>,
         'ver-laboratorios',
         null,
       ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/shrimp/add`}>
-          {t('Añadir Camaroneras')}
-        </NavLink>,
-        'add-laboratorio',
-        null,
-      ),
+     
     ]),
 
 
@@ -409,6 +403,13 @@ function AQXLabMenu({ toggleCollapsed }) {
             <NavLink to={`${path}/client/view`}>{t('Laboratorio')}</NavLink>
           </div>,
           'cliente-ficha',
+          null,
+        ),
+        getItem(
+          <div className="menu-item-level-1">
+            <NavLink to={`${path}/client/add-client-lab`}>{t('Configuración Lab')}</NavLink>
+          </div>,
+          'cliente-lab',
           null,
         ),
         getItem(

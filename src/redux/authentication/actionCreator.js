@@ -58,19 +58,23 @@ const findRoles = (callback) => {
   };
 };
 
-const selectRole = (roles, roleId, clientId) => {
+const selectRole = (roles, roleId, clientId, callback) => {
   return async (dispatch) => {
     dispatch(rolesBegin());
     try {
       await selectRoleUtil(roleId, clientId);
-      Cookies.set('MasterAdmin', roles.find(rol => rol.id === roleId).name)
+      Cookies.set('MasterAdmin', roles.find(rol => rol.id === roleId).name);
       dispatch(rolesSuccess({ success: true, selectedRoleId: roleId }));
+      if (callback) callback(true);
     } catch (err) {
       dispatch(rolesErr(err));
       dispatch(netWorkError(err));
+
+      if (callback) callback(false);
     }
   };
 };
+
 
 const selectRoleUtil = async (roleId, clientId) => {
   try {
@@ -238,7 +242,7 @@ const loadUserAccess = () => {
 
       const farmsPoolsPromises = farmsOrgs.map(async (farm) => {
         try {
-          const response = await DataService.get(`/models/m_warehouse?$filter=AD_Org_ID eq ${farm.orgId} AND IsActive eq true `);
+          const response = await DataService.get(`/models/m_warehouse?$filter=AD_Org_ID eq ${farm.orgId} AND IsActive eq true &$expand=M_Locator`);
           if (response.data && response.data.records) {
             const pools = response.data.records.map((record) => ({
               poolId: record.id,
@@ -296,6 +300,7 @@ const loadUserAccess = () => {
               isActive: record.IsActive || false,
               isInTransit: record.IsInTransit || false,
               value: record.Value || '',
+              locators: record.M_Locator ? record.M_Locator.map((locator) => locator.id) : [],
             }));
 
             return {
@@ -320,6 +325,88 @@ const loadUserAccess = () => {
 
       const farmsOrgsWithPools = await Promise.all(farmsPoolsPromises);
 
+
+      const custodyWarehousePromises = custodyOrgs.map(async (custody) => {
+        try {
+          const response = await DataService.get(`/models/m_warehouse?$filter=AD_Org_ID eq ${custody.orgId} AND IsActive eq true &$expand=M_Locator`);
+          if (response.data && response.data.records) {
+            const pools = response.data.records.map((record) => ({
+              poolId: record.id,
+              poolName: record.Name,
+              location: {
+                id: record.C_Location_ID?.id || null,
+                address: record.C_Location_ID?.identifier || '',
+                city: record.C_Location_ID?.C_City_ID?.identifier || '',
+                country: record.C_Location_ID?.C_Country_ID?.identifier || '',
+                region: record.C_Location_ID?.RegionName || '',
+              },
+              organization: {
+                id: record.AD_Org_ID?.id || null,
+                name: record.AD_Org_ID?.identifier || '',
+              },
+              tenant: {
+                id: record.AD_Client_ID?.id || null,
+                name: record.AD_Client_ID?.identifier || '',
+              },
+              dimensions: {
+                length: record.SM_Lenght || 0,
+                width: record.SM_Width || 0,
+                depth: record.SM_Depth || 0,
+                diameter: record.SM_Diameter || 0,
+              },
+              waterFlow: record.SM_OperatingWaterFlow || 0,
+              waterVolume: record.SM_OperatingWaterVolume || 0,
+              poolSize: record.SM_PoolSize || 0,
+              entranceGateVolume: record.SM_EntranceGateVolume || 0,
+              exitGateVolume: record.SM_ExitGateVolume || 0,
+              plantingDepth: record.SM_PlantingDepth || 0,
+              SM_OppDepth: record.SM_OppDepth || 0,
+              sm_transferdepth: record.sm_transferdepth || 0,
+              feeding_method: record.feeding_method          || 0,
+              sm_mechanicalaeration: record.sm_mechanicalaeration || 0,
+              water_system: record.water_system || 0,
+              batchSequence: record.SM_BatchSequence || 0,
+              poolType: {
+                id: record.sm_pooltype || '',
+                identifier: record.sm_pooltype || '',
+              },
+              geoLocation: record.SM_Geolocation ? JSON.parse(record.SM_Geolocation) : [],
+              createdBy: {
+                id: record.CreatedBy?.id || null,
+                name: record.CreatedBy?.identifier || '',
+              },
+              updatedBy: {
+                id: record.UpdatedBy?.id || null,
+                name: record.UpdatedBy?.identifier || '',
+              },
+              isActive: record.IsActive || false,
+              isInTransit: record.IsInTransit || false,
+              value: record.Value || '',
+              locators: record.M_Locator ? record.M_Locator.map((locator) => locator.id) : [],
+            }));
+
+            return {
+              ...custody,
+              pools
+            };
+          } else {
+            return {
+              ...custody,
+              pools: []
+            };
+          }
+        } catch (err) {
+          console.error(`Error fetching pools for Farm ID ${custody.orgId}:`, err);
+          return {
+            ...custody,
+            pools: [],
+            error: err.message || 'Error al cargar piscinas'
+          };
+        }
+      });
+
+      const custodyOrgsWithWarehouses = await Promise.all(custodyWarehousePromises);
+
       dispatch(loadAccess({
         success: true,
         withFarms,
@@ -327,7 +414,7 @@ const loadUserAccess = () => {
         withCustody,
         withControl,
         labsOrgs,
-        custodyOrgs,
+        custodyOrgs: custodyOrgsWithWarehouses,
         farmsOrgs: farmsOrgsWithPools,
         controlsOrgs
       }));

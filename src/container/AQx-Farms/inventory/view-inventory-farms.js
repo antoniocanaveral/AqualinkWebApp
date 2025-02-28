@@ -32,7 +32,7 @@ function InventoryTable() {
 
     console.log('categories', JSON.stringify(categories));
     useEffect(() => {
-        dispatch(fetchInventory());
+        dispatch(fetchInventory("FARM"));
     }, [dispatch, selectedOrg]);
 
 

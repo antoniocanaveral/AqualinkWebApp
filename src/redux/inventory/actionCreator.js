@@ -1,5 +1,6 @@
 // src/redux/operation/actionCreator.js
 
+import { message } from 'antd';
 import { DataService } from '../../config/dataService/dataService';
 import {
   opInventoryLoading,
@@ -11,13 +12,19 @@ import {
   opAddProductError,
   opAddProductLoaded,
   opAddProductLoading,
+  fetchSecurityKitsLoading,
+  fetchSecurityKitsSuccess,
+  fetchSecurityKitsError,
+  addSecurityKitSuccess,
+  addSecurityKitError,
+  addSecurityKitLoading,
 
 } from './actions';
 
 import Cookies from 'js-cookie';
 
 
-export const fetchInventory = () => async (dispatch) => {
+export const fetchInventory = (org_type) => async (dispatch) => {
   try {
     dispatch(opInventoryLoading());
     const clientId = Cookies.get('selectedClientId');
@@ -26,7 +33,7 @@ export const fetchInventory = () => async (dispatch) => {
     if (!clientId) {
       throw new Error('Client ID no encontrado en las cookies.');
     }
-    const response = await DataService.get(`/models/m_product_stock_extended_v1?$filter=AD_Client_ID eq  ${clientId} AND AD_Org_ID eq ${adOrg} AND warehouse eq 'GENERAL'` );
+    const response = await DataService.get(`/models/m_product_stock_extended_v1?$filter=AD_Client_ID eq  ${clientId} AND AD_Org_ID eq ${adOrg} AND org_type eq '${org_type}'` );
 
     if (response.data && response.data.records) {
       const records = response.data.records;
@@ -61,6 +68,41 @@ export const fetchProductCatalogFarm = () => async (dispatch) => {
     }
 
     const response = await DataService.get(`/models/m_product_catalog?$filter=org_type eq 'FARM'`);
+
+    if (response.data && response.data.records) {
+      const farmCatalogs = response.data.records;
+
+      const catalogsByCategory = farmCatalogs.reduce((acc, catalog) => {
+        const category = catalog.M_Product_Category_ID?.identifier || 'Sin Categoría';
+
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+
+        acc[category].push(catalog);
+        return acc;
+      }, {});
+
+      dispatch(opCatalogLoaded(catalogsByCategory));
+    } else {
+      dispatch(opCatalogError('No se encontraron catálogos con org_type "FARM".'));
+    }
+  } catch (err) {
+    dispatch(opCatalogError(err.message || 'Error al cargar el catálogo de productos.'));
+  }
+};
+
+
+export const fetchProductCatalogCustody = () => async (dispatch) => {
+  try {
+    dispatch(opCatalogLoading());
+    const clientId = Cookies.get('selectedClientId');
+
+    if (!clientId) {
+      throw new Error('Client ID no encontrado en las cookies.');
+    }
+
+    const response = await DataService.get(`/models/m_product_catalog?$filter=org_type eq 'CUSTODY'`);
 
     if (response.data && response.data.records) {
       const farmCatalogs = response.data.records;
@@ -147,7 +189,7 @@ export const addProductToInventory = (productData) => async (dispatch) => {
       Description: "Recepción",
       IsSOTrx: false,
       MovementType: "V+",
-      M_Warehouse_ID: 1000014
+      M_Warehouse_ID: productData.M_Warehouse_ID
     };
 
     console.log('Paso 4/6 - Enviando payload para entrada de inventario:', inOutPayload);
@@ -160,12 +202,12 @@ export const addProductToInventory = (productData) => async (dispatch) => {
       AD_Client_ID: Number(clientId),
       AD_Org_ID: Number(orgId),
       M_InOut_ID: mInOutId,
-      Line: 10,
+      Line: 40,
       M_Product_ID: productData.M_Product_ID,
       MovementQty: productData.quantity,
       QtyEntered: productData.quantity,
       C_UOM_ID: 1000000,
-      M_Locator_ID: 1000006,
+      M_Locator_ID: productData.M_Locator_ID,
       Description: "Recepción de producto",
       IsActive: true
     };
@@ -178,11 +220,11 @@ export const addProductToInventory = (productData) => async (dispatch) => {
       Lines: [{
         AD_Org_ID: Number(orgId),
         M_InOut_ID: mInOutId,
-        Line: 10,
+        Line: 40,
         M_Product_ID: productData.M_Product_ID,
         MovementQty: productData.quantity,
         C_UOM_ID: 1000000,
-        M_Locator_ID: 1000006,
+        M_Locator_ID: 1000024,
         Description: "Recepción de producto",
         IsActive: true
       }]
@@ -215,6 +257,75 @@ export const addProductToInventory = (productData) => async (dispatch) => {
     }
     
     dispatch(opAddProductError(errorMessage));
+    return false;
+  }
+};
+
+
+export const fetchSecurityKits = (kitType) => async (dispatch) => {
+  try {
+    dispatch(fetchSecurityKitsLoading());
+
+    const selectedClientId = Cookies.get('selectedClientId');
+    if (!selectedClientId) {
+      throw new Error('Client ID no encontrado en las cookies.');
+    }
+
+    const filterType = kitType ? `AND sm_kittype eq '${kitType}'` : '';
+    const response = await DataService.get(`/models/SM_SecurityKits?$filter=AD_Client_ID eq ${selectedClientId} ${filterType}&$select=SM_KitCode,SM_Stamp1,SM_Stamp2,SM_Stamp3,SM_Stamp4,SM_Tag,SM_KitType`);
+
+    if (response.data && response.data.records) {
+      dispatch(fetchSecurityKitsSuccess(response.data.records));
+    } else {
+      dispatch(fetchSecurityKitsError('No se encontraron kits de seguridad.'));
+    }
+  } catch (err) {
+    dispatch(fetchSecurityKitsError(err.message || 'Error al cargar los kits de seguridad.'));
+  }
+};
+
+
+
+
+export const addSecurityKit = (kitData) => async (dispatch) => {
+  try {
+    dispatch(addSecurityKitLoading());
+
+    const selectedClientId = Cookies.get('selectedClientId');
+    const selectedOrgId = Cookies.get('orgId');
+
+    if (!selectedClientId) {
+      throw new Error('Client ID no encontrado en las cookies.');
+    }
+
+    if (!selectedOrgId) {
+      throw new Error('Org ID no encontrado en las cookies.');
+    }
+
+    const payload = {
+      AD_Client_ID: selectedClientId,
+      AD_Org_ID: selectedOrgId,
+      sm_kitcode: kitData.SM_KitCode,
+      SM_Stamp1: kitData.SM_Stamp1,
+      SM_Stamp2: kitData.SM_Stamp2,
+      SM_Stamp3: kitData.SM_Stamp3,
+      SM_Stamp4: kitData.SM_Stamp4,
+      sm_tag: kitData.SM_Tag,
+      sm_kittype: kitData.SM_KitType,
+    };
+
+    const response = await DataService.post('/models/SM_SecurityKits', payload);
+
+    if (response.data) {
+      dispatch(addSecurityKitSuccess(response.data));
+      message.success('Kit de seguridad agregado exitosamente.');
+      return true;
+    } else {
+      throw new Error('No se pudo agregar el kit de seguridad.');
+    }
+  } catch (error) {
+    dispatch(addSecurityKitError(error.message || 'Error al agregar el kit de seguridad.'));
+    message.error(`Error al agregar el kit de seguridad: ${error.message}`);
     return false;
   }
 };

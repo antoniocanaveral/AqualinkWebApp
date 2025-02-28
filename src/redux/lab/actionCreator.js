@@ -27,7 +27,6 @@ const loadLabCoordinations = () => {
         }
     };
 }
-
 const getCoordStatus = (item) => {
     let statusName = "-";
     let className = "";
@@ -36,30 +35,36 @@ const getCoordStatus = (item) => {
 
     console.log(JSON.stringify(item));
 
-    if(item.is_selected) {
-      statusName = "Asignado";
-      className = "asigned";
-      if(item.SM_CoordinationStatus.id == "ESPERA_PARAMS") {
-        showParamsFrom = true;
-      }
-    } else {
-      if(item.rejected) {
-        statusName = "Rechazado";
-        className = "rejected";
-      } else {
-        if(item.answered) {
-          statusName = "Esperando Respuesta";
-          className = "waiting";
+    if (item.is_selected) {
+        if (item.SM_CoordinationStatus?.id === "CONFIRMADO") {
+            statusName = "confirmado";
+            className = "confirmado";
+        } else if (item.SM_CoordinationStatus?.id === "ESPERA_PARAMS") {
+            statusName = "Esperando Parámetros";
+            className = "waiting";
+            showParamsFrom = true;
         } else {
-          statusName = "Por Revisar";
-          className = "none";
-          showEditFrom = true;
+            statusName = "Asignado";
+            className = "asigned";
         }
-      }
+    } else {
+        if (item.rejected) {
+            statusName = "Rechazado";
+            className = "rejected";
+        } else if (item.answered) {
+            statusName = "Esperando Respuesta";
+            className = "waiting";
+        } else {
+            statusName = "Por Revisar";
+            className = "none";
+            showEditFrom = true;
+        }
     }
+
     console.log(`className ${className}, statusName ${statusName}`);
-    return {className, statusName, showEditFrom, showParamsFrom};
-}
+    return { className, statusName, showEditFrom, showParamsFrom };
+};
+
 
 const loadLabCoord = (id, callback) => {
     return async (dispatch) => {

@@ -122,3 +122,21 @@ export const smBrandFeedersError = (error) => ({
   type: SM_BRAND_FEEDERS_ERROR,
   payload: { error },
 });
+
+export const C_SALES_REGION_LOADING = 'C_SALES_REGION_LOADING';
+export const C_SALES_REGION_CREATED = 'C_SALES_REGION_CREATED';
+export const C_SALES_REGION_ERROR = 'C_SALES_REGION_ERROR';
+
+export const cSalesRegionLoading = () => ({
+  type: C_SALES_REGION_LOADING,
+});
+
+export const cSalesRegionCreated = (salesRegions) => ({
+  type: C_SALES_REGION_CREATED,
+  payload: salesRegions,
+});
+
+export const cSalesRegionError = (error) => ({
+  type: C_SALES_REGION_ERROR,
+  payload: { error },
+});

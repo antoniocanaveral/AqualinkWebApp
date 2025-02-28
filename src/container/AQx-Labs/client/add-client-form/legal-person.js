@@ -1,33 +1,49 @@
 import { Col, Form, Input, InputNumber, Row, Select } from "antd";
 const { Option } = Select;
 
-export const LegalPersonForm = () => (
-    <>
+export const LegalPersonForm = ({ regions, cities, clientType }) => {
+    // Determinar si se debe deshabilitar y preseleccionar el valor
+    const disableOrgSelect = clientType === "GIV" || clientType === "GPA";
+    const defaultOrgValue = disableOrgSelect ? clientType : undefined;
+
+    return (<>
+
+
+
         {/* Información General */}
         <Row gutter={16}>
-            <Col span={8}>
+            <Col span={4}>
                 <Form.Item
                     label="Razón Social"
-                    name="razonSocial"
+                    name="businessname"
                     rules={[{ required: true, message: 'Ingrese la razón social' }]}
                 >
                     <Input />
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={5}>
                 <Form.Item
                     label="RUC"
-                    name="ruc"
+                    name="taxid"
                     rules={[{ required: true, message: 'Ingrese el RUC' }]}
                 >
                     <Input />
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={5}>
                 <Form.Item
                     label="Dirección Fiscal"
-                    name="direccionFiscal"
+                    name="sm_locationname"
                     rules={[{ required: true, message: 'Ingrese la dirección fiscal' }]}
+                >
+                    <Input />
+                </Form.Item>
+            </Col>
+            <Col span={5}>
+                <Form.Item
+                    label="Teléfono"
+                    name="phone"
+                    rules={[{ required: true, message: 'Ingrese el teléfono' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -35,28 +51,28 @@ export const LegalPersonForm = () => (
         </Row>
 
         <Row gutter={16}>
-            <Col span={8}>
+            <Col span={4}>
                 <Form.Item
                     label="Representante Legal"
-                    name="representanteLegal"
+                    name="name_rl"
                     rules={[{ required: true, message: 'Ingrese el representante legal' }]}
                 >
                     <Input />
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={5}>
                 <Form.Item
                     label="CC (Representante Legal)"
-                    name="ccRepresentante"
+                    name="taxid_rl"
                     rules={[{ required: true, message: 'Ingrese la CC del representante legal' }]}
                 >
                     <Input />
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={5}>
                 <Form.Item
-                    label="Correo Electrónico (Representante Legal)"
-                    name="correoRepresentante"
+                    label="Correo Electrónico (RL)"
+                    name="email_rl"
                     rules={[
                         { required: true, message: 'Ingrese el correo del representante legal' },
                         { type: 'email', message: 'Ingrese un correo válido' },
@@ -65,187 +81,196 @@ export const LegalPersonForm = () => (
                     <Input />
                 </Form.Item>
             </Col>
+            <Col span={5}>
+                <Form.Item
+                    label="Celular"
+                    name="phone2"
+                    rules={[{ required: true, message: 'Ingrese el teléfono' }]}
+                >
+                    <Input />
+                </Form.Item>
+            </Col>
         </Row>
 
-        <Row gutter={16}>
-            <Col span={8}>
-                <Form.Item
-                    label="Correo Electrónico (General) (opcional)"
-                    name="correoGeneral"
-                >
-                    <Input />
-                </Form.Item>
-            </Col>
-            <Col span={8}>
-                <Form.Item
-                    label="Teléfono (Convencional)"
-                    name="telefonoConvencional"
-                    rules={[{ required: true, message: 'Ingrese el teléfono convencional' }]}
-                >
-                    <Input />
-                </Form.Item>
-            </Col>
-            <Col span={8}>
-                <Form.Item
-                    label="Teléfono (Celular)"
-                    name="telefonoCelular"
-                    rules={[{ required: true, message: 'Ingrese el teléfono celular' }]}
-                >
-                    <Input />
-                </Form.Item>
-            </Col>
-        </Row>
+
 
         {/* Separador: Información de Camaronera */}
         <div style={{ marginTop: '20px', marginBottom: '10px' }}>
-            <strong>● Información de Laboratorio</strong>
+            <strong>● Información Complementaria</strong>
         </div>
 
         <Row gutter={16}>
-            <Col span={8}>
+            <Col span={4}>
                 <Form.Item
-                    label="Tipo de Cliente"
-                    name="tipoCliente"
-                    rules={[{ required: true, message: 'Seleccione un tipo de cliente' }]}
+                    label="Tipo de Org"
+                    name="SM_OrgType"
                 >
-                    <Select placeholder="Seleccione Tipo de Cliente">
+                    <Select
+                        size="large"
+                        placeholder="Seleccione Tipo de Cliente"
+                        disabled={disableOrgSelect}
+                        defaultValue={defaultOrgValue}
+                        value={defaultOrgValue}
+                    >
                         <Option value="GIV">GIV</Option>
                         <Option value="GPA">GPA</Option>
                         <Option value="FIN">FIN</Option>
-                        <Option value="LAB">LAB</Option>
-                        <Option value="PAK">PAK</Option>
                     </Select>
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={5}>
                 <Form.Item
                     label="Nombre de Laboratorio"
-                    name="nombreLaboratorio"
-                    rules={[{ required: true, message: 'Ingrese el nombre del Laboratorio' }]}
+                    name="Name"
+                    rules={[{ required: true, message: 'Ingrese el nombre del laboratorio' }]}
                 >
                     <Input />
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={5}>
                 <Form.Item
                     label="Provincia"
-                    name="provincia"
+                    name="c_region"
                     rules={[{ required: true, message: 'Ingrese la provincia' }]}
                 >
-                    <Input />
+                    <Select size="large" placeholder="Seleccione un grupo empresarial">
+                        {regions.map((group) => (
+                            <Select.Option key={group?.id} value={group?.id}>
+                                {group?.Name}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+            </Col>
+            <Col span={5}>
+                <Form.Item
+                    label="Cantón"
+                    name="c_city"
+                    rules={[{ required: true, message: 'Ingrese el cantón' }]}
+                >
+                    <Select size="large" placeholder="Seleccione un grupo empresarial">
+                        {cities.map((group) => (
+                            <Select.Option key={group?.id} value={group?.id}>
+                                {group?.Name}
+                            </Select.Option>
+                        ))}
+                    </Select>
                 </Form.Item>
             </Col>
         </Row>
 
         <Row gutter={16}>
-            <Col span={8}>
+
+            <Col span={4}>
                 <Form.Item
-                    label="Cantón"
-                    name="canton"
-                    rules={[{ required: true, message: 'Ingrese el cantón' }]}
+                    label="Tipo de Laboratorio"
+                    name="sm_labtype"
+                    rules={[{ required: true, message: 'Seleccione el tipo de Laboratorio' }]}
+                >
+                    <Select size="large" placeholder="Seleccione Tipo de Camaronera">
+                        <Option value="MATURATION">Maduración</Option>
+                        <Option value="PL">PL</Option>
+                    </Select>
+                </Form.Item>
+            </Col>
+            <Col span={5}>
+                <Form.Item
+                    label="Sistema de Cultivo"
+                    name="sm_productiontype"
+                    rules={[{ required: true, message: 'Seleccione el sistema de cultivo' }]}
+                >
+                    <Select size="large" placeholder="Seleccione Sistema de Cultivo">
+                        <Option value="SEMI_INTENSIVE">Semi Intensivo</Option>
+                        <Option value="INTENSIVE">Intensivo</Option>
+                    </Select>
+                </Form.Item>
+            </Col>
+
+            <Col span={5}>
+                <Form.Item
+                    label="Registro SCI"
+                    name="sm_codigovap"
                 >
                     <Input />
                 </Form.Item>
             </Col>
-            <Col span={8}>
-                <Form.Item
-                    label="Tipo de Laboratorio"
-                    name="tipoLaboratorio"
-                    rules={[{ required: true, message: 'Seleccione el tipo de camaronera' }]}
-                >
-                    <Select placeholder="Seleccione Tipo de Camaronera">
-                        <Option value="maduracion">Maduración</Option>
-                        <Option value="Pl">Pl</Option>
-                    </Select>
-                </Form.Item>
-            </Col>
-            <Col span={8}>
+            <Col span={5}>
                 <Form.Item
                     label="Acuerdo Ministerial"
-                    name="acuerdoMinisterial"
+                    name="sm_ministerialagreement"
                     rules={[{ required: true, message: 'Ingrese el acuerdo ministerial' }]}
                 >
                     <Input />
                 </Form.Item>
             </Col>
-        </Row>
-
-        <Row gutter={16}>
-            <Col span={8}>
+            <Col span={5}>
                 <Form.Item
-                    label="Certificado Ambiental (opcional)"
-                    name="certificadoAmbiental"
+                    label="Certificado Ambiental"
+                    name="sm_safetycertificate"
                 >
                     <Input />
                 </Form.Item>
             </Col>
-            <Col span={8}>
-                <Form.Item
-                    label="N° de regitro scci"
-                    name="registro_scci"
-                >
-                    <Input />
-                </Form.Item>
-            </Col>
-            <Col span={8}>
-                <Form.Item
-                    label="Sistema de Cultivo"
-                    name="sistemaCultivo"
-                    rules={[{ required: true, message: 'Seleccione el sistema de cultivo' }]}
-                >
-                    <Select placeholder="Seleccione Sistema de Cultivo">
-                        <Option value="semiIntensivo">Semi Intensivo</Option>
-                        <Option value="intensivo">Intensivo</Option>
-                    </Select>
-                </Form.Item>
-            </Col>
+
         </Row>
 
         <Row gutter={16}>
-            <Col span={8}>
+            <Col span={4}>
+
+                <Form.Item
+                    label="Capacidad  de Larva"
+                    name="sm_installedcapacitylarva"
+                    rules={[{ required: true, message: 'Ingrese la capacidad instalada de larva' }]}
+                >
+                    <InputNumber size="large" style={{ width: '100%' }} placeholder="Ingrese cantidad de larva" />
+                </Form.Item>
+            </Col>
+            <Col span={5}>
+
                 <Form.Item
                     label="Protocolo de Producción"
-                    name="protocoloProduccion"
-                    rules={[{ required: true, message: 'Seleccione el protocolo de producción' }]}
+                    name="sm_productionprotocol"
+                    rules={[{ required: true, message: 'Seleccione el protocolo' }]}
                 >
-                    <Select placeholder="Seleccione Protocolo de Producción">
-                        <Option value="biFasico">Mono Fásico (MF)</Option>
+                    <Select size="large" placeholder="Seleccione el protocolo">
+                        <Option value="MONOFASICO">Mono Fásico(MF)</Option>
                     </Select>
                 </Form.Item>
-            </Col>
-            <Col span={8}>
-                <Form.Item
-                    label="Capacidad Instalada(mill de Larvas)"
-                    name="capacidadInstalada"
-                    rules={[{ required: true, message: 'Ingrese la capacidad instalada' }]}
-                >
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
-            </Col>
-            <Col span={8}>
-                <Form.Item
-                    label="Número de Módulos"
-                    name="numeroModulos"
-                    rules={[{ required: true, message: 'Ingrese el número de Módulos' }]}
-                >
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
+
             </Col>
 
+
+            <Col span={5}>
+                <Form.Item
+                    label="GeoRef Latitud"
+                    name="sm_latitude"
+                    rules={[{ required: true, message: 'Ingrese la latitud' }]}
+                >
+                    <InputNumber size="large" style={{ width: '100%' }} />
+                </Form.Item>
+            </Col>
+            <Col span={5}>
+                <Form.Item
+                    label="GeoRef Longitud"
+                    name="sm_longitude"
+                    rules={[{ required: true, message: 'Ingrese la longitud' }]}
+                >
+                    <InputNumber size="large" style={{ width: '100%' }} />
+                </Form.Item>
+            </Col>
+            <Col span={5}>
+                <Form.Item
+                    label="Número de Sectores"
+                    name="c_sales_region"
+                    rules={[{ required: true, message: 'Ingrese sectores' }]}
+                >
+                    <InputNumber size="large" style={{ width: '100%' }} />
+                </Form.Item>
+            </Col>
         </Row>
 
-        <Row gutter={16}>
-            <Col span={8}>
-                <Form.Item
-                    label="Número de Tanques"
-                    name="numeroTanques"
-                    rules={[{ required: true, message: 'Ingrese el número de Tanques' }]}
-                >
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
-            </Col>
-        </Row>
 
 
-    </>
-);
+
+    </>)
+}

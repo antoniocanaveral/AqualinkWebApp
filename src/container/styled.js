@@ -2920,6 +2920,10 @@ const CoordStatusWrapper = Styled.div`
             color: ${({ theme }) => theme['success-color']};
             background-color: ${({ theme }) => theme['success-color']}15;
         }
+            &.ninjadash-status-confirmado{
+            color: ${({ theme }) => theme['success-color']};
+            background-color: ${({ theme }) => theme['success-color']}15;
+        }
     }
 `;
 

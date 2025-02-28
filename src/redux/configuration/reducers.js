@@ -23,6 +23,9 @@ import {
   SM_BRAND_FEEDERS_ERROR,
   SM_BRAND_FEEDERS_LOADED,
   SM_BRAND_FEEDERS_LOADING,
+  C_SALES_REGION_LOADING,
+  C_SALES_REGION_CREATED,
+  C_SALES_REGION_ERROR,
 } from './actions';
 
 const initialState = {
@@ -63,6 +66,11 @@ const initialState = {
   brandFeedersLoading: false,
   brandFeeders: [],
   brandFeedersError: null,
+
+  //Sales Regions
+  cSalesRegionsLoading: false,
+  createdSalesRegions: [],
+  cSalesRegionsError: null,
 };
 
 export const configurationReducer = (state = initialState, action) => {
@@ -232,6 +240,30 @@ export const configurationReducer = (state = initialState, action) => {
         brandFeedersLoading: false,
         brandFeeders: [],
         brandFeedersError: action.payload.error,
+      };
+
+      case C_SALES_REGION_LOADING:
+      return {
+        ...state,
+        cSalesRegionsLoading: true,
+        createdSalesRegions: [],
+        cSalesRegionsError: null,
+      };
+
+    case C_SALES_REGION_CREATED:
+      return {
+        ...state,
+        cSalesRegionsLoading: false,
+        createdSalesRegions: action.payload,
+        cSalesRegionsError: null,
+      };
+
+    case C_SALES_REGION_ERROR:
+      return {
+        ...state,
+        cSalesRegionsLoading: false,
+        createdSalesRegions: [],
+        cSalesRegionsError: action.payload.error,
       };
 
     default:

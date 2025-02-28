@@ -12,12 +12,13 @@ import Heading from '../../components/heading/heading';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Checkbox } from '../../components/checkbox/checkbox';
 import { BasicFormWrapper, WizardWrapper, OrderSummary, WizardTwo, Main, WizardBlock } from '../styled';
-import { cancelLabCoord, loadLabCoord, submitLabCoord } from '../../redux/lab/actionCreator';
+import { cancelLabCoord, enviarParamsLabCoord, loadLabCoord, submitLabCoord } from '../../redux/lab/actionCreator';
 import Cookies from 'js-cookie';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { formatNumber, inputFormatter, parserNumber } from '../../utility/utility';
 import { StepsCoords } from '../../components/steps/stepsCoords';
+import UilHdd from '@iconscout/react-unicons/icons/uil-hdd';
 
 const { Option } = Select;
 
@@ -72,6 +73,8 @@ function CoordinationParamLabs() {
       methodName: coordination && coordination.SM_ShippingMethod ? coordination.SM_ShippingMethod.id : "",
       oxygenOnTheGo: coordination ? coordination.SM_OxygenOnTheGo : false,
       foodOnTheGo: coordination ? coordination.SM_FoodOnTheGo : false,
+      alkalinity: 0,
+      pre_breeding_pool_ph: 0,
     }
   });
 
@@ -120,25 +123,6 @@ function CoordinationParamLabs() {
     }));
   };
 
-  // Función para manejar cambios en el método de envío
-  const handleMethodChange = (value) => {
-    handleInputChange('methodName', value);
-    if (value !== 'TANQUES') {
-      // Resetear los checkboxes si el método no es Tanques Transporte
-      handleInputChange('oxygenOnTheGo', false);
-      handleInputChange('foodOnTheGo', false);
-    }
-  };
-
-  // Función para manejar cambios en los checkboxes
-  const handleCheckboxChange = (field, e) => {
-    handleInputChange(field, e.target.checked);
-  };
-
-  // Función para manejar cambios en DatePicker y TimePicker
-  const handleDateChange = (field, value) => {
-    handleInputChange('answeredDate', value);
-  };
 
   const next = () => {
     return new Promise((resolve, reject) => {
@@ -208,6 +192,21 @@ function CoordinationParamLabs() {
       }));
     }
   }
+
+
+
+  const onSave = () => {
+
+    form.validateFields().then(() => {
+      dispatch(enviarParamsLabCoord(id, coordination.SM_Coordination_ID.id, state.form.alkalinity, state.form.pre_breeding_pool_ph, () => {
+        message.success("Parámetros enviados!");
+        navigate("/lab/coords");
+      }));
+    }).catch(er => {
+      message.error("Revise los datos requeridos!");
+    })
+  }
+
 
   const coordData = [
     { key: '4', label: 'Fecha de Siembra Solicitada:', value: coordination ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-' },
@@ -410,10 +409,10 @@ function CoordinationParamLabs() {
             style={{
               height: '5px',
               width: '5px',
-              backgroundColor: '#012e40', 
+              backgroundColor: '#012e40',
               borderRadius: '50%',
               display: 'inline-block',
-              marginRight: '8px', 
+              marginRight: '8px',
             }}
           />
           <span>{text}</span>
@@ -579,66 +578,54 @@ function CoordinationParamLabs() {
                                     <Col sm={20} xs={24}>
                                       <div className="shipping-form" style={{ marginTop: "10px" }}>
                                         <Heading as="h4" style={{ textAlign: "center" }}>3. Información de Calidad de Agua</Heading>
-                                        <Form form={form} layout="vertical" style={{ marginTop: '20px' }}>
+                                        <Form form={form} name="address">
 
-                                          <Row gutter={16}>
-                                            {/* PH */}
-                                            <Col xs={24} sm={12} md={8}>
-                                              <Form.Item
-                                                name="ph"
-                                                label="PH"
-                                                rules={[{ required: true, message: 'Por favor ingrese el PH' }]}
-                                              >
-                                                <InputNumber min={0} max={14} step={0.1} style={{ width: '100%' }} placeholder="Ingrese PH" />
-                                              </Form.Item>
-                                            </Col>
+                                          <Form.Item name="alkalinity" label="Alcalinidad Tanque de Origen" rules={[{ required: true, message: 'Por favor ingrese alcalinidad del agua' }]}>
+                                            <InputNumber
+                                              value={state.form.alkalinity}
+                                              formatter={(value) => inputFormatter(value)}
+                                              parser={(value) => parserNumber(value)}
+                                              max={200}
+                                              min={60}
+                                              onChange={(value) => {
+                                                setState({
+                                                  ...state,
+                                                  form: {
+                                                    ...state.form,
+                                                    alkalinity: value,
+                                                  },
+                                                });
+                                              }}
+                                            />
+                                          </Form.Item>
 
-                                            {/* Salinidad */}
-                                            <Col xs={24} sm={12} md={8}>
-                                              <Form.Item
-                                                name="salinity"
-                                                label="Salinidad (ppm)"
-                                                rules={[{ required: true, message: 'Por favor ingrese la salinidad' }]}
-                                              >
-                                                <InputNumber min={0} step={0.1} style={{ width: '100%' }} placeholder="Ingrese salinidad" />
-                                              </Form.Item>
-                                            </Col>
+                                          <Form.Item name="pre_breeding_pool_ph" label="PH Tanque de Origen" rules={[{ required: true, message: 'Por favor ingrese el ph del agua' }]}>
+                                            <InputNumber
+                                              value={state.form.pre_breeding_pool_ph}
+                                              formatter={(value) => inputFormatter(value)}
+                                              parser={(value) => parserNumber(value)}
+                                              max={10}
+                                              min={0}
+                                              onChange={(value) => {
+                                                setState({
+                                                  ...state,
+                                                  form: {
+                                                    ...state.form,
+                                                    pre_breeding_pool_ph: value,
+                                                  },
+                                                });
+                                              }}
+                                            />
+                                          </Form.Item>
 
-                                            {/* Oxígeno Disuelto */}
-                                            <Col xs={24} sm={12} md={8}>
-                                              <Form.Item
-                                                name="oxygen"
-                                                label="Oxígeno Disuelto (mg/L)"
-                                                rules={[{ required: true, message: 'Por favor ingrese el oxígeno disuelto' }]}
-                                              >
-                                                <InputNumber min={0} step={0.1} style={{ width: '100%' }} placeholder="Ingrese oxígeno disuelto" />
-                                              </Form.Item>
-                                            </Col>
-                                          </Row>
-
-                                          <Row gutter={16}>
-                                            {/* Temperatura */}
-                                            <Col xs={24} sm={12} md={8}>
-                                              <Form.Item
-                                                name="temperature"
-                                                label="Temperatura (°C)"
-                                                rules={[{ required: true, message: 'Por favor ingrese la temperatura' }]}
-                                              >
-                                                <InputNumber min={0} step={0.1} style={{ width: '100%' }} placeholder="Ingrese temperatura" />
-                                              </Form.Item>
-                                            </Col>
-
-                                            {/* PL/Gramo (Predespacho) */}
-                                            <Col xs={24} sm={12} md={8}>
-                                              <Form.Item
-                                                name="plPerGram"
-                                                label="PL/Gramo (Predespacho)"
-                                                rules={[{ required: true, message: 'Por favor ingrese el valor de PL/gramo' }]}
-                                              >
-                                                <InputNumber min={0} step={1} style={{ width: '100%' }} placeholder="Ingrese PL/gramo" />
-                                              </Form.Item>
-                                            </Col>
-                                          </Row>
+                                          {<div style={{ marginBottom: 15 }}>
+                                            <Button size="default" type="primary" onClick={() => {
+                                              onSave()
+                                            }}>
+                                              <UilHdd />
+                                              Enviar
+                                            </Button>
+                                          </div>}
 
                                         </Form>
                                       </div>
@@ -657,8 +644,8 @@ function CoordinationParamLabs() {
                               status !== 'finish' ? (
                                 <BasicFormWrapper style={{ width: '80%' }}>
                                   <div className="atbd-review-order" style={{ width: '100%' }}>
-                                  <br/>
-                                  <br/>
+                                    <br />
+                                    <br />
 
                                     <Row gutter={[32, 32]} justify="center">
                                       {/* Primera Fila */}
@@ -695,8 +682,8 @@ function CoordinationParamLabs() {
 
                                         {/* Segunda Tabla Parte 2: Información de Laboratorio */}
                                         <Col xs={24} sm={8} md={8}>
-                                        <br/>
-                                        <br/>
+                                          <br />
+                                          <br />
                                           <Table
                                             className="custom-table_lab"
                                             dataSource={coordDataInfo.slice(Math.ceil(coordDataInfo.length / 2))}
