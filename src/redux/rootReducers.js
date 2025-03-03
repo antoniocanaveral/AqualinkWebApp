@@ -38,6 +38,7 @@ import { directoriesReducer } from './directories/reducers';
 import { carrierReducer } from './carriers/reducers';
 import { orgBinsReducer } from './bines-drawers/reducer';
 import { labanalysisReducer } from './labanalysis/reducers';
+import CoordsViewReducer from './views/coords/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -87,6 +88,10 @@ const rootReducers = combineReducers({
   jobs,
   dataTable,
   SingleAxiosCrud: axiosSingleCrudReducer,
+
+
+  //views
+  view_coords: CoordsViewReducer
 });
 
 export default rootReducers;

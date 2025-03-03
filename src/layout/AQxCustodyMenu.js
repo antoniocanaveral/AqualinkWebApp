@@ -188,7 +188,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/geolocation`}>
-        {t('Geolocalización')}
+        {t('GeoTracking')}
       </NavLink>,
       'Geolocation',
       !topMenu && (

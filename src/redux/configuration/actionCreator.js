@@ -185,14 +185,14 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
 
       const sectors = [];
 
-      if (org_type === "FARM") {
+      if (org_type === "FARM" || org_type === "LAB") {
         dispatch(cSalesRegionLoading());
 
         for (let i = 1; i <= orgData.c_sales_region; i++) {
           const sectorPayload = {
             AD_Client_ID: selectedClientId,
             AD_Org_ID: response.data.id,
-            Name: `Sector ${i}`,
+            Name: org_type === "FARM"  ? `Sector ${i}` : `Módulo ${i}` ,
           };
 
           const sectorResponse = await DataService.post('/models/c_salesregion', sectorPayload);
@@ -200,7 +200,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
             sectors.push(sectorResponse.data);
           }
         }
-        Cookies.set('Sectors', JSON.stringify(sectors));
+        Cookies.set(org_type === "FARM" ? 'Sectors' : 'Modules', JSON.stringify(sectors));
 
         dispatch(cSalesRegionCreated(sectors));
       }

@@ -207,7 +207,44 @@ const loadUserAccess = () => {
                     orgName: orgMap[info.id].name,
                     orgEmail: info.EMail,
                     latitude: location.latitude,
-                    longitude: location.longitude
+                    longitude: location.longitude,
+                    businessname: info.businessname,
+                    AD_Client_ID: orgDetails.AD_Client_ID?.id,
+                    AD_Client_Identifier: orgDetails.AD_Client_ID?.identifier,
+                    C_City_ID: orgDetails.C_City_ID?.id,
+                    City_Identifier: orgDetails.C_City_ID?.identifier,
+                    C_Region_ID: orgDetails.C_Region_ID?.id,
+                    Region_Identifier: orgDetails.C_Region_ID?.identifier,
+                    Created: orgDetails.Created,
+                    CreatedBy_ID: orgDetails.CreatedBy?.id,
+                    CreatedBy_Identifier: orgDetails.CreatedBy?.identifier,
+                    IsActive: orgDetails.IsActive,
+                    IsSummary: orgDetails.IsSummary,
+                    Name: orgDetails.Name,
+                    Phone: orgDetails.Phone,
+                    Phone2: orgDetails.Phone2,
+                    SM_CodigoVAP: orgDetails.SM_CodigoVAP,
+                    SM_Latitude: orgDetails.SM_Latitude,
+                    SM_LocationName: orgDetails.SM_LocationName,
+                    SM_Longitude: orgDetails.SM_Longitude,
+                    SM_MainlandOrIsland_ID: orgDetails.SM_MainlandOrIsland?.id,
+                    SM_MainlandOrIsland_Identifier: orgDetails.SM_MainlandOrIsland?.identifier,
+                    SM_MinisterialAgreement: orgDetails.SM_MinisterialAgreement,
+                    SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
+                    SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
+                    SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
+                    TaxID: orgDetails.TaxID,
+                    Updated: orgDetails.Updated,
+                    UpdatedBy_ID: orgDetails.UpdatedBy?.id,
+                    UpdatedBy_Identifier: orgDetails.UpdatedBy?.identifier,
+                    Value: orgDetails.Value,
+                    business_group_id: orgDetails.business_group_id,
+                    email_rl: orgDetails.email_rl,
+                    legalentitytype: orgDetails.legalentitytype,
+                    name_rl: orgDetails.name_rl,
+                    taxid_rl: orgDetails.taxid_rl,
+                    uid: orgDetails.uid,
+                    water_system: orgDetails.water_system
                   });
                   break;
                 case "CUSTODY":
@@ -217,7 +254,44 @@ const loadUserAccess = () => {
                     orgName: orgMap[info.id].name,
                     orgEmail: info.EMail,
                     latitude: location.latitude,
-                    longitude: location.longitude
+                    longitude: location.longitude,
+                    businessname: info.businessname,
+                    AD_Client_ID: orgDetails.AD_Client_ID?.id,
+                    AD_Client_Identifier: orgDetails.AD_Client_ID?.identifier,
+                    C_City_ID: orgDetails.C_City_ID?.id,
+                    City_Identifier: orgDetails.C_City_ID?.identifier,
+                    C_Region_ID: orgDetails.C_Region_ID?.id,
+                    Region_Identifier: orgDetails.C_Region_ID?.identifier,
+                    Created: orgDetails.Created,
+                    CreatedBy_ID: orgDetails.CreatedBy?.id,
+                    CreatedBy_Identifier: orgDetails.CreatedBy?.identifier,
+                    IsActive: orgDetails.IsActive,
+                    IsSummary: orgDetails.IsSummary,
+                    Name: orgDetails.Name,
+                    Phone: orgDetails.Phone,
+                    Phone2: orgDetails.Phone2,
+                    SM_CodigoVAP: orgDetails.SM_CodigoVAP,
+                    SM_Latitude: orgDetails.SM_Latitude,
+                    SM_LocationName: orgDetails.SM_LocationName,
+                    SM_Longitude: orgDetails.SM_Longitude,
+                    SM_MainlandOrIsland_ID: orgDetails.SM_MainlandOrIsland?.id,
+                    SM_MainlandOrIsland_Identifier: orgDetails.SM_MainlandOrIsland?.identifier,
+                    SM_MinisterialAgreement: orgDetails.SM_MinisterialAgreement,
+                    SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
+                    SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
+                    SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
+                    TaxID: orgDetails.TaxID,
+                    Updated: orgDetails.Updated,
+                    UpdatedBy_ID: orgDetails.UpdatedBy?.id,
+                    UpdatedBy_Identifier: orgDetails.UpdatedBy?.identifier,
+                    Value: orgDetails.Value,
+                    business_group_id: orgDetails.business_group_id,
+                    email_rl: orgDetails.email_rl,
+                    legalentitytype: orgDetails.legalentitytype,
+                    name_rl: orgDetails.name_rl,
+                    taxid_rl: orgDetails.taxid_rl,
+                    uid: orgDetails.uid,
+                    water_system: orgDetails.water_system
                   });
                   break;
                 case "CONTROL":
@@ -407,6 +481,87 @@ const loadUserAccess = () => {
 
       const custodyOrgsWithWarehouses = await Promise.all(custodyWarehousePromises);
 
+      const labWarehousePromises = labsOrgs.map(async (custody) => {
+        try {
+          const response = await DataService.get(`/models/m_warehouse?$filter=AD_Org_ID eq ${custody.orgId} AND IsActive eq true &$expand=M_Locator`);
+          if (response.data && response.data.records) {
+            const pools = response.data.records.map((record) => ({
+              poolId: record.id,
+              poolName: record.Name,
+              location: {
+                id: record.C_Location_ID?.id || null,
+                address: record.C_Location_ID?.identifier || '',
+                city: record.C_Location_ID?.C_City_ID?.identifier || '',
+                country: record.C_Location_ID?.C_Country_ID?.identifier || '',
+                region: record.C_Location_ID?.RegionName || '',
+              },
+              organization: {
+                id: record.AD_Org_ID?.id || null,
+                name: record.AD_Org_ID?.identifier || '',
+              },
+              tenant: {
+                id: record.AD_Client_ID?.id || null,
+                name: record.AD_Client_ID?.identifier || '',
+              },
+              dimensions: {
+                length: record.SM_Lenght || 0,
+                width: record.SM_Width || 0,
+                depth: record.SM_Depth || 0,
+                diameter: record.SM_Diameter || 0,
+              },
+              waterFlow: record.SM_OperatingWaterFlow || 0,
+              waterVolume: record.SM_OperatingWaterVolume || 0,
+              poolSize: record.SM_PoolSize || 0,
+              entranceGateVolume: record.SM_EntranceGateVolume || 0,
+              exitGateVolume: record.SM_ExitGateVolume || 0,
+              plantingDepth: record.SM_PlantingDepth || 0,
+              SM_OppDepth: record.SM_OppDepth || 0,
+              sm_transferdepth: record.sm_transferdepth || 0,
+              feeding_method: record.feeding_method          || 0,
+              sm_mechanicalaeration: record.sm_mechanicalaeration || 0,
+              water_system: record.water_system || 0,
+              batchSequence: record.SM_BatchSequence || 0,
+              poolType: {
+                id: record.sm_pooltype || '',
+                identifier: record.sm_pooltype || '',
+              },
+              geoLocation: record.SM_Geolocation ? JSON.parse(record.SM_Geolocation) : [],
+              createdBy: {
+                id: record.CreatedBy?.id || null,
+                name: record.CreatedBy?.identifier || '',
+              },
+              updatedBy: {
+                id: record.UpdatedBy?.id || null,
+                name: record.UpdatedBy?.identifier || '',
+              },
+              isActive: record.IsActive || false,
+              isInTransit: record.IsInTransit || false,
+              value: record.Value || '',
+              locators: record.M_Locator ? record.M_Locator.map((locator) => locator.id) : [],
+            }));
+
+            return {
+              ...custody,
+              pools
+            };
+          } else {
+            return {
+              ...custody,
+              pools: []
+            };
+          }
+        } catch (err) {
+          console.error(`Error fetching pools for Farm ID ${custody.orgId}:`, err);
+          return {
+            ...custody,
+            pools: [],
+            error: err.message || 'Error al cargar piscinas'
+          };
+        }
+      });
+
+      const LabOrgsWithWarehouses = await Promise.all(labWarehousePromises);
+
       dispatch(loadAccess({
         success: true,
         withFarms,
@@ -416,6 +571,7 @@ const loadUserAccess = () => {
         labsOrgs,
         custodyOrgs: custodyOrgsWithWarehouses,
         farmsOrgs: farmsOrgsWithPools,
+        labOrgs: LabOrgsWithWarehouses,
         controlsOrgs
       }));
     } catch (err) {

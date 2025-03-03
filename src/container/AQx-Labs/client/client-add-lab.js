@@ -7,7 +7,6 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 import { NaturalPersonForm } from './add-client-form/natural-person';
 import { LegalPersonForm } from './add-client-form/legal-person';
 import { PreCriaInfrastructure } from './add-client-form/infrastructure/pc-infrastructure';
-import { PreEngordeInfrastructure } from './add-client-form/infrastructure/pe-infrastructure';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAdOrg, createPools, fetchAdClient, fetchBrandFeeders, fetchBusinessGroups, fetchCity, fetchRegions } from '../../../redux/configuration/actionCreator';
@@ -175,35 +174,25 @@ function AddClientlaboratory() {
     };
 
 
-
-    // En el formulario de georreferenciación (Tab 3)
-    // Función para finalizar y actualizar cada piscina con sus nodos
     const handleFinalizar = () => {
-        // Obtiene todos los valores del formulario
         const formValues = form.getFieldsValue();
 
-        // Recorre cada piscina agregada
         const updatedPiscinas = addedPiscinas.map(pool => {
-            // Lee el nodo inicial
             const initialNode = {
                 latitude: formValues[`${pool.identificador}-nodo-inicial-latitude`],
                 longitude: formValues[`${pool.identificador}-nodo-inicial-longitude`],
                 label: "P-1"
             };
 
-            // Lee los nodos dinámicos guardados en el Form.List (si existen)
             const dynamicNodes = formValues[`${pool.identificador}-nodos`] || [];
 
-            // Genera los nodos dinámicos asignando etiquetas a partir del segundo nodo
             const formattedDynamicNodes = dynamicNodes.map((node, index) => ({
                 ...node,
                 label: `P-${index + 2}`
             }));
 
-            // Junta el nodo inicial con los nodos dinámicos
             const nodes = [initialNode, ...formattedDynamicNodes];
 
-            // Filtra nodos válidos (que tengan ambos valores: latitud y longitud)
             const validNodes = nodes.filter(n => n.latitude !== undefined && n.longitude !== undefined);
 
             return {
@@ -242,9 +231,7 @@ function AddClientlaboratory() {
 
     useEffect(() => {
         const initialTotals = {
-            PC: { count: 0, sm_poolsize: 0 },
-            PE: { count: 0, sm_poolsize: 0 },
-            E: { count: 0, sm_poolsize: 0 }
+            TANK: { count: 0, sm_poolsize: 0 },
         };
 
         const totals = addedPiscinas.reduce((acc, curr) => {
@@ -256,12 +243,8 @@ function AddClientlaboratory() {
         }, initialTotals);
 
         form.setFieldsValue({
-            num_pc: totals.PC.count,
-            num_pe: totals.PE.count,
-            num_e: totals.E.count,
-            ex_pc: totals.PC.sm_poolsize.toFixed(2),
-            ex_pe: totals.PE.sm_poolsize.toFixed(2),
-            ex_e: totals.E.sm_poolsize.toFixed(2)
+            num_pc: totals.TANK.count,
+            ex_pc: totals.TANK.sm_poolsize.toFixed(2),
         });
     }, [addedPiscinas, form]);
 
@@ -287,14 +270,8 @@ function AddClientlaboratory() {
 
             let prefix;
             switch (type) {
-                case 'PC':
-                    prefix = 'Ppc';
-                    break;
-                case 'PE':
-                    prefix = 'Ppe';
-                    break;
-                case 'E':
-                    prefix = 'Pe';
+                case 'TANK':
+                    prefix = 'tank';
                     break;
                 default:
                     prefix = 'Unknown';
@@ -338,17 +315,7 @@ function AddClientlaboratory() {
     };
 
     const columns = [
-        {
-            title: 'Tipo',
-            dataIndex: 'type',
-            key: 'type',
-            align: 'center', // Centrar el título
-            render: (t) => ({
-                pc: 'Pre Cría',
-                pe: 'Pre Engorde',
-                e: 'Engorde'
-            }[t])
-        },
+       
         {
             title: 'ID',
             dataIndex: 'identificador',
@@ -400,7 +367,7 @@ function AddClientlaboratory() {
         <>
             <PageHeader
                 highlightText="AquaLink Administración"
-                title="Configuración Camaronera"
+                title="Configuración Laboratorio"
             />
             <Main>
                 <Form form={form} layout="vertical" onFinish={(values) => console.log('Formulario completado:', values)}>
@@ -467,9 +434,9 @@ function AddClientlaboratory() {
                                     </Col>
 
                                 </Row>
-                                {/* Separador: Información de Camaronera */}
+                                {/* Separador: Información de Laboratorio */}
                                 <div style={{ marginTop: '20px', marginBottom: '10px' }}>
-                                    <strong>● Configuración de Camaronera</strong>
+                                    <strong>● Configuración de Laboratorio</strong>
                                 </div>
                                 <Col span={4}>
                                     <Form.Item
@@ -519,7 +486,7 @@ function AddClientlaboratory() {
                                             </Col>
 
                                             <Col span={6}>
-                                                <Form.Item label="Camaronera">
+                                                <Form.Item label="Laboratorio">
                                                     <Input value={CreatedOrg?.Name || ""} disabled />
                                                 </Form.Item>
                                             </Col>
@@ -527,50 +494,26 @@ function AddClientlaboratory() {
                                         <hr></hr>
                                         <Row gutter={16}>
                                             <Col span={7}>
-                                                <Form.Item label="# de Pre Crías"
+                                                <Form.Item label="# de Pre Tanques"
                                                     name="num_pc">
                                                     <Input disabled />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={7}>
-                                                <Form.Item label="# de Pre Engorde"
-                                                    name="num_pe">
-                                                    <Input disabled />
-                                                </Form.Item>
-                                            </Col>
-                                            <Col span={7}>
-                                                <Form.Item label="# de Engorde Final"
-                                                    name="num_e">
-                                                    <Input disabled />
-                                                </Form.Item>
-                                            </Col>
-                                        </Row>
-
-                                        <Row gutter={16}>
-                                            <Col span={7}>
-                                                <Form.Item label="ext. Pre Crías"
+                                                <Form.Item label="ext. Tanques"
                                                     name="ex_pc">
                                                     <Input disabled />
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={7}>
-                                                <Form.Item label="ext. Pre Engorde"
-                                                    name="ex_pe">
-                                                    <Input disabled />
-                                                </Form.Item>
-                                            </Col>
-                                            <Col span={7}>
-                                                <Form.Item label="ext. Engorde Final"
-                                                    name="ex_e">
-                                                    <Input disabled />
-                                                </Form.Item>
-                                            </Col>
+
                                         </Row>
+
+                                      
                                         <hr></hr>
 
-                                        <Typography.Title level={5}>Configuración de Infraestructura Camaronera</Typography.Title>
+                                        <Typography.Title level={5}>Configuración de Infraestructura Laboratorio</Typography.Title>
                                         <Select
-                                            placeholder="Selecciona un Sector"
+                                            placeholder="Selecciona un Módulo"
                                             onChange={setSelectedSalesRegion}
                                             disabled={!createdSalesRegions?.length}
                                             style={{ width: 250, marginBottom: 20 }}
@@ -584,31 +527,20 @@ function AddClientlaboratory() {
                                             onChange={setSelectedPoolType}
                                             style={{ width: 200, marginBottom: 20 }}
                                         >
-                                            <Option value="PC">Pre Cría</Option>
-                                            <Option value="PE">Pre Engorde</Option>
-                                            <Option value="E">Engorde</Option>
+                                            <Option value="TANK">TANQUE</Option>
                                         </Select>
 
-                                        {selectedPoolType === 'PC' && (
+                                        {selectedPoolType === 'TANK' && (
                                             <PreCriaInfrastructure
                                                 form={form}
-                                                prefix="PC"
+                                                prefix="TANK"
                                                 selectedSalesRegion={selectedSalesRegion}
                                                 brandFeeders={brandFeeders}
                                             />
                                         )}
 
-                                        {selectedPoolType === 'PE' && (
-                                            <PreEngordeInfrastructure
-                                                form={form}
-                                                prefix="PE"
-                                                selectedSalesRegion={selectedSalesRegion}
-                                                brandFeeders={brandFeeders}
 
-                                            />
-                                        )}
 
-                                      
                                     </div>
                                     <div style={{ marginLeft: "20px", flex: 1 }}>
                                         <Table
@@ -628,7 +560,7 @@ function AddClientlaboratory() {
                                         disabled={!selectedPoolType}
                                         style={{ marginBottom: 20 }}
                                     >
-                                        Añadir Piscina
+                                        Añadir Tanque
                                     </Button>
                                 </div>
 

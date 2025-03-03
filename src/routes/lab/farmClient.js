@@ -1,8 +1,8 @@
 import React, { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import ClientLab from '../../container/AQx-Labs/client/client-farm';
-import AddClientLab from '../../container/AQx-Labs/client/client-add-farm';
 import AddClientLaboratory from '../../container/AQx-Labs/client/client-add-lab';
+import ClientLabs from '../../container/AQx-Labs/client/client-farm-view';
 
 const NotFound = lazy(() => import('../../container/pages/404'));
 
@@ -11,8 +11,8 @@ function ClientRouteLab() {
         <Routes>
             <Route index element={<ClientLab />} />
             <Route path="/view" element={<ClientLab />} />
+            <Route path="/views" element={<ClientLabs />} />
             <Route path="/add-client-lab" element={<AddClientLaboratory />} />
-            <Route path="/add" element={<AddClientLab />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );

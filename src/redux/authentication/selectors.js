@@ -5,6 +5,9 @@ export const selectAuthLoading = (state) => state.auth.loading;
 export const selectAuthError = (state) => state.auth.error;
 export const selectCustodyOrgs = (state) => state.auth.custodyOrgs
 
+export const selectLabOrgs = (state) => state.auth.labsOrgs
+
+
 export const selectFarmsOrgsWithPools = (state) => {
   const farmsOrgs = selectFarmsOrgs(state);
   return farmsOrgs.map(org => ({
@@ -17,6 +20,17 @@ export const selectFarmsOrgsWithPools = (state) => {
 export const selectCustodyOrgsWithWarehouses = (state) => {
   const custodyOrgs = selectCustodyOrgs(state);
   return custodyOrgs.map(org => ({
+    ...org,
+    pools: org.pools || [], 
+  }));
+};
+
+
+
+export const selectLabOrgsWithWarehouses = (state) => {
+  const labOrgs = selectLabOrgs(state);
+  console.log("de selector", labOrgs)
+  return labOrgs?.map(org => ({
     ...org,
     pools: org.pools || [], 
   }));

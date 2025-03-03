@@ -260,9 +260,9 @@ export const LegalPersonForm = ({ regions, cities, clientType }) => {
             </Col>
             <Col span={5}>
                 <Form.Item
-                    label="Número de Sectores"
+                    label="Número de Módulos"
                     name="c_sales_region"
-                    rules={[{ required: true, message: 'Ingrese sectores' }]}
+                    rules={[{ required: true, message: 'Ingrese módulos' }]}
                 >
                     <InputNumber size="large" style={{ width: '100%' }} />
                 </Form.Item>

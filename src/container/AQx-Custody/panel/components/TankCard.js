@@ -2,11 +2,12 @@ import { Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 
 const TankCard = ({ data }) => {
+    console.log(data)
     const navigate = useNavigate();
 
     const handleViewLote = () => {
         // Redirige a la ruta deseada con el loteID
-        navigate(`/custody/coords`);
+        navigate(`/custody/coords/${data.ci_id}/view`);
     };
 
     return (
@@ -41,12 +42,16 @@ const TankCard = ({ data }) => {
             </div>
 
             {/* LOTE ID */}
-            <div className="flex-row">
+            <div >
                 <div>
-                    <span className="label">Lote ID:</span>
+                    <center>
+                        <span className="label">Lote ID</span>
+                    </center>
                 </div>
                 <div>
-                    <span>{data.loteID || 'NA'}</span>
+                    <center>
+                        <span>{data.loteID || 'NA'}</span>
+                    </center>
                 </div>
             </div>
             <br />
