@@ -93,13 +93,117 @@ const selectRoleUtil = async (roleId, clientId) => {
   }
 }
 
+const mapPoolRecord = (record) => ({
+  poolId: record.id,
+  poolName: record.Name,
+  location: {
+    id: record.C_Location_ID?.id || null,
+    address: record.C_Location_ID?.identifier || '',
+    city: record.C_Location_ID?.C_City_ID?.identifier || '',
+    country: record.C_Location_ID?.C_Country_ID?.identifier || '',
+    region: record.C_Location_ID?.RegionName || '',
+  },
+  organization: {
+    id: record.AD_Org_ID?.id || null,
+    name: record.AD_Org_ID?.identifier || '',
+  },
+  tenant: {
+    id: record.AD_Client_ID?.id || null,
+    name: record.AD_Client_ID?.identifier || '',
+  },
+  dimensions: {
+    length: record.SM_Lenght || 0,
+    width: record.SM_Width || 0,
+    depth: record.SM_Depth || 0,
+    diameter: record.SM_Diameter || 0,
+  },
+  waterFlow: record.SM_OperatingWaterFlow || 0,
+  waterVolume: record.SM_OperatingWaterVolume || 0,
+  poolSize: record.SM_PoolSize || 0,
+  entranceGateVolume: record.SM_EntranceGateVolume || 0,
+  exitGateVolume: record.SM_ExitGateVolume || 0,
+  plantingDepth: record.SM_PlantingDepth || 0,
+  SM_OppDepth: record.SM_OppDepth || 0,
+  sm_transferdepth: record.sm_transferdepth || 0,
+  feeding_method: record.feeding_method || 0,
+  sm_mechanicalaeration: record.sm_mechanicalaeration || 0,
+  water_system: record.water_system || 0,
+  batchSequence: record.SM_BatchSequence || 0,
+  poolType: {
+    id: record.sm_pooltype || '',
+    identifier: record.sm_pooltype || '',
+  },
+  geoLocation: record.SM_Geolocation ? JSON.parse(record.SM_Geolocation) : [],
+  createdBy: {
+    id: record.CreatedBy?.id || null,
+    name: record.CreatedBy?.identifier || '',
+  },
+  updatedBy: {
+    id: record.UpdatedBy?.id || null,
+    name: record.UpdatedBy?.identifier || '',
+  },
+  isActive: record.IsActive || false,
+  isInTransit: record.IsInTransit || false,
+  value: record.Value || '',
+  locators: record.M_Locator ? record.M_Locator.map((locator) => locator.id) : [],
+});
+
+const mapOrgRecord = (info, baseOrg, orgDetails, location) => ({
+  orgId: info.id,
+  orgName: baseOrg.name,
+  orgEmail: info.EMail,
+  latitude: location.latitude,
+  longitude: location.longitude,
+  businessname: info.businessname,
+  AD_Client_ID: orgDetails.AD_Client_ID?.id,
+  AD_Client_Identifier: orgDetails.AD_Client_ID?.identifier,
+  C_City_ID: orgDetails.C_City_ID?.id,
+  City_Identifier: orgDetails.C_City_ID?.identifier,
+  C_Region_ID: orgDetails.C_Region_ID?.id,
+  Region_Identifier: orgDetails.C_Region_ID?.identifier,
+  Created: orgDetails.Created,
+  CreatedBy_ID: orgDetails.CreatedBy?.id,
+  CreatedBy_Identifier: orgDetails.CreatedBy?.identifier,
+  IsActive: orgDetails.IsActive,
+  IsSummary: orgDetails.IsSummary,
+  Name: orgDetails.Name,
+  Phone: orgDetails.Phone,
+  Phone2: orgDetails.Phone2,
+  SM_CodigoVAP: orgDetails.SM_CodigoVAP,
+  SM_Latitude: orgDetails.SM_Latitude,
+  SM_LocationName: orgDetails.SM_LocationName,
+  SM_Longitude: orgDetails.SM_Longitude,
+  SM_MainlandOrIsland_ID: orgDetails.SM_MainlandOrIsland?.id,
+  SM_MainlandOrIsland_Identifier: orgDetails.SM_MainlandOrIsland?.identifier,
+  SM_MinisterialAgreement: orgDetails.SM_MinisterialAgreement,
+  SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
+  SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
+  SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
+  TaxID: orgDetails.TaxID,
+  Updated: orgDetails.Updated,
+  UpdatedBy_ID: orgDetails.UpdatedBy?.id,
+  UpdatedBy_Identifier: orgDetails.UpdatedBy?.identifier,
+  Value: orgDetails.Value,
+  business_group_id: orgDetails.business_group_id,
+  email_rl: orgDetails.email_rl,
+  legalentitytype: orgDetails.legalentitytype,
+  name_rl: orgDetails.name_rl,
+  taxid_rl: orgDetails.taxid_rl,
+  uid: orgDetails.uid,
+  water_system: orgDetails.water_system,
+  AD_OrgType_ID: info.AD_OrgType_ID
+});
+
 const loadUserAccess = () => {
   return async (dispatch) => {
     try {
-      const roleId = Cookies.get('selectedRoleId');
-      const clientId = Cookies.get('selectedClientId');
+      const roleId = Cookies.get("selectedRoleId");
+      const clientId = Cookies.get("selectedClientId");
 
-      const orgResponse = await DataService.get(`/auth/organizations?client=${clientId}&role=${roleId}`, true);
+      const orgResponse = await DataService.get(
+        `/auth/organizations?client=${clientId}&role=${roleId}`,
+        true
+      );
 
       let withFarms = false;
       let withLabs = false;
@@ -110,476 +214,105 @@ const loadUserAccess = () => {
       let farmsOrgs = [];
       let controlsOrgs = [];
 
-      if (orgResponse && orgResponse.data && orgResponse.data.organizations) {
+      if (
+        orgResponse &&
+        orgResponse.data &&
+        orgResponse.data.organizations
+      ) {
         let params = "";
-        let i = 0;
         const orgMap = {};
-
-        for (let org of orgResponse.data.organizations) {
-          if (i++ > 0) {
-            params += " OR ";
-          }
-          params += `AD_Org_ID eq ${org.id}`;
+        orgResponse.data.organizations.forEach((org, index) => {
+          params += (index > 0 ? " OR " : "") + `AD_Org_ID eq ${org.id}`;
           orgMap[org.id] = org;
-        }
+        });
 
-        const orgInfoResponse = await DataService.get(`/models/ad_orginfo?$filter=${params}`);
+        const orgInfoResponse = await DataService.get(
+          `/models/ad_orginfo?$filter=${params}`
+        );
 
-        if (orgInfoResponse && orgInfoResponse.data && orgInfoResponse.data.records) {
-          const orgIds = orgInfoResponse.data.records.map(info => info.id);
-          const adOrgFilter = orgIds.map(id => `AD_Org_ID eq ${id}`).join(" or ");
-          console.log("adfilter", adOrgFilter)
-          const orgLocationResponse = await DataService.get(`/models/ad_org?$filter=${adOrgFilter}`);
-          console.log("adfilterloca", orgLocationResponse)
+        if (
+          orgInfoResponse &&
+          orgInfoResponse.data &&
+          orgInfoResponse.data.records
+        ) {
+          const orgIds = orgInfoResponse.data.records.map((info) => info.id);
+          const adOrgFilter = orgIds.map((id) => `AD_Org_ID eq ${id}`).join(" or ");
+          const orgLocationResponse = await DataService.get(
+            `/models/ad_org?$filter=${encodeURIComponent(adOrgFilter)}&$expand=m_warehouse`
+          );
+
           const locationMap = {};
           const orgDetailsMap = {};
 
-          if (orgLocationResponse && orgLocationResponse.data && orgLocationResponse.data.records) {
-            console.log('Organizations Location:', JSON.stringify(orgLocationResponse.data.records));
-            for (let org of orgLocationResponse.data.records) {
+          if (
+            orgLocationResponse &&
+            orgLocationResponse.data &&
+            orgLocationResponse.data.records
+          ) {
+            orgLocationResponse.data.records.forEach((org) => {
               locationMap[org.id] = {
                 latitude: org.SM_Latitude || null,
-                longitude: org.SM_Longitude || null
+                longitude: org.SM_Longitude || null,
+                pools: org.m_warehouse || [] // Piscinas obtenidas con $expand
               };
-              orgDetailsMap[org.id] = org; // Guardar toda la información de la organización
-            }
+              orgDetailsMap[org.id] = org;
+            });
           }
+
           for (let info of orgInfoResponse.data.records) {
-            const location = locationMap[info.id] || { latitude: null, longitude: null };
+            const location = locationMap[info.id] || {
+              latitude: null,
+              longitude: null,
+              pools: []
+            };
             const orgDetails = orgDetailsMap[info.id] || {};
-        
-            console.log("infooooo", info);
-        
-            if (info.AD_OrgType_ID) {
-              switch (info.AD_OrgType_ID.identifier) {
-                case "FARM":
-                  withFarms = true;
-                  farmsOrgs.push({
-                    orgId: info.id,
-                    orgName: orgMap[info.id].name,
-                    orgEmail: info.EMail,
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                    businessname: info.businessname,
-                    AD_Client_ID: orgDetails.AD_Client_ID?.id,
-                    AD_Client_Identifier: orgDetails.AD_Client_ID?.identifier,
-                    C_City_ID: orgDetails.C_City_ID?.id,
-                    City_Identifier: orgDetails.C_City_ID?.identifier,
-                    C_Region_ID: orgDetails.C_Region_ID?.id,
-                    Region_Identifier: orgDetails.C_Region_ID?.identifier,
-                    Created: orgDetails.Created,
-                    CreatedBy_ID: orgDetails.CreatedBy?.id,
-                    CreatedBy_Identifier: orgDetails.CreatedBy?.identifier,
-                    IsActive: orgDetails.IsActive,
-                    IsSummary: orgDetails.IsSummary,
-                    Name: orgDetails.Name,
-                    Phone: orgDetails.Phone,
-                    Phone2: orgDetails.Phone2,
-                    SM_CodigoVAP: orgDetails.SM_CodigoVAP,
-                    SM_Latitude: orgDetails.SM_Latitude,
-                    SM_LocationName: orgDetails.SM_LocationName,
-                    SM_Longitude: orgDetails.SM_Longitude,
-                    SM_MainlandOrIsland_ID: orgDetails.SM_MainlandOrIsland?.id,
-                    SM_MainlandOrIsland_Identifier: orgDetails.SM_MainlandOrIsland?.identifier,
-                    SM_MinisterialAgreement: orgDetails.SM_MinisterialAgreement,
-                    SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
-                    SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
-                    SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
-                    TaxID: orgDetails.TaxID,
-                    Updated: orgDetails.Updated,
-                    UpdatedBy_ID: orgDetails.UpdatedBy?.id,
-                    UpdatedBy_Identifier: orgDetails.UpdatedBy?.identifier,
-                    Value: orgDetails.Value,
-                    business_group_id: orgDetails.business_group_id,
-                    email_rl: orgDetails.email_rl,
-                    legalentitytype: orgDetails.legalentitytype,
-                    name_rl: orgDetails.name_rl,
-                    taxid_rl: orgDetails.taxid_rl,
-                    uid: orgDetails.uid,
-                    water_system: orgDetails.water_system
-                  });
+            const baseOrgData = mapOrgRecord(info, orgMap[info.id], orgDetails, location);
 
-                  break;
-                case "LAB":
-                  withLabs = true;
-                  labsOrgs.push({
-                    orgId: info.id,
-                    orgName: orgMap[info.id].name,
-                    orgEmail: info.EMail,
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                    businessname: info.businessname,
-                    AD_Client_ID: orgDetails.AD_Client_ID?.id,
-                    AD_Client_Identifier: orgDetails.AD_Client_ID?.identifier,
-                    C_City_ID: orgDetails.C_City_ID?.id,
-                    City_Identifier: orgDetails.C_City_ID?.identifier,
-                    C_Region_ID: orgDetails.C_Region_ID?.id,
-                    Region_Identifier: orgDetails.C_Region_ID?.identifier,
-                    Created: orgDetails.Created,
-                    CreatedBy_ID: orgDetails.CreatedBy?.id,
-                    CreatedBy_Identifier: orgDetails.CreatedBy?.identifier,
-                    IsActive: orgDetails.IsActive,
-                    IsSummary: orgDetails.IsSummary,
-                    Name: orgDetails.Name,
-                    Phone: orgDetails.Phone,
-                    Phone2: orgDetails.Phone2,
-                    SM_CodigoVAP: orgDetails.SM_CodigoVAP,
-                    SM_Latitude: orgDetails.SM_Latitude,
-                    SM_LocationName: orgDetails.SM_LocationName,
-                    SM_Longitude: orgDetails.SM_Longitude,
-                    SM_MainlandOrIsland_ID: orgDetails.SM_MainlandOrIsland?.id,
-                    SM_MainlandOrIsland_Identifier: orgDetails.SM_MainlandOrIsland?.identifier,
-                    SM_MinisterialAgreement: orgDetails.SM_MinisterialAgreement,
-                    SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
-                    SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
-                    SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
-                    TaxID: orgDetails.TaxID,
-                    Updated: orgDetails.Updated,
-                    UpdatedBy_ID: orgDetails.UpdatedBy?.id,
-                    UpdatedBy_Identifier: orgDetails.UpdatedBy?.identifier,
-                    Value: orgDetails.Value,
-                    business_group_id: orgDetails.business_group_id,
-                    email_rl: orgDetails.email_rl,
-                    legalentitytype: orgDetails.legalentitytype,
-                    name_rl: orgDetails.name_rl,
-                    taxid_rl: orgDetails.taxid_rl,
-                    uid: orgDetails.uid,
-                    water_system: orgDetails.water_system
-                  });
-                  break;
-                case "CUSTODY":
-                  withCustody = true;
-                  custodyOrgs.push({
-                    orgId: info.id,
-                    orgName: orgMap[info.id].name,
-                    orgEmail: info.EMail,
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                    businessname: info.businessname,
-                    AD_Client_ID: orgDetails.AD_Client_ID?.id,
-                    AD_Client_Identifier: orgDetails.AD_Client_ID?.identifier,
-                    C_City_ID: orgDetails.C_City_ID?.id,
-                    City_Identifier: orgDetails.C_City_ID?.identifier,
-                    C_Region_ID: orgDetails.C_Region_ID?.id,
-                    Region_Identifier: orgDetails.C_Region_ID?.identifier,
-                    Created: orgDetails.Created,
-                    CreatedBy_ID: orgDetails.CreatedBy?.id,
-                    CreatedBy_Identifier: orgDetails.CreatedBy?.identifier,
-                    IsActive: orgDetails.IsActive,
-                    IsSummary: orgDetails.IsSummary,
-                    Name: orgDetails.Name,
-                    Phone: orgDetails.Phone,
-                    Phone2: orgDetails.Phone2,
-                    SM_CodigoVAP: orgDetails.SM_CodigoVAP,
-                    SM_Latitude: orgDetails.SM_Latitude,
-                    SM_LocationName: orgDetails.SM_LocationName,
-                    SM_Longitude: orgDetails.SM_Longitude,
-                    SM_MainlandOrIsland_ID: orgDetails.SM_MainlandOrIsland?.id,
-                    SM_MainlandOrIsland_Identifier: orgDetails.SM_MainlandOrIsland?.identifier,
-                    SM_MinisterialAgreement: orgDetails.SM_MinisterialAgreement,
-                    SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
-                    SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
-                    SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
-                    TaxID: orgDetails.TaxID,
-                    Updated: orgDetails.Updated,
-                    UpdatedBy_ID: orgDetails.UpdatedBy?.id,
-                    UpdatedBy_Identifier: orgDetails.UpdatedBy?.identifier,
-                    Value: orgDetails.Value,
-                    business_group_id: orgDetails.business_group_id,
-                    email_rl: orgDetails.email_rl,
-                    legalentitytype: orgDetails.legalentitytype,
-                    name_rl: orgDetails.name_rl,
-                    taxid_rl: orgDetails.taxid_rl,
-                    uid: orgDetails.uid,
-                    water_system: orgDetails.water_system
-                  });
-                  break;
-                case "CONTROL":
-                  withControl = true;
-                  controlsOrgs.push({
-                    orgId: info.id,
-                    orgName: orgMap[info.id].name,
-                    orgEmail: info.EMail,
-                    latitude: location.latitude,
-                    longitude: location.longitude
-                  });
-                  break;
-                default:
-                  break;
-              }
+            switch (info.AD_OrgType_ID?.identifier) {
+              case "FARM":
+                withFarms = true;
+                farmsOrgs.push({ ...baseOrgData, pools: location.pools.map(mapPoolRecord) });
+                break;
+              case "LAB":
+                withLabs = true;
+                labsOrgs.push({ ...baseOrgData, pools: location.pools.map(mapPoolRecord) });
+                break;
+              case "CUSTODY":
+                withCustody = true;
+                custodyOrgs.push({ ...baseOrgData, pools: location.pools.map(mapPoolRecord) });
+                break;
+              case "CONTROL":
+                withControl = true;
+                controlsOrgs.push({ ...baseOrgData, pools: location.pools.map(mapPoolRecord) });
+                break;
+              default:
+                break;
             }
           }
-
         }
       }
 
-
-      const farmsPoolsPromises = farmsOrgs.map(async (farm) => {
-        try {
-          const response = await DataService.get(`/models/m_warehouse?$filter=AD_Org_ID eq ${farm.orgId} AND IsActive eq true &$expand=M_Locator`);
-          if (response.data && response.data.records) {
-            const pools = response.data.records.map((record) => ({
-              poolId: record.id,
-              poolName: record.Name,
-              location: {
-                id: record.C_Location_ID?.id || null,
-                address: record.C_Location_ID?.identifier || '',
-                city: record.C_Location_ID?.C_City_ID?.identifier || '',
-                country: record.C_Location_ID?.C_Country_ID?.identifier || '',
-                region: record.C_Location_ID?.RegionName || '',
-              },
-              organization: {
-                id: record.AD_Org_ID?.id || null,
-                name: record.AD_Org_ID?.identifier || '',
-              },
-              tenant: {
-                id: record.AD_Client_ID?.id || null,
-                name: record.AD_Client_ID?.identifier || '',
-              },
-              dimensions: {
-                length: record.SM_Lenght || 0,
-                width: record.SM_Width || 0,
-                depth: record.SM_Depth || 0,
-                diameter: record.SM_Diameter || 0,
-              },
-              waterFlow: record.SM_OperatingWaterFlow || 0,
-              waterVolume: record.SM_OperatingWaterVolume || 0,
-              poolSize: record.SM_PoolSize || 0,
-              entranceGateVolume: record.SM_EntranceGateVolume || 0,
-              exitGateVolume: record.SM_ExitGateVolume || 0,
-              plantingDepth: record.SM_PlantingDepth || 0,
-              SM_OppDepth: record.SM_OppDepth || 0,
-              sm_transferdepth: record.sm_transferdepth || 0,
-              feeding_method: record.feeding_method          || 0,
-              sm_mechanicalaeration: record.sm_mechanicalaeration || 0,
-              water_system: record.water_system || 0,
-              batchSequence: record.SM_BatchSequence || 0,
-              poolType: {
-                id: record.sm_pooltype || '',
-                identifier: record.sm_pooltype || '',
-              },
-              salesRegion: {
-                id: record.C_SalesRegion_ID?.id || null,
-                name: record.C_SalesRegion_ID?.identifier || '',
-              },
-              geoLocation: record.SM_Geolocation ? JSON.parse(record.SM_Geolocation) : [],
-              createdBy: {
-                id: record.CreatedBy?.id || null,
-                name: record.CreatedBy?.identifier || '',
-              },
-              updatedBy: {
-                id: record.UpdatedBy?.id || null,
-                name: record.UpdatedBy?.identifier || '',
-              },
-              isActive: record.IsActive || false,
-              isInTransit: record.IsInTransit || false,
-              value: record.Value || '',
-              locators: record.M_Locator ? record.M_Locator.map((locator) => locator.id) : [],
-            }));
-
-            return {
-              ...farm,
-              pools
-            };
-          } else {
-            return {
-              ...farm,
-              pools: []
-            };
-          }
-        } catch (err) {
-          console.error(`Error fetching pools for Farm ID ${farm.orgId}:`, err);
-          return {
-            ...farm,
-            pools: [],
-            error: err.message || 'Error al cargar piscinas'
-          };
-        }
-      });
-
-      const farmsOrgsWithPools = await Promise.all(farmsPoolsPromises);
-
-
-      const custodyWarehousePromises = custodyOrgs.map(async (custody) => {
-        try {
-          const response = await DataService.get(`/models/m_warehouse?$filter=AD_Org_ID eq ${custody.orgId} AND IsActive eq true &$expand=M_Locator`);
-          if (response.data && response.data.records) {
-            const pools = response.data.records.map((record) => ({
-              poolId: record.id,
-              poolName: record.Name,
-              location: {
-                id: record.C_Location_ID?.id || null,
-                address: record.C_Location_ID?.identifier || '',
-                city: record.C_Location_ID?.C_City_ID?.identifier || '',
-                country: record.C_Location_ID?.C_Country_ID?.identifier || '',
-                region: record.C_Location_ID?.RegionName || '',
-              },
-              organization: {
-                id: record.AD_Org_ID?.id || null,
-                name: record.AD_Org_ID?.identifier || '',
-              },
-              tenant: {
-                id: record.AD_Client_ID?.id || null,
-                name: record.AD_Client_ID?.identifier || '',
-              },
-              dimensions: {
-                length: record.SM_Lenght || 0,
-                width: record.SM_Width || 0,
-                depth: record.SM_Depth || 0,
-                diameter: record.SM_Diameter || 0,
-              },
-              waterFlow: record.SM_OperatingWaterFlow || 0,
-              waterVolume: record.SM_OperatingWaterVolume || 0,
-              poolSize: record.SM_PoolSize || 0,
-              entranceGateVolume: record.SM_EntranceGateVolume || 0,
-              exitGateVolume: record.SM_ExitGateVolume || 0,
-              plantingDepth: record.SM_PlantingDepth || 0,
-              SM_OppDepth: record.SM_OppDepth || 0,
-              sm_transferdepth: record.sm_transferdepth || 0,
-              feeding_method: record.feeding_method          || 0,
-              sm_mechanicalaeration: record.sm_mechanicalaeration || 0,
-              water_system: record.water_system || 0,
-              batchSequence: record.SM_BatchSequence || 0,
-              poolType: {
-                id: record.sm_pooltype || '',
-                identifier: record.sm_pooltype || '',
-              },
-              geoLocation: record.SM_Geolocation ? JSON.parse(record.SM_Geolocation) : [],
-              createdBy: {
-                id: record.CreatedBy?.id || null,
-                name: record.CreatedBy?.identifier || '',
-              },
-              updatedBy: {
-                id: record.UpdatedBy?.id || null,
-                name: record.UpdatedBy?.identifier || '',
-              },
-              isActive: record.IsActive || false,
-              isInTransit: record.IsInTransit || false,
-              value: record.Value || '',
-              locators: record.M_Locator ? record.M_Locator.map((locator) => locator.id) : [],
-            }));
-
-            return {
-              ...custody,
-              pools
-            };
-          } else {
-            return {
-              ...custody,
-              pools: []
-            };
-          }
-        } catch (err) {
-          console.error(`Error fetching pools for Farm ID ${custody.orgId}:`, err);
-          return {
-            ...custody,
-            pools: [],
-            error: err.message || 'Error al cargar piscinas'
-          };
-        }
-      });
-
-      const custodyOrgsWithWarehouses = await Promise.all(custodyWarehousePromises);
-
-      const labWarehousePromises = labsOrgs.map(async (custody) => {
-        try {
-          const response = await DataService.get(`/models/m_warehouse?$filter=AD_Org_ID eq ${custody.orgId} AND IsActive eq true &$expand=M_Locator`);
-          if (response.data && response.data.records) {
-            const pools = response.data.records.map((record) => ({
-              poolId: record.id,
-              poolName: record.Name,
-              location: {
-                id: record.C_Location_ID?.id || null,
-                address: record.C_Location_ID?.identifier || '',
-                city: record.C_Location_ID?.C_City_ID?.identifier || '',
-                country: record.C_Location_ID?.C_Country_ID?.identifier || '',
-                region: record.C_Location_ID?.RegionName || '',
-              },
-              organization: {
-                id: record.AD_Org_ID?.id || null,
-                name: record.AD_Org_ID?.identifier || '',
-              },
-              tenant: {
-                id: record.AD_Client_ID?.id || null,
-                name: record.AD_Client_ID?.identifier || '',
-              },
-              dimensions: {
-                length: record.SM_Lenght || 0,
-                width: record.SM_Width || 0,
-                depth: record.SM_Depth || 0,
-                diameter: record.SM_Diameter || 0,
-              },
-              waterFlow: record.SM_OperatingWaterFlow || 0,
-              waterVolume: record.SM_OperatingWaterVolume || 0,
-              poolSize: record.SM_PoolSize || 0,
-              entranceGateVolume: record.SM_EntranceGateVolume || 0,
-              exitGateVolume: record.SM_ExitGateVolume || 0,
-              plantingDepth: record.SM_PlantingDepth || 0,
-              SM_OppDepth: record.SM_OppDepth || 0,
-              sm_transferdepth: record.sm_transferdepth || 0,
-              feeding_method: record.feeding_method          || 0,
-              sm_mechanicalaeration: record.sm_mechanicalaeration || 0,
-              water_system: record.water_system || 0,
-              batchSequence: record.SM_BatchSequence || 0,
-              poolType: {
-                id: record.sm_pooltype || '',
-                identifier: record.sm_pooltype || '',
-              },
-              geoLocation: record.SM_Geolocation ? JSON.parse(record.SM_Geolocation) : [],
-              createdBy: {
-                id: record.CreatedBy?.id || null,
-                name: record.CreatedBy?.identifier || '',
-              },
-              updatedBy: {
-                id: record.UpdatedBy?.id || null,
-                name: record.UpdatedBy?.identifier || '',
-              },
-              isActive: record.IsActive || false,
-              isInTransit: record.IsInTransit || false,
-              value: record.Value || '',
-              locators: record.M_Locator ? record.M_Locator.map((locator) => locator.id) : [],
-            }));
-
-            return {
-              ...custody,
-              pools
-            };
-          } else {
-            return {
-              ...custody,
-              pools: []
-            };
-          }
-        } catch (err) {
-          console.error(`Error fetching pools for Farm ID ${custody.orgId}:`, err);
-          return {
-            ...custody,
-            pools: [],
-            error: err.message || 'Error al cargar piscinas'
-          };
-        }
-      });
-
-      const LabOrgsWithWarehouses = await Promise.all(labWarehousePromises);
-
-      dispatch(loadAccess({
-        success: true,
-        withFarms,
-        withLabs,
-        withCustody,
-        withControl,
-        labsOrgs,
-        custodyOrgs: custodyOrgsWithWarehouses,
-        farmsOrgs: farmsOrgsWithPools,
-        labOrgs: LabOrgsWithWarehouses,
-        controlsOrgs
-      }));
+      dispatch(
+        loadAccess({
+          success: true,
+          withFarms,
+          withLabs,
+          withCustody,
+          withControl,
+          labsOrgs,
+          custodyOrgs,
+          farmsOrgs,
+          controlsOrgs
+        })
+      );
     } catch (err) {
       dispatch(rolesErr(err));
       dispatch(netWorkError(err));
     }
   };
 };
+
+
 
 const selectModule = (moduleId, orgInfo, callback) => {
   return async (dispatch) => {

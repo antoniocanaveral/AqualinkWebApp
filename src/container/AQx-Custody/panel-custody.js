@@ -50,7 +50,10 @@ function PanelCustody() {
 
   const today = new Date().toISOString().split('T')[0];
   const validCoordinationInfo = Array.isArray(coordinationInfo) ? coordinationInfo : [];
-  const installedCapacity = validCoordinationInfo.find(coord => coord.BP_AD_Org_ID.id === selectedOrg)?.sm_installedcapacitylarva || 0;
+  const installedCapacity = validCoordinationInfo.find(
+    (coord) => coord.BP_AD_Org_ID && coord.BP_AD_Org_ID.id === selectedOrg
+  )?.sm_installedcapacitylarva || 0;
+  
   const totalFishingVolume = validCoordinationInfo.reduce((sum, coord) => sum + (coord.SM_FishingVolume || 0), 0);
   const biomassToday = validCoordinationInfo.reduce((sum, coord) => (coord.SM_FishingDate?.startsWith(today) ? sum + (coord.SM_Biomass || 0) : sum), 0);
   const totalBiomass = validCoordinationInfo.reduce((sum, coord) => sum + (coord.SM_Biomass || 0), 0);

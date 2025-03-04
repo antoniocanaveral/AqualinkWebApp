@@ -1,241 +1,190 @@
-import React, { useState } from "react";
-import DashboardChart from "../../../../components/charts/DashboardChart";
-import { Button } from "antd";
-import ButtonGroup from "antd/lib/button/button-group";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Cards } from "../../../../components/cards/frame/cards-frame";
+import DashboardChart from "../../../../components/charts/DashboardChart";
+import { Button, Skeleton } from "antd";
+import ButtonGroup from "antd/lib/button/button-group";
+import moment from "moment";
+import { fetchCoordinationInfo_FarmProyection } from "../../../../redux/views/coords/actionCreator";
 
-function ProjectionKgPanel({height}) {
-    const [view, setView] = useState("month"); // Estado para cambiar entre "month", "week", "year"
+const datasetsTemplate = [
+    { backgroundColor: '#001737', barPercentage: 0.6, label: '80-100' },
+    { backgroundColor: '#1ce1ac', barPercentage: 0.6, label: '70-80' },
+    { backgroundColor: '#ff2545', barPercentage: 0.6, label: '60-70' },
+    { backgroundColor: '#5324ea', barPercentage: 0.6, label: '50-60' },
+    { backgroundColor: '#ec7e00', barPercentage: 0.6, label: '40-50' },
+    { backgroundColor: '#0099e6', barPercentage: 0.6, label: '30-40' },
+    { backgroundColor: '#ff9f40', barPercentage: 0.6, label: '20-30' },
+];
 
-    // Datos para cada vista
-    const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const monthDatasets = [
-        {
-            data: [20, 60, 50, 45, 50, 60, 70, 40, 45, 35, 25, 30],
-            backgroundColor: '#001737',
-            barPercentage: 0.6,
-            label: '80-100',
-        },
-        {
-            data: [10, 40, 30, 40, 60, 55, 45, 35, 30, 20, 15, 20],
-            backgroundColor: '#1ce1ac',
-            barPercentage: 0.6,
-            label: '70-80',
-        },
-        {
-            data: [20, 60, 50, 45, 50, 60, 70, 40, 45, 35, 25, 30],
-            backgroundColor: '#ff2545',
-            barPercentage: 0.6,
-            label: '60-70',
-        },
-        {
-            data: [10, 40, 30, 40, 60, 55, 45, 35, 30, 20, 15, 20],
-            backgroundColor: '#5324ea',
-            barPercentage: 0.6,
-            label: '50-60',
-        },
-        {
-            data: [10, 40, 30, 40, 60, 55, 45, 35, 30, 20, 15, 20],
-            backgroundColor: '#ec7e00',
-            barPercentage: 0.6,
-            label: '40-50',
-        },
-        {
-            data: [10, 40, 30, 40, 60, 55, 45, 35, 30, 20, 15, 20],
-            backgroundColor: '#0099e6',
-            barPercentage: 0.6,
-            label: '30-40',
-        },
-        {
-            data: [5, 15, 10, 20, 25, 30, 35, 20, 25, 15, 10, 15],
-            backgroundColor: '#ff9f40',
-            barPercentage: 0.6,
-            label: '20-30',
-        },
-    ];
+const getClassification = (record) => {
+    if (record.SM_Category30_40) return "30-40";
+    if (record.SM_Category40_50) return "40-50";
+    if (record.SM_Category50_60) return "50-60";
+    if (record.SM_Category60_70) return "60-70";
+    if (record.SM_Category70_80) return "70-80";
+    if (record.SM_Category80_100) return "80-100";
+    if (record.SM_Category100_120) return "100-120";
+    if (record.SM_Category120_150) return "120-150";
+    return null;
+};
 
-    const weekLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-    const weekDatasets = [
-        {
-            data: [50, 70, 60, 80],
-            backgroundColor: '#001737',
-            barPercentage: 0.6,
-            label: '80-100',
-        },
-        {
-            data: [30, 50, 40, 60],
-            backgroundColor: '#1ce1ac',
-            barPercentage: 0.6,
-            label: '70-80',
-        },
-        {
-            data: [40, 60, 50, 70],
-            backgroundColor: '#ff2545',
-            barPercentage: 0.6,
-            label: '60-70',
-        },
-        {
-            data: [25, 35, 30, 45],
-            backgroundColor: '#5324ea',
-            barPercentage: 0.6,
-            label: '50-60',
-        },
-        {
-            data: [20, 30, 25, 35],
-            backgroundColor: '#ec7e00',
-            barPercentage: 0.6,
-            label: '40-50',
-        },
-        {
-            data: [15, 25, 20, 30],
-            backgroundColor: '#0099e6',
-            barPercentage: 0.6,
-            label: '30-40',
-        },
-        {
-            data: [10, 15, 12, 18],
-            backgroundColor: '#ff9f40',
-            barPercentage: 0.6,
-            label: '20-30',
-        },
-    ];
+const ProjectionKgPanel = ({ height, selectedOrg, loading, error, coordinationInfo  }) => {
+  
 
-    const yearLabels = ['2020', '2021', '2022', '2023', '2024'];
-    const yearDatasets = [
-        {
-            data: [200, 250, 300, 350, 400],
-            backgroundColor: '#001737',
-            barPercentage: 0.6,
-            label: '80-100',
-        },
-        {
-            data: [150, 200, 250, 300, 350],
-            backgroundColor: '#1ce1ac',
-            barPercentage: 0.6,
-            label: '70-80',
-        },
-        {
-            data: [180, 230, 280, 330, 380],
-            backgroundColor: '#ff2545',
-            barPercentage: 0.6,
-            label: '60-70',
-        },
-        {
-            data: [120, 170, 220, 270, 320],
-            backgroundColor: '#5324ea',
-            barPercentage: 0.6,
-            label: '50-60',
-        },
-        {
-            data: [100, 150, 200, 250, 300],
-            backgroundColor: '#ec7e00',
-            barPercentage: 0.6,
-            label: '40-50',
-        },
-        {
-            data: [80, 130, 180, 230, 280],
-            backgroundColor: '#0099e6',
-            barPercentage: 0.6,
-            label: '30-40',
-        },
-        {
-            data: [40, 90, 140, 190, 240],
-            backgroundColor: '#ff9f40',
-            barPercentage: 0.6,
-            label: '20-30',
-        },
-    ];
+    const [view, setView] = useState("month");
 
-    let labels = monthLabels;
-    let datasets = monthDatasets;
+    const currentDate = moment();
+    const currentYear = currentDate.year();
+    const currentMonth = currentDate.format("MMMM YYYY");
+    const currentWeekStart = currentDate.clone().startOf("week");
+    const currentWeekEnd = currentDate.clone().endOf("week");
 
+    const weekLabels = Array.from({ length: 7 }, (_, i) =>
+        currentWeekStart.clone().add(i, "days").format("dddd D")
+    );
+    const monthLabels = Array.from({ length: 4 }, (_, i) => {
+        const weekStart = currentDate.clone().startOf("month").add(i * 7, "days");
+        return `Semana ${i + 1} (${weekStart.format("D MMM")})`;
+    });
+    const yearLabels = Array.from({ length: 12 }, (_, i) =>
+        currentDate.clone().month(i).format("MMMM")
+    );
+
+  
+
+    const groupData = () => {
+        if (!coordinationInfo || !Array.isArray(coordinationInfo)) {
+            return { categorySums: {}, labels: [] }; // Retorna un objeto vacío si los datos no están listos
+        }
+    
+        let bucketsCount = 0;
+        let labels = [];
+    
+        if (view === "week") {
+            bucketsCount = 7;
+            labels = weekLabels;
+        } else if (view === "month") {
+            bucketsCount = 4;
+            labels = monthLabels;
+        } else if (view === "year") {
+            bucketsCount = 12;
+            labels = yearLabels;
+        }
+    
+        // Usar un objeto para almacenar los identificadores únicos
+        const uniqueRecords = {};
+        coordinationInfo.forEach((record) => {
+            const identifier = record?.SM_Coordination_ID?.identifier;
+            if (identifier && !uniqueRecords[identifier]) {
+                uniqueRecords[identifier] = record; // Guardar solo el primer registro con ese identifier
+            }
+        });
+    
+        // Convertir los valores en un array de registros únicos
+        const uniqueCoordinationInfo = Object.values(uniqueRecords);
+    
+        // Acumular datos en las categorías
+        const categorySums = {};
+    
+        uniqueCoordinationInfo.forEach((record) => {
+            const classification = getClassification(record);
+            if (!classification) return;
+    
+            const recordDate = moment.utc(record.SM_FishingDate).local();
+            let bucketIndex = -1;
+    
+            if (view === "week") {
+                if (recordDate.isBetween(currentWeekStart, currentWeekEnd, null, "[]")) {
+                    bucketIndex = recordDate.diff(currentWeekStart, "days");
+                }
+            } else if (view === "month") {
+                if (recordDate.month() === currentDate.month() && recordDate.year() === currentDate.year()) {
+                    bucketIndex = Math.floor((recordDate.date() - 1) / 7);
+                }
+            } else if (view === "year") {
+                if (recordDate.year() === currentYear) {
+                    bucketIndex = recordDate.month();
+                }
+            }
+    
+            if (bucketIndex < 0 || bucketIndex >= bucketsCount) return;
+    
+            const biomass = parseFloat(record.SM_Biomass) || 0;
+            if (!categorySums[classification]) {
+                categorySums[classification] = Array(bucketsCount).fill(0);
+            }
+            categorySums[classification][bucketIndex] += biomass;
+        });
+    
+        return { categorySums, labels };
+    };
+    
+
+
+    const { categorySums, labels } = groupData();
+
+    const datasets = datasetsTemplate
+        .filter((template) => categorySums.hasOwnProperty(template.label))
+        .map((template) => ({
+            ...template,
+            data: categorySums[template.label],
+        }));
+
+    let title = "";
     if (view === "week") {
-        labels = weekLabels;
-        datasets = weekDatasets;
+        title = `Semana del ${currentWeekStart.format("D MMMM")} al ${currentWeekEnd.format("D MMMM YYYY")}`;
+    } else if (view === "month") {
+        title = `Mes de ${currentMonth}`;
     } else if (view === "year") {
-        labels = yearLabels;
-        datasets = yearDatasets;
+        title = `Año ${currentYear}`;
     }
 
     const barChart = {
-        height: 200,
+        height: height || 200,
         labels: labels,
         datasets: datasets,
-        legend: {
-            display: true,
-            labels: {
-                display: true,
-            },
-        },
+        legend: { display: true, labels: { display: true } },
         scales: {
             y: {
-                grid: {
-                    color: '#485e9029',
-                    borderDash: [3, 3],
-                    zeroLineColor: '#485e9029',
-                    zeroLineWidth: 1,
-                },
-                ticks: {
-                    beginAtZero: true,
-                    fontSize: 14,
-                    fontFamily: 'Jost',
-                    color: '#8C90A4',
-                    padding: 10,
-                    callback(value, index) {
-                        return barChart.labels[index]; // Mantiene la lógica original
-                    },
-                },
+                grid: { color: "#485e9029", borderDash: [3, 3], zeroLineColor: "#485e9029", zeroLineWidth: 1 },
+                ticks: { beginAtZero: true, fontSize: 14, fontFamily: "Jost", color: "#8C90A4", padding: 10 },
             },
             x: {
-                grid: {
-                    display: false,
-                    zeroLineWidth: 0,
-                    color: 'transparent',
-                    z: 1,
-                },
-                ticks: {
-                    fontSize: 14,
-                    fontFamily: 'Jost',
-                    fontColor: '#8C90A4',
-                },
+                grid: { display: false, zeroLineWidth: 0, color: "transparent", z: 1 },
+                ticks: { fontSize: 14, fontFamily: "Jost", color: "#8C90A4" },
             },
         },
     };
 
+    if (loading) return <Cards headless><Skeleton active /></Cards>;
+    if (error) return <p>Error cargando los datos del gráfico.</p>;
+
     return (
-        <Cards
-            title="Proyecciones de Producción"
-            size="large"
-        >
-            <>
-                <center>
-                    <ButtonGroup>
-                        <Button type={view === "month" ? "primary" : "default"} onClick={() => setView("month")}>
-                            Mes
-                        </Button>
-                        <Button type={view === "week" ? "primary" : "default"} onClick={() => setView("week")}>
-                            Semana
-                        </Button>
-                        <Button type={view === "year" ? "primary" : "default"} onClick={() => setView("year")}>
-                            Año
-                        </Button>
-                    </ButtonGroup>
-                </center>
-                <br/>
-                <br/>
-
-                <DashboardChart
-                    {...barChart}
-                    type="bar"
-                    id={`hChart-${Math.random()}`}
-                    option={{
-                        indexAxis: 'y',
-                    }}
-                />
-            </>
-
+        <Cards title="Proyección de Producción" size="large">
+            <center>
+                <ButtonGroup>
+                    <Button type={view === "month" ? "primary" : "default"} onClick={() => setView("month")}>
+                        Mes
+                    </Button>
+                    <Button type={view === "week" ? "primary" : "default"} onClick={() => setView("week")}>
+                        Semana
+                    </Button>
+                    <Button type={view === "year" ? "primary" : "default"} onClick={() => setView("year")}>
+                        Año
+                    </Button>
+                </ButtonGroup>
+            </center>
+            <br /><br />
+            <h3 style={{ textAlign: "center" }}>{title}</h3>
+            <DashboardChart
+                {...barChart}
+                type="bar"
+                id={`chart-${Math.random()}`}
+                option={{ indexAxis: "y" }}
+            />
         </Cards>
     );
-}
+};
 
 export default ProjectionKgPanel;

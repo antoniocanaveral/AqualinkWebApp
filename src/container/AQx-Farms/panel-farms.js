@@ -7,19 +7,71 @@ import ProjectionKgPanel from './panel/charts/projections-kg-panel';
 import CostProjectionWrapLab from './panel/charts/CostProjectionWrapLab';
 import { AqualinkMaps } from '../../components/maps/aqualink-map';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../redux/authentication/selectors';
 import Cookies from 'js-cookie';
+import { fetchCoordinationInfo_FarmProyection } from '../../redux/views/coords/actionCreator';
+import moment from 'moment';
+import { fetchInventory } from '../../redux/inventory/actionCreator';
+
+const getClassification = (record) => {
+  if (record.SM_Category30_40) return "30-40";
+  if (record.SM_Category40_50) return "40-50";
+  if (record.SM_Category50_60) return "50-60";
+  if (record.SM_Category60_70) return "60-70";
+  if (record.SM_Category70_80) return "70-80";
+  if (record.SM_Category80_100) return "80-100";
+  if (record.SM_Category100_120) return "100-120";
+  if (record.SM_Category120_150) return "120-150";
+  return null;
+};
+
 
 function PanelFarms() {
+  const dispatch = useDispatch();
 
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
-
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
+  const coordinationInfo = useSelector((state) => state.view_coords.coordinationInfo);
+  const loading = useSelector((state) => state.view_coords.coordInfoLoading);
+  const error = useSelector((state) => state.view_coords.coordInfoError);
+
+  const { categories } = useSelector((state) => state.inventory || {});
+  useEffect(() => {
+    dispatch(fetchCoordinationInfo_FarmProyection());
+    dispatch(fetchInventory("FARM"));
+
+  }, [dispatch, selectedOrg]);
+  // Obtener datos de inventario como lista plana
+  const inventoryData = Object.values(categories).flat() || [];
+  console.log(inventoryData)
+  console.log(categories)
+
+  // Definir columnas para la tabla de inventario
+  const inventoryColumns = [
+    { title: 'Nombre', dataIndex: 'product_name', key: 'product_name' },
+    {
+      title: 'Presentación', key: 'Classification', render: (_, record) => {
+        const classification = record.Classification || 'N/A';
+        const uomSymbol = record.UOMSymbol || '';
+        return `${classification} ${uomSymbol}`.trim();
+      }
+    },
+    { title: 'Unidades', dataIndex: 'QtyOnHand', key: 'QtyOnHand', render: (text) => text ?? 'N/A' },
+    {
+      title: 'Disponibilidad', key: 'Volumen', render: (_, record) => {
+        const qtyOnHand = parseFloat(record.QtyOnHand) || 0;
+        const classification = parseFloat(record.Classification) || 1;
+        const uomSymbol = record.UOMSymbol || '';
+        const volumen = qtyOnHand * classification;
+        return `${volumen} ${uomSymbol}`.trim();
+      }
+    }
+  ];
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -54,19 +106,25 @@ function PanelFarms() {
   ] : [];
 
   const sectorsOptions = selectedOrg
-  ? farmsOrgsWithPools
-    .find(org => org.orgId === selectedOrg)?.pools
-    .reduce((acc, pool) => {
-      if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
-        acc.push({
-          value: pool.salesRegion.id,
-          label: pool.salesRegion.name,
-        });
-      }
-      return acc;
-    }, [])
-  : [];
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .reduce((acc, pool) => {
+        if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
+          acc.push({
+            value: pool.salesRegion.id,
+            label: pool.salesRegion.name,
+          });
+        }
+        return acc;
+      }, [])
+    : [];
 
+  const columns = [
+    { title: 'Nombre', dataIndex: 'nombre', key: 'nombre' },
+    { title: 'Presentación', dataIndex: 'presentacion', key: 'presentacion' },
+    { title: 'Unidades', dataIndex: 'unidades', key: 'unidades' },
+    { title: 'Disponibilidad', dataIndex: 'disponibilidad', key: 'disponibilidad' },
+  ];
 
 
   const sectorSelectOptions = selectedOrg ? [
@@ -105,7 +163,6 @@ function PanelFarms() {
     ...poolsSelectOptions,
   ];
 
-  const error = useSelector((state) => state.auth.error);
 
   useEffect(() => {
     if (error) {
@@ -118,94 +175,58 @@ function PanelFarms() {
 
   const navigate = useNavigate();
 
-  // Datos de la tabla
-  const productData = [
-    {
-      key: '1',
-      producto: 'Ziegler',
-      ci: '45%',
-      hoy: '2.50 kg',
-      disp: '50 kg',
-    },
-    {
-      key: '2',
-      producto: 'Artemia',
-      ci: 'A',
-      hoy: '4.00 kg',
-      disp: '15 kg',
-    },
-    {
-      key: '3',
-      producto: 'Algas',
-      ci: 'A',
-      hoy: '0.7 kg',
-      disp: '12 kg',
-    },
-    {
-      key: '4',
-      producto: 'Flake',
-      ci: 'B',
-      hoy: '0.90 kg',
-      disp: '1.80 kg',
-    },
-    {
-      key: '5',
-      producto: 'Vitamina C',
-      ci: 'MF35',
-      hoy: '0.12 kg',
-      disp: '10.00 kg',
-    },
-  ];
 
-  // Definición de columnas
-  const columns = [
-    {
-      title: 'Producto',
-      dataIndex: 'producto',
-      key: 'producto',
-    },
-    {
-      title: 'CI',
-      dataIndex: 'ci',
-      key: 'ci',
-    },
-    {
-      title: 'Hoy',
-      dataIndex: 'hoy',
-      key: 'hoy',
-    },
-    {
-      title: 'Disp.',
-      dataIndex: 'disp',
-      key: 'disp',
-    },
+  const harvestColumns = [
+    { title: 'FECHA COSECHA', dataIndex: 'harvestDate', key: 'harvestDate' },
+    { title: 'CAMARONERA', dataIndex: 'camaronera', key: 'camaronera' },
+    { title: 'LOTE ID', dataIndex: 'loteId', key: 'loteId' },
+    { title: 'BIOMASA', dataIndex: 'biomasa', key: 'biomasa' },
+    { title: 'CLASIFICACION', dataIndex: 'clasificacion', key: 'clasificacion' },
+    { title: 'TEXTURA', dataIndex: 'textura', key: 'textura' },
+    { title: 'ESTADO', dataIndex: 'estado', key: 'estado' },
+  ];
+  const validCoordinationInfo = Array.isArray(coordinationInfo) ? coordinationInfo : [];
+
+  // Filtrar registros únicos basados en loteId (SM_Coordination_ID.identifier)
+  const uniqueRecords = {};
+  validCoordinationInfo.forEach(record => {
+    const loteId = record.SM_Coordination_ID?.identifier || 'N/A';
+    if (!uniqueRecords[loteId]) {
+      uniqueRecords[loteId] = record; // Solo almacenar el primer registro encontrado por loteId
+    }
+  });
+
+  const harvestData = Object.values(uniqueRecords).map(record => {
+    const harvestDate = record.SM_FishingDate
+      ? moment(record.SM_FishingDate).format("DD MMMM YYYY")
+      : 'N/A';
+    const camaronera = record.org_name || 'N/A';
+    const loteId = record.SM_Coordination_ID?.identifier || 'N/A';
+    const biomasa = record.SM_Biomass ? record.SM_Biomass.toFixed(2) + ' kg' : 'N/A';
+    const clasificacion = getClassification(record) || 'N/A';
+    const textura = record.SM_Texture || 'N/A'; // Ajusta según tu campo real para textura
+    let estado = record.SM_CoordinationStatus?.identifier || 'N/A';
+    estado = estado.replace(/[<>]/g, '');
+    return {
+      key: record.id,
+      harvestDate,
+      camaronera,
+      loteId,
+      biomasa,
+      clasificacion,
+      textura,
+      estado,
+    };
+  });
+
+
+  const dataSource = [
+    { key: '1', nombre: 'Producto A', presentacion: 'Caja 12', unidades: 100, disponibilidad: '50 kg' },
+    { key: '2', nombre: 'Producto B', presentacion: 'Bolsa 5', unidades: 200, disponibilidad: '75 kg' },
+    { key: '3', nombre: 'Producto C', presentacion: 'Lata 1', unidades: 150, disponibilidad: '60 kg' },
   ];
 
   // Datos de la tabla de Coordinación de Cosechas
-  const harvestData = [
-    { key: '1', cliente: 'EcSSA Manabí', tipo: 'Reserva', larva: 'PL10', cantidad: '1.5 M', fecha: '04 Diciembre 2023', asignacion: 'Tanque 1' },
-    { key: '2', cliente: 'Camarones Premium SA', tipo: 'Reserva', larva: 'PL10', cantidad: '500,000', fecha: '04 Diciembre 2023', asignacion: 'Tanque 9' },
-    { key: '3', cliente: 'Palo Alto Cia Ltda', tipo: 'Pedido', larva: 'PL10', cantidad: '800,000', fecha: '05 Diciembre 2023', asignacion: 'Tanque 6' },
-    { key: '4', cliente: 'Aquamar', tipo: 'Reserva', larva: 'PL12', cantidad: '900,000', fecha: '05 Diciembre 2023', asignacion: 'Tanque 4' },
-    { key: '5', cliente: 'Pacifiqa del Sur', tipo: 'Reserva', larva: 'PL10', cantidad: '1 M', fecha: '05 Diciembre 2023', asignacion: 'Tanque 2' },
-    { key: '6', cliente: 'EcSSA Manabí', tipo: 'Reserva', larva: 'PL12', cantidad: '500,000', fecha: '06 Diciembre 2023', asignacion: 'Tanque 8' },
-    { key: '7', cliente: 'Unirsa', tipo: 'Reserva', larva: 'PL12', cantidad: '500,000', fecha: '06 Diciembre 2023', asignacion: 'Tanque 7' },
-    { key: '8', cliente: 'Acuirsa', tipo: 'Reserva', larva: 'PL10', cantidad: '1.5 M', fecha: '07 Diciembre 2023', asignacion: 'Tanque 6' },
-    { key: '9', cliente: 'Grupo Acuícola', tipo: 'Reserva', larva: 'PL12', cantidad: '800,000', fecha: '08 Diciembre 2023', asignacion: 'Tanque 5' },
-    { key: '10', cliente: 'Shrimp Global', tipo: 'Reserva', larva: 'PL10', cantidad: '1 M', fecha: '08 Diciembre 2023', asignacion: 'Tanque 1' },
-  ];
-
-
-  // Definición de columnas para la tabla de Coordinación de Cosechas
-  const harvestColumns = [
-    { title: 'Cliente', dataIndex: 'cliente', key: 'cliente' },
-    { title: 'Tipo', dataIndex: 'tipo', key: 'tipo' },
-    { title: 'Larva', dataIndex: 'larva', key: 'larva' },
-    { title: 'Cantidad', dataIndex: 'cantidad', key: 'cantidad' },
-    { title: 'Fecha', dataIndex: 'fecha', key: 'fecha' },
-    { title: 'Asignación', dataIndex: 'asignacion', key: 'asignacion' },
-  ];
-
 
   const tankData = [
     {
@@ -236,34 +257,7 @@ function PanelFarms() {
       reservado: '60% - 1.8 MILLONES',
       disponible: '40% - 1.2 MILLONES',
     },
-    {
-      id: 3,
-      modulo: 'Módulo 1',
-      tanque: 'Tanque 2',
-      porcentaje: 60,
-      inicioCultivo: '05 Noviembre',
-      finCultivo: '05 Diciembre',
-      poblacionFinal: '3 MILLONES',
-      supervivencia: '90%',
-      estadoEntrega: 'PL12',
-      animalesPorGramo: 280,
-      reservado: '60% - 1.8 MILLONES',
-      disponible: '40% - 1.2 MILLONES',
-    },
-    {
-      id: 4,
-      modulo: 'Módulo 1',
-      tanque: 'Tanque 2',
-      porcentaje: 60,
-      inicioCultivo: '05 Noviembre',
-      finCultivo: '05 Diciembre',
-      poblacionFinal: '3 MILLONES',
-      supervivencia: '90%',
-      estadoEntrega: 'PL12',
-      animalesPorGramo: 280,
-      reservado: '60% - 1.8 MILLONES',
-      disponible: '40% - 1.2 MILLONES',
-    },
+
   ];
 
 
@@ -516,14 +510,14 @@ function PanelFarms() {
                 </Cards>
               }
             >
-              <ProjectionKgPanel />
+              <ProjectionKgPanel coordinationInfo={coordinationInfo} loading={loading} error={error} selectedOrg={selectedOrg} />
             </Suspense>
           </Col>
         </Row>
 
 
         <Row gutter={25} equal-heights>
-          <Col xl={15} xs={24} xxl={16} style={{ display: 'flex' }}>
+          <Col xl={14} xs={24} xxl={15} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -553,7 +547,7 @@ function PanelFarms() {
             </Suspense>
           </Col>
 
-          <Col xl={9} xs={24} xxl={8} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <Col xl={10} xs={24} xxl={9} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Gráfico de Proyección de Costos */}
             <Suspense
               fallback={
@@ -576,7 +570,12 @@ function PanelFarms() {
               }
             >
               <Cards title="Inventario de Productos" size="large" style={{ flex: 1 }}>
-                <Table dataSource={productData} columns={columns} pagination={{ pageSize: 5 }} />
+                <Table
+                  dataSource={inventoryData}
+                  columns={inventoryColumns}
+                  pagination={{ pageSize: 5 }}
+                  rowKey="Value"
+                />
               </Cards>
 
             </Suspense>
