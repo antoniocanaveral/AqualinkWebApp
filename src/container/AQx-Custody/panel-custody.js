@@ -165,7 +165,7 @@ function PanelCustody() {
                   ci_id: coord.ci_id,
                   nombreCamaronera: coord.org_name || 'N/A',
                   codigoAQLK: coord.org_value || 'N/A',
-                  loteID: coord.SM_Coordination_ID?.identifier || 'N/A',
+                  loteID: coord.lote_id || 'N/A',
                   estado: estado,
                   fechaPesca: coord.SM_FishingDate ? new Date(coord.SM_FishingDate).toLocaleDateString('es-ES') : 'N/A',
                   piscina: coord.warehouse_name || 'N/A',

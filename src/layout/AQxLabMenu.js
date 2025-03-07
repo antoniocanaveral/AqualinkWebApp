@@ -186,6 +186,7 @@ function AQXLabMenu({ toggleCollapsed }) {
           
           ]
         ),
+      
       ]
     ),
 

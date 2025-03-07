@@ -251,16 +251,7 @@ const ThemeLayout = (WrappedComponent) => {
               <Layout className="atbd-main-layout">
                 <Content>
                   <WrappedComponent {...this.props} />
-                  <FooterStyle className="admin-footer">
-                    <Row>
-                      <Col md={12} xs={24}>
-                        <span className="admin-footer__copyright">
-                          © 2024<Link to="#">Aqualink</Link>
-                        </span>
-                      </Col>
-
-                    </Row>
-                  </FooterStyle>
+                 
                 </Content>
               </Layout>
             </Layout>

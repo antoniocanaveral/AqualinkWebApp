@@ -173,17 +173,14 @@ function PlanningStudioFarms() {
     days_to_harvest: "Días de ciclo",
     density: "Densidad Estimada",
     stimated_weight: "Peso Estimado a Cosecha",
-    transfer_weight: "Peso Est a Transferencia",
-    temperature: "Temperatura del Agua",
     stimated_survival: "Supervivencia estimada",
     stimated_fca: "FCA estimado",
     stimated_performance: "Ren. est en Empacadora",
     pre_breeding_weeks: "Días de pre-cría",
     food_price: "Costo x kg de Alimento",
-    breeding_cost: "Costo aditivos x kg de Alimento",
+    breeding_cost: "Costo aditivos x kg AB ",
     dayly_inditect_cost: "Costo indirecto Ha/día",
     selling_price: "Precio est de venta",
-    SGR: "Tasa de Crecimiento(D)",
   };
 
   // Claves que quieres renderizar
@@ -514,62 +511,7 @@ function PlanningStudioFarms() {
                       </Form.Item>
                     </Col>
 
-                    {/* Peso estimado a transferencia*/}
-                    <Col xs={24} md={12} lg={6}>
-                      <Form.Item
-                        label={<span style={{ color: '#73879c' }}>{inputLabels.transfer_weight}</span>}
-                        name="transfer_weight"
-                        validateStatus={
-                          fixedOption === 'peso' && fixedFieldNeedsValue ? 'error' : ''
-                        }
-                        help={
-                          fixedOption === 'peso' && fixedFieldNeedsValue
-                            ? 'Este campo es requerido'
-                            : ''
-                        }
-                      >
-                        <Select
-                          placeholder="Seleccione Peso (g)"
-                          disabled={fixedOption === 'peso' && fixedFieldDisabled}
-                        >
-                          {Array.from({ length: 24 }, (_, i) => 15 + i).map(value => (
-                            <Select.Option key={value} value={value}>
-                              {value.toLocaleString()} g
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    </Col>
-                    {/* Temperatura */}
-                    <Col xs={24} md={12} lg={6}>
-                      <Form.Item
-                        label={<span style={{ color: '#73879c' }}>{inputLabels.temperature}</span>}
-                        name="temperature"
-                        rules={[{ required: true, message: 'Este campo es requerido' }]}
-                      >
-                        <InputNumber
-                          placeholder="Temperatura"
-                          type="number"
-                          style={{ width: '100%' }}
-                          min={0}
-                        />
-                      </Form.Item>
-                    </Col>
-                    {/* Tasa de Crecimiento Diario*/}
-                    <Col xs={24} md={12} lg={6}>
-                      <Form.Item
-                        label={<span style={{ color: '#73879c' }}>{inputLabels.SGR}</span>}
-                        name="SGR"
-                        rules={[{ required: true, message: 'Este campo es requerido' }]}
-                      >
-                        <InputNumber
-                          placeholder="Tasa de Crecimiento Diario"
-                          type="number"
-                          style={{ width: '100%' }}
-                          min={0}
-                        />
-                      </Form.Item>
-                    </Col>
+                    
                     {/* Costo x Kg Alimento */}
                     <Col xs={24} md={12} lg={6}>
                       <Form.Item
@@ -589,14 +531,14 @@ function PlanningStudioFarms() {
 
 
                     {/* Costo aditivos x Kg Alimento */}
-                    <Col xs={24} md={12} lg={7}>
+                    <Col xs={24} md={12} lg={6}>
                       <Form.Item
                         label={<span style={{ color: '#73879c' }}>{inputLabels.breeding_cost}</span>}
                         name="breeding_cost"
                         rules={[{ required: true, message: 'Este campo es requerido' }]}
                       >
                         <InputNumber
-                          placeholder="Costo aditivos x Kg Alimento (USD)"
+                          placeholder="Costo aditivos (USD)"
                           min={0}
                           disabled
                           style={{ width: '100%' }}

@@ -29,7 +29,7 @@ const getClassification = (record) => {
     return null;
 };
 
-const ProjectionKgPanel = ({ height, selectedOrg, loading, error, coordinationInfo  }) => {
+const ProjectionKgPanel = ({ height, selectedOrg, loading, error, coordinationInfo, type  }) => {
   
 
     const [view, setView] = useState("month");
@@ -72,22 +72,26 @@ const ProjectionKgPanel = ({ height, selectedOrg, loading, error, coordinationIn
             labels = yearLabels;
         }
     
-        // Usar un objeto para almacenar los identificadores únicos
-        const uniqueRecords = {};
-        coordinationInfo.forEach((record) => {
-            const identifier = record?.SM_Coordination_ID?.identifier;
-            if (identifier && !uniqueRecords[identifier]) {
-                uniqueRecords[identifier] = record; // Guardar solo el primer registro con ese identifier
-            }
-        });
-    
-        // Convertir los valores en un array de registros únicos
-        const uniqueCoordinationInfo = Object.values(uniqueRecords);
+        let processedData = coordinationInfo;
+
+        console.log("ccor", coordinationInfo)
+        
+        // Aplicar filtro de registros únicos solo si type === "FARM"
+        if (type === "FARM") {
+            const uniqueRecords = {};
+            coordinationInfo.forEach((record) => {
+                const identifier = record?.SM_Coordination_ID?.identifier;
+                if (identifier && !uniqueRecords[identifier]) {
+                    uniqueRecords[identifier] = record; // Guardar solo el primer registro con ese identifier
+                }
+            });
+            processedData = Object.values(uniqueRecords);
+        }
     
         // Acumular datos en las categorías
         const categorySums = {};
-    
-        uniqueCoordinationInfo.forEach((record) => {
+        
+        processedData.forEach((record) => {
             const classification = getClassification(record);
             if (!classification) return;
     
@@ -119,6 +123,7 @@ const ProjectionKgPanel = ({ height, selectedOrg, loading, error, coordinationIn
     
         return { categorySums, labels };
     };
+    
     
 
 

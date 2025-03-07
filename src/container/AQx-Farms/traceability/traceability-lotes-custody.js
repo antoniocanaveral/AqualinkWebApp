@@ -139,7 +139,7 @@ const initialLotesArray = [
     },
   },
 ];
-function TraceabilityLotesCustody() {
+function TraceabilityLotesFarm() {
   const reportRef = useRef();
   const [orientation, setOrientation] = useState('portrait');
   const [allLotes] = useState(initialLotesArray);
@@ -476,4 +476,4 @@ function TraceabilityLotesCustody() {
   );
 }
 
-export default TraceabilityLotesCustody;
+export default TraceabilityLotesFarm;

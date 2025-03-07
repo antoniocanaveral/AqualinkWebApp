@@ -126,6 +126,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
       water_system: orgData.water_system,
       SM_ProductionType: orgData.sm_productiontype,
       SM_CodigoVAP: orgData.sm_codigovap,
+      SM_OrgType: orgData.SM_OrgType,
       SM_MinisterialAgreement: orgData.sm_ministerialagreement,
       SM_SafetyCertificate: orgData.sm_safetycertificate,
       SM_MainlandOrIsland: orgData.SM_MainlandOrIsland,

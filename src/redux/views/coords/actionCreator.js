@@ -27,7 +27,7 @@ const fetchCoordinationInfo = () => {
       }
 
       console.log(`Consultando coordinación info para la organización con ID: ${selectedOrgID}`);
-      const response = await DataService.get(`/models/sm_coordination_info_v?$filter=AD_Client_ID eq ${selectedClientID} AND bp_ad_org_id eq ${selectedOrgID}  AND sm_coordinationtype eq 'PESCA' &$orderby=Name`);
+      const response = await DataService.get(`/models/sm_coordination_info_v?$filter=AD_Client_ID eq ${selectedClientID} AND BP_AD_Org_ID eq ${selectedOrgID}  AND sm_coordinationtype eq 'PESCA' &$orderby=Name`);
       console.log("Respuesta de la API para fetchCoordinationInfo:", response);
 
       if (response.data && response.data.records && response.data.records.length > 0) {

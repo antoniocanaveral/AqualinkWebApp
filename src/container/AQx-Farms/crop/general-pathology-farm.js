@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense } from 'react';
 import { Row, Col, Typography, Table, Modal, Card, Skeleton, Badge, Space } from 'antd';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -8,12 +8,118 @@ import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import { Link } from 'react-router-dom';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
+
+import { useState } from 'react';
+import Cookies from 'js-cookie';
+import { useSelector } from 'react-redux';
+import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+
+
 function GeneralPathologyFarm() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
   const [isVeterinaryPlanModalVisible, setIsVeterinaryPlanModalVisible] = useState(false);
   const [selectedVeterinaryPlan, setSelectedVeterinaryPlan] = useState(null);
+
+  // Selección de org, sector y pool
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+  const [selectedSector, setSelectedSector] = useState(null);
+  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+
+
+  // Datos de organizaciones
+  const organizations = useSelector((state) => state.auth.farmsOrgs);
+  const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+
+  // Manejo de selección de org
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
+    setSelectedPool(null);
+    setSelectedSector(null);
+  };
+
+  // Manejo de selección de sector
+  const handleSectorChange = (sectorId) => {
+    setSelectedSector(sectorId);
+    setSelectedPool(null);
+  };
+
+  // Manejo de selección de pool
+  const handlePoolChange = (poolId) => {
+    setSelectedPool(poolId);
+    Cookies.set('poolId', poolId);
+  };
+
+  // Opciones para Farms
+  const farmsSelectOptions = organizations.length > 0 ? [
+    {
+      options: farmsOrgsWithPools.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Farm',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+
+  // Opciones para sectores
+  const sectorsOptions = selectedOrg
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .reduce((acc, pool) => {
+        if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
+          acc.push({
+            value: pool.salesRegion.id,
+            label: pool.salesRegion.name,
+          });
+        }
+        return acc;
+      }, [])
+    : [];
+
+  const sectorSelectOptions = selectedOrg ? [
+    {
+      options: sectorsOptions,
+      onChange: handleSectorChange,
+      placeholder: 'Seleccione un Sector',
+      value: selectedSector || undefined,
+    },
+  ] : [];
+
+  // Opciones para pools
+  const poolsOptions = selectedSector
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
+      .map(pool => ({
+        value: pool.poolId,
+        label: pool.poolName,
+      }))
+    : [];
+
+  const poolsSelectOptions = selectedSector ? [
+    {
+      options: poolsOptions,
+      onChange: handlePoolChange,
+      placeholder: 'Seleccione una Pool',
+      disabled: poolsOptions.length === 0,
+      value: selectedPool || undefined,
+    },
+  ] : [];
+
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
+    ...sectorSelectOptions,
+    ...poolsSelectOptions,
+  ];
+
+
 
   // Mostrar el modal del plan veterinario
   const showVeterinaryPlanModal = (record) => {
@@ -194,11 +300,9 @@ function GeneralPathologyFarm() {
       <PageHeader
         highlightText="Aqualink Monitoreo"
         title="Patología"
-        selectOptions={[
-          ["Lab 1", "Lab 2", "Lab 3"],
-          ["Módulo 1", "Módulo 2", "Módulo 3"],
-          ["Tanque 1", "Tanque 2", "Tanque 3"]
-        ]}
+        selectOptions={combinedSelectOptions}
+        selectedOrg={selectedOrg}
+        selectedPool={selectedPool}
       />
       <Main>
         <Row gutter={25}>

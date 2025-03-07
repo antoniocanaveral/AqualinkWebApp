@@ -117,13 +117,22 @@ function LaboratoryAddCustody() {
             message.error('Error al registrar los datos');
         }
     };
+    const order = ["Test Cocción.", "Organoléptico.", "Sulfitos.", "Microbiológico.", "Químico."];
 
-    // **1. Agrupar parámetros por tipo de análisis**
     const groupedParameters = parameters.reduce((acc, item) => {
         if (!acc[item.sm_typeanalysis]) acc[item.sm_typeanalysis] = [];
         acc[item.sm_typeanalysis].push(item);
         return acc;
     }, {});
+
+    // Convertir el objeto en un array ordenado según el orden específico
+    const sortedGroupedParameters = Object.fromEntries(
+        order
+            .filter(key => groupedParameters[key]) // Filtrar solo las claves existentes en groupedParameters
+            .map(key => [key, groupedParameters[key]]) // Convertirlo en pares clave-valor
+    );
+
+    console.log(sortedGroupedParameters);
 
     // **2. Generar Steps dinámicamente**
     const steps = [
@@ -155,7 +164,7 @@ function LaboratoryAddCustody() {
                 </Form>
             ),
         },
-        ...Object.keys(groupedParameters).map((type) => ({
+        ...Object.keys(sortedGroupedParameters).map((type) => ({
             title: type,
             content: (
                 <Form layout="vertical">

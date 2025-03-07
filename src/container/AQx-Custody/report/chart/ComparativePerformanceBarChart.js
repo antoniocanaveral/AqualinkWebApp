@@ -21,21 +21,49 @@ ChartJS.register(
   Legend
 );
 
-function ComparativePerformanceBarChart() {
+function ComparativePerformanceBarChart({ cosechas }) {
+    console.log("Datos recibidos:", cosechas);
+
+    // Definir etiquetas de los ciclos
+    const labels = ["CICLO 1", "CICLO 2", "CICLO 3", "CICLO 4", "CICLO 5"];
+
+    // Función para limpiar los valores (eliminar % y convertir en número)
+    const limpiarValor = (valor) => {
+        if (typeof valor === "string") {
+            return parseFloat(valor.replace("%", "")) || 0;
+        }
+        return valor || 0;
+    };
+
+    // Asegurar que haya 5 cosechas, rellenando con valores 0 si faltan datos
+    const cosechasProcesadas = Array.from({ length: 5 }, (_, i) => ({
+        variacionProyVsCoord: limpiarValor(cosechas.find(c => c.key === "variacion")?.[`cosecha${i + 1}`]),
+        cumplimientoCosecha: limpiarValor(cosechas.find(c => c.key === "variacion")?.[`cosecha${i + 1}`]),
+        rendimientoPlanta: limpiarValor(cosechas.find(c => c.key === "eficiencia_planta")?.[`cosecha${i + 1}`]),
+    }));
+
+    console.log("Cosechas procesadas:", cosechasProcesadas);
+
     // Datos para el gráfico
     const data = {
-        labels: ['80/100', '70/80', '60/70', '50/60', '40/50', '30/40', '20/30'],
+        labels,
         datasets: [
             {
-                label: 'CLASIFICACION PRE COSECHA',
-                data: [75, 65, 55, 45, 35, 25, 15], // Datos de ejemplo
-                backgroundColor: '#001737',
+                label: "Variación Proy vs Coordinado",
+                data: cosechasProcesadas.map(cosecha => cosecha.variacionProyVsCoord),
+                backgroundColor: '#4285F4',
                 barPercentage: 0.6,
             },
             {
-                label: 'CLASIFICACION PROCESO',
-                data: [80, 70, 60, 50, 40, 30, 20], // Datos de ejemplo
-                backgroundColor: '#1ce1ac',
+                label: "Cumplimiento en Cosecha",
+                data: cosechasProcesadas.map(cosecha => cosecha.cumplimientoCosecha),
+                backgroundColor: '#EA4335',
+                barPercentage: 0.6,
+            },
+            {
+                label: "Rendimiento en Planta",
+                data: cosechasProcesadas.map(cosecha => cosecha.rendimientoPlanta),
+                backgroundColor: '#FBBC05',
                 barPercentage: 0.6,
             },
         ],
@@ -48,6 +76,7 @@ function ComparativePerformanceBarChart() {
         scales: {
             y: {
                 beginAtZero: true,
+                max: 100, // Suponiendo que el máximo es 100%
                 ticks: {
                     font: {
                         size: 14,
@@ -59,8 +88,6 @@ function ComparativePerformanceBarChart() {
                 grid: {
                     color: '#485e9029',
                     borderDash: [3, 3],
-                    zeroLineColor: '#485e9029',
-                    zeroLineWidth: 1,
                 },
             },
             x: {
@@ -73,9 +100,6 @@ function ComparativePerformanceBarChart() {
                 },
                 grid: {
                     display: false,
-                    zeroLineWidth: 0,
-                    color: 'transparent',
-                    z: 1,
                 },
             },
         },
@@ -95,8 +119,8 @@ function ComparativePerformanceBarChart() {
                 callbacks: {
                     label: function (context) {
                         const label = context.dataset.label || '';
-                        const value = context.parsed.y || 0;
-                        return `${label}: ${value}`;
+                        const value = context.raw || 0;
+                        return `${label}: ${value}%`;
                     },
                 },
             },
@@ -105,7 +129,7 @@ function ComparativePerformanceBarChart() {
 
     return (
         <Cards title="Comparación Performance" size="large">
-            <div style={{ position: 'relative', height: '200px' }}>
+            <div style={{ position: 'relative', height: '300px' }}>
                 <Bar data={data} options={options} />
             </div>
         </Cards>

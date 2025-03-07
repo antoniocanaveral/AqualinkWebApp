@@ -39,6 +39,8 @@ import { carrierReducer } from './carriers/reducers';
 import { orgBinsReducer } from './bines-drawers/reducer';
 import { labanalysisReducer } from './labanalysis/reducers';
 import CoordsViewReducer from './views/coords/reducers';
+import { loteReducer } from './lote/reducers';
+import { costReducer } from './cost/reducer';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -62,6 +64,8 @@ const rootReducers = combineReducers({
   custody: custodyReducer,
   bin_drawers: orgBinsReducer,
   labanalysis: labanalysisReducer,
+  lote: loteReducer,
+  cost: costReducer,
   gallery: galleryReducer,
   email: emailReducer,
   emailSingle: SingleEmailReducer,

@@ -119,13 +119,6 @@ function PanelFarms() {
       }, [])
     : [];
 
-  const columns = [
-    { title: 'Nombre', dataIndex: 'nombre', key: 'nombre' },
-    { title: 'Presentación', dataIndex: 'presentacion', key: 'presentacion' },
-    { title: 'Unidades', dataIndex: 'unidades', key: 'unidades' },
-    { title: 'Disponibilidad', dataIndex: 'disponibilidad', key: 'disponibilidad' },
-  ];
-
 
   const sectorSelectOptions = selectedOrg ? [
     {
@@ -201,7 +194,7 @@ function PanelFarms() {
       ? moment(record.SM_FishingDate).format("DD MMMM YYYY")
       : 'N/A';
     const camaronera = record.org_name || 'N/A';
-    const loteId = record.SM_Coordination_ID?.identifier || 'N/A';
+    const loteId = record.lote_id || 'N/A';
     const biomasa = record.SM_Biomass ? record.SM_Biomass.toFixed(2) + ' kg' : 'N/A';
     const clasificacion = getClassification(record) || 'N/A';
     const textura = record.SM_Texture || 'N/A'; // Ajusta según tu campo real para textura
@@ -219,12 +212,6 @@ function PanelFarms() {
     };
   });
 
-
-  const dataSource = [
-    { key: '1', nombre: 'Producto A', presentacion: 'Caja 12', unidades: 100, disponibilidad: '50 kg' },
-    { key: '2', nombre: 'Producto B', presentacion: 'Bolsa 5', unidades: 200, disponibilidad: '75 kg' },
-    { key: '3', nombre: 'Producto C', presentacion: 'Lata 1', unidades: 150, disponibilidad: '60 kg' },
-  ];
 
   // Datos de la tabla de Coordinación de Cosechas
 
@@ -510,7 +497,7 @@ function PanelFarms() {
                 </Cards>
               }
             >
-              <ProjectionKgPanel coordinationInfo={coordinationInfo} loading={loading} error={error} selectedOrg={selectedOrg} />
+              <ProjectionKgPanel type="FARM" coordinationInfo={coordinationInfo} loading={loading} error={error} selectedOrg={selectedOrg} />
             </Suspense>
           </Col>
         </Row>

@@ -10,21 +10,15 @@ import {
   UilDesktop,
   // UilExpandArrowsAlt,
   UilFlaskPotion,
-  UilHeadphonesAlt,
-  UilWindowSection,
 } from '@iconscout/react-unicons';
 
 
 import {
-  UilTicket,
   UilCube,
   UilTruck,
-  UilPlug,
   UilShoppingBag,
   UilWifiRouter,
-  UilHistory,
   UilUserCircle,
-  UilKeySkeleton,
 } from '@iconscout/react-unicons';
 
 import { Menu } from 'antd';
@@ -77,17 +71,6 @@ function AQxCustodityMenu({ toggleCollapsed }) {
     if (item.keyPath.length === 1) setOpenKeys([]);
   };
 
-  const changeLayout = (mode) => {
-    dispatch(changeLayoutMode(mode));
-  };
-
-  const darkmodeActivated = () => {
-    document.body.classList.add('dark-mode');
-  };
-
-  const darkmodeDiactivated = () => {
-    document.body.classList.remove('dark-mode');
-  };
 
   const items = [
     getItem(
@@ -120,7 +103,6 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
-
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/planning`}>
         {t('Aqualink Planning')}
@@ -135,34 +117,6 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
 
 
-    getItem(t('Reportes Cosecha'), 'ReportesCosecha', !topMenu && <UilCalendarAlt />, [
-
-
-      getItem(
-        <NavLink className="menuItem-iocn" to={`${path}/reports/lote/view`}>
-          {t('Ver')} {t('Lote')}
-        </NavLink>,
-        'view-lote',
-        null,
-      ),
-
-
-
-      getItem(
-        <NavLink className="menuItem-iocn" to={`${path}/reports/lote/add`}>
-          {t('Añadir')} {t('Lote')}
-        </NavLink>,
-        'add-lote',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-iocn" to={`${path}/reports/harvest-reports`}>
-          {t('Reportes de')} {t('Lote')}
-        </NavLink>,
-        'light',
-        null,
-      ),
-    ]),
 
 
 
@@ -234,13 +188,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         'add-supply',
         null,
       ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/supply/inventary/add`}>
-          {t('Añadir Suministros')}
-        </NavLink>,
-        'add-productoss',
-        null,
-      ),
+     
 
     ]),
 
@@ -262,6 +210,42 @@ function AQxCustodityMenu({ toggleCollapsed }) {
     
     ]),
 
+
+    getItem(
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Recursos de Producción')}</NavTitle>,
+      'submenu-proveedores',
+      null,
+      null,
+      'group',
+    ),
+
+    
+    getItem(t('Reportes Cosecha'), 'ReportesCosecha', !topMenu && <UilCalendarAlt />, [
+
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/reports/lote/add`}>
+          {t('Añadir')} {t('Lote')}
+        </NavLink>,
+        'add-lote',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/reports/lote/view`}>
+          {t('Ver')} {t('Lote')}
+        </NavLink>,
+        'view-lote',
+        null,
+      ),
+
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/reports/harvest-reports`}>
+          {t('Performance')}
+        </NavLink>,
+        'light',
+        null,
+      ),
+    ]),
+
     getItem(t('Análisis de Laboratorio'), 'analisis-laboratorio', !topMenu && <UilFlaskPotion />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/laboratory/view`}>
@@ -280,32 +264,6 @@ function AQxCustodityMenu({ toggleCollapsed }) {
     ]),
 
 
-    getItem(
-      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Proveedores/Camaroneras')}</NavTitle>,
-      'submenu-proveedores',
-      null,
-      null,
-      'group',
-    ),
-
-    getItem(t('Proveedores'), 'compras', !topMenu && <UilShoppingBag />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/purchases/supplier/view`}>
-          {t('Ver Proveedores/Camaroneras')}
-        </NavLink>,
-        'ver-proveedores',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/purchases/supplier/add`}>
-          {t('Añadir Proveedores')}
-        </NavLink>,
-        'add-proveedores',
-        null,
-      ),
-
-    ]),
-
     getItem(t('Trazabilidad'), 'trazabilidad', !topMenu && <UilWifiRouter />, [
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/traceability/tracking`}>
@@ -321,7 +279,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
 
 
     getItem(
-      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Administración')}</NavTitle>,
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Recursos de Administración')}</NavTitle>,
       'submenu-administracion',
       null,
       null,
@@ -346,13 +304,8 @@ function AQxCustodityMenu({ toggleCollapsed }) {
           'cliente-custody',
           null,
         ),
-        getItem(
-          <div className="menu-item-level-1">
-            <NavLink to={`${path}/client/add`}>{t('Configuración')}</NavLink>
-          </div>,
-          'cliente-usuarios',
-          null,
-        ),
+       
+
       ]
     ),
 

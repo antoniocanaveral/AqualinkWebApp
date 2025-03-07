@@ -146,6 +146,10 @@ const mapPoolRecord = (record) => ({
   isInTransit: record.IsInTransit || false,
   value: record.Value || '',
   locators: record.M_Locator ? record.M_Locator.map((locator) => locator.id) : [],
+  salesRegion: {
+    id: record.C_SalesRegion_ID?.id || null,
+    name: record.C_SalesRegion_ID?.identifier || '',
+  },
 });
 
 const mapOrgRecord = (info, baseOrg, orgDetails, location) => ({

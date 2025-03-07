@@ -17,6 +17,10 @@ import {
 
 
 import {
+  UilWifiRouter,
+} from '@iconscout/react-unicons';
+
+import {
   UilArchive,
   UilUserCircle,
 } from '@iconscout/react-unicons';
@@ -110,13 +114,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         'analytics',
         null,
       ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/analytics/report`}>
-          {t('Reporte de Producción')}
-        </NavLink>,
-        'reporte-produccion',
-        null,
-      ),
+
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/analytics/pro-data-analytics`}>
           {t('Pro Data Analytics')}
@@ -142,17 +140,6 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ),
     ]),
 
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/tasks`}>
-        {t('Tareas')}
-      </NavLink>,
-      'tareas',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/tasks`}>
-          <UilCalendarAlt />
-        </NavLink>
-      ),
-    ),
 
 
     getItem(
@@ -163,12 +150,47 @@ function AQxFarmMenu({ toggleCollapsed }) {
       'group',
     ),
 
+    //REPORTES 
+    getItem(
+      t('Reportes'),
+      'reportes',
+      !topMenu && <UilChart />,
+      [
+
+        getItem(
+          <NavLink onClick={toggleCollapsed} to={`${path}/tasks`}>
+            {t('Tareas')}
+          </NavLink>,
+          'tareas',
+
+        ),
+        getItem(
+          <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/reporte-op`}>
+            {t('Reporte de Operaciones')}
+          </NavLink>,
+          'Reportes',
+          null,
+        ),
+        getItem(
+          <NavLink className="menuItem-icon" to={`${path}/analytics/report`}>
+            {t('Reporte de Producción')}
+          </NavLink>,
+          'reporte-produccion',
+          null,
+        ),
+
+
+
+      ]
+    ),
     // MONITOREO
+
     getItem(
       t('Monitoreo'),
       'monitoreo',
       !topMenu && <UilChart />,
       [
+
         getItem(
           <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/monitoreo-general`}>
             {t('Monitoreo General')}
@@ -376,7 +398,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         'ver-laboratorios',
         null,
       ),
-     
+
     ]),
 
 
@@ -388,7 +410,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         'ver-empacadora',
         null,
       ),
-      
+
     ]),
 
 
@@ -452,6 +474,16 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ]
     ),
 
+    getItem(t('Trazabilidad'), 'trazabilidad', !topMenu && <UilWifiRouter />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/traceability/tracking`}>
+          {t('Tracking de Lotes')}
+        </NavLink>,
+        'tracking-lotes',
+        null,
+      ),
+
+    ]),
 
 
     getItem(

@@ -1,106 +1,262 @@
-import React, { lazy, Suspense } from 'react';
-import { Row, Col, Skeleton, Typography, Badge, Space, Table } from 'antd';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { Row, Col, Skeleton, Typography, Table } from 'antd';
+import Cookies from 'js-cookie';
+import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
-import PreCriaVolumeDonutChart from '../crop/biomass/PreCriaVolumDonutChart';
-import TexturePercentageChart from '../crop/biomass/TexturePercentageChart';
-import ClassificationDonutChart from '../crop/biomass/ClassificationDonutChart';
-import Speedometer from './charts/Speedometer';
+
 import DonutChartSuplyCost from './charts/DonutChartSuplyCost';
+import Speedometer from './charts/Speedometer';
 import CostoLineChart from './charts/CostoLineChart';
+
+import { fetchCostCenterInfo } from '../../../redux/cost/actionCreator';
+import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
 
 function CenterCostFarm() {
   const { Text } = Typography;
-  const data = [
+  const dispatch = useDispatch();
+
+  // Datos de organizaciones
+  const organizations = useSelector((state) => state.auth.farmsOrgs);
+  const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+
+  // Selección de org, sector y pool
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+  const [selectedSector, setSelectedSector] = useState(null);
+  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+
+  // Datos de la vista costcenter
+  const costCenterData = useSelector((state) => state.cost.costCenterData);
+
+  // Manejo de selección de org
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
+    setSelectedPool(null);
+    setSelectedSector(null);
+  };
+
+  // Manejo de selección de sector
+  const handleSectorChange = (sectorId) => {
+    setSelectedSector(sectorId);
+    setSelectedPool(null);
+  };
+
+  // Manejo de selección de pool
+  const handlePoolChange = (poolId) => {
+    setSelectedPool(poolId);
+    Cookies.set('poolId', poolId);
+  };
+
+  // Opciones para Farms
+  const farmsSelectOptions = organizations.length > 0 ? [
     {
-      key: '1',
-      asignacion: 'PP Piscina 1',
-      codigo: '8569',
-      valor: '$3,395',
-      costo: '$1,250',
-      rendimiento: 5, // Positivo
+      options: farmsOrgsWithPools.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Farm',
+      value: selectedOrg || undefined,
     },
+  ] : [];
+
+  // Opciones para sectores
+  const sectorsOptions = selectedOrg
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .reduce((acc, pool) => {
+        if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
+          acc.push({
+            value: pool.salesRegion.id,
+            label: pool.salesRegion.name,
+          });
+        }
+        return acc;
+      }, [])
+    : [];
+
+  const sectorSelectOptions = selectedOrg ? [
     {
-      key: '2',
-      asignacion: 'PP PreCría 1',
-      codigo: '8572',
-      valor: '$2,820',
-      costo: '$950',
-      rendimiento: -3, // Negativo
+      options: sectorsOptions,
+      onChange: handleSectorChange,
+      placeholder: 'Seleccione un Sector',
+      value: selectedSector || undefined,
     },
+  ] : [];
+
+  // Opciones para pools
+  const poolsOptions = selectedSector
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
+      .map(pool => ({
+        value: pool.poolId,
+        label: pool.poolName,
+      }))
+    : [];
+
+  const poolsSelectOptions = selectedSector ? [
     {
-      key: '3',
-      asignacion: 'PP Piscina 2',
-      codigo: '8570',
-      valor: '$3,672',
-      costo: '$1,320',
-      rendimiento: 1, // Positivo
+      options: poolsOptions,
+      onChange: handlePoolChange,
+      placeholder: 'Seleccione una Pool',
+      disabled: poolsOptions.length === 0,
+      value: selectedPool || undefined,
     },
-    {
-      key: '4',
-      asignacion: 'PP PreCría 2',
-      codigo: '8573',
-      valor: '$2,835',
-      costo: '$997',
-      rendimiento: -2, // Negativo
-    },
-    {
-      key: '5',
-      asignacion: 'PP Piscina 3',
-      codigo: '8571',
-      valor: '$3,850',
-      costo: '$1,975',
-      rendimiento: -12, // Negativo
-    },
+  ] : [];
+
+  // Combinación de selects en el PageHeader
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
+    ...sectorSelectOptions,
+    ...poolsSelectOptions,
   ];
 
+  // Efecto para fetch de costCenter
+  useEffect(() => {
+    if (selectedPool != null){
+      dispatch(fetchCostCenterInfo());
+    }
+  }, [dispatch, selectedPool]);
+
+  // Cálculos de datos
+  const computedData = costCenterData.map((item, index) => {
+    // Asumiendo que el LOTE ID es 'SM_Batch' si la vista lo trae como item.sm_batch
+    // Si no, usaremos item.C_Campaign_ID?.identifier como fallback
+    const loteId = item.SM_Batch || 'N/A';
+
+    // Días totales de corrida (StartDate a EndDate)
+    const diasCorrida = moment(item.EndDate).diff(moment(item.StartDate), 'days');
+
+    // Supervivencia estimada = 0.4 * días de corrida
+    const supervivenciaEstimada = 0.4 * diasCorrida;
+
+    // Producción estimada = (Densidad * Peso Objetivo * supervivencia * poolsize) / 1000
+    const produccionEstimada = ((
+
+      item.SM_Density * item.SM_PoolSize * supervivenciaEstimada) *
+      item.SM_TargetWeight
+
+    ) / 1000;
+
+
+    // Alimentación estimada (FCA = 1.2)
+    const alimentacionEstimada = 1.2 * produccionEstimada;
+
+    // Costo AB = avg_feed_price * alimentacion_estimada
+    const costoAB = item.avg_feed_price * alimentacionEstimada;
+
+    // Larva = ((densidad * poolsize) / 1000) * 2
+    const larva = ((item.SM_Density * item.SM_PoolSize) / 1000) * 2;
+
+    // Valor proyectado
+    const valorProyectado = costoAB + larva;
+
+    // Días de corrida transcurridos (fecha actual - StartDate)
+    const diasCorridaDdc = moment().diff(moment(item.StartDate), 'days');
+
+    // Costo proyectado DdC = (valorProyectado / díasCorridaTotal) * díasCorridaDdc
+    const costoProyectadoDdc = diasCorrida === 0
+      ? 0
+      : (valorProyectado / diasCorrida) * diasCorridaDdc;
+
+    // Costo Real DdC
+    const costoRealDdc = 1988;
+
+    // Rendimiento = ((costoProyectadoDdc - costoRealDdc) / costoProyectadoDdc) * 100
+    const rendimiento = costoProyectadoDdc === 0
+      ? 0
+      : ((costoProyectadoDdc - costoRealDdc) / costoProyectadoDdc) * 100;
+
+    console.log("Cálculos:", {
+      loteId,
+      diasCorrida,
+      supervivenciaEstimada,
+      produccionEstimada,
+      alimentacionEstimada,
+      costoAB,
+      larva,
+      valorProyectado,
+      diasCorridaDdc,
+      costoProyectadoDdc,
+      costoRealDdc,
+      rendimiento,
+    });
+
+    const proyected_reference = valorProyectado / diasCorrida
+    const real_reference = costoRealDdc / diasCorridaDdc
+    return {
+      key: index,
+      lote_id: loteId,
+      valorProyectado: valorProyectado.toFixed(2),
+      diasCorrida,
+      diasCorridaDdc,
+      costoProyectadoDdc: costoProyectadoDdc.toFixed(2),
+      costoRealDdc,
+      rendimiento: rendimiento.toFixed(2),
+      proyected_reference,
+      real_reference
+    };
+  });
+
+  // Columnas finales solicitadas
   const columns = [
     {
-      title: <Text style={{ fontSize: '12px' }}>Lote ID </Text>,
-      dataIndex: 'asignacion',
-      key: 'asignacion',
+      title: <Text style={{ fontSize: '12px' }}>LOTE ID</Text>,
+      dataIndex: 'lote_id',
+      key: 'lote_id',
       render: (text) => <Text style={{ fontSize: '12px' }}>{text}</Text>,
     },
     {
-      title: <Text style={{ fontSize: '12px' }}>Código</Text>,
-      dataIndex: 'codigo',
-      key: 'codigo',
-      render: (text) => <Text style={{ fontSize: '12px' }}>{text}</Text>,
+      title: <Text style={{ fontSize: '12px' }}>Valor Proyectado</Text>,
+      dataIndex: 'valorProyectado',
+      key: 'valorProyectado',
+      render: (text) => <Text style={{ fontSize: '12px' }}>${text}</Text>,
     },
     {
-      title: <Text style={{ fontSize: '12px' }}>Valor</Text>,
-      dataIndex: 'valor',
-      key: 'valor',
-      render: (text) => <Text style={{ fontSize: '12px' }}>{text}</Text>,
+      title: <Text style={{ fontSize: '12px' }}>Días de Corrida</Text>,
+      dataIndex: 'diasCorridaDdc',
+      key: 'diasCorridaDdc',
+      render: (value) => <Text style={{ fontSize: '12px' }}>{value}</Text>,
     },
     {
-      title: <Text style={{ fontSize: '12px' }}>Costo</Text>,
-      dataIndex: 'costo',
-      key: 'costo',
-      render: (text) => <Text style={{ fontSize: '12px' }}>{text}</Text>,
+      title: <Text style={{ fontSize: '12px' }}>Costo Proyectado DdC</Text>,
+      dataIndex: 'costoProyectadoDdc',
+      key: 'costoProyectadoDdc',
+      render: (value) => <Text style={{ fontSize: '12px' }}>${value}</Text>,
     },
     {
-      title: <Text style={{ fontSize: '12px' }}>RDTO</Text>,
+      title: <Text style={{ fontSize: '12px' }}>Costo Real DdC</Text>,
+      dataIndex: 'costoRealDdc',
+      key: 'costoRealDdc',
+      render: (value) => <Text style={{ fontSize: '12px' }}>${value}</Text>,
+    },
+    {
+      title: <Text style={{ fontSize: '12px' }}>Rendimiento</Text>,
       dataIndex: 'rendimiento',
       key: 'rendimiento',
       render: (value) => {
-        let color = 'black'; // Por defecto, negro
-        if (value > 0) {
+        let color = 'black';
+        if (Number(value) > 0) {
           color = 'green';
-        } else if (value < 0) {
+        } else if (Number(value) < 0) {
           color = 'red';
         }
         return (
-          <Text style={{ color, fontSize: '12px' }}>
-            {value > 0 ? `+${value}%` : `${value}%`}
-          </Text>
+          <Text style={{ fontSize: '12px', color }}>{value}%</Text>
         );
       },
     },
   ];
 
-
+  // Datos de ejemplo para Suministros y la gráfica
   const dataSyplyCost = [
     { label: 'Balanceado 30%', value: 6600, color: '#aa61c8' },
     { label: 'Bacteria', value: 1700, color: '#39a7f0' },
@@ -117,86 +273,58 @@ function CenterCostFarm() {
     { x: 80, 'costo real': 75, 'costo proyectado': 70, precria: 65, optimo: 32 },
     { x: 100, 'costo real': 85, 'costo proyectado': 80, precria: 75, optimo: 32 },
   ];
+
   return (
     <>
-      <PageHeader 
+      <PageHeader
         highlightText="Aqualink Costos"
         title="Centro de Costos"
-        selectOptions={[
-          ["Camaronera 1", "Camaronera 2", "Camaronera 3"],
-          ["Sector 1", "Sector 2", "Sector 3"],
-          ["Piscina 1", "Piscina 2", "Piscina 3"]
-        ]}
+        selectOptions={combinedSelectOptions}
+        selectedOrg={selectedOrg}
+        selectedPool={selectedPool}
       />
       <Main>
         <Row gutter={25}>
-
-          <Col xl={8} xs={24} style={{display:"flex"}} >
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <Cards title={"Centro de Costos"}>
+          <Col xl={24} xs={24} style={{ display: 'flex' }}>
+            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
+              <Cards title="Centro de Costos">
                 <Table
                   columns={columns}
-                  dataSource={data}
+                  dataSource={computedData}
                   pagination={false}
                   bordered
                   rowKey="key"
                 />
               </Cards>
-
             </Suspense>
           </Col>
-          <Col xl={8} xs={24} >
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <Cards title={"Costos por Suministro"}>
-              <DonutChartSuplyCost data={dataSyplyCost} />
+
+          <Col xl={12} xs={24}>
+            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
+              <Cards title="Costos por Suministro">
+                <DonutChartSuplyCost data={dataSyplyCost} />
               </Cards>
-
             </Suspense>
           </Col>
 
-          <Col xl={8} xs={24} style={{display:"flex"}} >
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
-              <Cards title={"Performance"}>
-                <Speedometer value={85.89} />
+          <Col xl={12} xs={24} style={{ display: 'flex' }}>
+            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
+              <Cards title="Performance">
+                {computedData.length > 0 ? (
+                  <Speedometer value={Number(computedData[0].real_reference)} />
+                ) : (
+                  <Text>No data</Text>
+                )}
               </Cards>
-
             </Suspense>
           </Col>
-
         </Row>
 
-
-
         <Row gutter={25}>
-
           <Col xl={24} xs={24} style={{ display: 'flex' }}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
+            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Costo Producción Ha/Día" size="large" style={{ width: '100%', height: '100%' }}>
-                <CostoLineChart  data={dataLineChart} height={400} />
+                <CostoLineChart data={dataLineChart} height={400} />
               </Cards>
             </Suspense>
           </Col>

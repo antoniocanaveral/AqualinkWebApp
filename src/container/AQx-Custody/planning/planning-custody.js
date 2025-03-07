@@ -1,117 +1,84 @@
 // src/container/AQx-Custody/stamps-containers/planning-custody.js
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Row, Col, Skeleton, Typography, Table, Button, Modal } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import ProjectionKgPanel from '../../AQx-Farms/panel/charts/projections-kg-panel';
 import TankCard from '../panel/components/TankCard';
+import { useDispatch, useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
+import { fetchCoordinationInfo } from '../../../redux/views/coords/actionCreator';
 
 function PlanningCustody() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedTank, setSelectedTank] = useState(null);
 
-    // Datos de los tanques
-    const tankData = [
-        {
-            id: 1,
-            nombreCamaronera: 'El Progreso',
-            codigoAQLK: 'AQLK001',
-            loteID: 'L-001',
-            estado: 'Confirmado',
-            fechaPesca: '05 Diciembre 2023',
-            piscina: 'Piscina 1',
-            volumenProgramado: '1.5 M',
-            tipoCosecha: 'Manual',  
 
+    const dispatch = useDispatch();
+    const { coordinationInfo, coordInfoLoading, coordInfoError } = useSelector(state => state.view_coords);
 
-            clasificacionReportada: '20-30',
-        },
-        {
-            id: 2,
-            nombreCamaronera: 'Las Palmas',
-            codigoAQLK: 'AQLK002',
-            loteID: 'L-002',
-            estado: 'Confirmado',
-            fechaPesca: '06 Diciembre 2023',
-            piscina: 'Piscina 2',
-            volumenProgramado: '2.0 M',
-            tipoCosecha: 'Manual',  
+    const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+    const loading = useSelector((state) => state.view_coords.coordInfoLoading);
+    const error = useSelector((state) => state.view_coords.coordInfoError);
 
-            clasificacionReportada: '40-50',
-        },
-        {
-            id: 3,
-            nombreCamaronera: 'El Sol',
-            codigoAQLK: 'AQLK003',
-            loteID: 'L-003',
-            estado: 'Confirmado',
-            fechaPesca: '07 Diciembre 2023',
-            piscina: 'Piscina 3',
-            volumenProgramado: '1.2 M',
-            tipoCosecha: 'Manual',  
+    const organizations = useSelector((state) => state.auth.farmsOrgs);
+    const custodyOrgs = useSelector((state) => state.auth.custodyOrgs);
 
-            clasificacionReportada: '30-40',
-        },
-        {
-            id: 4,
-            nombreCamaronera: 'Azul',
-            codigoAQLK: 'AQLK004',
-            loteID: 'L-004',
-            estado: 'Confirmado',
-            fechaPesca: '08 Diciembre 2023',
-            piscina: 'Piscina 4',
-            volumenProgramado: '1.8 M',
-            tipoCosecha: 'Manual',  
-
-            clasificacionReportada: '80-100',
-        },
-    ];
-
-    // Función para mostrar los detalles del tanque correspondiente
-    const showDetails = (record) => {
-        // Extraer loteID del campo 'lote', por ejemplo, 'L-GIV-001' -> 'L-001'
-        const loteID = record.lote.replace(/-GIV|-GPA|-IND/, '');
-        // Buscar el tanque correspondiente en tankData
-        const tank = tankData.find(t => t.loteID === loteID);
-        if (tank) {
-            setSelectedTank(tank);
-            setIsModalVisible(true);
-        } else {
-            // Manejar el caso donde no se encuentra un tanque correspondiente
-            Modal.error({
-                title: 'Error',
-                content: 'No se encontró información de tanque para este lote.',
-            });
-        }
+    const handleOrgChange = (orgId, orgEmail) => {
+        setSelectedOrg(orgId);
+        Cookies.set('orgId', orgId);
+        Cookies.set('orgEmail', orgEmail || '');
     };
 
-    // Funciones para cerrar el Modal
-    const handleOk = () => setIsModalVisible(false);
-    const handleCancel = () => setIsModalVisible(false);
+    const farmsSelectOptions = organizations.length > 0 ? [
+        {
+            options: custodyOrgs.map(org => ({
+                value: org.orgId,
+                label: org.orgName,
+                email: org.orgEmail,
+            })),
+            onChange: handleOrgChange,
+            placeholder: 'Seleccione una Empacadora',
+            value: selectedOrg || undefined,
+        },
+    ] : [];
 
-    // Datos de las tablas
-    const dataGIV = [
-        { key: "1", lote: "L-GIV-001", fecha: "2024-06-01", peso: "1,200 kg", estado: "Pendiente" },
-        { key: "2", lote: "L-GIV-002", fecha: "2024-06-05", peso: "1,500 kg", estado: "Completado" },
-        { key: "3", lote: "L-GIV-003", fecha: "2024-06-10", peso: "1,100 kg", estado: "En Proceso" },
-        { key: "4", lote: "L-GIV-004", fecha: "2024-06-12", peso: "950 kg", estado: "Pendiente" },
-    ];
+    const combinedSelectOptions = [...farmsSelectOptions];
 
-    const dataGPA = [
-        { key: "1", lote: "L-GPA-001", fecha: "2024-07-01", peso: "1,400 kg", estado: "Pendiente" },
-        { key: "2", lote: "L-GPA-002", fecha: "2024-07-05", peso: "1,600 kg", estado: "Completado" },
-        { key: "3", lote: "L-GPA-003", fecha: "2024-07-10", peso: "1,300 kg", estado: "En Proceso" },
-        { key: "4", lote: "L-GPA-004", fecha: "2024-07-12", peso: "1,000 kg", estado: "Pendiente" },
-    ];
 
-    const dataIND = [
-        { key: "1", lote: "L-IND-001", fecha: "2024-08-01", peso: "1,700 kg", estado: "Pendiente" },
-        { key: "2", lote: "L-IND-002", fecha: "2024-08-05", peso: "1,800 kg", estado: "Completado" },
-        { key: "3", lote: "L-IND-003", fecha: "2024-08-10", peso: "1,450 kg", estado: "En Proceso" },
-        { key: "4", lote: "L-IND-004", fecha: "2024-08-12", peso: "1,250 kg", estado: "Pendiente" },
-    ];
+    useEffect(() => {
+        dispatch(fetchCoordinationInfo());
+    }, [dispatch, selectedOrg]);
+
+
+
+    // Filtrado para obtener solo registros únicos por `SM_Coordination_ID.identifier`
+    let processedData = {};
+    coordinationInfo.forEach(record => {
+        const identifier = record?.SM_Coordination_ID?.identifier;
+        if (identifier && !processedData[identifier]) {
+            processedData[identifier] = record;
+        }
+    });
+    processedData = Object.values(processedData); // Convertir a array
+
+    // Filtrar datos en base al campo `SM_OrgType`
+    const filterDataByType = (type) => processedData
+        .filter(record => record.SM_OrgType === type)
+        .map(record => ({
+            key: record.SM_Coordination_ID.identifier,
+            lote: record.SM_Coordination_ID.identifier,
+            fecha: record.SM_FishingDate.split('T')[0], // Formato YYYY-MM-DD
+            peso: `${record.SM_FishingVolume} kg`,
+            estado: record.SM_CoordinationStatus.identifier,
+            fullData: record
+        }));
+
+    const dataGIV = filterDataByType('GIV');
+    const dataGPA = filterDataByType('GPA');
+    const dataIND = filterDataByType('IND');
 
     // Definición de columnas de la tabla
     const columns = [
@@ -130,11 +97,27 @@ function PlanningCustody() {
         },
     ];
 
+
+
+    // Función para mostrar los detalles del tanque correspondiente
+    const showDetails = (record) => {
+        setSelectedTank(record);
+        setIsModalVisible(true);
+
+    };
+
+    // Funciones para cerrar el Modal
+    const handleOk = () => setIsModalVisible(false);
+    const handleCancel = () => setIsModalVisible(false);
+
+
     return (
         <>
             <PageHeader
                 title="Planning"
                 highlightText="Aqualink Empacadora"
+                selectOptions={combinedSelectOptions}
+                selectedOrg={selectedOrg}
             />
 
             <Main>
@@ -147,16 +130,16 @@ function PlanningCustody() {
                                 </Cards>
                             }
                         >
-                            <ProjectionKgPanel />
+                            <ProjectionKgPanel type="CUSTODY" coordinationInfo={coordinationInfo} loading={loading} error={error} selectedOrg={selectedOrg} />
                         </Suspense>
                     </Col>
                     <Col xl={12} xs={24} style={{ display: 'flex' }}>
                         <Cards title="Proyecciones de cosecha fincas GIV" size="large">
                             <div className="table-responsive">
-                                <Table 
-                                    dataSource={dataGIV} 
-                                    columns={columns} 
-                                    pagination={{ pageSize: 5 }} 
+                                <Table
+                                    dataSource={dataGIV}
+                                    columns={columns}
+                                    pagination={{ pageSize: 5 }}
                                     bordered
                                 />
                             </div>
@@ -167,10 +150,10 @@ function PlanningCustody() {
                     <Col xl={12} xs={24} style={{ display: 'flex' }}>
                         <Cards title="Proyecciones de cosecha fincas GPA (externos)" size="large">
                             <div className="table-responsive">
-                                <Table 
-                                    dataSource={dataGPA} 
-                                    columns={columns} 
-                                    pagination={{ pageSize: 5 }} 
+                                <Table
+                                    dataSource={dataGPA}
+                                    columns={columns}
+                                    pagination={{ pageSize: 5 }}
                                     bordered
                                 />
                             </div>
@@ -179,17 +162,16 @@ function PlanningCustody() {
                     <Col xl={12} xs={24} style={{ display: 'flex' }}>
                         <Cards title="Proyecciones de cosecha fincas IND (externos)" size="large">
                             <div className="table-responsive">
-                                <Table 
-                                    dataSource={dataIND} 
-                                    columns={columns} 
-                                    pagination={{ pageSize: 5 }} 
+                                <Table
+                                    dataSource={dataIND}
+                                    columns={columns}
+                                    pagination={{ pageSize: 5 }}
                                     bordered
                                 />
                             </div>
                         </Cards>
                     </Col>
                 </Row>
-
                 {/* Modal para detalles del tanque */}
                 <Modal
                     title="Detalles del Lote"
@@ -199,11 +181,45 @@ function PlanningCustody() {
                     width={350} // Ajusta el ancho según el diseño de TankCard
                 >
                     {selectedTank ? (
-                        <TankCard data={selectedTank} />
+                        (() => {
+                            // Calcular la clasificación reportada con base en los datos de selectedTank
+                            const clasificacionReportada =
+                                selectedTank.fullData.SM_Category30_40 ? '30-40' :
+                                    selectedTank.fullData.SM_Category40_50 ? '40-50' :
+                                        selectedTank.fullData.SM_Category50_60 ? '50-60' :
+                                            selectedTank.fullData.SM_Category60_70 ? '60-70' :
+                                                selectedTank.fullData.SM_Category70_80 ? '70-80' :
+                                                    selectedTank.fullData.SM_Category80_100 ? '80-100' :
+                                                        selectedTank.fullData.SM_Category100_120 ? '100-120' :
+                                                            selectedTank.fullData.SM_Category120_150 ? '120-150' :
+                                                                selectedTank.fullData.SM_RequestedPL || 'N/A';
+
+                            // Limpiar el estado removiendo < y >
+                            const estado = selectedTank.fullData.SM_CoordinationStatus?.identifier
+                                ? selectedTank.fullData.SM_CoordinationStatus.identifier.replace(/[<>]/g, '')
+                                : 'Desconocido';
+                            console.log(selectedTank)
+                            return (
+                                <TankCard data={{
+                                    id: selectedTank.fullData.id,
+                                    ci_id: selectedTank.fullData.ci_id,
+                                    nombreCamaronera: selectedTank.fullData.org_name || 'N/A',
+                                    codigoAQLK: selectedTank.fullData.org_value || 'N/A',
+                                    loteID: selectedTank.fullData.SM_Coordination_ID?.identifier || 'N/A',
+                                    estado,
+                                    fechaPesca: selectedTank.fullData.SM_FishingDate ? new Date(selectedTank.fullData.SM_FishingDate).toLocaleDateString('es-ES') : 'N/A',
+                                    piscina: selectedTank.fullData.warehouse_name || 'N/A',
+                                    volumenProgramado: selectedTank.fullData.SM_FishingVolume ? `${selectedTank.fullData.SM_FishingVolume} lbs` : 'N/A',
+                                    tipoCosecha: selectedTank.fullData.SM_CoordinationType?.identifier || 'N/A',
+                                    clasificacionReportada
+                                }} />
+                            );
+                        })()
                     ) : (
                         <Typography.Text>No se encontraron detalles para este lote.</Typography.Text>
                     )}
                 </Modal>
+
             </Main>
         </>
     );

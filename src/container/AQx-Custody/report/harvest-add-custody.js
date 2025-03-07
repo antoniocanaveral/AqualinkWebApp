@@ -1,21 +1,90 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Select, Input, Button, Steps, Modal, message, InputNumber } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { loadCustodyCoordinations } from '../../../redux/custody/actionCreator';
+import Cookies from 'js-cookie';
+import { registerLote } from '../../../redux/lote/actionCreator';
 const { Step } = Steps;
 const { Option } = Select;
 
 function LoteAddCustody() {
+    const dispatch = useDispatch();
     const [currentStep, setCurrentStep] = useState(0);
     const [form] = Form.useForm();
     const [formData, setFormData] = useState({});
-    const [modalVisible, setModalVisible] = useState(false);
+    const [lotId, setLotId] = useState(null);
+    const organizations = useSelector((state) => state.auth.custodyOrgs);
+    const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName'));
+
+
+    const PageRoutes = [
+        {
+            path: '/custody',
+            breadcrumbName: selectedOrg,
+        },
+        {
+            path: 'first',
+            breadcrumbName: 'Coordinaciones',
+        },
+    ];
+
+    const coordinations = useSelector((state) => state.custody.coordinations);
+
+
+    const handleOrgChange = (value, orgEmail) => {
+        setSelectedOrg(value);
+        Cookies.set('orgId', value);
+        Cookies.set('orgEmail', orgEmail);
+        dispatch(loadCustodyCoordinations(value));
+    };
+
+
+    const handleLotChange = (value) => {
+        setLotId(value);
+
+        const selectedCoordination = coordinations.find(coord => coord.SM_FishingNotification === value);
+
+        if (selectedCoordination) {
+            setFormData(prevData => ({
+                ...prevData,
+                SM_Coordination_ID: selectedCoordination.SM_Coordination_ID.id
+            }));
+        } else {
+            setFormData(prevData => ({
+                ...prevData,
+                SM_Coordination_ID: null
+            }));
+        }
+    };
+
+    const [totalEntero, setTotalEntero] = useState(0);
+    const [totalCola, setTotalCola] = useState(0);
+    const [volumenProceso, setVolumenProceso] = useState(0);
+
+    useEffect(() => {
+        const smProcessVolume = form.getFieldValue("sm_processvolume") || 0;
+        setVolumenProceso(smProcessVolume);
+
+        const newTotalEntero = ['30_40', '40_50', '50_60', '60_70', '70_80', '80_100', '100_120', '120_150']
+            .reduce((acc, category) => acc + (form.getFieldValue(`sm_hocategory${category}`) || 0), 0);
+        setTotalEntero(newTotalEntero);
+
+        const newTotalCola = ['21_25', '26_30', '31_35', '36_40', '41_50', '51_60', '61_70', '71_90', '100_120', '120_150']
+            .reduce((acc, category) => acc + (form.getFieldValue(`sm_hl${category}`) || 0), 0);
+        setTotalCola(newTotalCola);
+    }, [form, form.getFieldValue("sm_processvolume")]);
+
 
     const onNext = async () => {
         try {
             await form.validateFields();
+            setFormData((prevData) => ({
+                ...prevData,
+                ...form.getFieldsValue()
+            }));
             setCurrentStep((prev) => prev + 1);
         } catch (error) {
             console.error('Error en la validación del formulario:', error);
@@ -25,17 +94,48 @@ function LoteAddCustody() {
     const onPrev = () => {
         setCurrentStep((prev) => prev - 1);
     };
+    const formatToISO = (dateString) => {
+        if (!dateString) return null;
+
+        if (dateString.length === 16) {
+            dateString += ":00";
+        }
+
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const seconds = String(date.getSeconds()).padStart(2, "0");
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+    };
+
+
 
     const handleFinalizar = async () => {
         try {
             await form.validateFields();
-            const allData = form.getFieldsValue();
-            setFormData(allData);
-            setModalVisible(true);
+            let allData = { ...formData, ...form.getFieldsValue() };
+
+            const { sm_FishingNotification, ...filteredData } = allData;
+            if (filteredData.sm_arrivaltime) {
+                filteredData.sm_arrivaltime = formatToISO(filteredData.sm_arrivaltime);
+            }
+            if (filteredData.sm_processstarttime) {
+                filteredData.sm_processstarttime = formatToISO(filteredData.sm_processstarttime);
+            }
+
+            console.log("Datos finales enviados (formateados):", filteredData);
+            setFormData(filteredData);
+
+            dispatch(registerLote(filteredData)); // Enviar los datos sin sm_FishingNotification
         } catch (error) {
             console.error('Error al finalizar el registro:', error);
         }
     };
+
+
 
     const steps = [
         {
@@ -45,45 +145,39 @@ function LoteAddCustody() {
                     initialValues={{
                         volumenIngreso: 0.00,
                     }}>
+
                     <Form.Item
-                        label="Fecha"
-                        name="fecha"
-                        rules={[{ required: true, message: 'Debe ingresar la fecha' }]}
+                        label="Seleccione el LOTE ID"
+                        name="sm_FishingNotification"
+                        rules={[{ required: true, message: 'Debe seleccionar un LOTE ID' }]}
                     >
-                        <Input type="date" />
-                    </Form.Item>
-                    <Form.Item
-                        label="Lote ID"
-                        name="loteId"
-                        rules={[{ required: true, message: 'Debe ingresar el ID del lote' }]}
-                    >
-                        <Input placeholder="Ingrese el Lote ID" />
+                        <Select
+                            placeholder="Seleccione un LOTE ID"
+                            onChange={handleLotChange}
+                            value={lotId}
+                        >
+                            {coordinations && coordinations.length > 0 ? (
+                                coordinations.map((coord) => (
+                                    <Option key={coord.SM_FishingNotification} value={coord.SM_FishingNotification}>
+                                        {coord.SM_FishingNotification || 'Sin Lote ID'}
+                                    </Option>
+                                ))
+                            ) : (
+                                <Option value="none" disabled>No hay coordinaciones disponibles</Option>
+                            )}
+                        </Select>
                     </Form.Item>
                     <Row gutter={16}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Hora de llegada a planta"
-                                name="horaLlegada"
-                                rules={[{ required: true, message: 'Debe ingresar la hora de llegada' }]}
-                            >
-                                <Input type="time" />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Hora de inicio de proceso"
-                                name="horaInicio"
-                                rules={[{ required: true, message: 'Debe ingresar la hora de inicio' }]}
-                            >
-                                <Input type="time" />
-                            </Form.Item>
-                        </Col>
+                        <Row gutter={16}>
+                            <Col span={12}><Form.Item label="Hora de llegada a planta" name="sm_arrivaltime" rules={[{ required: true, message: 'Ingrese la hora de llegada' }]}><Input type="datetime-local" /></Form.Item></Col>
+                            <Col span={12}><Form.Item label="Hora de inicio de proceso" name="sm_processstarttime" rules={[{ required: true, message: 'Ingrese la hora de inicio' }]}><Input type="datetime-local" /></Form.Item></Col>
+                        </Row>
                     </Row>
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
-                                label="Volumen de ingreso"
-                                name="volumenIngreso"
+                                label="Volumen a Proceso"
+                                name="sm_processvolume"
                                 rules={[{ required: true, message: 'Debe ingresar el volumen de ingreso' }]}
                             >
                                 <Input
@@ -98,18 +192,15 @@ function LoteAddCustody() {
                                             : '0.00'
                                     }
                                     parser={(value) => value.replace(/,/g, '')}
-                                    type="number" placeholder="Volumen (litros)" />
+                                    type="number" placeholder="Volumen" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item
-                                label="Basura"
-                                name="basura"
-                                rules={[{ required: true, message: 'Debe ingresar la cantidad de basura' }]}
-                            >
-                                <Input placeholder="Cantidad en libras" />
+                            <Form.Item label="Basura (kg)" name="sm_waste" rules={[{ required: true, message: 'Ingrese los residuos' }]}>
+                                <InputNumber style={{ width: '100%' }} min={0} />
                             </Form.Item>
                         </Col>
+
                     </Row>
                 </Form>
             ),
@@ -117,111 +208,31 @@ function LoteAddCustody() {
         {
             title: 'Entero',
             content: (
-                <Form
-                    layout="vertical"
-                    form={form}
-                    initialValues={{
-                        entero20_30: 0.00,
-                        entero30_40: 0.00,
-                        entero40_50: 0.00,
-                        entero50_60: 0.00,
-                    }}
-                >
+                <Form layout="vertical" form={form}>
                     <Row gutter={16}>
                         <Col span={12}>
-                            <Form.Item
-                                label="20/30 lbs"
-                                name="entero20_30"
-                                rules={[{ required: true, message: 'Debe ingresar el valor' }]}
-                            >
-                                <InputNumber
-                                    placeholder="Ingrese el valor"
-                                    style={{ width: '100%' }}
-                                    min={0}
-                                    formatter={(value) =>
-                                        value !== undefined && value !== null
-                                            ? Number(value).toLocaleString(undefined, {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2,
-                                            })
-                                            : '0.00'
-                                    }
-                                    parser={(value) => value.replace(/,/g, '')}
-                                    precision={2}
-                                />
-                            </Form.Item>
+                                <InputNumber style={{ width: '100%' }} value={volumenProceso} disabled />
                         </Col>
                         <Col span={12}>
-                            <Form.Item
-                                label="30/40 lbs"
-                                name="entero30_40"
-                                rules={[{ required: true, message: 'Debe ingresar el valor' }]}
-                            >
-                                <InputNumber
-                                    placeholder="Ingrese el valor"
-                                    style={{ width: '100%' }}
-                                    min={0}
-                                    formatter={(value) =>
-                                        value !== undefined && value !== null
-                                            ? Number(value).toLocaleString(undefined, {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2,
-                                            })
-                                            : '0.00'
-                                    }
-                                    parser={(value) => value.replace(/,/g, '')}
-                                    precision={2}
-                                />
-                            </Form.Item>
+                                <InputNumber style={{ width: '100%' }} value={totalEntero} disabled />
                         </Col>
                     </Row>
                     <Row gutter={16}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="40/50 lbs"
-                                name="entero40_50"
-                                rules={[{ required: true, message: 'Debe ingresar el valor' }]}
-                            >
-                                <InputNumber
-                                    placeholder="Ingrese el valor"
-                                    style={{ width: '100%' }}
-                                    min={0}
-                                    formatter={(value) =>
-                                        value !== undefined && value !== null
-                                            ? Number(value).toLocaleString(undefined, {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2,
-                                            })
-                                            : '0.00'
-                                    }
-                                    parser={(value) => value.replace(/,/g, '')}
-                                    precision={2}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="50/60 lbs"
-                                name="entero50_60"
-                                rules={[{ required: true, message: 'Debe ingresar el valor' }]}
-                            >
-                                <InputNumber
-                                    placeholder="Ingrese el valor"
-                                    style={{ width: '100%' }}
-                                    min={0}
-                                    formatter={(value) =>
-                                        value !== undefined && value !== null
-                                            ? Number(value).toLocaleString(undefined, {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2,
-                                            })
-                                            : '0.00'
-                                    }
-                                    parser={(value) => value.replace(/,/g, '')}
-                                    precision={2}
-                                />
-                            </Form.Item>
-                        </Col>
+                        {['30_40', '40_50', '50_60', '60_70', '70_80', '80_100', '100_120', '120_150'].map((category) => (
+                            <Col span={12} key={category}>
+                                <Form.Item label={`${category.replace('_', '/')} lbs`} name={`sm_hocategory${category}`}>
+                                    <InputNumber
+                                        style={{ width: '100%' }}
+                                        min={0}
+                                        onChange={() => {
+                                            const newTotal = ['30_40', '40_50', '50_60', '60_70', '70_80', '80_100', '100_120', '120_150']
+                                                .reduce((acc, cat) => acc + (form.getFieldValue(`sm_hocategory${cat}`) || 0), 0);
+                                            setTotalEntero(newTotal);
+                                        }}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        ))}
                     </Row>
                 </Form>
 
@@ -233,115 +244,43 @@ function LoteAddCustody() {
                 <Form layout="vertical" form={form}>
                     <Row gutter={16}>
                         <Col span={12}>
-                            <Form.Item
-                                label="41/60 lbs"
-                                name="cola41_60"
-                                rules={[{ required: true, message: 'Debe ingresar el valor' }]}
-                            >
-                                <Input type="number" placeholder="Ingrese el valor" />
-                            </Form.Item>
+                                <InputNumber style={{ width: '100%' }} value={volumenProceso - totalEntero} disabled />
                         </Col>
                         <Col span={12}>
-                            <Form.Item
-                                label="61/70 lbs"
-                                name="cola61_70"
-                                rules={[{ required: true, message: 'Debe ingresar el valor' }]}
-                            >
-                                <Input type="number" placeholder="Ingrese el valor" />
-                            </Form.Item>
+                                <InputNumber style={{ width: '100%' }} value={totalCola} disabled />
                         </Col>
                     </Row>
                     <Row gutter={16}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="71/80 lbs"
-                                name="cola71_80"
-                                rules={[{ required: true, message: 'Debe ingresar el valor' }]}
-                            >
-                                <Input type="number" placeholder="Ingrese el valor" />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="81/90 lbs"
-                                name="cola81_90"
-                                rules={[{ required: true, message: 'Debe ingresar el valor' }]}
-                            >
-                                <Input type="number" placeholder="Ingrese el valor" />
-                            </Form.Item>
-                        </Col>
+                        {['21_25', '26_30', '31_35', '36_40', '41_50', '51_60', '61_70', '71_90', '100_120', '120_150'].map((category) => (
+                            <Col span={12} key={category}>
+                                <Form.Item label={`${category.replace('_', '/')} lbs`} name={`sm_hl${category}`}>
+                                    <InputNumber
+                                        style={{ width: '100%' }}
+                                        min={0}
+                                        onChange={() => {
+                                            const newTotal = ['21_25', '26_30', '31_35', '36_40', '41_50', '51_60', '61_70', '71_90', '100_120', '120_150']
+                                                .reduce((acc, cat) => acc + (form.getFieldValue(`sm_hl${cat}`) || 0), 0);
+                                            setTotalCola(newTotal);
+                                        }}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        ))}
                     </Row>
                 </Form>
             ),
         },
-        {
-            title: 'Control de Calidad',
-            content: (
-                <Form layout="vertical" form={form}>
-                    <Row gutter={16}>
-                        <Col span={8}>
-                            <Form.Item
-                                label="Color"
-                                name="color"
-                                rules={[{ required: true, message: 'Debe seleccionar el color' }]}
-                            >
-                                <Select placeholder="Seleccione">
-                                    {["A0", "A1", "A2", "A3", "A4", "A5"].map((opt) => (
-                                        <Option key={opt} value={opt}>{opt}</Option>
-                                    ))}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item
-                                label="Olor"
-                                name="olor"
-                                rules={[{ required: true, message: 'Debe seleccionar el olor' }]}
-                            >
-                                <Select placeholder="Seleccione">
-                                    {["normal", "atipico"].map((opt) => (
-                                        <Option key={opt} value={opt}>{opt}</Option>
-                                    ))}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item
-                                label="Sabor"
-                                name="sabor"
-                                rules={[{ required: true, message: 'Debe seleccionar el sabor' }]}
-                            >
-                                <Select placeholder="Seleccione">
-                                    {["normal", "atipico"].map((opt) => (
-                                        <Option key={opt} value={opt}>{opt}</Option>
-                                    ))}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={16}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="Prueba de cocción"
-                                name="pruebaCoccion"
-                                rules={[{ required: true, message: 'Debe seleccionar el resultado' }]}
-                            >
-                                <Select placeholder="Seleccione">
-                                    {["normal", "cabeza roja", "cabeza naranja", "atipico"].map((opt) => (
-                                        <Option key={opt} value={opt}>{opt}</Option>
-                                    ))}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                </Form>
-            ),
-        },
+
     ];
 
     return (
         <>
-            <PageHeader title="Añadir Custodia de Lote" />
+            <PageHeader highlightText="Aqualink Empacadora" title="Añadir Custodia de Lote"
+                organizations={organizations}
+                routes={PageRoutes}
+                selectedOrg={selectedOrg}
+                handleOrgChange={handleOrgChange}
+            />
             <Main>
                 <Row gutter={25}>
                     <Col span={24}>
@@ -374,22 +313,6 @@ function LoteAddCustody() {
                 </Row>
             </Main>
 
-            <Modal
-                title="Registro Finalizado"
-                visible={modalVisible}
-                onCancel={() => setModalVisible(false)}
-                footer={[
-                    <Button key="guardar" onClick={() => {
-                        console.log('Datos guardados:', formData);
-                        setModalVisible(false);
-                        message.success('Datos guardados exitosamente');
-                    }}>
-                        Guardar
-                    </Button>,
-                ]}
-            >
-                <p>El registro de custodia del lote se ha completado.</p>
-            </Modal>
         </>
     );
 }
