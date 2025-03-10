@@ -311,7 +311,7 @@ function CenterCostFarm() {
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Performance">
                 {computedData.length > 0 ? (
-                  <Speedometer value={Number(computedData[0].real_reference)} />
+                  <Speedometer value={Number(computedData[0].real_reference) } base={Number(computedData[0].proyected_reference)} />
                 ) : (
                   <Text>No data</Text>
                 )}

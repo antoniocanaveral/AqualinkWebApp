@@ -27,6 +27,7 @@ import {
   cSalesRegionCreated,
   cSalesRegionLoading,
 } from './actions';
+import { handleApiError } from '../error/errorHandler';
 
 export const fetchBusinessGroups = () => async (dispatch) => {
   try {
@@ -41,6 +42,8 @@ export const fetchBusinessGroups = () => async (dispatch) => {
     }
   } catch (err) {
     dispatch(smBusinessGroupError(err.message || 'Error al cargar los grupos de negocio.'));
+    handleApiError(err, dispatch, smBusinessGroupError);
+
   }
 };
 
@@ -62,6 +65,8 @@ export const fetchAdClient = () => async (dispatch) => {
     }
   } catch (err) {
     dispatch(adClientError(err.message || 'Error al cargar el ad_client.'));
+    handleApiError(err, dispatch, adClientError);
+
   }
 };
 
@@ -83,6 +88,8 @@ export const fetchRegions = () => async (dispatch) => {
     }
   } catch (err) {
     dispatch(cRegionError(err.message || 'Error al cargar las regiones.'));
+    handleApiError(err, dispatch, cRegionError);
+
   }
 };
 
@@ -100,6 +107,8 @@ export const fetchCity = (regionId) => async (dispatch) => {
     }
   } catch (err) {
     dispatch(cCityError(err.message || 'Error al cargar las ciudades.'));
+    handleApiError(err, dispatch, cCityError);
+
   }
 };
 
@@ -214,6 +223,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
     }
   } catch (err) {
     dispatch(adOrgError(err.message || 'Error al crear la organización.'));
+    handleApiError(err, dispatch, adOrgError);
     throw err;
   }
 };
@@ -287,6 +297,7 @@ export const createPools = (pools) => async (dispatch) => {
 
   } catch (err) {
     dispatch(poolsError(err.message || 'Error al crear piscinas y/o alimentadores'));
+    handleApiError(err, dispatch, poolsError);
     throw err;
   }
 };
@@ -305,5 +316,7 @@ export const fetchBrandFeeders = () => async (dispatch) => {
     }
   } catch (err) {
     dispatch(smBrandFeedersError(err.message || 'Error al cargar las marcas de alimentadores.'));
+    handleApiError(err, dispatch, smBrandFeedersError);
+
   }
 };

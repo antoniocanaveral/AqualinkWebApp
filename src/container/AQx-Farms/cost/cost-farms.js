@@ -13,84 +13,81 @@ function CostFarm() {
   // Columnas de la tabla
   const columns = [
     {
-      title: <span style={{ fontSize: '11px' }}>Día</span>,
+      title: <span style={{ fontSize: '11px' }}>DdC</span>,
       dataIndex: 'dia',
       key: 'dia',
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>BALANCEADO</span>,
+      title: <span style={{ fontSize: '11px' }}>LARVA</span>,
       dataIndex: 'alimentoBalanceado',
       key: 'alimentoBalanceado',
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>A. ORGÁNICOS</span>,
+      title: <span style={{ fontSize: '11px' }}>A. BALANCEADO</span>,
       dataIndex: 'acidosOrganicos',
       key: 'acidosOrganicos',
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>ADITIVOS</span>,
+      title: <span style={{ fontSize: '11px' }}>A. ORGÁNICOS</span>,
       dataIndex: 'aditivos',
       key: 'aditivos',
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>VITAMINAS</span>,
+      title: <span style={{ fontSize: '11px' }}>BACTERIAS Y ENZIMAS</span>,
       dataIndex: 'vitaminas',
       key: 'vitaminas',
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>M. CÁLCICOS</span>,
+      title: <span style={{ fontSize: '11px' }}>FERTILIZANTE</span>,
       dataIndex: 'mineralesCalcicos',
       key: 'mineralesCalcicos',
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>DESPARASITANTES</span>,
+      title: <span style={{ fontSize: '11px' }}>MINERALES Y CALCÁREOS</span>,
       dataIndex: 'desparasitantes',
       key: 'desparasitantes',
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>FERTILIZANTES</span>,
+      title: <span style={{ fontSize: '11px' }}>MEDICADOS</span>,
       dataIndex: 'fertilizantes',
       key: 'fertilizantes',
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>MEDICADOS</span>,
+      title: <span style={{ fontSize: '11px' }}>VITAMINAS</span>,
       dataIndex: 'medicados',
       key: 'medicados',
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
-    {
-      title: <span style={{ fontSize: '11px' }}>BACTERIA ENZIMAS</span>,
-      dataIndex: 'bacteriaEnzimas',
-      key: 'bacteriaEnzimas',
-      align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
-    },
-    {
-      title: <span style={{ fontSize: '11px' }}>AGUA</span>,
-      dataIndex: 'agua',
-      key: 'agua',
-      align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
-    },
+   
     {
       title: <span style={{ fontSize: '11px' }}>COSTO IND Ha. / día</span>,
+      key: 'costoInd',
+      align: 'center',
+      render: (_, record) => (
+        <strong style={{ fontSize: '11px' }}>
+          ${calculateCostoInd(record)}
+        </strong>
+      ),
+    },
+    {
+      title: <span style={{ fontSize: '11px' }}>TTL DdC</span>,
       key: 'costoInd',
       align: 'center',
       render: (_, record) => (
@@ -439,7 +436,7 @@ function CostFarm() {
     // Creamos dos filas para la tabla:
     const subtotalsRow = {
       key: 'subtotals',
-      tipo: 'SUBTOTAL DE COSTOS POR SEMANA',
+      tipo: 'STTL/Week',
       ...groupedByWeek.reduce((acc, week, index) => {
         acc[`semana${index + 1}`] = week.subtotal.toFixed(2); // Formateamos los subtotales
         return acc;
@@ -448,7 +445,7 @@ function CostFarm() {
 
     const valoresPorHaRow = {
       key: 'valoresPorHa',
-      tipo: 'VALOR X HA',
+      tipo: 'STTL/Ha',
       ...groupedByWeek.reduce((acc, week, index) => {
         acc[`semana${index + 1}`] = week.valorPorHa.toFixed(2); // Formateamos el valor por Ha
         return acc;
@@ -467,8 +464,8 @@ function CostFarm() {
       align: 'center',
       render: (text) => <strong style={{ fontSize: '12px' }}>{text}</strong>,
     },
-    ...Array.from({ length: 11 }).map((_, index) => ({
-      title: <span style={{ fontSize: '12px' }}>SEMANA {index + 1}</span>,
+    ...Array.from({ length: 14 }).map((_, index) => ({
+      title: <span style={{ fontSize: '12px' }}>WEEK {index + 1}</span>,
       dataIndex: `semana${index + 1}`,
       key: `semana${index + 1}`,
       align: 'center',

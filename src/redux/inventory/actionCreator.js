@@ -22,6 +22,7 @@ import {
 } from './actions';
 
 import Cookies from 'js-cookie';
+import { handleApiError } from '../error/errorHandler';
 
 
 export const fetchInventory = (org_type) => async (dispatch) => {
@@ -55,6 +56,8 @@ export const fetchInventory = (org_type) => async (dispatch) => {
     }
   } catch (err) {
     dispatch(opInventoryError(err.message || 'Error al cargar el inventario.'));
+    handleApiError(err, dispatch, opInventoryError);
+
   }
 };
 
@@ -89,6 +92,8 @@ export const fetchProductCatalogFarm = () => async (dispatch) => {
     }
   } catch (err) {
     dispatch(opCatalogError(err.message || 'Error al cargar el catálogo de productos.'));
+    handleApiError(err, dispatch, opCatalogError);
+
   }
 };
 
@@ -124,6 +129,7 @@ export const fetchProductCatalogCustody = () => async (dispatch) => {
     }
   } catch (err) {
     dispatch(opCatalogError(err.message || 'Error al cargar el catálogo de productos.'));
+    handleApiError(err, dispatch, opCatalogError);
   }
 };
 
@@ -257,6 +263,7 @@ export const addProductToInventory = (productData) => async (dispatch) => {
     }
     
     dispatch(opAddProductError(errorMessage));
+    handleApiError(error, dispatch, opAddProductError);
     return false;
   }
 };
@@ -281,6 +288,8 @@ export const fetchSecurityKits = (kitType) => async (dispatch) => {
     }
   } catch (err) {
     dispatch(fetchSecurityKitsError(err.message || 'Error al cargar los kits de seguridad.'));
+    handleApiError(err, dispatch, fetchSecurityKitsError);
+
   }
 };
 
@@ -326,6 +335,7 @@ export const addSecurityKit = (kitData) => async (dispatch) => {
   } catch (error) {
     dispatch(addSecurityKitError(error.message || 'Error al agregar el kit de seguridad.'));
     message.error(`Error al agregar el kit de seguridad: ${error.message}`);
+    handleApiError(error, dispatch, addSecurityKitError);
     return false;
   }
 };

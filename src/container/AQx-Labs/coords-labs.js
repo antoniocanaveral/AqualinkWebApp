@@ -35,7 +35,6 @@ function CoordinationsLabs() {
   ];
 
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.lab.loading);
   const coordinations = useSelector((state) => state.lab.coordinations);
   const organizations = useSelector((state) => state.auth.labsOrgs);
 
@@ -44,13 +43,31 @@ function CoordinationsLabs() {
     }));
   }, [dispatch, selectedOrg]);
 
-  const handleOrgChange = (value, orgEmail) => {
-    setSelectedOrg(value);
-    Cookies.set('orgName', value);
-    Cookies.set('orgEmail', orgEmail);
-    dispatch(loadLabCoordinations());
+
+
+  const handleOrgChange = (orgId) => {
+    setSelectedOrg(orgId);
+    const selectedOrg = organizations.find(org => org.orgId === orgId);
+    const orgEmail = selectedOrg ? selectedOrg.orgEmail : '';
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
   };
 
+
+  const farmsSelectOptions = organizations.length > 0 ? [
+    {
+      options: organizations.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Empacadora',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+  const combinedSelectOptions = [...farmsSelectOptions];
   const getStatusClass = (status) => {
     switch (status.toLowerCase()) {
       case 'confirmado':
@@ -106,12 +123,12 @@ function CoordinationsLabs() {
               {itemStatus.showParamsFrom && <Link className="edit" to={`./${item.id}/params`}><UilListOlAlt /></Link>}
               <Link className="notification" to={`./notification/${item.id}/view`}>
                 <UilBell />
-              </Link> 
+              </Link>
             </div>
           ),
         };
       });
-  }, [coordinations, labOrFarm]); 
+  }, [coordinations, labOrFarm]);
 
 
   const dataTableColumn = [
@@ -168,10 +185,9 @@ function CoordinationsLabs() {
         highlightText="Aqualink"
         className="ninjadash-page-header-main"
         title="Coordinaciones Siembra"
-        routes={PageRoutes}
-        organizations={organizations} // Lista de organizaciones
-        selectedOrg={selectedOrg} // Organización seleccionada
-        handleOrgChange={handleOrgChange} // Función para manejar el cambio
+        organizations={organizations}
+        selectOptions={combinedSelectOptions}
+        selectedOrg={selectedOrg}
       />
 
       <Main>

@@ -16,31 +16,38 @@ function LoteAddCustody() {
     const [form] = Form.useForm();
     const [formData, setFormData] = useState({});
     const [lotId, setLotId] = useState(null);
-    const organizations = useSelector((state) => state.auth.custodyOrgs);
     const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName'));
 
 
-    const PageRoutes = [
-        {
-            path: '/custody',
-            breadcrumbName: selectedOrg,
-        },
-        {
-            path: 'first',
-            breadcrumbName: 'Coordinaciones',
-        },
-    ];
-
     const coordinations = useSelector((state) => state.custody.coordinations);
+    const organizations = useSelector((state) => state.auth.custodyOrgs);
 
 
-    const handleOrgChange = (value, orgEmail) => {
-        setSelectedOrg(value);
-        Cookies.set('orgId', value);
-        Cookies.set('orgEmail', orgEmail);
-        dispatch(loadCustodyCoordinations(value));
+
+    const handleOrgChange = (orgId) => {
+        setSelectedOrg(orgId);
+        const selectedOrg = organizations.find(org => org.orgId === orgId);
+        const orgEmail = selectedOrg ? selectedOrg.orgEmail : '';
+        Cookies.set('orgId', orgId);
+        Cookies.set('orgEmail', orgEmail || '');
+        Cookies.remove('poolId');
     };
 
+
+    const farmsSelectOptions = organizations.length > 0 ? [
+        {
+            options: organizations.map(org => ({
+                value: org.orgId,
+                label: org.orgName,
+                email: org.orgEmail,
+            })),
+            onChange: handleOrgChange,
+            placeholder: 'Seleccione una Empacadora',
+            value: selectedOrg || undefined,
+        },
+    ] : [];
+
+    const combinedSelectOptions = [...farmsSelectOptions];
 
     const handleLotChange = (value) => {
         setLotId(value);
@@ -211,10 +218,10 @@ function LoteAddCustody() {
                 <Form layout="vertical" form={form}>
                     <Row gutter={16}>
                         <Col span={12}>
-                                <InputNumber style={{ width: '100%' }} value={volumenProceso} disabled />
+                            <InputNumber style={{ width: '100%' }} value={volumenProceso} disabled />
                         </Col>
                         <Col span={12}>
-                                <InputNumber style={{ width: '100%' }} value={totalEntero} disabled />
+                            <InputNumber style={{ width: '100%' }} value={totalEntero} disabled />
                         </Col>
                     </Row>
                     <Row gutter={16}>
@@ -244,10 +251,10 @@ function LoteAddCustody() {
                 <Form layout="vertical" form={form}>
                     <Row gutter={16}>
                         <Col span={12}>
-                                <InputNumber style={{ width: '100%' }} value={volumenProceso - totalEntero} disabled />
+                            <InputNumber style={{ width: '100%' }} value={volumenProceso - totalEntero} disabled />
                         </Col>
                         <Col span={12}>
-                                <InputNumber style={{ width: '100%' }} value={totalCola} disabled />
+                            <InputNumber style={{ width: '100%' }} value={totalCola} disabled />
                         </Col>
                     </Row>
                     <Row gutter={16}>
@@ -275,11 +282,10 @@ function LoteAddCustody() {
 
     return (
         <>
-            <PageHeader highlightText="Aqualink Empacadora" title="Añadir Custodia de Lote"
+            <PageHeader highlightText="Aqualink Empacadora" title="Añadir Lote Custodia"
                 organizations={organizations}
-                routes={PageRoutes}
+                selectOptions={combinedSelectOptions}
                 selectedOrg={selectedOrg}
-                handleOrgChange={handleOrgChange}
             />
             <Main>
                 <Row gutter={25}>

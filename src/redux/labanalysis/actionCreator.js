@@ -14,6 +14,7 @@ import {
     fetchLabanalysisError
   
   } from './actions';
+import { handleApiError } from "../error/errorHandler";
 export const fetchParameters = () => async (dispatch) => {
     dispatch(fetchParametersLoading());
     try {
@@ -26,6 +27,8 @@ export const fetchParameters = () => async (dispatch) => {
     } catch (error) {
         dispatch(fetchParametersError(error.message));
         message.error(`Error al obtener parámetros: ${error.message}`);
+        handleApiError(error, dispatch, fetchParametersError);
+
     }
 };
 
@@ -74,7 +77,8 @@ export const registerLabanalysis = (labanalysisData) => async (dispatch) => {
 
     } catch (error) {
         dispatch(registerLabanalysisError(error.message));
-        message.error(`Error al registrar el análisis: ${error.message}`);
+        handleApiError(error, dispatch, fetchParametersError);
+
     }
 };
 
@@ -92,5 +96,7 @@ export const fetchLabanalysis = () => async (dispatch) => {
         }
     } catch (error) {
         dispatch(fetchLabanalysisError(error.message));
+        handleApiError(error, dispatch, fetchLabanalysisError);
+
     }
 };

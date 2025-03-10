@@ -2,6 +2,8 @@ import Cookies from 'js-cookie';
 import actions from './actions';
 import { message } from 'antd';
 import { DataService } from '../../../config/dataService/dataService';
+import { logOut, netWorkError } from '../../authentication/actionCreator';
+import { handleApiError } from '../../error/errorHandler';
 
 const { fetchCoordInfoLoading, fetchCoordInfoSuccess, fetchCoordInfoError } = actions;
 
@@ -21,6 +23,7 @@ const fetchCoordinationInfo = () => {
 
       const selectedOrgID = Cookies.get('orgId');
       console.log("Org ID obtenido de cookies:", selectedOrgID);
+      
 
       if (!selectedOrgID) {
         throw new Error('Org ID no encontrado en las cookies.');
@@ -38,9 +41,7 @@ const fetchCoordinationInfo = () => {
         dispatch(fetchCoordInfoSuccess( [] ));
       }
     } catch (error) {
-      console.error("Error en fetchCoordinationInfo:", error);
-      dispatch(fetchCoordInfoError({ error: error.message || 'Error al cargar la información de coordinación.' }));
-      message.error(`Error al cargar la información de coordinación: ${error.message}`);
+      handleApiError(error, dispatch, fetchCoordInfoError);      
     }
   };
 };
@@ -78,9 +79,7 @@ const fetchCoordinationInfo_FarmProyection = () => {
         dispatch(fetchCoordInfoSuccess( [] ));
       }
     } catch (error) {
-      console.error("Error en fetchCoordinationInfo:", error);
-      dispatch(fetchCoordInfoError({ error: error.message || 'Error al cargar la información de coordinación.' }));
-      message.error(`Error al cargar la información de coordinación: ${error.message}`);
+      handleApiError(error, dispatch, fetchCoordInfoError);      
     }
   };
 };

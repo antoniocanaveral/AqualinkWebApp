@@ -18,6 +18,7 @@ import {
   fetchTreatersSuccess,
   fetchTreatersError,
 } from './actions';
+import { handleApiError } from '../error/errorHandler';
 
 export const fetchOrgBins = () => async (dispatch) => {
   dispatch(fetchOrgBinsLoading());
@@ -71,8 +72,7 @@ export const fetchOrgSecurityKits = (type) => async (dispatch) => {
       dispatch(fetchOrgSecurityKitsError('No se encontraron Security Kits para esta organización.'));
     }
   } catch (error) {
-    dispatch(fetchOrgSecurityKitsError(error.message || 'Error al cargar los Security Kits.'));
-    message.error(`Error al cargar los Security Kits: ${error.message}`);
+    handleApiError(error, dispatch, fetchOrgSecurityKitsError);      
   }
 };
 
@@ -95,8 +95,8 @@ export const fetchOrgFishingDrawerStamp = () => async (dispatch) => {
       dispatch(fetchOrgFishingDrawerStampError('No se encontraron Fishing Drawer Stamps para esta organización.'));
     }
   } catch (error) {
-    dispatch(fetchOrgFishingDrawerStampError(error.message || 'Error al cargar los Fishing Drawer Stamps.'));
-    message.error(`Error al cargar los Fishing Drawer Stamps: ${error.message}`);
+    handleApiError(error, dispatch, fetchOrgSecurityKitsError);      
+
   }
 };
 
@@ -117,8 +117,8 @@ export const fetchFishingDrawerInfo = (id) => async (dispatch) => {
       dispatch(fetchFishingDrawerInfoError('No se encontró información de Fishing Drawer.'));
     }
   } catch (error) {
-    dispatch(fetchFishingDrawerInfoError(error.message || 'Error al cargar Fishing Drawer Info.'));
-    message.error(`Error al cargar Fishing Drawer Info: ${error.message}`);
+    handleApiError(error, dispatch, fetchOrgSecurityKitsError);      
+
   }
 };
 
@@ -147,7 +147,7 @@ export const fetchTreaters = () => async (dispatch) => {
       dispatch(fetchTreatersError('No se encontraron tratadores en esta organización.'));
     }
   } catch (error) {
-    dispatch(fetchTreatersError(error.message || 'Error al cargar los tratadores.'));
-    message.error(`Error al cargar los tratadores: ${error.message}`);
+    handleApiError(error, dispatch, fetchOrgSecurityKitsError);      
+
   }
 };

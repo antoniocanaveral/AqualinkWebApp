@@ -12,6 +12,7 @@ import {
     fetchCostCenterSuccess,
     fetchCostCenterError,
 } from './actions';
+import { handleApiError } from "../error/errorHandler";
 export const registerIndirectCost = (indirectCostData, recordId = null) => async (dispatch) => {
     dispatch(registerIndirectCostLoading());
 
@@ -45,7 +46,8 @@ export const registerIndirectCost = (indirectCostData, recordId = null) => async
 
     } catch (error) {
         dispatch(registerIndirectCostError(error.message));
-        message.error(`Error al registrar costo indirecto: ${error.message}`);
+        handleApiError(error, dispatch, registerIndirectCostError);
+
     }
 };
 
@@ -69,7 +71,7 @@ export const fetchIndirectCosts = () => async (dispatch) => {
 
     } catch (error) {
         dispatch(fetchIndirectCostError(error.message));
-        message.error(`Error al obtener costos indirectos: ${error.message}`);
+        handleApiError(error, dispatch, registerIndirectCostError);
     }
 };
 
@@ -96,6 +98,6 @@ export const fetchCostCenterInfo = () => async (dispatch) => {
 
     } catch (error) {
         dispatch(fetchCostCenterError(error.message));
-        message.error(`Error al obtener datos del centro de costos: ${error.message}`);
+        handleApiError(error, dispatch, registerIndirectCostError);
     }
 };

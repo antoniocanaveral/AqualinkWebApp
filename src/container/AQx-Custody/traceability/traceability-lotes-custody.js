@@ -3,7 +3,6 @@ import { Row, Col, Button, Modal, Typography, Select, DatePicker } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { QRCodeSVG } from 'qrcode.react';
-import { CheckOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { generatePDF } from '../../../utility/printPdf';
 
@@ -17,128 +16,265 @@ const initialLotesArray = [
   {
     id: 'Lote001',
     origen: {
-      fincaCodigo: 'GR-123',
-      fincaNombre: 'Finca Río Verde',
-      inicioEngorde: '2024-01-03',
-      inicioPreCria: '2024-02-15',
       hatcheryName: 'Aquamax',
       htCode: 'HT-2524',
       nurseryName: 'Texcumar',
       nurseryHtCode: 'HT-2525',
       naupliiCode: 'Chicpin K1',
+      plantingDate: '10/02/24',
+      harvestDate: '15/08/24',
+      moduleNumber: 1,
+      tankPondNumber: 1,
+      densityPerM3: '100.000',
     },
-    custodia: {
-      tempLlegada: '-4ºC',
-      tempSalida: '-6ºC',
-      horaIngreso: '2024-11-10',
-      horaSalida: '08h30',
-    },
-    produccion: {
+    farm: {
+      farmName: 'ShrimpCo Manabi',
+      grCode: 'GR-5247',
       growingProtocol: 'Semi Intensive',
       productionProtocol: 'TriPhasic',
+      waterManagingSystem: 'RAS',
+      nurseryPond: 'Ppc#2',
+      plantingDate: '12/02/24',
+      initialNurseryDensity: 100,
+      preGrowingPond: 'Ppe#3',
+      transferDate: '20/04/24',
+      initialPreGrowingDensity: 45,
+      finalPreGrowingPond: 'Pef#34',
+      finalTransferDate: '05/06/24',
+      finalPreGrowingDensity: 15,
+    },
+    produccion: {
+      feedMillHatchery: 'SCI-R004304',
       feedMillFarm: 'SCI-R004304',
     },
+    tratamiento: {
+      antibioticTreatment: 'SCI-R008978',
+      initialDate: '01/03/24',
+      endingDate: '15/03/24',
+    },
+    condiciones: {
+      salinityPpm: 17,
+      waterSourceType: 'Brackish',
+      cycleWaterUse: '1750 m3/Ha',
+      co2Footprint: '0.28 KgCO2/Shrimp Kg',
+    },
     cosecha: {
-      harvestProcess: 'Convencional',
+      harvestProcess: 'Conventional',
+      harvestDate: '15/08/24',
       harvestDensity: '8 u/m2',
       harvestTimeLapse: '02:30:45',
       harvestTemperature: '-6ºC',
     },
+    custodia: {
+      custodyTransportTimeLapse: '02:00:00',
+      custodyTransportTemperature: '-4ºC',
+      plantRegistryTemperature: '-4ºC',
+    },
+    calidad: {
+      qualityLabTest: 'Approved',
+      organolepticLabTest: 'Approved',
+      sulphitesLabTest: 'Approved',
+      microbiologicalLabTest: 'Approved',
+      chemicalLabTest: 'Approved',
+    },
   },
   {
-    id: 'Lote002',
+    id: 'Lote001',
     origen: {
-      fincaCodigo: 'GR-456',
-      fincaNombre: 'Finca Río Verde',
-      inicioEngorde: '2024-03-20',
-      inicioPreCria: '2024-04-10',
       hatcheryName: 'Aquamax',
       htCode: 'HT-2524',
       nurseryName: 'Texcumar',
       nurseryHtCode: 'HT-2525',
       naupliiCode: 'Chicpin K1',
+      plantingDate: '10/02/24',
+      harvestDate: '15/08/24',
+      moduleNumber: 1,
+      tankPondNumber: 1,
+      densityPerM3: '100.000',
     },
-    custodia: {
-      tempLlegada: '-3ºC',
-      tempSalida: '-6ºC',
-      horaIngreso: '2024-11-12',
-      horaSalida: '06h30',
-    },
-    produccion: {
-      growingProtocol: 'Intensive',
-      productionProtocol: 'MonoPhasic',
-      feedMillFarm: 'SCI-R004304',
-    },
-    cosecha: {
-      harvestProcess: 'Automatizada',
-      harvestDensity: '10 u/m2',
-      harvestTimeLapse: '03:00:30',
-      harvestTemperature: '-7ºC',
-    },
-  },
-  {
-    id: 'Lote003',
-    origen: {
-      fincaCodigo: 'GR-999',
-      fincaNombre: 'Finca Las Orquídeas',
-      inicioEngorde: '2024-05-01',
-      inicioPreCria: '2024-05-20',
-      hatcheryName: 'Aquamax',
-      htCode: 'HT-2524',
-      nurseryName: 'Texcumar',
-      nurseryHtCode: 'HT-2525',
-      naupliiCode: 'Chicpin K1',
-    },
-    custodia: {
-      tempLlegada: '-2ºC',
-      tempSalida: '-4ºC',
-      horaIngreso: '2024-12-01',
-      horaSalida: '07h00',
-    },
-    produccion: {
-      growingProtocol: 'Extensive',
-      productionProtocol: 'BiPhasic',
-      feedMillFarm: 'SCI-R004304',
-    },
-    cosecha: {
-      harvestProcess: 'Manual',
-      harvestDensity: '7 u/m2',
-      harvestTimeLapse: '01:45:20',
-      harvestTemperature: '-5ºC',
-    },
-  },
-  {
-    id: 'Lote004',
-    origen: {
-      fincaCodigo: 'GR-777',
-      fincaNombre: 'Finca Las Orquídeas',
-      inicioEngorde: '2024-07-01',
-      inicioPreCria: '2024-08-15',
-      hatcheryName: 'Aquamax',
-      htCode: 'HT-2524',
-      nurseryName: 'Texcumar',
-      nurseryHtCode: 'HT-2525',
-      naupliiCode: 'Chicpin K1',
-    },
-    custodia: {
-      tempLlegada: '-5ºC',
-      tempSalida: '-8ºC',
-      horaIngreso: '2024-12-05',
-      horaSalida: '09h45',
-    },
-    produccion: {
+    farm: {
+      farmName: 'ShrimpCo Manabi',
+      grCode: 'GR-5247',
       growingProtocol: 'Semi Intensive',
       productionProtocol: 'TriPhasic',
+      waterManagingSystem: 'RAS',
+      nurseryPond: 'Ppc#2',
+      plantingDate: '12/02/24',
+      initialNurseryDensity: 100,
+      preGrowingPond: 'Ppe#3',
+      transferDate: '20/04/24',
+      initialPreGrowingDensity: 45,
+      finalPreGrowingPond: 'Pef#34',
+      finalTransferDate: '05/06/24',
+      finalPreGrowingDensity: 15,
+    },
+    produccion: {
+      feedMillHatchery: 'SCI-R004304',
       feedMillFarm: 'SCI-R004304',
     },
+    tratamiento: {
+      antibioticTreatment: 'SCI-R008978',
+      initialDate: '01/03/24',
+      endingDate: '15/03/24',
+    },
+    condiciones: {
+      salinityPpm: 17,
+      waterSourceType: 'Brackish',
+      cycleWaterUse: '1750 m3/Ha',
+      co2Footprint: '0.28 KgCO2/Shrimp Kg',
+    },
     cosecha: {
-      harvestProcess: 'Convencional',
+      harvestProcess: 'Conventional',
+      harvestDate: '15/08/24',
       harvestDensity: '8 u/m2',
-      harvestTimeLapse: '02:15:10',
+      harvestTimeLapse: '02:30:45',
       harvestTemperature: '-6ºC',
+    },
+    custodia: {
+      custodyTransportTimeLapse: '02:00:00',
+      custodyTransportTemperature: '-4ºC',
+      plantRegistryTemperature: '-4ºC',
+    },
+    calidad: {
+      qualityLabTest: 'Approved',
+      organolepticLabTest: 'Approved',
+      sulphitesLabTest: 'Approved',
+      microbiologicalLabTest: 'Approved',
+      chemicalLabTest: 'Approved',
+    },
+  },
+  {
+    id: 'Lote001',
+    origen: {
+      hatcheryName: 'Aquamax',
+      htCode: 'HT-2524',
+      nurseryName: 'Texcumar',
+      nurseryHtCode: 'HT-2525',
+      naupliiCode: 'Chicpin K1',
+      plantingDate: '10/02/24',
+      harvestDate: '15/08/24',
+      moduleNumber: 1,
+      tankPondNumber: 1,
+      densityPerM3: '100.000',
+    },
+    farm: {
+      farmName: 'ShrimpCo Manabi',
+      grCode: 'GR-5247',
+      growingProtocol: 'Semi Intensive',
+      productionProtocol: 'TriPhasic',
+      waterManagingSystem: 'RAS',
+      nurseryPond: 'Ppc#2',
+      plantingDate: '12/02/24',
+      initialNurseryDensity: 100,
+      preGrowingPond: 'Ppe#3',
+      transferDate: '20/04/24',
+      initialPreGrowingDensity: 45,
+      finalPreGrowingPond: 'Pef#34',
+      finalTransferDate: '05/06/24',
+      finalPreGrowingDensity: 15,
+    },
+    produccion: {
+      feedMillHatchery: 'SCI-R004304',
+      feedMillFarm: 'SCI-R004304',
+    },
+    tratamiento: {
+      antibioticTreatment: 'SCI-R008978',
+      initialDate: '01/03/24',
+      endingDate: '15/03/24',
+    },
+    condiciones: {
+      salinityPpm: 17,
+      waterSourceType: 'Brackish',
+      cycleWaterUse: '1750 m3/Ha',
+      co2Footprint: '0.28 KgCO2/Shrimp Kg',
+    },
+    cosecha: {
+      harvestProcess: 'Conventional',
+      harvestDate: '15/08/24',
+      harvestDensity: '8 u/m2',
+      harvestTimeLapse: '02:30:45',
+      harvestTemperature: '-6ºC',
+    },
+    custodia: {
+      custodyTransportTimeLapse: '02:00:00',
+      custodyTransportTemperature: '-4ºC',
+      plantRegistryTemperature: '-4ºC',
+    },
+    calidad: {
+      qualityLabTest: 'Approved',
+      organolepticLabTest: 'Approved',
+      sulphitesLabTest: 'Approved',
+      microbiologicalLabTest: 'Approved',
+      chemicalLabTest: 'Approved',
+    },
+  },
+  {
+    id: 'Lote001',
+    origen: {
+      hatcheryName: 'Aquamax',
+      htCode: 'HT-2524',
+      nurseryName: 'Texcumar',
+      nurseryHtCode: 'HT-2525',
+      naupliiCode: 'Chicpin K1',
+      plantingDate: '10/02/24',
+      harvestDate: '15/08/24',
+      moduleNumber: 1,
+      tankPondNumber: 1,
+      densityPerM3: '100.000',
+    },
+    farm: {
+      farmName: 'ShrimpCo Manabi',
+      grCode: 'GR-5247',
+      growingProtocol: 'Semi Intensive',
+      productionProtocol: 'TriPhasic',
+      waterManagingSystem: 'RAS',
+      nurseryPond: 'Ppc#2',
+      plantingDate: '12/02/24',
+      initialNurseryDensity: 100,
+      preGrowingPond: 'Ppe#3',
+      transferDate: '20/04/24',
+      initialPreGrowingDensity: 45,
+      finalPreGrowingPond: 'Pef#34',
+      finalTransferDate: '05/06/24',
+      finalPreGrowingDensity: 15,
+    },
+    produccion: {
+      feedMillHatchery: 'SCI-R004304',
+      feedMillFarm: 'SCI-R004304',
+    },
+    tratamiento: {
+      antibioticTreatment: 'SCI-R008978',
+      initialDate: '01/03/24',
+      endingDate: '15/03/24',
+    },
+    condiciones: {
+      salinityPpm: 17,
+      waterSourceType: 'Brackish',
+      cycleWaterUse: '1750 m3/Ha',
+      co2Footprint: '0.28 KgCO2/Shrimp Kg',
+    },
+    cosecha: {
+      harvestProcess: 'Conventional',
+      harvestDate: '15/08/24',
+      harvestDensity: '8 u/m2',
+      harvestTimeLapse: '02:30:45',
+      harvestTemperature: '-6ºC',
+    },
+    custodia: {
+      custodyTransportTimeLapse: '02:00:00',
+      custodyTransportTemperature: '-4ºC',
+      plantRegistryTemperature: '-4ºC',
+    },
+    calidad: {
+      qualityLabTest: 'Approved',
+      organolepticLabTest: 'Approved',
+      sulphitesLabTest: 'Approved',
+      microbiologicalLabTest: 'Approved',
+      chemicalLabTest: 'Approved',
     },
   },
 ];
+
 function TraceabilityLotesCustody() {
   const reportRef = useRef();
   const [orientation, setOrientation] = useState('portrait');
@@ -354,93 +490,70 @@ function TraceabilityLotesCustody() {
             }}
           >
             <div style={{ flex: '1 1 60%', minWidth: '300px' }}>
-              {/* Origen del Lote */}
-              <div>
-                <Title level={4} style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    width: '10px',
-                    height: '10px',
-                    backgroundColor: '#2196F3',
-                    borderRadius: '50%',
-                    marginRight: '8px',
-                  }} />
-                  Origen de Lote
-                </Title>
-                <Row gutter={16}>
-                  <Col span={12}><Text><strong>Finca:</strong> <br /> {selectedLote.origen.fincaCodigo}</Text></Col>
-                  <Col span={12}><Text><strong>Nombre de la Finca:</strong> <br /> {selectedLote.origen.fincaNombre}</Text></Col>
-                  <Col span={12}><Text><strong>Inicio Engorde:</strong> <br /> {selectedLote.origen.inicioEngorde}</Text></Col>
-                  <Col span={12}><Text><strong>Inicio Pre Cría:</strong> <br /> {selectedLote.origen.inicioPreCria}</Text></Col>
-                  <Col span={12}><Text><strong>Hatchery:</strong> <br /> {selectedLote.origen.hatcheryName}</Text></Col>
-                  <Col span={12}><Text><strong>HT Code:</strong> <br /> {selectedLote.origen.htCode}</Text></Col>
-                  <Col span={12}><Text><strong>Nursery Name:</strong> <br /> {selectedLote.origen.nurseryName}</Text></Col>
-                  <Col span={12}><Text><strong>Nursery HT Code:</strong> <br /> {selectedLote.origen.nurseryHtCode}</Text></Col>
-                  <Col span={12}><Text><strong>Nauplii Code:</strong> <br /> {selectedLote.origen.naupliiCode}</Text></Col>
-                </Row>
-              </div>
 
-              {/* Custodia */}
-              <div style={{ marginBottom: '20px' }}>
-                <Title level={4} style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    width: '10px',
-                    height: '10px',
-                    backgroundColor: '#2196F3',
-                    borderRadius: '50%',
-                    marginRight: '8px',
-                  }} />
-                  Custodia
-                </Title>
-                <Row gutter={16}>
-                  <Col span={12}><Text><strong>Temperatura salida de finca:</strong> <br /> {selectedLote.custodia.tempSalida}</Text></Col>
-                  <Col span={12}><Text><strong>Temperatura llegada a planta:</strong> <br /> {selectedLote.custodia.tempLlegada}</Text></Col>
-                  <Col span={12}><Text><strong>Hora de salida de finca:</strong> <br /> {selectedLote.custodia.horaSalida}</Text></Col>
-                  <Col span={12}><Text><strong>Hora de ingreso a planta:</strong> <br /> {selectedLote.custodia.horaIngreso}</Text></Col>
-                </Row>
-              </div>
+              {/* Origen */}
+              <Title level={4}>Origen del Lote</Title>
+              <Row gutter={16}>
+                <Col span={12}><Text><strong>Hatchery:</strong> {selectedLote.origen.hatcheryName}</Text></Col>
+                <Col span={12}><Text><strong>HT Code:</strong> {selectedLote.origen.htCode}</Text></Col>
+                <Col span={12}><Text><strong>Nursery Name:</strong> {selectedLote.origen.nurseryName}</Text></Col>
+                <Col span={12}><Text><strong>Nursery HT Code:</strong> {selectedLote.origen.nurseryHtCode}</Text></Col>
+                <Col span={12}><Text><strong>Nauplii Code:</strong> {selectedLote.origen.naupliiCode}</Text></Col>
+                <Col span={12}><Text><strong>Planting Date:</strong> {selectedLote.origen.plantingDate}</Text></Col>
+                <Col span={12}><Text><strong>Harvest Date:</strong> {selectedLote.origen.harvestDate}</Text></Col>
+              </Row>
+
+              {/* Farm */}
+              <Title level={4}>Finca</Title>
+              <Row gutter={16}>
+                <Col span={12}><Text><strong>Finca:</strong> {selectedLote.farm.farmName}</Text></Col>
+                <Col span={12}><Text><strong>GR Code:</strong> {selectedLote.farm.grCode}</Text></Col>
+                <Col span={12}><Text><strong>Growing Protocol:</strong> {selectedLote.farm.growingProtocol}</Text></Col>
+                <Col span={12}><Text><strong>Production Protocol:</strong> {selectedLote.farm.productionProtocol}</Text></Col>
+                <Col span={12}><Text><strong>Water System:</strong> {selectedLote.farm.waterManagingSystem}</Text></Col>
+              </Row>
 
               {/* Producción */}
-              <div>
-                <Title level={4} style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    width: '10px',
-                    height: '10px',
-                    backgroundColor: '#2196F3',
-                    borderRadius: '50%',
-                    marginRight: '8px',
-                  }} />
-                  Producción
-                </Title>
-                <Row gutter={16}>
-                  <Col span={12}><Text><strong>Growing Protocol:</strong> <br /> {selectedLote.produccion.growingProtocol}</Text></Col>
-                  <Col span={12}><Text><strong>Production Protocol:</strong> <br /> {selectedLote.produccion.productionProtocol}</Text></Col>
-                  <Col span={12}><Text><strong>Feed Mill Farm:</strong> <br /> {selectedLote.produccion.feedMillFarm}</Text></Col>
-                </Row>
-              </div>
+              <Title level={4}>Producción</Title>
+              <Row gutter={16}>
+                <Col span={12}><Text><strong>Feed Mill Hatchery:</strong> {selectedLote.produccion.feedMillHatchery}</Text></Col>
+                <Col span={12}><Text><strong>Feed Mill Farm:</strong> {selectedLote.produccion.feedMillFarm}</Text></Col>
+              </Row>
+
+              {/* Tratamiento */}
+              <Title level={4}>Tratamiento</Title>
+              <Row gutter={16}>
+                <Col span={12}><Text><strong>Antibiotic Treatment:</strong> {selectedLote.tratamiento.antibioticTreatment}</Text></Col>
+                <Col span={12}><Text><strong>Initial Date:</strong> {selectedLote.tratamiento.initialDate}</Text></Col>
+                <Col span={12}><Text><strong>Ending Date:</strong> {selectedLote.tratamiento.endingDate}</Text></Col>
+              </Row>
+
+              {/* Condiciones */}
+              <Title level={4}>Condiciones</Title>
+              <Row gutter={16}>
+                <Col span={12}><Text><strong>Salinity (ppm):</strong> {selectedLote.condiciones.salinityPpm}</Text></Col>
+                <Col span={12}><Text><strong>Water Source Type:</strong> {selectedLote.condiciones.waterSourceType}</Text></Col>
+                <Col span={12}><Text><strong>Cycle Water Use:</strong> {selectedLote.condiciones.cycleWaterUse}</Text></Col>
+                <Col span={12}><Text><strong>CO2 Footprint:</strong> {selectedLote.condiciones.co2Footprint}</Text></Col>
+              </Row>
 
               {/* Cosecha */}
-              <div>
-                <Title level={4} style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    width: '10px',
-                    height: '10px',
-                    backgroundColor: '#2196F3',
-                    borderRadius: '50%',
-                    marginRight: '8px',
-                  }} />
-                  Cosecha
-                </Title>
-                <Row gutter={16}>
-                  <Col span={12}><Text><strong>Proceso de Cosecha:</strong> <br /> {selectedLote.cosecha.harvestProcess}</Text></Col>
-                  <Col span={12}><Text><strong>Densidad de Cosecha:</strong> <br /> {selectedLote.cosecha.harvestDensity}</Text></Col>
-                  <Col span={12}><Text><strong>Tiempo de Cosecha:</strong> <br /> {selectedLote.cosecha.harvestTimeLapse}</Text></Col>
-                  <Col span={12}><Text><strong>Temperatura de Cosecha:</strong> <br /> {selectedLote.cosecha.harvestTemperature}</Text></Col>
-                </Row>
-              </div>
+              <Title level={4}>Cosecha</Title>
+              <Row gutter={16}>
+                <Col span={12}><Text><strong>Harvest Process:</strong> {selectedLote.cosecha.harvestProcess}</Text></Col>
+                <Col span={12}><Text><strong>Harvest Date:</strong> {selectedLote.cosecha.harvestDate}</Text></Col>
+                <Col span={12}><Text><strong>Harvest Density:</strong> {selectedLote.cosecha.harvestDensity}</Text></Col>
+                <Col span={12}><Text><strong>Harvest Time Lapse:</strong> {selectedLote.cosecha.harvestTimeLapse}</Text></Col>
+                <Col span={12}><Text><strong>Harvest Temperature:</strong> {selectedLote.cosecha.harvestTemperature}</Text></Col>
+              </Row>
+
+              {/* Custodia */}
+              <Title level={4}>Custodia</Title>
+              <Row gutter={16}>
+                <Col span={12}><Text><strong>Transport Time Lapse:</strong> {selectedLote.custodia.custodyTransportTimeLapse}</Text></Col>
+                <Col span={12}><Text><strong>Transport Temperature:</strong> {selectedLote.custodia.custodyTransportTemperature}</Text></Col>
+                <Col span={12}><Text><strong>Plant Registry Temperature:</strong> {selectedLote.custodia.plantRegistryTemperature}</Text></Col>
+              </Row>
             </div>
 
             {/* Columna Derecha: Código QR */}

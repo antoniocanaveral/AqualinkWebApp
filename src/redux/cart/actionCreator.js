@@ -1,5 +1,6 @@
 import actions from './actions';
 import products from '../../demoData/cart.json';
+import { handleApiError } from '../error/errorHandler';
 
 const {
   cartDataBegin,
@@ -21,7 +22,8 @@ const cartGetData = () => {
       dispatch(cartDataBegin());
       dispatch(cartDataSuccess(products));
     } catch (err) {
-      dispatch(cartDataErr(err));
+      handleApiError(err, dispatch, cartDataErr);
+
     }
   };
 };
@@ -50,7 +52,7 @@ const cartDelete = (id, chartData) => {
         dispatch(cartDeleteSuccess(data));
       }, 500);
     } catch (err) {
-      dispatch(cartDeleteErr(err));
+      handleApiError(err, dispatch, cartDataErr);
     }
   };
 };

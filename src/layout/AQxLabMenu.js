@@ -122,7 +122,7 @@ function AQXLabMenu({ toggleCollapsed }) {
       ),
     ),
 
-    
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/dispatch-reports`}>
         {t('Reportes de Despacho')}
@@ -149,12 +149,90 @@ function AQXLabMenu({ toggleCollapsed }) {
     ),
 
 
+
+    //
+
+    getItem(
+      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Logística')}</NavTitle>,
+      'submenu-logistica',
+      null,
+      null,
+      'group',
+    ),
+
+    /*
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/panel-logistic`}>
+        {t('Panel de Logística')}
+      </NavLink>,
+      'panel-logitic',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/panel-logistic`}>
+          <UilDesktop />
+        </NavLink>
+      ),
+    ),*/
+
+    getItem(t('Coordinación'), 'coordinacion', !topMenu && <UilCalendarAlt />, [
+
+      getItem(
+        <NavLink className="menuItem-iocn" to={`${path}/seeding-coords`}>
+          {t('Coordinaciones Activas')}
+        </NavLink>,
+        'seeding-coords',
+        null,
+      ),
+
+
+
+
+    ]),
+
+
+    getItem(t('Camaroneras'), 'camaroneras', !topMenu && <UilFlaskPotion />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/shrimp/view`}>
+          {t('Directorio/Camaroneras')}
+        </NavLink>,
+        'ver-laboratorios',
+        null,
+      ),
+
+    ]),
+
+
+
+
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Recursos de Producción')}</NavTitle>,
       'submenu-informacion',
       null,
       null,
       'group',
+    ),
+
+    getItem(
+      t('Lote'),
+      'lote',
+      !topMenu && <UilChart />,
+      [
+        getItem(
+          <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/lote/add`}>
+            {t('Añadir Lote')}
+          </NavLink>,
+          'add-lote',
+          null,
+        ),
+        getItem(
+          <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/lote/view`}>
+            {t('Ver Lote')}
+          </NavLink>,
+          'view-lote',
+          null,
+        ),
+       
+
+      ]
     ),
 
     // MONITOREO
@@ -183,10 +261,10 @@ function AQXLabMenu({ toggleCollapsed }) {
               'alimentacion-real-vs-proyectada',
               null,
             ),
-          
+
           ]
         ),
-      
+
       ]
     ),
 
@@ -210,7 +288,7 @@ function AQXLabMenu({ toggleCollapsed }) {
           'parametros-calidad-agua',
           null,
         ),
-       
+
       ]
     ),
 
@@ -235,7 +313,7 @@ function AQXLabMenu({ toggleCollapsed }) {
           'cultivo-siembras',
           null,
         ),
-      
+
         getItem(
           <div className="menu-item-level-1">
             <NavLink to={`${path}/crop/population-biomass`}>{t('Población / Biomasa')}</NavLink>
@@ -243,7 +321,7 @@ function AQXLabMenu({ toggleCollapsed }) {
           'cultivo-poblacion-biomasa',
           null,
         ),
-        
+
 
         getItem(
           <div className="menu-item-level-1">
@@ -276,54 +354,6 @@ function AQXLabMenu({ toggleCollapsed }) {
 
 
 
-    getItem(
-      !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Logística')}</NavTitle>,
-      'submenu-logistica',
-      null,
-      null,
-      'group',
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/panel-logistic`}>
-        {t('Panel de Logística')}
-      </NavLink>,
-      'panel-logitic',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/panel-logistic`}>
-          <UilDesktop />
-        </NavLink>
-      ),
-    ),
-
-    getItem(t('Coordinación'), 'coordinacion', !topMenu && <UilCalendarAlt />, [
-
-      getItem(
-        <NavLink className="menuItem-iocn" to={`${path}/seeding-coords`}>
-          {t('Coordinaciones Activas')}
-        </NavLink>,
-        'seeding-coords',
-        null,
-      ),
-     
-
-
-
-    ]),
-
-
-    getItem(t('Camaroneras'), 'camaroneras', !topMenu && <UilFlaskPotion />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/shrimp/view`}>
-          {t('Directorio/Camaroneras')}
-        </NavLink>,
-        'ver-laboratorios',
-        null,
-      ),
-     
-    ]),
-
-
-   
 
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('RECURSOS DE GESTIÓN')}</NavTitle>,
@@ -420,7 +450,7 @@ function AQXLabMenu({ toggleCollapsed }) {
           'cliente-lab',
           null,
         ),
-       
+
       ]
     ),
 

@@ -37,6 +37,7 @@ function PageHeader(props) {
   const handleMenuClick = (e) => {
     const orgId = Number(e.key); // Asegurarse de que orgId sea un número
     const org = organizations.find(o => o.orgId === orgId);
+    console.log("oawd", org)
     if (org) {
       handleOrgChange(org.orgId, org.orgEmail);
     }
@@ -75,7 +76,7 @@ function PageHeader(props) {
         ) : (
           <Breadcrumb.Item key={index}>
             <img src={require(`../../static/img/AQx-IMG/shrimp16.svg`).default} style={{marginRight: 10}}/> {' '}
-            <Link to={route.path} style={{display: "contents"}}>{route.breadcrumbName}</Link>
+            <Link  style={{display: "contents"}}>{route.breadcrumbName}</Link>
           </Breadcrumb.Item>
         ),
       )}
@@ -86,7 +87,7 @@ function PageHeader(props) {
 
   const renderSelectOptions = () => {
     if (!selectOptions || selectOptions.length === 0) return null;
-
+    console.log(selectOptions)
     return (
       <div className="responsive-select-container" style={{ display: 'flex', gap: '10px' }}>
         {selectOptions.map((selectOption, index) => {

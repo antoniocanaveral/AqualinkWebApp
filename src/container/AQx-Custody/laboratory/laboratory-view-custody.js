@@ -28,14 +28,31 @@ const LaboratoryViewCustody = () => {
     const [modalTitle, setModalTitle] = useState('');
     const [selectedData, setSelectedData] = useState([]);
 
-    const handleOrgChange = (value, orgEmail) => {
-        setSelectedOrg(value);
-        Cookies.set('orgId', value);
 
-        Cookies.set('orgEmail', orgEmail);
-        dispatch(fetchLabanalysis());
+
+    const handleOrgChange = (orgId) => {
+        setSelectedOrg(orgId);
+        const selectedOrg = organizations.find(org => org.orgId === orgId);
+        const orgEmail = selectedOrg ? selectedOrg.orgEmail : '';
+        Cookies.set('orgId', orgId);
+        Cookies.set('orgEmail', orgEmail || '');
+        Cookies.remove('poolId');
     };
 
+
+    const farmsSelectOptions = organizations.length > 0 ? [
+        {
+            options: organizations.map(org => ({
+                value: org.orgId,
+                label: org.orgName,
+                email: org.orgEmail,
+            })),
+            onChange: handleOrgChange,
+            placeholder: 'Seleccione una Empacadora',
+            value: selectedOrg || undefined,
+        },
+    ] : [];
+    const combinedSelectOptions = [...farmsSelectOptions];
     const openModal = (title, data) => {
         setModalTitle(title);
         setSelectedData(data);
@@ -100,8 +117,8 @@ const LaboratoryViewCustody = () => {
                 title="Análisis de Laboratorio"
                 routes={PageRoutes}
                 organizations={organizations}
+                selectOptions={combinedSelectOptions}
                 selectedOrg={selectedOrg}
-                handleOrgChange={handleOrgChange}
             />
             <Main>
                 <Row gutter={25}>

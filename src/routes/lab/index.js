@@ -27,6 +27,8 @@ import ClientRouteLab from './farmClient';
 import RealAndProjectedFeedingLab from '../../container/AQx-Labs/monitoring/real-vs-projected-feeding-lab';
 import ShrimpRouteLab from '../farm/farmLaboratory';
 import PanelLogisticLabs from '../../container/AQx-Labs/panel-logistic';
+import LabLoteRoutes from './labLoteRoutes';
+import UnderConstruction from '../../container/pages/Construction';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -50,11 +52,11 @@ const Farm = React.memo(() => {
         <Route path="/planning/*" element={<PlanningLabs />} />
         <Route path="/dispatch-reports/*" element={<DispatchReportLab />} />
         <Route path="/real-planning/*" element={<RealPlanning />} />
-        <Route path="/monitoring/general/*" element={<GeneralMonitoringLab />} />
-        <Route path="/monitoring/actual-projected/*" element={<RealAndProjectedFeedingLab />} />
-        <Route path="/crop/*" element={<CropRoutesLabs />} />
+        <Route path="/monitoring/general/*" element={<UnderConstruction />} />
+        <Route path="/monitoring/actual-projected/*" element={<UnderConstruction />} />
+        <Route path="/crop/*" element={<UnderConstruction />} />
 
-        <Route path="/culture-medium/*" element={<CultureMediumRoutesLab />} />
+        <Route path="/culture-medium/*" element={<UnderConstruction />} />
         <Route path="/shrimp/*" element={<ShrimpRouteLab/>} />
         <Route path='/costs/*' element={<CostRouteLab />} />
         <Route path="/client/*" element={<ClientRouteLab />} />
@@ -66,12 +68,14 @@ const Farm = React.memo(() => {
 
         <Route path="/inventory/add/*" element={<AddInventoryLabs />} />
         <Route path="/inventory/view/*" element={<InventoryTableLabs />} />
-        <Route path="/parameters/od-temp/*" element={<ODParametersLabs />} />
-        <Route path="/parameters/water-quality/*" element={<WaterAqualityLabs />} />
+        <Route path="/parameters/od-temp/*" element={<UnderConstruction />} />
+        <Route path="/parameters/water-quality/*" element={<UnderConstruction />} />
         <Route path="/tasks/*" element={<TaskFarms />} />
         <Route path="/coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/seeding-coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/fishing-coords/*" element={<CustodyCoordinationsRoutes />} />
+        <Route path="/lote/*" element={<LabLoteRoutes />} />
+        
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

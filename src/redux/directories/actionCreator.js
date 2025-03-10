@@ -6,6 +6,7 @@ import {
   fetchDirectoriesSuccess,
   fetchDirectoriesError,
 } from './actions';
+import { handleApiError } from '../error/errorHandler';
 
 export const fetchDirectories = (orgType) => async (dispatch) => {
   dispatch(fetchDirectoriesLoading());
@@ -21,6 +22,7 @@ export const fetchDirectories = (orgType) => async (dispatch) => {
     }
   } catch (error) {
     dispatch(fetchDirectoriesError(error.message || 'Error al cargar los directorios.'));
-    message.error(`Error al cargar los directorios: ${error.message}`);
+    handleApiError(error, dispatch, fetchDirectoriesError);
+
   }
 };

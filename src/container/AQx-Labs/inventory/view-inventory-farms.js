@@ -100,7 +100,7 @@ function InventoryTableLabs() {
     return (
         <>
             <PageHeader
-                highlightText="Aqualink Camaroneras"
+                highlightText="Aqualink Laboratorio"
                 title="Inventario"
             />
             <Main>

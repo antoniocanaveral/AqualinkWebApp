@@ -10,6 +10,7 @@ import {
     fetchLotesSuccess,
     fetchLotesError
 } from './actions';
+import { handleApiError } from "../error/errorHandler";
 
 export const registerLote = (loteData) => async (dispatch) => {
     dispatch(registerLoteLoading());
@@ -47,7 +48,8 @@ export const registerLote = (loteData) => async (dispatch) => {
 
     } catch (error) {
         dispatch(registerLoteError(error.message));
-        message.error(`Error al registrar el lote: ${error.message}`);
+        handleApiError(error, dispatch, registerLoteError);
+
     }
 };
 
@@ -70,6 +72,7 @@ export const fetchLotes = () => async (dispatch) => {
         }
     } catch (error) {
         dispatch(fetchLotesError(error.message));
-        message.error(`Error al obtener lotes: ${error.message}`);
+        handleApiError(error, dispatch, fetchLotesError);
+
     }
 };

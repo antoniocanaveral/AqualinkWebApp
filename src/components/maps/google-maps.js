@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { GmapWraper } from './map-style';
 
-const apiKey = process.env.REACT_APP_GOOGLE_MAP_KEY;
-
+const apiKey = "AIzaSyBxh0Pe8bW0wSPKCyJZ1Y0KjsCjCMBFWJ4"
+console.log(apiKey)
 const GoogleMaps = GoogleApiWrapper({
   apiKey,
 })((property) => {
+  
   const {
     latitude,
     longitude,

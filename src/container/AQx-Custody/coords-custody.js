@@ -1,4 +1,4 @@
-import React, { Suspense, useLayoutEffect, useState, useMemo } from 'react';
+import React, { Suspense, useLayoutEffect, useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Skeleton } from 'antd';
 import { Main, BorderLessHeading } from '../styled';
@@ -14,51 +14,54 @@ import moment from 'moment';
 import Cookies from 'js-cookie';
 
 function CoordinationsCustody() {
-  const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName')); 
+  const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName'));
   const selectedModule = useSelector((state) => state.auth.selectedModule);
-  
-  // <-- Para saber en qué ruta estamos
-  const location = useLocation();
-  const currentPath = location.pathname; 
-  // <-- Verificamos si la ruta es '/farm/fishing-coords'
-  const isFarmFishingCoords = currentPath === '/farm/fishing-coords'; 
 
-  const PageRoutes = [
-    {
-      path: '/custody',
-      breadcrumbName: selectedOrg,
-    },
-    {
-      path: 'first',
-      breadcrumbName: 'Coordinaciones',
-    },
-  ];
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const isFarmFishingCoords = currentPath === '/farm/fishing-coords';
+
 
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.custody.loading);
   const coordinations = useSelector((state) => state.custody.coordinations);
   const organizations = useSelector((state) => state.auth.custodyOrgs);
+
+
+
+  const handleOrgChange = (orgId) => {
+    setSelectedOrg(orgId);
+    const selectedOrg = organizations.find(org => org.orgId === orgId);
+    const orgEmail = selectedOrg ? selectedOrg.orgEmail : '';
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
+  };
+
+
+  const farmsSelectOptions = organizations.length > 0 ? [
+    {
+      options: organizations.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Empacadora',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+  const combinedSelectOptions = [...farmsSelectOptions];
 
   // Determinar si se debe usar "Finca Seleccionada" o "Empacadora Seleccionada"
   const packerOrFarm = selectedModule !== 'FARM' ? 'Finca Seleccionada' : 'Empacadora Seleccionada';
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     dispatch(
-      loadCustodyCoordinations(selectedOrg, (isCompleted, error) => {
-        console.log(`loadCustodyCoordinations ${isCompleted} for organization: ${selectedOrg}`);
-      })
+      loadCustodyCoordinations()
     );
   }, [dispatch, selectedOrg]);
 
-  const handleOrgChange = (value, orgEmail) => {
-    setSelectedOrg(value);
-    Cookies.set('orgId', value);
 
-    Cookies.set('orgEmail', orgEmail);
-    dispatch(loadCustodyCoordinations(value, (isCompleted, error) => {
-      console.log(`loadCustodyCoordinations ${isCompleted} for organization: ${value}`);
-    }));
-  };
 
   // Función para determinar la clase de estado
   const getStatusClass = (status) => {
@@ -79,15 +82,13 @@ function CoordinationsCustody() {
         return 'ninjadash-status-undefined';
     }
   };
-  
 
-  // Generar los datos de la tabla con useMemo
+
   const tableDataScource = useMemo(() => {
     if (!coordinations || coordinations.length === 0) return [];
 
     return coordinations
       .filter((item) => {
-        // <-- Si la ruta es '/farm/fishing-coords', excluimos los que tengan estado "por revisar"
         if (isFarmFishingCoords) {
           return item.statusWrapper.statusName.toLowerCase() !== 'por revisar';
         }
@@ -96,39 +97,26 @@ function CoordinationsCustody() {
       .map((item) => {
         const itemStatus = item.statusWrapper;
         return {
-          // LOTE id
           id: `${item.SM_FishingNotification || 'Sin Lote ID'}`,
-          // FECHA PROGRAMADA DE COSECHA / RALEO
           harvestDate: moment(item.planned_harvest_date).format('YYYY-MM-DD') || 'No disponible',
-          // TIPO DE COSECHA
           harvestType: item.harvest_type || 'Sin Tipo',
-          // PISCINA ENGORDE
           growOut: item.grow_out_pool || 'No disponible',
-          // # CICLO
           cycleNumber: item.cycle_number || 'No disponible',
-          // VOLUMEN DE PESCA
           seedingVolume: item.seeding_volume || 'No definido',
-          // CLASIF P
           classificationP: item.classification_p || 'No clasificado',
-          // CLASIF S
           classificationS: item.classification_s || 'No clasificado',
-          // CLASIF T
           classificationT: item.classification_t || 'No clasificado',
-          // Empacadora o Finca Seleccionada
           packer: item.packer_name || `Sin ${packerOrFarm}`,
-          // UBICACIÓN
           location: (
             <span>
               {item.City || 'No Ciudad'}, {item.Address1 || 'No Dirección'}
             </span>
           ),
-          // ESTADO
           status: (
             <span className={`ninjadash-status ${getStatusClass(itemStatus.statusName)}`}>
               {itemStatus.statusName || 'Estado no definido'}
             </span>
           ),
-          // ACCIONES
           action: (
             <div className="table-actions" style={{ minWidth: '50px !important', textAlign: 'center' }}>
               {!itemStatus.showEditFrom && (
@@ -141,8 +129,8 @@ function CoordinationsCustody() {
                   <UilEdit />
                 </Link>
               )}
-             
-             
+
+
               {itemStatus.showBinesForm && (
                 <Link className="edit" title="Cargar información de Bines" to={`./${item.id}/bines`}>
                   <UilUpload />
@@ -159,7 +147,6 @@ function CoordinationsCustody() {
       });
   }, [coordinations, isFarmFishingCoords, packerOrFarm]);
 
-  // Definición de columnas
   const dataTableColumn = [
     {
       title: 'Fecha de Pesca',
@@ -214,10 +201,9 @@ function CoordinationsCustody() {
       <PageHeader
         highlightText="Aqualink"
         title="Coordinaciones Pesca"
-        routes={PageRoutes}
         organizations={organizations}
+        selectOptions={combinedSelectOptions}
         selectedOrg={selectedOrg}
-        handleOrgChange={handleOrgChange}
       />
       <Main>
         <Row gutter={25}>

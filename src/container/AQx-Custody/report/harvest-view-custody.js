@@ -35,11 +35,29 @@ const LoteViewCustody = () => {
         }
     }, [dispatch, selectedOrg]);
 
-    const handleOrgChange = (value) => {
-        setSelectedOrg(value);
-        Cookies.set('orgId', value);
-        dispatch(fetchLotes());
+    const handleOrgChange = (orgId) => {
+        setSelectedOrg(orgId);
+        const selectedOrg = organizations.find(org => org.orgId === orgId);
+        const orgEmail = selectedOrg ? selectedOrg.orgEmail : '';
+        Cookies.set('orgId', orgId);
+        Cookies.set('orgEmail', orgEmail || '');
+        Cookies.remove('poolId');
     };
+
+
+    const farmsSelectOptions = organizations.length > 0 ? [
+        {
+            options: organizations.map(org => ({
+                value: org.orgId,
+                label: org.orgName,
+                email: org.orgEmail,
+            })),
+            onChange: handleOrgChange,
+            placeholder: 'Seleccione una Empacadora',
+            value: selectedOrg || undefined,
+        },
+    ] : [];
+    const combinedSelectOptions = [...farmsSelectOptions];
 
     const handleViewDetails = (record) => {
         setSelectedLote(record);
@@ -101,10 +119,9 @@ const LoteViewCustody = () => {
             <PageHeader
                 highlightText="Aqualink Empacadora"
                 title="Vista de Lotes de Empaque"
-                routes={PageRoutes}
                 organizations={organizations}
+                selectOptions={combinedSelectOptions}
                 selectedOrg={selectedOrg}
-                handleOrgChange={handleOrgChange}
             />
             <Main>
                 <Row gutter={25}>
@@ -149,7 +166,7 @@ const LoteViewCustody = () => {
                                     <strong level={5} >Volumen Total de Entero: </strong>
                                     <Text>{totalEntero} lbs</Text>
                                 </Col>
-                                <br/>
+                                <br />
                                 <Descriptions bordered size="small" column={2}>
                                     {['30_40', '40_50', '50_60', '60_70', '70_80', '80_100', '100_120', '120_150'].map((category) => (
                                         <Descriptions.Item key={category} label={`${category.replace('_', '/')}`}>
@@ -165,7 +182,7 @@ const LoteViewCustody = () => {
                                     <strong level={5} >Volumen Total de Cola: </strong>
                                     <Text>{totalCola} lbs</Text>
                                 </Col>
-                                <br/>
+                                <br />
                                 <Descriptions bordered size="small" column={2}>
                                     {['21_25', '26_30', '31_35', '36_40', '41_50', '51_60', '61_70', '71_90', '100_120', '120_150'].map((category) => (
                                         <Descriptions.Item key={category} label={`${category.replace('_', '/')}`}>

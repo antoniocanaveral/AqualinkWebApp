@@ -3,6 +3,7 @@ import { message } from 'antd';
 import { fetchStatusLoading, fetchStatusSuccess, fetchStatusError, fetchCategoriesLoading, fetchCategoriesSuccess, fetchCategoriesError, fetchRequestsSuccess, fetchRequestsError, fetchRequestsLoading } from './actions';
 import { DataService } from '../../config/dataService/dataService';
 import Cookies from 'js-cookie';
+import { handleApiError } from '../error/errorHandler';
 
 export const fetchStatus = () => async (dispatch) => {
   dispatch(fetchStatusLoading());
@@ -17,6 +18,7 @@ export const fetchStatus = () => async (dispatch) => {
   } catch (error) {
     dispatch(fetchStatusError(error.message || 'Error al cargar los estados.'));
     message.error(`Error al cargar los estados: ${error.message}`);
+    handleApiError(error, dispatch, fetchStatusError);
   }
 };
 
@@ -34,7 +36,7 @@ export const fetchCategories = () => async (dispatch) => {
     }
   } catch (error) {
     dispatch(fetchCategoriesError(error.message || 'Error al cargar las categorías.'));
-    message.error(`Error al cargar las categorías: ${error.message}`);
+    handleApiError(error, dispatch, fetchStatusError);
   }
 };
 
@@ -78,7 +80,7 @@ export const createRequest = (requestData) => async (dispatch) => {
       return response.data;
     }
   } catch (error) {
-    message.error(`Error al crear ticket: ${error.message}`);
+    handleApiError(error, dispatch, fetchStatusError);
     throw error;
   }
 };
@@ -111,7 +113,7 @@ export const updateRequestStatus = (requestData) => async (dispatch) => {
       return response.data;
     }
   } catch (error) {
-    message.error(`Error al actualizar ticket: ${error.message}`);
+    handleApiError(error, dispatch, fetchStatusError);
     throw error;
   }
 };
@@ -214,6 +216,6 @@ export const fetchRequestsByClient = () => async (dispatch) => {
     }
   } catch (error) {
     dispatch(fetchRequestsError(error.message || 'Error al cargar las solicitudes.'));
-    message.error(`Error al cargar las solicitudes: ${error.message}`);
+    handleApiError(error, dispatch, fetchRequestsError);
   }
 };

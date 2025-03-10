@@ -33,24 +33,32 @@ function HarvestReportCustody() {
         }
     }, [dispatch, selectedOrg]);
 
-    const PageRoutes = [
+    
+    
+      const handleOrgChange = (orgId) => {
+        setSelectedOrg(orgId);
+        const selectedOrg = organizations.find(org => org.orgId === orgId);
+        const orgEmail = selectedOrg ? selectedOrg.orgEmail : '';
+        Cookies.set('orgId', orgId);
+        Cookies.set('orgEmail', orgEmail || '');
+        Cookies.remove('poolId');
+      };
+    
+    
+      const farmsSelectOptions = organizations.length > 0 ? [
         {
-            path: '/custody',
-            breadcrumbName: selectedOrg,
+          options: organizations.map(org => ({
+            value: org.orgId,
+            label: org.orgName,
+            email: org.orgEmail,
+          })),
+          onChange: handleOrgChange,
+          placeholder: 'Seleccione una Empacadora',
+          value: selectedOrg || undefined,
         },
-        {
-            path: 'first',
-            breadcrumbName: 'Coordinaciones',
-        },
-    ];
-
-    const handleOrgChange = (value, orgEmail) => {
-        setSelectedOrg(value);
-        Cookies.set('orgId', value);
-        Cookies.set('orgEmail', orgEmail);
-        dispatch(loadCustodyCoordinations(value));
-        dispatch(fetchLotes());
-    };
+      ] : [];
+      const combinedSelectOptions = [...farmsSelectOptions];
+    
 
     const validCoordinationInfo = Array.isArray(coordinationInfo) ? coordinationInfo : [];
     const maxCosechas = 5;
@@ -82,7 +90,7 @@ function HarvestReportCustody() {
             return acc;
         }, {}),
     });
-    
+
     const cumplimientoHeader = {
         key: 'cumplimiento',
         descripcion: 'CUMPLIMIENTO',
@@ -99,7 +107,7 @@ function HarvestReportCustody() {
         generateRow('volumen_programado', 'VOLUMEN PROGRAMADO', 'SM_FishingVolume'),
         generateRow('volumen_cosechado', 'VOLUMEN COSECHADO', 'sm_fishingbiomass'),
         generateRow('biomasa_procesada', 'VOLUMEN A PROCESO', 'sm_processvolume'),
-        cumplimientoHeader, 
+        cumplimientoHeader,
         generateRow('variacion', 'VARIACIÓN PROY VS COS', null, (coord) => {
             const proyectado = coord?.SM_Biomass || 0;
             const cosechado = coord?.sm_fishingbiomass || 0;
@@ -137,9 +145,8 @@ function HarvestReportCustody() {
                 title="Performance"
                 highlightText="Aqualink Empacadora"
                 organizations={organizations}
-                routes={PageRoutes}
+                selectOptions={combinedSelectOptions}
                 selectedOrg={selectedOrg}
-                handleOrgChange={handleOrgChange}
             />
 
             <Main>
@@ -162,7 +169,7 @@ function HarvestReportCustody() {
                 {/* BARRA COMPARATIVA */}
                 <Row gutter={25}>
                     <Col xl={24} xs={24} style={{ display: 'flex' }}>
-                        <ComparativePerformanceBarChart  cosechas={tableData.filter(row => row.key === "variacion" || row.key === "eficiencia_planta")}/>
+                        <ComparativePerformanceBarChart cosechas={tableData.filter(row => row.key === "variacion" || row.key === "eficiencia_planta")} />
                     </Col>
                 </Row>
 
