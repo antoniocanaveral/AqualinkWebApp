@@ -1,48 +1,45 @@
 import React, { lazy, Suspense, useState, useEffect, useLayoutEffect } from 'react';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Row, Col, Form, Input, Select, Skeleton, message, Spin, DatePicker, TimePicker, InputNumber, Avatar, Typography } from 'antd';
-import { Button } from '../../components/buttons/buttons';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import UilCheck from '@iconscout/react-unicons/icons/uil-check';
 import UilUsersAlt from '@iconscout/react-unicons/icons/uil-users-alt';
 import UilFileCheckAlt from '@iconscout/react-unicons/icons/uil-file-check-alt';
 import UilCheckCircle from '@iconscout/react-unicons/icons/uil-check-circle';
-import { Steps } from '../../components/steps/steps';
 import Heading from '../../components/heading/heading';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Checkbox } from '../../components/checkbox/checkbox';
-import { BasicFormWrapper, WizardWrapper, OrderSummary, WizardTwo, Main, WizardBlock } from '../styled';
-import { cancelLabCoord, loadLabCoord, submitLabCoord } from '../../redux/lab/actionCreator';
-import Cookies from 'js-cookie';
+import { BasicFormWrapper, WizardWrapper, WizardTwo, Main, WizardBlock } from '../styled';
+import { loadLabCoord, submitLabCoord } from '../../redux/lab/actionCreator';
 import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
 import { formatNumber, inputFormatter, parserNumber } from '../../utility/utility';
 import { StepsCoords } from '../../components/steps/stepsCoords';
 import CustomTable from './CustomTable';
+import { getCoordData, getCoordDataSummary, getSendSummaryData } from './coord/coordinationData';
+import { selectLabOrgsWithWarehouses } from '../../redux/authentication/selectors';
+import Cookies from 'js-cookie';
+import { fetchLabLoteByTank } from '../../redux/lablote/actionCreator';
 
 const { Option } = Select;
 
 function CoordinationLabs() {
-  const PageRoutes = [
-    {
-      path: 'index',
-      breadcrumbName: Cookies.get('orgName'),
-    },
-    {
-      path: 'first',
-      breadcrumbName: 'Coordinación',
-    },
-  ];
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   let { id } = useParams();
   const coordination = useSelector((state) => state.lab.coordination);
   const loading = useSelector((state) => state.lab.loading);
 
   const [form] = Form.useForm();
+  const farmsOrgsWithPools = useSelector(selectLabOrgsWithWarehouses);
+  const organizations = useSelector((state) => state.auth.labsOrgs);
+  const [selectedOrg, setSelectedOrg] = useState(null);
+  const [selectedSector, setSelectedSector] = useState(null);
+  const [selectedPool, setSelectedPool] = useState(null);
+  const { labLoteByTank, loading: labLoteLoading } = useSelector((state) => state.lablote);
+  console.log(labLoteByTank)
+
 
   const [state, setState] = useState({
     status: 'process',
@@ -61,7 +58,8 @@ function CoordinationLabs() {
       methodName: coordination && coordination.SM_ShippingMethod ? coordination.SM_ShippingMethod.id : "",
       oxygenOnTheGo: coordination?.SM_OxygenOnTheGo ?? false,
       foodOnTheGo: coordination?.SM_FoodOnTheGo ?? false,
-      unitPerPack: coordination ? coordination.unitPerPack : ""
+      unitPerPack: coordination ? coordination.unitPerPack : "",
+      sm_lablote_ID: null
     }
   });
 
@@ -70,6 +68,39 @@ function CoordinationLabs() {
   useEffect(() => {
     dispatch(loadLabCoord(id, () => { }));
   }, [dispatch, id]);
+
+
+  useEffect(() => {
+    const orgId = Cookies.get('orgId');
+    if (orgId) {
+      setSelectedOrg(Number(orgId)); // Convertir a número
+    }
+  }, []);
+
+  useEffect(() => {
+    if (labLoteByTank) {
+      setState(prevState => ({
+        ...prevState,
+        form: {
+          ...prevState.form,
+          tankTotal: labLoteByTank.sm_reservedbiomass,
+          sm_lablote_ID: labLoteByTank.id
+        }
+      }));
+      // También, actualizar el campo del formulario (en caso de usar Form.setFieldsValue)
+      form.setFieldsValue({
+        tankTotal: labLoteByTank.sm_reservedbiomass
+      });
+    }
+  }, [labLoteByTank, form]);
+
+  // Validación personalizada para "Total Confirmado (Larvas)"
+  const validateConfirmedTotal = (_, value) => {
+    if (value <= state.form.tankTotal) {
+      return Promise.resolve();
+    }
+    return Promise.reject(new Error('Total Confirmado no puede ser mayor que Total Tanque'));
+  };
 
   useLayoutEffect(() => {
     const activeElement = document.querySelectorAll('.ant-steps-item-active');
@@ -147,41 +178,9 @@ function CoordinationLabs() {
     }
   };
 
-  const coordData = [
-    { key: '1', label: 'Camaronera:', value: coordination ? coordination.org_name : '-' },
-    { key: '2', label: 'Piscina:', value: coordination ? coordination.pre_breeding_pool : '-' },
-    { key: '3', label: 'Dirección:', value: coordination ? `${coordination.City} ${coordination.Address1}, ${coordination.Address2}` : '-' },
-    { key: '4', label: 'Notificación:', value: coordination ? coordination.SM_FishingNotification : '-' },
-    { key: '5', label: 'Fecha de Siembra Solicitada:', value: coordination ? moment(coordination.planned_date).format('DD-MM-YYYY / HH:mm A') : '-' },
-    { key: '6', label: 'PL Solicitado:', value: coordination ? formatNumber(coordination.requested_pl) : '-' },
-    { key: '7', label: 'Salinidad Solicitada:', value: coordination ? `${coordination.requested_salinity} ppm` : '-' },
-    { key: '8', label: 'Cantidad Solicitada:', value: coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '-' },
-    { key: '9', label: 'Días de Maduración del Agua:', value: coordination ? `${coordination.water_ripening_days} días` : '-' }
-  ];
-
-  const coordDataSummary = [
-    { key: '1', label: 'Camaronera:', value: coordination ? coordination.org_name : '-' },
-    { key: '2', label: 'Piscina:', value: coordination ? coordination.pre_breeding_pool : '-' },
-    { key: '4', label: 'Notificación:', value: coordination ? coordination.SM_FishingNotification : '-' },
-    { key: '5', label: 'Fecha de Siembra Solicitada:', value: coordination ? moment(coordination.planned_date).format('DD-MM-YYYY / HH:mm A') : '-' },
-    { key: '7', label: 'Salinidad Solicitada:', value: coordination ? `${coordination.requested_salinity} ppm` : '-' },
-    { key: '8', label: 'Cantidad Solicitada:', value: coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '-' }
-  ];
-
-  const sendSummaryData = [
-    { key: '1', label: 'Fecha - Hora:', value: state.form.answeredDate ? moment(state.form.answeredDate).format('DD-MM-YYYY / HH:mm A') : '-' },
-    { key: '2', label: 'Módulo:', value: state.form.module || '-' },
-    { key: '3', label: 'Tanque:', value: state.form.tank || '-' },
-    { key: '4', label: 'Total Tanque:', value: state.form.tankTotal ? `${formatNumber(state.form.tankTotal)} larvas` : '-' },
-    { key: '5', label: 'Total Confirmado:', value: state.form.confirmedTotal ? `${formatNumber(state.form.confirmedTotal)} larvas` : '-' },
-    { key: '6', label: 'Conteo Preliminar Lab:', value: state.form.labCount ? `${formatNumber(state.form.labCount)} larvas/gramo` : '-' },
-    { key: '7', label: 'PL:', value: state.form.pl || '-' },
-    { key: '8', label: 'Salinidad:', value: state.form.salinity ? `${state.form.salinity} ppm` : '-' },
-    { key: '9', label: 'Método de Envío:', value: state.form.methodName || '-' },
-    { key: '10', label: 'Unidades por Empaque:', value: state.form.unitPerPack ? `${formatNumber(state.form.unitPerPack)} larvas` : '-' },
-    { key: '11', label: 'Óxigeno en Camino:', value: state.form.oxygenOnTheGo ? 'Sí' : 'No' },
-    { key: '12', label: 'Comida en Camino:', value: state.form.foodOnTheGo ? 'Sí' : 'No' }
-  ];
+  const coordData = getCoordData(coordination);
+  const coordDataSummary = getCoordDataSummary(coordination);
+  const sendSummaryData = getSendSummaryData(state);
 
 
   useEffect(() => {
@@ -200,11 +199,88 @@ function CoordinationLabs() {
       });
     }
   }, [state.form.confirmedTotal, state.form.unitPerPack]);
-  
+
+
+  // Filtrar módulos (sectores) con base en `orgId`
+  const sectorsOptions = selectedOrg
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .reduce((acc, pool) => {
+        if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
+          acc.push({
+            value: pool.salesRegion.id,
+            label: pool.salesRegion.name,
+          });
+        }
+        return acc;
+      }, [])
+    : [];
+
+
+
+  const handleSectorChange = (sectorId) => {
+    setSelectedSector(sectorId);
+    setSelectedPool(null); // Reiniciar el tanque si cambia el sector
+
+    const selectedSectorObj = sectorsOptions.find(sector => sector.value === sectorId);
+    const sectorName = selectedSectorObj ? selectedSectorObj.label : '';
+
+    setState(prevState => ({
+      ...prevState,
+      form: {
+        ...prevState.form,
+        module: sectorName,  // Guardar el nombre en el estado
+        tank: null,
+      }
+    }));
+
+    form.setFieldsValue({ module: sectorId, tank: undefined });
+  };
+
+  const handlePoolChange = (poolId) => {
+    setSelectedPool(poolId);
+    Cookies.set('poolId', poolId);
+    dispatch(fetchLabLoteByTank());
+
+    const selectedPoolObj = poolsOptions.find(pool => pool.value === poolId);
+    const poolName = selectedPoolObj ? selectedPoolObj.label : '';
+
+    setState(prevState => ({
+      ...prevState,
+      form: {
+        ...prevState.form,
+        tank: poolName, // Guardar el nombre del tanque en el estado
+      }
+    }));
+
+    form.setFieldsValue({ tank: poolId });
+  };
+
+
+  const poolsOptions = selectedSector
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
+      .map(pool => ({
+        value: pool.poolId,
+        label: pool.poolName,
+        poolSize: pool.poolSize
+      }))
+    : [];
+
+  const poolsSelectOptions = selectedSector ? [
+    {
+      options: poolsOptions,
+      onChange: handlePoolChange,
+      placeholder: 'Seleccione una Pool',
+      disabled: poolsOptions.length === 0,
+      value: selectedPool || undefined,
+    },
+  ] : [];
 
   return (
     <>
-      <PageHeader className="ninjadash-page-header-main" title={`Responder Coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} routes={PageRoutes} />
+      <PageHeader className="ninjadash-page-header-main" title={`Responder Coordinación: ${coordination ? coordination.SM_FishingNotification : "-"}`} />
       <Main>
         <Row gutter={25}>
           <Col sm={24} xs={24}>
@@ -260,7 +336,7 @@ function CoordinationLabs() {
                                             <Heading as="h4">2. Información de Laboratorio</Heading>
                                             <Form form={form} name="address" layout="vertical" style={{ marginTop: '-10px' }}>
                                               <Row gutter={16}>
-                                                <Col xs={24} sm={6}>
+                                                <Col xs={24} sm={4}>
                                                   <Form.Item name="responsed_date" label="Fecha Propuesta" initialValue={state.form.answeredDate ? moment(state.form.answeredDate) : moment()} rules={[{ required: true, message: 'Por favor seleccione una Fecha' }]}>
                                                     <DatePicker value={state.form.answeredDate} onChange={(value) => {
                                                       let currentDate = '';
@@ -279,7 +355,7 @@ function CoordinationLabs() {
                                                   </Form.Item>
                                                   <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? moment(coordination.planned_date).format("DD-MM-YYYY") : "-"}]</div>
                                                 </Col>
-                                                <Col xs={24} sm={6}>
+                                                <Col xs={24} sm={4}>
                                                   <Form.Item name="response-time" label="Hora Propuesta" initialValue={moment(state.form.answeredDate ? moment(state.form.answeredDate).format("HH:mm") : "00:00", 'HH:mm')} rules={[{ required: true, message: 'Por favor seleccione una Hora' }]}>
                                                     <TimePicker value={state.form.answeredDate} onChange={(value) => {
                                                       let currentTime = moment(state.form.answeredDate);
@@ -295,61 +371,57 @@ function CoordinationLabs() {
                                                   </Form.Item>
                                                   <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? moment(coordination.planned_date).format("HH:mm A") : "-"}]</div>
                                                 </Col>
-                                                <Col xs={24} sm={6}>
-                                                  <Form.Item name="module" label="Módulo" rules={[{ required: true, message: 'Por favor agregue un Módulo' }]}>
-                                                    <Input
-                                                      value={state.form.module}
-                                                      onChange={(e) => {
-                                                        setState({
-                                                          ...state,
-                                                          form: {
-                                                            ...state.form,
-                                                            module: e.target.value,
-                                                          },
-                                                        });
-                                                      }}
+
+                                                <Col span={6}>
+                                                  <Form.Item name="SM_Module" label="Módulo" rules={[{ required: true, message: 'Por favor agregue el Módulo' }]}>
+                                                    <Select
+                                                      placeholder="Seleccione un Módulo"
+                                                      options={sectorsOptions}
+                                                      value={selectedSector || undefined}
+                                                      onChange={handleSectorChange}
+                                                      disabled={!selectedOrg} // Se habilita solo cuando `orgId` es válido
                                                     />
                                                   </Form.Item>
                                                 </Col>
-                                                <Col xs={24} sm={6}>
-                                                  <Form.Item name="tank" label="Tanque" rules={[{ required: true, message: 'Por favor agregue un Tanque' }]}>
-                                                    <Input
-                                                      value={state.form.tank}
-                                                      onChange={(e) => {
-                                                        setState({
-                                                          ...state,
-                                                          form: {
-                                                            ...state.form,
-                                                            tank: e.target.value,
-                                                          },
-                                                        });
-                                                      }}
+                                                <Col span={4}>
+                                                  <Form.Item name="SM_Tank" label="Tanque" rules={[{ required: true, message: 'Por favor agregue el Tanque' }]}>
+                                                    <Select
+                                                      placeholder="Seleccione una Tanque"
+                                                      options={poolsSelectOptions[0]?.options || []}
+                                                      value={selectedPool || undefined}
+                                                      onChange={handlePoolChange}
+                                                      disabled={!selectedSector} // Se habilita solo cuando hay sector seleccionado
                                                     />
                                                   </Form.Item>
                                                 </Col>
                                               </Row>
                                               <Row gutter={16}>
                                                 <Col xs={24} sm={6}>
-                                                  <Form.Item name="tankTotal" label="Total Tanque (Larvas)" rules={[{ required: true, message: 'Por favor agregue el Total Tanque' }]}>
+                                                  <Form.Item
+                                                    name="tankTotal"
+                                                    label="Total Tanque (Larvas)"
+                                                    rules={[{ required: true, message: 'El Total Tanque es requerido' }]}
+                                                  >
                                                     <InputNumber
                                                       value={state.form.tankTotal}
                                                       formatter={(value) => inputFormatter(value)}
                                                       parser={(value) => parserNumber(value)}
-                                                      onChange={(value) => {
-                                                        setState({
-                                                          ...state,
-                                                          form: {
-                                                            ...state.form,
-                                                            tankTotal: value,
-                                                          },
-                                                        });
-                                                      }}
+                                                      disabled // Campo no modificable, se rellena automáticamente
                                                     />
                                                   </Form.Item>
-                                                  <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]</div>
+                                                  <div style={{ fontSize: "10px", marginBottom: "20px" }}>
+                                                    [<strong>Solicitado:</strong> {coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]
+                                                  </div>
                                                 </Col>
                                                 <Col xs={24} sm={6}>
-                                                  <Form.Item name="confirmedTotal" label="Total Confirmado (Larvas)" rules={[{ required: true, message: 'Por favor agregue el Total Confirmado' }]}>
+                                                  <Form.Item
+                                                    name="confirmedTotal"
+                                                    label="Total Confirmado (Larvas)"
+                                                    rules={[
+                                                      { required: true, message: 'Por favor agregue el Total Confirmado' },
+                                                      { validator: validateConfirmedTotal }
+                                                    ]}
+                                                  >
                                                     <InputNumber
                                                       value={state.form.confirmedTotal}
                                                       formatter={(value) => inputFormatter(value)}
@@ -365,7 +437,6 @@ function CoordinationLabs() {
                                                       }}
                                                     />
                                                   </Form.Item>
-                                                  <div style={{ fontSize: "10px", marginBottom: "20px" }}>[<strong>Solicitado:</strong> {coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : "-"}]</div>
                                                 </Col>
                                                 <Col xs={24} sm={6}>
                                                   <Form.Item name="labCount" label="Conteo Preliminar Lab (pl/gr)" rules={[{ required: true, message: 'Por favor agregue el Conteo Preliminar' }]}>
@@ -451,7 +522,7 @@ function CoordinationLabs() {
                                                       value={state.form.total}
                                                       formatter={(value) => inputFormatter(value)}
                                                       parser={(value) => parserNumber(value)}
-                                                      disabled 
+                                                      disabled
                                                     />
                                                   </Form.Item>
                                                 </Col>
@@ -557,7 +628,7 @@ function CoordinationLabs() {
             </Suspense>
           </Col>
         </Row>
-      </Main>
+      </Main >
     </>
   );
 }

@@ -111,6 +111,7 @@ function CoordinationsLabs() {
           pl: item.pl || 'No disponible', // PL
           lab: item.lab_name || `Sin ${labOrFarm}`, // Lab Seleccionado o Finca Seleccionada
           location: <span>{item.City || 'No Ciudad'}, {item.Address1 || 'No Dirección'}</span>, // UBICACIÓN
+          volumen: item.requested_quantity,
           status: (
             <span className={`ninjadash-status ${getStatusClass(itemStatus.statusName)}`}>
               {itemStatus.statusName || 'Estado no definido'}
@@ -138,35 +139,28 @@ function CoordinationsLabs() {
       key: 'scheduledDate',
     },
     {
-      title: 'Pre Cría',
-      dataIndex: 'preBreeding',
-      key: 'preBreeding',
-    },
-    {
-      title: 'Piscina ',
-      dataIndex: 'growOut',
-      key: 'growOut',
-    },
-    {
       title: 'Lote ID',
       dataIndex: 'id',
       key: 'id',
     },
+   
+    {
+      title: 'Tanque',
+      dataIndex: 'growOut',
+      key: 'growOut',
+    },
+  
     {
       title: 'Volumen',
-      dataIndex: 'seedingVolume',
-      key: 'seedingVolume',
+      dataIndex: 'volumen',
+      key: 'volumen',
     },
     {
       title: 'PL',
       dataIndex: 'pl',
       key: 'pl',
     },
-    {
-      title: labOrFarm,
-      dataIndex: 'lab',
-      key: 'lab',
-    },
+   
     {
       title: 'Estado',
       dataIndex: 'status',

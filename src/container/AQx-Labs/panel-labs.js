@@ -5,16 +5,11 @@ import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
 import { OverviewDataStyleWrap } from '../dashboard/Style';
 import OverviewCardMeshOriginal from '../../components/cards/OverviewCardMeshOriginal';
-import { AqualinkMaps } from '../../components/maps/aqualink-map';
 import TankCarouselCustody from './panel/components/TankCarouselCustody';
 import { GoogleMaps } from '../../components/maps/google-maps';
 import { Text } from 'recharts';
 import {
-  IdcardOutlined,
-  SlidersOutlined,
   DatabaseOutlined,
-  CalendarOutlined,
-  ClockCircleOutlined,
   ClusterOutlined,
 } from '@ant-design/icons';
 

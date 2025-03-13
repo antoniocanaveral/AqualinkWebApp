@@ -41,6 +41,7 @@ import { labanalysisReducer } from './labanalysis/reducers';
 import CoordsViewReducer from './views/coords/reducers';
 import { loteReducer } from './lote/reducers';
 import { costReducer } from './cost/reducer';
+import { labloteReducer } from './lablote/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -65,6 +66,7 @@ const rootReducers = combineReducers({
   bin_drawers: orgBinsReducer,
   labanalysis: labanalysisReducer,
   lote: loteReducer,
+  lablote: labloteReducer,
   cost: costReducer,
   gallery: galleryReducer,
   email: emailReducer,

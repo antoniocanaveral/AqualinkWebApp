@@ -13,6 +13,7 @@ function ViewFarm() {
   const location = useLocation();
   const currentPath = location.pathname;
   const isLabView = currentPath === '/lab/shrimp/view';
+  const isFarmView = currentPath === '/farm/laboratory/view';
 
   const dispatch = useDispatch();
 
@@ -24,7 +25,10 @@ function ViewFarm() {
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    dispatch(fetchDirectories('FARM'));
+    var type = null
+    isLabView ? type ="FARM" : isFarmView ? type="LAB" : type= "CUSTODY"
+
+    dispatch(fetchDirectories(type));
   }, [dispatch]);
 
   // Filtramos la data según el texto de búsqueda en "Name"
@@ -111,8 +115,8 @@ function ViewFarm() {
   return (
     <>
       <PageHeader
-        highlightText={ isLabView ? "AquaLink Laboratorio" : "AquaLink Empacadora"}
-        title="Directorio de Camaroneras"
+        highlightText={ isFarmView ? "AquaLink Laboratorio" : isLabView ? "Aqualink Camaronera": "AquaLink Empacadora"}
+        title="Directorios "
       />
       <Main>
         {/* Input para buscar por nombre */}

@@ -29,6 +29,7 @@ import ShrimpRouteLab from '../farm/farmLaboratory';
 import PanelLogisticLabs from '../../container/AQx-Labs/panel-logistic';
 import LabLoteRoutes from './labLoteRoutes';
 import UnderConstruction from '../../container/pages/Construction';
+import TaskLabs from '../../container/AQx-Labs/task-labs';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -70,7 +71,7 @@ const Farm = React.memo(() => {
         <Route path="/inventory/view/*" element={<InventoryTableLabs />} />
         <Route path="/parameters/od-temp/*" element={<UnderConstruction />} />
         <Route path="/parameters/water-quality/*" element={<UnderConstruction />} />
-        <Route path="/tasks/*" element={<TaskFarms />} />
+        <Route path="/tasks/*" element={<TaskLabs />} />
         <Route path="/coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/seeding-coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/fishing-coords/*" element={<CustodyCoordinationsRoutes />} />

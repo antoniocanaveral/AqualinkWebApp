@@ -1,14 +1,9 @@
 // src/components/PageHeader.js
-
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-return-assign */
 import React, { useState } from 'react';
-import { Breadcrumb, Dropdown, Menu, Select, Button } from 'antd';
+import {  Menu, Select, Button } from 'antd';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { ReactSVG } from 'react-svg';
 import { HeaderWrapper, PageHeaderStyle } from './style';
-import { DownOutlined, LeftOutlined } from '@ant-design/icons'; // Importar el ícono de izquierda
+import {  LeftOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -16,7 +11,6 @@ function PageHeader(props) {
   const {
     title,
     subTitle,
-    routes,
     buttons,
     ghost,
     bgColor,
@@ -25,17 +19,17 @@ function PageHeader(props) {
     selectedOrg,
     selectedPool,
     handleOrgChange,
-    handlePoolChange, // Nueva prop para manejar cambios en Pool
+    handlePoolChange,
     icon,
     highlightText,
-    selectOptions, // Opciones para los selectores adicionales (Pools)
-    onBack, // Nueva prop para el botón de regresar
+    selectOptions, 
+    onBack, 
   } = props;
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleMenuClick = (e) => {
-    const orgId = Number(e.key); // Asegurarse de que orgId sea un número
+    const orgId = Number(e.key);
     const org = organizations.find(o => o.orgId === orgId);
     console.log("oawd", org)
     if (org) {
@@ -54,36 +48,6 @@ function PageHeader(props) {
     </Menu>
   ) : null;
 
-  const breadcrumb = routes ? (
-    <Breadcrumb separator={<span className="ninjadash-seperator" />} >
-      {routes.map((route, index) =>
-        index + 1 === routes.length ? (
-          <Breadcrumb.Item key={index}>
-            {menu && (
-              <Dropdown
-                overlay={menu}
-                onVisibleChange={(visible) => setDropdownVisible(visible)}
-                visible={dropdownVisible}
-                trigger={['click']}
-              >
-                <span style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                  {selectedOrg ? organizations.find(org => org.orgId === selectedOrg)?.orgName : 'Seleccionar Organización'}
-                  <DownOutlined style={{ paddingTop: "4px", paddingLeft: "10px" }} />
-                </span>
-              </Dropdown>
-            )}
-          </Breadcrumb.Item>
-        ) : (
-          <Breadcrumb.Item key={index}>
-            <img src={require(`../../static/img/AQx-IMG/shrimp16.svg`).default} style={{marginRight: 10}}/> {' '}
-            <Link  style={{display: "contents"}}>{route.breadcrumbName}</Link>
-          </Breadcrumb.Item>
-        ),
-      )}
-    </Breadcrumb>
-  ) : (
-    ''
-  );
 
   const renderSelectOptions = () => {
     if (!selectOptions || selectOptions.length === 0) return null;
@@ -91,7 +55,6 @@ function PageHeader(props) {
     return (
       <div className="responsive-select-container" style={{ display: 'flex', gap: '10px' }}>
         {selectOptions.map((selectOption, index) => {
-          // Validar que selectOption tenga la propiedad 'options' y que sea un arreglo
           if (!selectOption.options || !Array.isArray(selectOption.options)) {
             console.warn(`selectOption at index ${index} is missing 'options' or it's not an array.`);
             return null;
@@ -131,7 +94,7 @@ function PageHeader(props) {
                 onClick={onBack}
                 style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}
               >
-                <LeftOutlined /> {/* Removido el color ya que el ícono maneja su propio color */}
+                <LeftOutlined />
               </Button>
             )}
             {icon && <span className="icon">{icon}</span>}
@@ -148,12 +111,10 @@ function PageHeader(props) {
         subTitle={subTitle}
         extra={
           <>
-            {/* Contenedor para los botones y selectores */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '10px' }}>
               {buttons}
               {renderSelectOptions()}
             </div>
-            {breadcrumb}
           </>
         }
         ghost={ghost}
@@ -174,7 +135,7 @@ PageHeader.propTypes = {
   selectedOrg: PropTypes.number,
   selectedPool: PropTypes.number,
   handleOrgChange: PropTypes.func,
-  handlePoolChange: PropTypes.func, // Nueva prop para manejar cambios en Pool
+  handlePoolChange: PropTypes.func,
   icon: PropTypes.node,
   highlightText: PropTypes.string,
   selectOptions: PropTypes.arrayOf(
@@ -190,10 +151,9 @@ PageHeader.propTypes = {
       disabled: PropTypes.bool,
     })
   ),
-  onBack: PropTypes.func, // Definir la nueva prop
+  onBack: PropTypes.func, 
 };
 
-// Definir valores por defecto para selectOptions y organizations
 PageHeader.defaultProps = {
   selectOptions: [],
   organizations: [],

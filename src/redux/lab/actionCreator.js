@@ -12,15 +12,15 @@ const loadLabCoordinations = () => {
             const orgEmail = Cookies.get("orgEmail");
 
             const bpartnerResponse = await DataService.get(`/models/sm_coordinations_view?$filter=sm_coordinationtype eq 'SIEMBRA' AND bp_email eq '${orgEmail}'`);
-            if(bpartnerResponse.data && bpartnerResponse.data.records && bpartnerResponse.data.records.length > 0) {
+            if (bpartnerResponse.data && bpartnerResponse.data.records && bpartnerResponse.data.records.length > 0) {
                 const result = [];
-                for(let r of bpartnerResponse.data.records) {
+                for (let r of bpartnerResponse.data.records) {
                     r.statusWrapper = getCoordStatus(r);
                     result.push(r);
                 }
-                dispatch(labCoordSuccess({records: result}));
+                dispatch(labCoordSuccess({ records: result }));
             } else {
-                dispatch(labCoordSuccess({records: []}));
+                dispatch(labCoordSuccess({ records: [] }));
             }
         } catch (err) {
             dispatch(netWorkError(err));
@@ -71,7 +71,7 @@ const loadLabCoord = (id, callback) => {
         try {
             dispatch(labCoordLoadBegin());
             const bpartnerResponse = await DataService.get(`/models/sm_coordinations_view?$filter=ci_id eq ${id}`);
-            if(bpartnerResponse && bpartnerResponse.data) {
+            if (bpartnerResponse && bpartnerResponse.data) {
                 const record = bpartnerResponse.data.records[0];
                 record.statusWrapper = getCoordStatus(record);
                 dispatch(labCoordLoad({
@@ -81,7 +81,7 @@ const loadLabCoord = (id, callback) => {
             } else {
                 callback(false);
             }
-        } catch(err) {
+        } catch (err) {
             dispatch(netWorkError(err));
             callback(false, err);
         }
@@ -99,7 +99,7 @@ const enviarParamsLabCoord = (id, coordId, alkalinity, pre_breeding_pool_ph, cal
                 "SM_CoordinationStatus": 'CONFIRMADO'
             });
             callback(true);
-        } catch(err) {
+        } catch (err) {
             dispatch(netWorkError(err));
             callback(false);
         }
@@ -116,7 +116,7 @@ const cancelLabCoord = (id, callback) => {
             });
             dispatch(labCoordCancel({}));
             callback(true);
-        } catch(err) {
+        } catch (err) {
             dispatch(netWorkError(err));
             callback(false);
         }
@@ -127,7 +127,7 @@ const submitLabCoord = (id, form, callback) => {
     return async (dispatch) => {
         try {
             console.log("submitLabCoord>");
-            console.log( JSON.stringify(form) );
+            console.log(JSON.stringify(form));
             const coordClientResponse = await DataService.put(`/models/sm_coordinationclient/${id}`, {
                 "SM_Answered": true,
                 "SM_FishingDate": moment(form.answeredDate).format("YYYY-MM-DDTHH:mm:ss") + "Z",
@@ -141,12 +141,20 @@ const submitLabCoord = (id, form, callback) => {
                 "UnitsPerPack": form.unitPerPack,
                 "SM_OxygenOnTheGo": form.oxygenOnTheGo,
                 "SM_FoodOnTheGo": form.foodOnTheGo,
-                "SM_ConfirmedTotal": form.confirmedTotal
+                "SM_ConfirmedTotal": form.confirmedTotal,
+                "sm_lablote_ID": form.sm_lablote_ID
+
             });
-            console.log( coordClientResponse );
+            console.log(coordClientResponse);
+            const newReservedBiomass = form.tankTotal - form.confirmedTotal;
+
+            const labLoteResponse = await DataService.put(`/models/sm_lablote/${form.sm_lablote_ID}`, {
+                sm_reservedbiomass: newReservedBiomass,
+            });
+            console.log(labLoteResponse);
             dispatch(labCoordSubmit({}));
             callback(true);
-        } catch(err) {
+        } catch (err) {
             console.error(err);
             dispatch(netWorkError(err));
             callback(false, err);

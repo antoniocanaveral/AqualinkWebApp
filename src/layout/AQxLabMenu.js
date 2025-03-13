@@ -225,7 +225,7 @@ function AQXLabMenu({ toggleCollapsed }) {
         ),
         getItem(
           <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/lote/view`}>
-            {t('Ver Lote')}
+            {t('Reporte de Lote')}
           </NavLink>,
           'view-lote',
           null,

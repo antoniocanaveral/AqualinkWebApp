@@ -25,4 +25,4 @@ export const fetchDirectories = (orgType) => async (dispatch) => {
     handleApiError(error, dispatch, fetchDirectoriesError);
 
   }
-};
+}

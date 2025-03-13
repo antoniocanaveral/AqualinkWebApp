@@ -65,12 +65,12 @@ function CostAddLabs() {
           {/* Columna del Speedometer */}
           <Col xl={15} xs={24} style={{ display: 'flex'}}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title={"Costo Indirecto Ha/Día"} style={{ display: 'flex', alignItems: 'center' }}>
+              <Cards title={"Costo Indirecto Tanque/Día"} style={{ display: 'flex', alignItems: 'center' }}>
                 <div className='flex-row' style={{ gap: 10 }}>
                   <div>
                     {/* Semana Previa */}
                     <Typography.Text style={{ fontSize: '14px' }}>
-                      Costo Indirecto Ha/Día / Proyectado
+                      Costo Indirecto Tanque/Día / Proyectado
                     </Typography.Text>
                     <Input
                       type="number"
@@ -98,7 +98,7 @@ function CostAddLabs() {
                   <div>
                     {/* Semana Actual */}
                     <Typography.Text style={{ fontSize: '14px' }}>
-                      Costo Indirecto Ha/Día / Semana Previa
+                      Costo Indirecto Tanque/Día / Semana Previa
                     </Typography.Text>
                     <Input
                       type="number"
@@ -128,7 +128,7 @@ function CostAddLabs() {
                 <div className='flex-row' style={{ gap: 10 }}>
                   <div>
                     {/* Semana Actual */}
-                    <Typography.Text style={{ fontSize: '14px' }}>Costo Indirecto Ha/Día / Semana Actual</Typography.Text>
+                    <Typography.Text style={{ fontSize: '14px' }}>Costo Indirecto Tanque/Día / Semana Actual</Typography.Text>
                     <Input
                       type="number"
                       placeholder="Ingrese el costo"
