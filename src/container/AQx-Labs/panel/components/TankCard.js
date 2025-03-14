@@ -1,9 +1,26 @@
 import { Typography } from "antd";
+import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 
 const TankCard = ({ data }) => {
     const navigate = useNavigate();
+
+    const plantingDate = moment(data.SM_PlantingDate);
+    const fishingDate = moment(data.SM_FishingDate);
+    const today = moment();
+
+    let avance = 0;
+    if (plantingDate.isValid() && fishingDate.isValid() && today.isValid()) {
+        const totalDays = fishingDate.diff(plantingDate, 'days');
+        const elapsedDays = today.diff(plantingDate, 'days'); 
+        avance = totalDays > 0 ? Math.min((elapsedDays / totalDays) * 100, 100).toFixed(2) : 0;
+    }
+
+    const formattedFishingDate = moment(data.SM_FishingDate).isValid() 
+    ? moment(data.SM_FishingDate).format("YYYY-MM-DD") 
+    : 'NA';
+    const usado = (data.sm_targetbiomass || 0) - (data.sm_reservedbiomass || 0);
     return (
         <div headless
             style={{
@@ -16,10 +33,10 @@ const TankCard = ({ data }) => {
             }}>
             <div className="flex-row">
                 <div>
-                    <span className="label">Laboratorio:</span>
+                    <span className="label">Módulo:</span>
                 </div>
                 <div>
-                    <span>{data.nombreCamaronara || 'NA'}</span>
+                    <span>{data.sales_region_name || 'NA'}</span>
                 </div>
             </div>
             <div className="flex-row">
@@ -27,7 +44,7 @@ const TankCard = ({ data }) => {
                     <span className="label">Tanque:</span>
                 </div>
                 <div>
-                    <span>{data.piscinaEngorde || 'NA'}</span>
+                    <span>{data.warehouse_name || 'NA'}</span>
                 </div>
             </div>
             <div className="flex-row">
@@ -35,7 +52,7 @@ const TankCard = ({ data }) => {
                     <span className="label">Lote ID:</span>
                 </div>
                 <div>
-                    <span>{data.loteID || 'NA'}</span>
+                    <span>{data.Value || 'NA'}</span>
                 </div>
             </div>
 
@@ -47,7 +64,7 @@ const TankCard = ({ data }) => {
                 </div>
 
                 <Typography.Title level={4}>
-                    {data.porcentaje}%
+                    {avance}%
                 </Typography.Title>
             </div>
 
@@ -61,7 +78,7 @@ const TankCard = ({ data }) => {
                     <span className="label">Inicio de Cultivo:</span>
                 </div>
                 <div>
-                    <span>{data.inicioCultivo || 'NA'}</span>
+                    <span>{data.SM_PlantingDate || 'NA'}</span>
                 </div>
             </div>
             <div className="flex-row">
@@ -69,60 +86,50 @@ const TankCard = ({ data }) => {
                     <span className="label">Fin de Cultivo:</span>
                 </div>
                 <div>
-                    <span>{data.finCultivo || 'NA'}</span>
+                    <span>{formattedFishingDate || 'NA'}</span>
                 </div>
             </div>
             <div className="flex-row">
                 <div>
-                    <span className="label">Biomasa estimada:</span>
+                    <span className="label">Poblacion total de tanque:</span>
                 </div>
                 <div>
-                    <span>{data.biomasaEstimada || 'NA'}</span>
-                </div>
-            </div>
-            <div className="flex-row">
-                <div>
-                    <span className="label">Supervivencia real:</span>
-                </div>
-                <div>
-                    <span>{data.supervivenciaReal || 'NA'}</span>
+                    <span>{data.sm_targetbiomass || 'NA'}</span>
                 </div>
             </div>
             <div className="flex-row">
                 <div>
-                    <span className="label">FCA real:</span>
+                    <span className="label">Supervivencia objetivo:</span>
                 </div>
                 <div>
-                    <span>{data.fcaReal || 'NA'}</span>
-                </div>
-            </div>
-            <div className="flex-row">
-                <div>
-                    <span className="label">Clasificación de Pesca:</span>
-                </div>
-                <div>
-                    <span>{data.clasificacionPesca || 'NA'}</span>
-                </div>
-            </div>
-            <div className="flex-row">kg x Tanque
-                <div>
-                    <span className="label">Lbs x Ha.:</span>
-                </div>
-                <div>
-                    <span>{data.lbsPorHa || 'NA'}</span>
+                    <span>{`${data.sm_estimatedmortality}%` || 0}</span>
                 </div>
             </div>
             <div className="flex-row">
                 <div>
-                    <span className="label">Coordinación Pesca:</span>
+                    <span className="label">pl/gr objetivo para entrega:</span>
                 </div>
                 <div>
-                    <span>{data.coordinacionPesca || 'NA'}</span>
+                    <span>{data.sm_targetpl || 0}</span>
+                </div>
+            </div>
+            <div className="flex-row">
+                <div>
+                    <span className="label">Reservado por coordinacion:</span>
+                </div>
+                <div>
+                    <span>{usado || 0}</span>
                 </div>
             </div>
 
-
-
+            <div className="flex-row">
+                <div>
+                    <span className="label">Disponible:</span>
+                </div>
+                <div>
+                    <span>{data.sm_reservedbiomass || 'NA'}</span>
+                </div>
+            </div>
 
             <button
                 onClick={() => navigate("/lab/seeding-coords")}

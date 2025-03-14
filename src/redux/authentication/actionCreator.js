@@ -152,51 +152,63 @@ const mapPoolRecord = (record) => ({
   },
 });
 
-const mapOrgRecord = (info, baseOrg, orgDetails, location) => ({
-  orgId: info.id,
-  orgName: baseOrg.name,
-  orgEmail: info.EMail,
-  latitude: location.latitude,
-  longitude: location.longitude,
-  businessname: info.businessname,
-  AD_Client_ID: orgDetails.AD_Client_ID?.id,
-  AD_Client_Identifier: orgDetails.AD_Client_ID?.identifier,
-  C_City_ID: orgDetails.C_City_ID?.id,
-  City_Identifier: orgDetails.C_City_ID?.identifier,
-  C_Region_ID: orgDetails.C_Region_ID?.id,
-  Region_Identifier: orgDetails.C_Region_ID?.identifier,
-  Created: orgDetails.Created,
-  CreatedBy_ID: orgDetails.CreatedBy?.id,
-  CreatedBy_Identifier: orgDetails.CreatedBy?.identifier,
-  IsActive: orgDetails.IsActive,
-  IsSummary: orgDetails.IsSummary,
-  Name: orgDetails.Name,
-  Phone: orgDetails.Phone,
-  Phone2: orgDetails.Phone2,
-  SM_CodigoVAP: orgDetails.SM_CodigoVAP,
-  SM_Latitude: orgDetails.SM_Latitude,
-  SM_LocationName: orgDetails.SM_LocationName,
-  SM_Longitude: orgDetails.SM_Longitude,
-  SM_MainlandOrIsland_ID: orgDetails.SM_MainlandOrIsland?.id,
-  SM_MainlandOrIsland_Identifier: orgDetails.SM_MainlandOrIsland?.identifier,
-  SM_MinisterialAgreement: orgDetails.SM_MinisterialAgreement,
-  SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
-  SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
-  SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
-  TaxID: orgDetails.TaxID,
-  Updated: orgDetails.Updated,
-  UpdatedBy_ID: orgDetails.UpdatedBy?.id,
-  UpdatedBy_Identifier: orgDetails.UpdatedBy?.identifier,
-  Value: orgDetails.Value,
-  business_group_id: orgDetails.business_group_id,
-  email_rl: orgDetails.email_rl,
-  legalentitytype: orgDetails.legalentitytype,
-  name_rl: orgDetails.name_rl,
-  taxid_rl: orgDetails.taxid_rl,
-  uid: orgDetails.uid,
-  water_system: orgDetails.water_system,
-  AD_OrgType_ID: info.AD_OrgType_ID
-});
+const mapOrgRecord = (info, baseOrg, orgDetails, location, mappedPools) => {
+  // Contamos los warehouses
+  const countWarehouses = mappedPools.length;
+
+  // Extraemos los IDs de SalesRegion y contamos los únicos
+  const uniqueSalesRegions = new Set(mappedPools.map(pool => pool.salesRegion.id).filter(id => id !== null));
+  const countSalesRegion = uniqueSalesRegions.size;
+
+  return {
+    orgId: info.id,
+    orgName: baseOrg.name,
+    orgEmail: info.EMail,
+    latitude: location.latitude,
+    longitude: location.longitude,
+    businessname: info.businessname,
+    AD_Client_ID: orgDetails.AD_Client_ID?.id,
+    AD_Client_Identifier: orgDetails.AD_Client_ID?.identifier,
+    C_City_ID: orgDetails.C_City_ID?.id,
+    City_Identifier: orgDetails.C_City_ID?.identifier,
+    C_Region_ID: orgDetails.C_Region_ID?.id,
+    Region_Identifier: orgDetails.C_Region_ID?.identifier,
+    Created: orgDetails.Created,
+    CreatedBy_ID: orgDetails.CreatedBy?.id,
+    CreatedBy_Identifier: orgDetails.CreatedBy?.identifier,
+    IsActive: orgDetails.IsActive,
+    IsSummary: orgDetails.IsSummary,
+    Name: orgDetails.Name,
+    Phone: orgDetails.Phone,
+    Phone2: orgDetails.Phone2,
+    SM_CodigoVAP: orgDetails.SM_CodigoVAP,
+    SM_Latitude: orgDetails.SM_Latitude,
+    SM_LocationName: orgDetails.SM_LocationName,
+    SM_Longitude: orgDetails.SM_Longitude,
+    SM_MainlandOrIsland_ID: orgDetails.SM_MainlandOrIsland?.id,
+    SM_MainlandOrIsland_Identifier: orgDetails.SM_MainlandOrIsland?.identifier,
+    SM_MinisterialAgreement: orgDetails.SM_MinisterialAgreement,
+    SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
+    SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
+    SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
+    TaxID: orgDetails.TaxID,
+    Updated: orgDetails.Updated,
+    UpdatedBy_ID: orgDetails.UpdatedBy?.id,
+    UpdatedBy_Identifier: orgDetails.UpdatedBy?.identifier,
+    Value: orgDetails.Value,
+    business_group_id: orgDetails.business_group_id,
+    email_rl: orgDetails.email_rl,
+    legalentitytype: orgDetails.legalentitytype,
+    name_rl: orgDetails.name_rl,
+    taxid_rl: orgDetails.taxid_rl,
+    uid: orgDetails.uid,
+    water_system: orgDetails.water_system,
+    AD_OrgType_ID: info.AD_OrgType_ID,
+    countSalesRegion,  // Agregado: cantidad de sales regions únicas
+    countWarehouses,   // Agregado: cantidad de warehouses
+  };
+};
+
 
 const loadUserAccess = () => {
   return async (dispatch) => {
@@ -270,7 +282,8 @@ const loadUserAccess = () => {
               pools: []
             };
             const orgDetails = orgDetailsMap[info.id] || {};
-            const baseOrgData = mapOrgRecord(info, orgMap[info.id], orgDetails, location);
+            const mappedPools = location.pools.map(mapPoolRecord);
+            const baseOrgData = mapOrgRecord(info, orgMap[info.id], orgDetails, location, mappedPools);
 
             switch (info.AD_OrgType_ID?.identifier) {
               case "FARM":

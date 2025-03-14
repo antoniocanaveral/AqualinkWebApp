@@ -45,7 +45,7 @@ function ClientLab() {
     const infrastructureData = [
         {
             key: '1',
-            identificador: 'Ppc #1',
+            identificador: 'tank #1',
             extension: '10 Has',
             profundidadOperativa: '1.5 mts',
             profundidadSiembra: '1.0 mts',
@@ -60,7 +60,7 @@ function ClientLab() {
         },
         {
             key: '2',
-            identificador: 'Ppe #1',
+            identificador: 'tank #2',
             extension: '15 Has',
             profundidadOperativa: '2.0 mts',
             profundidadSiembra: '1.8 mts',
@@ -75,7 +75,7 @@ function ClientLab() {
         },
         {
             key: '3',
-            identificador: 'Pef #2',
+            identificador: 'tank #3',
             extension: '12 Has',
             profundidadOperativa: '1.7 mts',
             profundidadSiembra: '1.5 mts',

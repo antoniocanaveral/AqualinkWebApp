@@ -12,12 +12,13 @@ export const registerLablote = (labloteData) => async (dispatch) => {
         const adOrgId = Number(Cookies.get('orgId'));
         const poolId = Number(Cookies.get("poolId"));
 
-        const existingResponse = await DataService.get(`/models/sm_lablote?$filter=AD_Client_ID eq ${adClientId} AND AD_Org_ID eq ${adOrgId} AND M_Warehouse_ID eq ${poolId}`);
+        const existingResponse = await DataService.get(
+            `/models/sm_lablote?$filter=AD_Client_ID eq ${adClientId} AND AD_Org_ID eq ${adOrgId} AND M_Warehouse_ID eq ${poolId}`);
 
         const existingLablote = existingResponse.data?.records[0];
         console.log(existingLablote
         )
-
+console.log(labloteData)
         if (existingLablote) {
             const updatedData = {
                 sm_reservedbiomass: labloteData.sm_targetbiomass, 

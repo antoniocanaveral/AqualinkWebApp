@@ -15,22 +15,22 @@ function ProjectionKgLabs({ height }) {
 
     const datasetsData = {
         month: [
-            { label: 'PL10', data: [20, 40, 60, 80, 50, 30, 40, 70, 60, 50, 40, 30], backgroundColor: '#ff6384' },
-            { label: 'PL12', data: [30, 50, 70, 90, 60, 40, 50, 80, 70, 60, 50, 40], backgroundColor: '#36a2eb' },
-            { label: 'PL14', data: [25, 45, 65, 85, 55, 35, 45, 75, 65, 55, 45, 35], backgroundColor: '#cc65fe' },
-            { label: 'PL16', data: [35, 55, 75, 95, 65, 45, 55, 85, 75, 65, 55, 45], backgroundColor: '#ffce56' },
+            { label: '200', data: [20, 40, 60, 80, 50, 30, 40, 70, 60, 50, 40, 30], backgroundColor: '#ff6384' },
+            { label: '220', data: [30, 50, 70, 90, 60, 40, 50, 80, 70, 60, 50, 40], backgroundColor: '#36a2eb' },
+            { label: '240', data: [25, 45, 65, 85, 55, 35, 45, 75, 65, 55, 45, 35], backgroundColor: '#cc65fe' },
+            { label: '260', data: [35, 55, 75, 95, 65, 45, 55, 85, 75, 65, 55, 45], backgroundColor: '#ffce56' },
         ],
         week: [
-            { label: 'PL10', data: [50, 60, 70, 80], backgroundColor: '#ff6384' },
-            { label: 'PL12', data: [40, 50, 60, 70], backgroundColor: '#36a2eb' },
-            { label: 'PL14', data: [30, 40, 50, 60], backgroundColor: '#cc65fe' },
-            { label: 'PL16', data: [20, 30, 40, 50], backgroundColor: '#ffce56' },
+            { label: '200', data: [50, 60, 70, 80], backgroundColor: '#ff6384' },
+            { label: '220', data: [40, 50, 60, 70], backgroundColor: '#36a2eb' },
+            { label: '240', data: [30, 40, 50, 60], backgroundColor: '#cc65fe' },
+            { label: '260', data: [20, 30, 40, 50], backgroundColor: '#ffce56' },
         ],
         year: [
-            { label: 'PL10', data: [200, 220, 240, 260, 280], backgroundColor: '#ff6384' },
-            { label: 'PL12', data: [210, 230, 250, 270, 290], backgroundColor: '#36a2eb' },
-            { label: 'PL14', data: [220, 240, 260, 280, 300], backgroundColor: '#cc65fe' },
-            { label: 'PL16', data: [230, 250, 270, 290, 310], backgroundColor: '#ffce56' },
+            { label: '200', data: [200, 220, 240, 260, 280], backgroundColor: '#ff6384' },
+            { label: '220', data: [210, 230, 250, 270, 290], backgroundColor: '#36a2eb' },
+            { label: '240', data: [220, 240, 260, 280, 300], backgroundColor: '#cc65fe' },
+            { label: '260', data: [230, 250, 270, 290, 310], backgroundColor: '#ffce56' },
         ],
     };
 
@@ -74,7 +74,7 @@ function ProjectionKgLabs({ height }) {
     };
 
     return (
-        <Cards title="Proyección de PL" size="large">
+        <Cards title="Proyección de PL/gr" size="large">
             <center>
                 <ButtonGroup>
                     <Button type={view === "month" ? "primary" : "default"} onClick={() => setView("month")}>

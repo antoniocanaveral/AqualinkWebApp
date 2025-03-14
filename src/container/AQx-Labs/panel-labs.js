@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useRef } from 'react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Row, Col, Skeleton, Typography, Badge, Space, Table, Descriptions } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
@@ -12,65 +12,155 @@ import {
   DatabaseOutlined,
   ClusterOutlined,
 } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
+import { fetchLablotesInfo } from '../../redux/lablote/actionCreator';
 
 function PanelLabs() {
+  const dispatch = useDispatch();
 
-  const OverviewData =
-    [
-      {
-        "id": 1,
-        "type": "primary",
-        "icon": "biomasa.svg",
-        "label": "Capacidad Instalada",
-        "total": "1271100",
-        "suffix": "larvas",
-        "prefix": "",
-        "status": "growth",
-        "statusRate": "3.36",
-        "decimel": 0,
-        "dataPeriod": "Todas las Camaroneras"
-      },
-      {
-        "id": 2,
-        "type": "primary",
-        "icon": "food.svg",
-        "label": "Corridas en Curso",
-        "total": "1271100",
-        "suffix": "larvas",
-        "prefix": "",
-        "status": "growth",
-        "statusRate": "6.01",
-        "decimel": 0,
-        "dataPeriod": "Todas las Camaroneras"
-      },
-      {
-        "id": 3,
-        "type": "primary",
-        "icon": "health.svg",
-        "label": "Siembras Solicitadas",
-        "total": "1000000",
-        "suffix": "larvas",
-        "prefix": "",
-        "status": "growth",
-        "statusRate": "1.05",
-        "decimel": "",
-        "dataPeriod": "Todas las Camaroneras"
-      },
-      {
-        "id": 4,
-        "type": "primary",
-        "icon": "growth.svg",
-        "label": "Proyección",
-        "total": "1262000",
-        "suffix": "larvas",
-        "prefix": "$",
-        "status": "down",
-        "statusRate": "1.87",
-        "decimel": 0,
-        "dataPeriod": "Todas las Camaroneras"
-      }
-    ]
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+  const { lablotes, lablotesLoading, lablotesError } = useSelector((state) => state.lablote);
 
+  useEffect(() => {
+    dispatch(fetchLablotesInfo());
+  }, [dispatch, selectedOrg]);
+
+
+  const labOrgs = useSelector((state) => state.auth.labsOrgs);
+  console.log(labOrgs)
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+  };
+
+  const farmsSelectOptions = labOrgs.length > 0 ? [
+    {
+      options: labOrgs.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Empacadora',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+
+  const combinedSelectOptions = [...farmsSelectOptions];
+
+  const validLabLote = Array.isArray(lablotes) ? lablotes : [];
+  console.log(validLabLote)
+  const installedCapacity = validLabLote.find(
+    (coord) => coord.AD_Org_ID.id === selectedOrg
+  )?.sm_installedcapacitylarva || 0;
+
+
+  // Calcular la suma total de sm_targetbiomass y sm_reservedbiomass
+  const totalTargetBiomass = validLabLote.reduce((sum, lote) => sum + lote.sm_targetbiomass, 0);
+  const totalReservedBiomass = validLabLote.reduce((sum, lote) => sum + lote.sm_reservedbiomass, 0);
+
+  // Calcular el porcentaje ocupado con respecto a la capacidad instalada (statusRate)
+  const statusRatew = installedCapacity ? ((totalTargetBiomass / installedCapacity) * 100).toFixed(2) : 0;
+
+  // Calcular el porcentaje de lo que se ha usado respecto a target biomass (statusRateLote)
+  const statusRateLote = totalTargetBiomass ? (((totalTargetBiomass - totalReservedBiomass) / totalTargetBiomass) * 100).toFixed(2) : 0;
+
+  // Calcular el total de siembra sumando sm_confirmedtotal de coordinations_json
+  const totalSiembra = validLabLote.reduce(
+    (sum, lote) =>
+      sum +
+      lote.coordinations_json.reduce((sumCoord, coord) => sumCoord + coord.sm_confirmedtotal, 0),
+    0
+  );
+
+  // Calcular el porcentaje de siembra respecto al total de lotes (statusRateSiembra)
+  const statusRateSiembra = totalTargetBiomass ? ((totalSiembra / totalTargetBiomass) * 100).toFixed(2) : 0;
+
+  // Proyección es igual al total de lotes
+  const proyeccion = totalTargetBiomass;
+
+
+  const OverviewData = [
+    {
+      id: 1,
+      type: "primary",
+      icon: "biomasa.svg",
+      label: "Capacidad Instalada",
+      total: installedCapacity.toFixed(0),
+      suffix: "larvas",
+      prefix: "",
+      status: "growth",
+      statusRate: statusRatew,
+      decimel: 0,
+      dataPeriod: "Todas las Camaroneras",
+    },
+    {
+      id: 2,
+      type: "primary",
+      icon: "food.svg",
+      label: "Total Lotes",
+      total: totalTargetBiomass.toFixed(0),
+      suffix: "larvas",
+      prefix: "",
+      status: "growth",
+      statusRate: statusRateLote,
+      decimel: 0,
+      dataPeriod: "Todas las Camaroneras",
+    },
+    {
+      id: 3,
+      type: "primary",
+      icon: "health.svg",
+      label: "Total Siembra",
+      total: totalSiembra.toFixed(0),
+      suffix: "larvas",
+      prefix: "",
+      status: "growth",
+      statusRate: statusRateSiembra,
+      decimel: 0,
+      dataPeriod: "Todas las Camaroneras",
+    },
+    {
+      id: 4,
+      type: "primary",
+      icon: "growth.svg",
+      label: "Proyección",
+      total: proyeccion.toFixed(0),
+      suffix: "larvas",
+      prefix: "",
+      decimel: 0,
+      dataPeriod: "Todas las Camaroneras",
+    },
+  ];
+
+
+  const selectedLabOrg = labOrgs.find(org => org.orgId === selectedOrg);
+
+  // Obtener el número de módulos y tanques
+  const countModules = selectedLabOrg?.countSalesRegion || 0;
+  const countTanks = selectedLabOrg?.countWarehouses || 0;
+
+
+  const selectedLabLotes = validLabLote.filter(lote => lote.AD_Org_ID.id === selectedOrg);
+  const activeCoordinations = selectedLabLotes.flatMap(lote =>
+    (lote.coordinations_json || []).map(coord => ({
+      key: coord.sm_coordination_id,  // Usamos el ID único como clave
+      camaronera: coord.org_name,  // Nombre de la camaronera
+      loteID: coord.coordination_value,  // Identificador del lote
+      plSolicitado: coord.sm_preliminarylaboratorycount,  // PL/GR solicitado
+      estado: coord.sm_coordinationstatus  // Estado de la coordinación
+    }))
+  );
+
+  const columns = [
+    { title: 'Camaronera', dataIndex: 'camaronera', key: 'camaronera', align: 'center' },
+    { title: 'Lote ID', dataIndex: 'loteID', key: 'loteID'},
+    { title: 'PL/GR Solicitado', dataIndex: 'plSolicitado', key: 'plSolicitado', align: 'center' },
+    { title: 'Estado', dataIndex: 'estado', key: 'estado', align: 'center' }
+  ];
+  
   // Datos de la tabla de Coordinación de Cosechas
   const data = [
     { key: '1', finca: 'Finca El Progreso', loteID: 'L-001', larva: '40-50', kilos: '1,200', estado: 'Pendiente' },
@@ -86,13 +176,6 @@ function PanelLabs() {
   ];
 
 
-  // Definición de columnas para la tabla de Coordinación de Cosechas
-  const columns = [
-    { title: 'LoteID', dataIndex: 'loteID', key: 'loteID' },
-    { title: 'Clasificación', dataIndex: 'larva', key: 'larva' },
-    { title: 'Kilos', dataIndex: 'kilos', key: 'kilos' },
-    { title: 'Estado', dataIndex: 'estado', key: 'estado' },
-  ];
 
 
   const tankData = [
@@ -147,12 +230,35 @@ function PanelLabs() {
   ];
 
 
+  // Función para extraer valores de coordinaciones (máximo 3)
+  const extractCoordinationData = (coordinations) => {
+    const despacho = ['', '', ''];
+    const cantidad = ['', '', ''];
+
+    if (coordinations && Array.isArray(coordinations)) {
+      for (let i = 0; i < Math.min(3, coordinations.length); i++) {
+        despacho[i] = coordinations[i]?.coordination_value || '';
+        cantidad[i] = coordinations[i]?.sm_confirmedtotal?.toLocaleString() || '';
+      }
+    }
+    return { despacho, cantidad };
+  };
+
+  if (lablotesLoading) {
+    return <p>Cargando datos...</p>;
+  }
+
+  if (lablotesError) {
+    return <p>Ocurrió un error al cargar los lotes: {lablotesError}</p>;
+  }
+
   return (
     <>
       <PageHeader
         title="Control Panel"
         highlightText="Aqualink Laboratorio"
-
+        selectOptions={combinedSelectOptions}
+        selectedOrg={selectedOrg}
 
       />
       <Main>
@@ -177,7 +283,7 @@ function PanelLabs() {
         </Row>
 
         <Row gutter={25}>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
+          <Col xl={11} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -199,16 +305,16 @@ function PanelLabs() {
                           size="small"
                           layout="vertical"
                         >
-                           <Descriptions.Item label={<Space><ClusterOutlined /> Módulos</Space>}>
-                            <Text>5</Text>
+                          <Descriptions.Item label={<Space><ClusterOutlined /> Módulos</Space>}>
+                            <Text>{countModules}</Text>
                           </Descriptions.Item>
 
-                        
+
                           <Descriptions.Item label={<Space><DatabaseOutlined /> Tanques</Space>}>
-                            <Text>30</Text>
+                            <Text>{countTanks}</Text>
                           </Descriptions.Item>
 
-                        
+
                         </Descriptions>
                       </Col>
                     </Space>
@@ -217,21 +323,20 @@ function PanelLabs() {
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
-                </Cards>
-              }
-            >
+          <Col xl={13} xs={24} style={{ display: 'flex' }}>
+            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Coordinaciones Activas" size="large">
                 <div className="table-responsive">
-                  <Table dataSource={data} columns={columns} pagination={{ pageSize: 7 }} />
+                  <Table
+                    dataSource={activeCoordinations}
+                    columns={columns}
+                    pagination={{ pageSize: 7 }}
+                  />
                 </div>
               </Cards>
             </Suspense>
           </Col>
+
         </Row>
 
         <Row gutter={25}>
@@ -241,7 +346,7 @@ function PanelLabs() {
                 Lotes Activos
               </Typography.Title>
             </center>
-            <TankCarouselCustody tankData={tankData} />
+            <TankCarouselCustody tankData={selectedLabLotes} />
           </Col>
         </Row>
 

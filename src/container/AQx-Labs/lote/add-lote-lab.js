@@ -244,16 +244,21 @@ function LoteAddLab() {
                                             </Form.Item>
                                         </Col>
 
-                                        {/* Densidad programada (campo numérico) */}
                                         <Col xs={24} md={8}>
                                             <Form.Item label="Densidad programada" name="sm_programmeddensity">
-                                                <InputNumber placeholder="Densidad" style={{ width: '100%' }} min={0} />
+                                                <InputNumber
+                                                    placeholder="Densidad"
+                                                    style={{ width: '100%' }}
+                                                    min={0}
+                                                    formatter={value => value?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                    parser={value => value?.replace(/,/g, '')}
+                                                />
                                             </Form.Item>
                                         </Col>
 
                                         {/* Mortalidad estimada (porcentaje hasta 100) */}
                                         <Col xs={24} md={8}>
-                                            <Form.Item label="Mortalidad estimada" name="sm_estimatedmortality">
+                                            <Form.Item label="Mortalidad estimada %" name="sm_estimatedmortality">
                                                 <InputNumber placeholder="Mortalidad %" style={{ width: '100%' }} min={0} max={100} />
                                             </Form.Item>
                                         </Col>
@@ -265,7 +270,7 @@ function LoteAddLab() {
                                             </Form.Item>
                                         </Col>
                                         <Col xs={24} md={8}>
-                                            <Form.Item label="Pl objetivo" name="sm_targetpl">
+                                            <Form.Item label="Pl/gr objetivo" name="sm_targetpl">
                                                 <InputNumber placeholder="Ingrese cantidad" style={{ width: '100%' }} min={0} />
                                             </Form.Item>
                                         </Col>

@@ -165,7 +165,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
         ),
         getItem(
-          <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/reporte-op`}>
+          <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/operation-report`}>
             {t('Reporte de Operaciones')}
           </NavLink>,
           'Reportes',

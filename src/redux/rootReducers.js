@@ -42,6 +42,7 @@ import CoordsViewReducer from './views/coords/reducers';
 import { loteReducer } from './lote/reducers';
 import { costReducer } from './cost/reducer';
 import { labloteReducer } from './lablote/reducers';
+import { batchReportReducer } from './views/batch-report/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -67,6 +68,7 @@ const rootReducers = combineReducers({
   labanalysis: labanalysisReducer,
   lote: loteReducer,
   lablote: labloteReducer,
+  batchReport: batchReportReducer,
   cost: costReducer,
   gallery: galleryReducer,
   email: emailReducer,
