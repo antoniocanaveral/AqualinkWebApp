@@ -156,20 +156,31 @@ function AddInventoryFarms() {
   };
 
   const handleSubmit = async (values) => {
+    if (!selectedProduct) {
+      message.error('Debe seleccionar un producto antes de continuar');
+      return;
+    }
     const selectedPoolData = farmsOrgsWithPools
-      .flatMap(org => org.pools) 
-      .find(pool => pool.poolId === selectedPool); 
+      .flatMap(org => org.pools)
+      .find(pool => pool.poolId === selectedPool);
 
     const M_Locator_ID = selectedPoolData?.locators?.[0] || null;
+    console.log(selectedPoolData)
     const productData = {
-      M_Product_ID: selectedProduct.M_Product_ID.id,
-      C_BPartner_ID: selectedProduct.C_BPartner_ID.id,
-      C_BPartner_Location_ID: selectedProduct.C_BPartner_Location_ID.id,
-      priceList: parseFloat(values.precio_lista), // Cambio aquí
+      M_Product_ID: selectedProduct?.M_Product_ID?.id || null,
+      C_BPartner_ID: selectedProduct?.C_BPartner_ID?.id || null,
+      C_BPartner_Location_ID: selectedProduct?.C_BPartner_Location_ID?.id || null,
+      priceList: parseFloat(values.precio_lista),
       quantity: parseInt(values.cantidad, 10),
       M_Warehouse_ID: selectedPool,
       M_Locator_ID: M_Locator_ID
     };
+
+    if (!productData.M_Product_ID || !productData.C_BPartner_ID || !productData.C_BPartner_Location_ID) {
+      console.log(productData)
+      message.error('Faltan datos del producto, por favor revise la selección.');
+      return;
+    }
 
     const success = await dispatch(addProductToInventory(productData));
 

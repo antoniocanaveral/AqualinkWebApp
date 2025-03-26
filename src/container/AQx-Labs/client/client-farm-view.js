@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import { Row, Col, Skeleton, Typography, Badge, Space, Table, Tabs } from 'antd';
+import { Row, Col, Skeleton, Typography, Badge, Space, Table, Tabs, Descriptions } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { GoogleMaps } from '../../../components/maps/google-maps';
@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools, selectLabOrgsWithWarehouses } from '../../../redux/authentication/selectors';
 import Cookies from 'js-cookie';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
+import { Text } from 'recharts';
 
 const { TabPane } = Tabs;
 
@@ -17,7 +18,7 @@ function ClientLabs() {
     const [showChart, setShowChart] = useState(false);
     const [selectedFarmOrg, setSelectedFarmOrg] = useState(null)
 
-    
+
     const labOrgsWithPools = useSelector(selectLabOrgsWithWarehouses);
 
     const organizations = useSelector((state) => state.auth.farmsOrgs);
@@ -214,53 +215,70 @@ function ClientLabs() {
         };
     }) || [];
 
-    const poolTypesData = selectedFarmOrg?.pools?.reduce((acc, pool) => {
-        const type = pool.poolType?.identifier;
-        acc[type] = (acc[type] || 0) + (pool.poolSize || 0);
+
+    const getSalesRegionCount = (pools) => {
+        const uniqueSalesRegions = new Set();
+
+        pools?.forEach(pool => {
+            if (pool.salesRegion?.id) {
+                uniqueSalesRegions.add(pool.salesRegion.id);
+            }
+        });
+
+        return uniqueSalesRegions.size;
+    };
+
+    // Uso:
+    const salesRegionCount = getSalesRegionCount(selectedFarmOrg?.pools);
+
+
+    const getTotalPools = (pools) => {
+        return pools ? pools.length : 0;
+    };
+
+    // Uso:
+    const totalPools = getTotalPools(selectedFarmOrg?.pools);
+
+    const waterVolumeDataByModule = selectedFarmOrg?.pools?.reduce((acc, pool) => {
+        if (pool.salesRegion?.id) {
+            const moduleName = pool.salesRegion.name; // Agrupar por módulo
+            const volume = (pool.SM_OppDepth || 0) * (pool.poolSize * 10000);
+
+            acc[moduleName] = (acc[moduleName] || 0) + volume;
+        }
         return acc;
     }, {});
 
+    const CapacityVolumeDataByModule = selectedFarmOrg?.pools?.reduce((acc, pool) => {
+        if (pool.salesRegion?.id) {
+            const moduleName = pool.salesRegion.name; // Agrupar por módulo
+            const volume = (pool.poolSize * 10000);
 
-    const data = Object.entries(poolTypesData || {}).map(([label, value]) => ({
+            acc[moduleName] = (acc[moduleName] || 0) + volume;
+        }
+        return acc;
+    }, {});
+
+    const capacityVolumeChartData = Object.entries(CapacityVolumeDataByModule || {}).map(([label, value]) => ({
         label,
         value
     }));
 
-   // Verifica si poolTypesData es un objeto válido antes de acceder a sus propiedades
-const preCrias = poolTypesData?.["PC"] || 0;
-const engorde = poolTypesData?.["E"] || 0;
-const preEngorde = poolTypesData?.["PE"] || 0;
-const total = preCrias + engorde + preEngorde;
+    const waterVolumeChartData = Object.entries(waterVolumeDataByModule || {}).map(([label, value]) => ({
+        label,
+        value
+    }));
 
 
-
-    
     const farmInfo = [
         { key: '1', categoria: 'Provincia', valor: selectedFarmOrg?.Region_Identifier || 'N/A' },
         { key: '2', categoria: 'Cantón', valor: selectedFarmOrg?.City_Identifier || 'N/A' },
-        { key: '3', categoria: 'Tipo de suelo', valor: selectedFarmOrg?.SM_MainlandOrIsland_Identifier || 'N/A' },
         { key: '4', categoria: 'Acuerdo Ministerial', valor: selectedFarmOrg?.SM_MinisterialAgreement || 'N/A' },
         { key: '5', categoria: 'Certificado de Inocuidad', valor: selectedFarmOrg?.SM_SafetyCertificate || 'N/A' },
-        { key: '8', categoria: 'Extensión Productiva (Total)', valor: total + " Has" },
-        { key: '9', categoria: 'Extensión Pre Crias', valor: preCrias  + " Has"},
-        { key: '10', categoria: 'Extensión Piscinas Engorde', valor: engorde + " Has" },
-        { key: '11', categoria: 'Extensión Piscinas Pre Engorde', valor: preEngorde + " Has" },
+        { key: '9', categoria: '# De Módulos"', valor: salesRegionCount },
+        { key: '10', categoria: '# De Tanques', valor: totalPools },
     ];
 
-
-
-    const waterVolumeData = selectedFarmOrg?.pools?.reduce((acc, pool) => {
-        const type = pool.poolType?.identifier || 'Desconocido';
-        const volume = (pool.SM_OppDepth || 0) * (pool.poolSize * 10000);
-
-        acc[type] = (acc[type] || 0) + volume;
-        return acc;
-    }, {});
-
-    const waterVolumeChartData = Object.entries(waterVolumeData || {}).map(([label, value]) => ({
-        label,
-        value
-    }));
 
 
     const geolocationColumns = [
@@ -318,9 +336,12 @@ const total = preCrias + engorde + preEngorde;
                                             window.innerWidth >= 2000 ? '600px' :
                                                 '305px'
                                         }
-                                        selectedOrg={selectedOrg}
-                                        farmsOrgsWithPools={labOrgsWithPools} // Pasa farmsOrgsWithPools como prop
+                                        type="LabClient"
+                                        totalModules={salesRegionCount}
+                                        totalTanks={totalPools}
+                                       
                                     />
+                                   
                                 </Suspense>
                             </Col>
                             <Col xl={13} xs={24} style={{ display: "flex" }}>
@@ -337,7 +358,7 @@ const total = preCrias + engorde + preEngorde;
                             </Col>
                         </Row>
                         <Row gutter={[10, 0]} equal-heights>
-                            <Col xl={14} xs={24} style={{ display: 'flex' }}>
+                            <Col xl={8} xs={24} style={{ display: 'flex' }}>
                                 <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
                                     <Cards title="Información de Complementaria" size="large">
                                         <Table
@@ -349,37 +370,36 @@ const total = preCrias + engorde + preEngorde;
                                     </Cards>
                                 </Suspense>
                             </Col>
-                            <Col xl={10} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+                            <Col xl={8} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
                                 <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-                                    <Cards title="Relación Has por tipo de Piscina" size="large" style={{ marginBottom: 0 }}>
-                                        <div style={{ width: "85%", margin: "auto" }}>
-                                            {showChart && (
-                                                <DonutChartComponent
-                                                    data={data}
-                                                    titleText="Relación Has"
-                                                    subtitleText="Por Piscina"
-                                                    height={200}
-                                                    width={200}
-                                                />
-                                            )}
-                                        </div>
+                                    <Cards title="Relación de Capacidad por Módulo" size="large" style={{ marginBottom: 0 }}>
+                                        {showChart && (
+                                            <DonutChartComponent
+                                                data={capacityVolumeChartData}
+                                                titleText="Capacidad"
+                                                subtitleText="Por Módulo"
+                                                height={200}
+                                                width={200}
+                                            />
+                                        )}
 
                                     </Cards>
                                 </Suspense>
-                                <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-                                    <Cards title="Volumen de agua operativo por tipo de piscina" size="large" style={{ flex: 1, marginTop: 0 }}>
-                                        <div style={{ width: "85%", margin: "auto" }}>
-                                            {showChart && (
-                                                <DonutChartComponent
-                                                    data={waterVolumeChartData}
-                                                    titleText="Volumen de Agua"
-                                                    subtitleText="Por Tipo de Piscina"
-                                                    height={200}
-                                                    width={200}
-                                                />
 
-                                            )}
-                                        </div>
+                            </Col>
+                            <Col xl={8} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+                                <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
+                                    <Cards title="Volumen de agua por Módulo" size="large" style={{ flex: 1, marginTop: 0 }}>
+                                        {showChart && (
+                                            <DonutChartComponent
+                                                data={waterVolumeChartData}
+                                                titleText="Volumen de Agua"
+                                                subtitleText="Por Módulo"
+                                                height={200}
+                                                width={200}
+                                            />
+
+                                        )}
                                     </Cards>
                                 </Suspense>
                             </Col>

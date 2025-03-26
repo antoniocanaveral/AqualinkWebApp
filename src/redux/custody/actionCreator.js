@@ -47,11 +47,11 @@ const getCoordStatus = (item) => {
             if (item.SM_CoordinationStatus.id === "PREPARANDO") {
                 if (item.container_type === "BINES") {
                     showBinesForm = true;
-                    statusName = "Espera Bines"; // Nuevo estado
+                    statusName = "Espera Bines"; 
                     className = "waiting-bines";
                 } else {
                     showDrawersForm = true;
-                    statusName = "Espera Gavetas"; // Nuevo estado
+                    statusName = "Espera Gavetas";
                     className = "waiting-drawers";
                 }
             }

@@ -43,6 +43,8 @@ import { loteReducer } from './lote/reducers';
 import { costReducer } from './cost/reducer';
 import { labloteReducer } from './lablote/reducers';
 import { batchReportReducer } from './views/batch-report/reducers';
+import { traceabilityReportReducer } from './traceability/reducer';
+import { feedingreportReducer } from './views/feeding-report/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -68,7 +70,10 @@ const rootReducers = combineReducers({
   labanalysis: labanalysisReducer,
   lote: loteReducer,
   lablote: labloteReducer,
+
   batchReport: batchReportReducer,
+  traceabilityReport: traceabilityReportReducer,
+  feedingreport: feedingreportReducer,
   cost: costReducer,
   gallery: galleryReducer,
   email: emailReducer,

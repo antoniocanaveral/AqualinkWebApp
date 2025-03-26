@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Cards } from "../../../../components/cards/frame/cards-frame";
 import DashboardChart from "../../../../components/charts/DashboardChart";
 import { Button, Skeleton } from "antd";
 import ButtonGroup from "antd/lib/button/button-group";
 import moment from "moment";
-import { fetchCoordinationInfo_FarmProyection } from "../../../../redux/views/coords/actionCreator";
 
 const datasetsTemplate = [
     { backgroundColor: '#001737', barPercentage: 0.6, label: '80-100' },

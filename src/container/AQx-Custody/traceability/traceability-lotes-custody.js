@@ -1,10 +1,16 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Row, Col, Button, Modal, Typography, Select, DatePicker } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
 import { QRCodeSVG } from 'qrcode.react';
 import moment from 'moment';
 import { generatePDF } from '../../../utility/printPdf';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTraceabilityReports } from '../../../redux/traceability/actionCreator';
+import Cookies from 'js-cookie';
+import { fetchLabanalysis } from '../../../redux/labanalysis/actionCreator';
+import LoteDetails from './LoteDetails';
+import { generateBlobPDF } from '../../../utility/generateBlobPDF';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -12,331 +18,94 @@ const { RangePicker } = DatePicker;
 
 // ---------------------- DATOS DE EJEMPLO ---------------------- //
 
-const initialLotesArray = [
-  {
-    id: 'Lote001',
-    origen: {
-      hatcheryName: 'Aquamax',
-      htCode: 'HT-2524',
-      nurseryName: 'Texcumar',
-      nurseryHtCode: 'HT-2525',
-      naupliiCode: 'Chicpin K1',
-      plantingDate: '10/02/24',
-      harvestDate: '15/08/24',
-      moduleNumber: 1,
-      tankPondNumber: 1,
-      densityPerM3: '100.000',
-    },
-    farm: {
-      farmName: 'ShrimpCo Manabi',
-      grCode: 'GR-5247',
-      growingProtocol: 'Semi Intensive',
-      productionProtocol: 'TriPhasic',
-      waterManagingSystem: 'RAS',
-      nurseryPond: 'Ppc#2',
-      plantingDate: '12/02/24',
-      initialNurseryDensity: 100,
-      preGrowingPond: 'Ppe#3',
-      transferDate: '20/04/24',
-      initialPreGrowingDensity: 45,
-      finalPreGrowingPond: 'Pef#34',
-      finalTransferDate: '05/06/24',
-      finalPreGrowingDensity: 15,
-    },
-    produccion: {
-      feedMillHatchery: 'SCI-R004304',
-      feedMillFarm: 'SCI-R004304',
-    },
-    tratamiento: {
-      antibioticTreatment: 'SCI-R008978',
-      initialDate: '01/03/24',
-      endingDate: '15/03/24',
-    },
-    condiciones: {
-      salinityPpm: 17,
-      waterSourceType: 'Brackish',
-      cycleWaterUse: '1750 m3/Ha',
-      co2Footprint: '0.28 KgCO2/Shrimp Kg',
-    },
-    cosecha: {
-      harvestProcess: 'Conventional',
-      harvestDate: '15/08/24',
-      harvestDensity: '8 u/m2',
-      harvestTimeLapse: '02:30:45',
-      harvestTemperature: '-6ºC',
-    },
-    custodia: {
-      custodyTransportTimeLapse: '02:00:00',
-      custodyTransportTemperature: '-4ºC',
-      plantRegistryTemperature: '-4ºC',
-    },
-    calidad: {
-      qualityLabTest: 'Approved',
-      organolepticLabTest: 'Approved',
-      sulphitesLabTest: 'Approved',
-      microbiologicalLabTest: 'Approved',
-      chemicalLabTest: 'Approved',
-    },
-  },
-  {
-    id: 'Lote001',
-    origen: {
-      hatcheryName: 'Aquamax',
-      htCode: 'HT-2524',
-      nurseryName: 'Texcumar',
-      nurseryHtCode: 'HT-2525',
-      naupliiCode: 'Chicpin K1',
-      plantingDate: '10/02/24',
-      harvestDate: '15/08/24',
-      moduleNumber: 1,
-      tankPondNumber: 1,
-      densityPerM3: '100.000',
-    },
-    farm: {
-      farmName: 'ShrimpCo Manabi',
-      grCode: 'GR-5247',
-      growingProtocol: 'Semi Intensive',
-      productionProtocol: 'TriPhasic',
-      waterManagingSystem: 'RAS',
-      nurseryPond: 'Ppc#2',
-      plantingDate: '12/02/24',
-      initialNurseryDensity: 100,
-      preGrowingPond: 'Ppe#3',
-      transferDate: '20/04/24',
-      initialPreGrowingDensity: 45,
-      finalPreGrowingPond: 'Pef#34',
-      finalTransferDate: '05/06/24',
-      finalPreGrowingDensity: 15,
-    },
-    produccion: {
-      feedMillHatchery: 'SCI-R004304',
-      feedMillFarm: 'SCI-R004304',
-    },
-    tratamiento: {
-      antibioticTreatment: 'SCI-R008978',
-      initialDate: '01/03/24',
-      endingDate: '15/03/24',
-    },
-    condiciones: {
-      salinityPpm: 17,
-      waterSourceType: 'Brackish',
-      cycleWaterUse: '1750 m3/Ha',
-      co2Footprint: '0.28 KgCO2/Shrimp Kg',
-    },
-    cosecha: {
-      harvestProcess: 'Conventional',
-      harvestDate: '15/08/24',
-      harvestDensity: '8 u/m2',
-      harvestTimeLapse: '02:30:45',
-      harvestTemperature: '-6ºC',
-    },
-    custodia: {
-      custodyTransportTimeLapse: '02:00:00',
-      custodyTransportTemperature: '-4ºC',
-      plantRegistryTemperature: '-4ºC',
-    },
-    calidad: {
-      qualityLabTest: 'Approved',
-      organolepticLabTest: 'Approved',
-      sulphitesLabTest: 'Approved',
-      microbiologicalLabTest: 'Approved',
-      chemicalLabTest: 'Approved',
-    },
-  },
-  {
-    id: 'Lote001',
-    origen: {
-      hatcheryName: 'Aquamax',
-      htCode: 'HT-2524',
-      nurseryName: 'Texcumar',
-      nurseryHtCode: 'HT-2525',
-      naupliiCode: 'Chicpin K1',
-      plantingDate: '10/02/24',
-      harvestDate: '15/08/24',
-      moduleNumber: 1,
-      tankPondNumber: 1,
-      densityPerM3: '100.000',
-    },
-    farm: {
-      farmName: 'ShrimpCo Manabi',
-      grCode: 'GR-5247',
-      growingProtocol: 'Semi Intensive',
-      productionProtocol: 'TriPhasic',
-      waterManagingSystem: 'RAS',
-      nurseryPond: 'Ppc#2',
-      plantingDate: '12/02/24',
-      initialNurseryDensity: 100,
-      preGrowingPond: 'Ppe#3',
-      transferDate: '20/04/24',
-      initialPreGrowingDensity: 45,
-      finalPreGrowingPond: 'Pef#34',
-      finalTransferDate: '05/06/24',
-      finalPreGrowingDensity: 15,
-    },
-    produccion: {
-      feedMillHatchery: 'SCI-R004304',
-      feedMillFarm: 'SCI-R004304',
-    },
-    tratamiento: {
-      antibioticTreatment: 'SCI-R008978',
-      initialDate: '01/03/24',
-      endingDate: '15/03/24',
-    },
-    condiciones: {
-      salinityPpm: 17,
-      waterSourceType: 'Brackish',
-      cycleWaterUse: '1750 m3/Ha',
-      co2Footprint: '0.28 KgCO2/Shrimp Kg',
-    },
-    cosecha: {
-      harvestProcess: 'Conventional',
-      harvestDate: '15/08/24',
-      harvestDensity: '8 u/m2',
-      harvestTimeLapse: '02:30:45',
-      harvestTemperature: '-6ºC',
-    },
-    custodia: {
-      custodyTransportTimeLapse: '02:00:00',
-      custodyTransportTemperature: '-4ºC',
-      plantRegistryTemperature: '-4ºC',
-    },
-    calidad: {
-      qualityLabTest: 'Approved',
-      organolepticLabTest: 'Approved',
-      sulphitesLabTest: 'Approved',
-      microbiologicalLabTest: 'Approved',
-      chemicalLabTest: 'Approved',
-    },
-  },
-  {
-    id: 'Lote001',
-    origen: {
-      hatcheryName: 'Aquamax',
-      htCode: 'HT-2524',
-      nurseryName: 'Texcumar',
-      nurseryHtCode: 'HT-2525',
-      naupliiCode: 'Chicpin K1',
-      plantingDate: '10/02/24',
-      harvestDate: '15/08/24',
-      moduleNumber: 1,
-      tankPondNumber: 1,
-      densityPerM3: '100.000',
-    },
-    farm: {
-      farmName: 'ShrimpCo Manabi',
-      grCode: 'GR-5247',
-      growingProtocol: 'Semi Intensive',
-      productionProtocol: 'TriPhasic',
-      waterManagingSystem: 'RAS',
-      nurseryPond: 'Ppc#2',
-      plantingDate: '12/02/24',
-      initialNurseryDensity: 100,
-      preGrowingPond: 'Ppe#3',
-      transferDate: '20/04/24',
-      initialPreGrowingDensity: 45,
-      finalPreGrowingPond: 'Pef#34',
-      finalTransferDate: '05/06/24',
-      finalPreGrowingDensity: 15,
-    },
-    produccion: {
-      feedMillHatchery: 'SCI-R004304',
-      feedMillFarm: 'SCI-R004304',
-    },
-    tratamiento: {
-      antibioticTreatment: 'SCI-R008978',
-      initialDate: '01/03/24',
-      endingDate: '15/03/24',
-    },
-    condiciones: {
-      salinityPpm: 17,
-      waterSourceType: 'Brackish',
-      cycleWaterUse: '1750 m3/Ha',
-      co2Footprint: '0.28 KgCO2/Shrimp Kg',
-    },
-    cosecha: {
-      harvestProcess: 'Conventional',
-      harvestDate: '15/08/24',
-      harvestDensity: '8 u/m2',
-      harvestTimeLapse: '02:30:45',
-      harvestTemperature: '-6ºC',
-    },
-    custodia: {
-      custodyTransportTimeLapse: '02:00:00',
-      custodyTransportTemperature: '-4ºC',
-      plantRegistryTemperature: '-4ºC',
-    },
-    calidad: {
-      qualityLabTest: 'Approved',
-      organolepticLabTest: 'Approved',
-      sulphitesLabTest: 'Approved',
-      microbiologicalLabTest: 'Approved',
-      chemicalLabTest: 'Approved',
-    },
-  },
-];
-
 function TraceabilityLotesCustody() {
   const reportRef = useRef();
   const [orientation, setOrientation] = useState('portrait');
-  const [allLotes] = useState(initialLotesArray);
   const [selectedCliente, setSelectedCliente] = useState(null);
   const [selectedProveedor, setSelectedProveedor] = useState(null);
   const [dateRange, setDateRange] = useState([]); // [startMoment, endMoment]
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedLote, setSelectedLote] = useState(null);
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
 
+  const dispatch = useDispatch();
+  const { traceabilityReports, loading, error } = useSelector(state => state.traceabilityReport);
+  const { labanalysisList } = useSelector((state) => state.labanalysis);
+
+  useEffect(() => {
+    dispatch(fetchTraceabilityReports());
+    dispatch(fetchLabanalysis());
+  }, [dispatch, selectedOrg]);
+
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.remove('poolId');
+  };
+
+  const custodyOrgs = useSelector((state) => state.auth.farmsOrgs);
+
+  const farmsSelectOptions = custodyOrgs.length > 0
+    ? [
+      {
+        options: custodyOrgs.map(org => ({
+          value: org.orgId,
+          label: org.orgName,
+          email: org.orgEmail,
+        })),
+        onChange: handleOrgChange,
+        placeholder: 'Seleccione una Farm',
+        value: selectedOrg || undefined,
+      },
+    ]
+    : [];
+
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
+  ];
+
+  // Lista de clientes (Finca) basada en organization_name
   const listaClientes = useMemo(() => {
     const setFincas = new Set();
-    allLotes.forEach((l) => {
-      setFincas.add(l.origen.fincaNombre);
-    });
+    if (traceabilityReports && Array.isArray(traceabilityReports)) {
+      traceabilityReports.forEach((l) => {
+        setFincas.add(l.organization_name || 'N/A');
+      });
+    }
     return ['Todos', ...Array.from(setFincas)];
-  }, [allLotes]);
+  }, [traceabilityReports]);
 
+  // Lista de proveedores (Hatchery) basada en bp_org_name
   const listaProveedores = useMemo(() => {
     if (!selectedCliente || selectedCliente === 'Todos') return [];
-
     const setProveedores = new Set();
-    allLotes
-      .filter((l) => l.origen.fincaNombre === selectedCliente)
-      .forEach((l) => {
-        setProveedores.add(l.origen.laboratorioNombre);
-      });
+    if (traceabilityReports && Array.isArray(traceabilityReports)) {
+      traceabilityReports
+        .filter((l) => l.organization_name === selectedCliente)
+        .forEach((l) => {
+          setProveedores.add(l.bp_org_name || 'N/A');
+        });
+    }
     return Array.from(setProveedores);
-  }, [allLotes, selectedCliente]);
+  }, [traceabilityReports, selectedCliente]);
 
+  // Filtrado de lotes basado en las selecciones y rango de fechas (usamos lote_plantingdate)
   const filteredLotes = useMemo(() => {
-    let result = [...allLotes];
-
+    let result = traceabilityReports ? [...traceabilityReports] : [];
     if (selectedCliente && selectedCliente !== 'Todos') {
-      result = result.filter(
-        (l) => l.origen.fincaNombre === selectedCliente
-      );
+      result = result.filter((l) => l.organization_name === selectedCliente);
     }
-
-    if (
-      selectedCliente &&
-      selectedCliente !== 'Todos' &&
-      selectedProveedor
-    ) {
-      result = result.filter(
-        (l) => l.origen.laboratorioNombre === selectedProveedor
-      );
+    if (selectedProveedor && selectedProveedor !== 'Todos') {
+      result = result.filter((l) => l.bp_org_name === selectedProveedor);
     }
-
     if (dateRange.length === 2) {
-      const [start, end] = dateRange; // Son objetos moment
+      const [start, end] = dateRange;
       result = result.filter((l) => {
-        const loteFecha = moment(l.custodia.horaIngreso, 'YYYY-MM-DD');
-        return (
-          loteFecha.isSameOrAfter(start, 'day') &&
-          loteFecha.isSameOrBefore(end, 'day')
-        );
+        return moment(l.lote_plantingdate).isBetween(start, end, 'day', '[]');
       });
     }
-
     return result;
-  }, [allLotes, selectedCliente, selectedProveedor, dateRange]);
+  }, [traceabilityReports, selectedCliente, selectedProveedor, dateRange]);
 
   const handleSelectCliente = (value) => {
     setSelectedCliente(value);
@@ -370,19 +139,37 @@ function TraceabilityLotesCustody() {
     setSelectedLote(null);
   };
 
-
   const handleGeneratePDF = () => {
-    const element = reportRef.current; // Referencia al contenido del reporte
+    const element = reportRef.current;
     generatePDF(element, orientation, 'reporte-coordinacion.pdf');
   };
+  const handlePrintReport = async () => {
+    const element = reportRef.current;
+    if (!element) return;
+    // Genera el PDF y obtiene el blob URL
+    const pdfUrl = await generateBlobPDF(element, orientation);
+    // Abre el PDF en una nueva ventana o pestaña
+    const printWindow = window.open(pdfUrl, '_blank');
+    // Cuando la ventana cargue, dispara la impresión
+    printWindow.onload = function () {
+      printWindow.focus();
+      printWindow.print();
+    };
+  };
+
 
   return (
     <>
-      <PageHeader highlightText="AquaLink Traking" title="" />
+      <PageHeader
+        highlightText="AquaLink Traking"
+        title=""
+        selectOptions={combinedSelectOptions}
+        selectedOrg={selectedOrg}
+      />
       <Main>
         <div style={{ marginBottom: 20 }}>
           <Row gutter={16}>
-            {/* 1) SELECT CLIENTE (FINCA) */}
+            {/* SELECT CLIENTE (Finca) */}
             <Col>
               <Select
                 style={{ width: 200 }}
@@ -432,41 +219,67 @@ function TraceabilityLotesCustody() {
               xs={24}
               sm={12}
               md={8}
-              lg={6}
-              xl={6}
+              lg={8}
+              xl={8}
             >
               <Button
                 block
                 onClick={() => showModalDetail(lote)}
                 style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
                   height: '100px',
-                  textAlign: 'center',
                   backgroundColor: '#fff',
-                  border: '1px solid #1890ff',
-                  color: '#000', // Letra negra
-                  borderRadius: '5px',
-                  fontWeight: '500',
+                  border: 'none',
+                  borderRadius: '10px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                  padding: '10px 15px',
+                  textAlign: 'left',
+                  transition: 'all 0.3s ease-in-out',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+                  e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                {lote.id}
-                <div style={{ fontSize: '12px', marginTop: 4 }}>
-                  <strong>{lote.origen.fincaNombre}</strong> <br />
-                  {lote.origen.laboratorioNombre}
+                <div style={{ flex: '0 0 40px', marginRight: '15px' }}>
+                  <img
+                      src={require('../../../../public/logo.svg').default}
+                    alt="logo"
+                    style={{ width: '40px', height: '40px', objectFit: 'contain' }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '16px', fontWeight: '600', color: '#1890ff' }}>
+                    {lote.SM_Batch}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#555' }}>
+                    <strong>{lote.organization_name}</strong>
+                  </div>
                 </div>
               </Button>
+
             </Col>
           ))}
         </Row>
       </Main>
 
       <Modal
-        title={`Detalles del Lote: ${selectedLote?.id}`}
+        title={`Product Batch ID: ${selectedLote?.SM_Batch}`}
         visible={isModalVisible}
         onOk={handleDetailOk}
         onCancel={handleDetailCancel}
-        width={800}
+        width={1100}
         footer={[
           <>
+            <Button key="print" onClick={handlePrintReport}>
+              Imprimir Reporte
+            </Button>
             <Button key="pdf" type="primary" onClick={handleGeneratePDF}>
               Generar PDF
             </Button>
@@ -489,74 +302,7 @@ function TraceabilityLotesCustody() {
               flexWrap: 'wrap',
             }}
           >
-            <div style={{ flex: '1 1 60%', minWidth: '300px' }}>
-
-              {/* Origen */}
-              <Title level={4}>Origen del Lote</Title>
-              <Row gutter={16}>
-                <Col span={12}><Text><strong>Hatchery:</strong> {selectedLote.origen.hatcheryName}</Text></Col>
-                <Col span={12}><Text><strong>HT Code:</strong> {selectedLote.origen.htCode}</Text></Col>
-                <Col span={12}><Text><strong>Nursery Name:</strong> {selectedLote.origen.nurseryName}</Text></Col>
-                <Col span={12}><Text><strong>Nursery HT Code:</strong> {selectedLote.origen.nurseryHtCode}</Text></Col>
-                <Col span={12}><Text><strong>Nauplii Code:</strong> {selectedLote.origen.naupliiCode}</Text></Col>
-                <Col span={12}><Text><strong>Planting Date:</strong> {selectedLote.origen.plantingDate}</Text></Col>
-                <Col span={12}><Text><strong>Harvest Date:</strong> {selectedLote.origen.harvestDate}</Text></Col>
-              </Row>
-
-              {/* Farm */}
-              <Title level={4}>Finca</Title>
-              <Row gutter={16}>
-                <Col span={12}><Text><strong>Finca:</strong> {selectedLote.farm.farmName}</Text></Col>
-                <Col span={12}><Text><strong>GR Code:</strong> {selectedLote.farm.grCode}</Text></Col>
-                <Col span={12}><Text><strong>Growing Protocol:</strong> {selectedLote.farm.growingProtocol}</Text></Col>
-                <Col span={12}><Text><strong>Production Protocol:</strong> {selectedLote.farm.productionProtocol}</Text></Col>
-                <Col span={12}><Text><strong>Water System:</strong> {selectedLote.farm.waterManagingSystem}</Text></Col>
-              </Row>
-
-              {/* Producción */}
-              <Title level={4}>Producción</Title>
-              <Row gutter={16}>
-                <Col span={12}><Text><strong>Feed Mill Hatchery:</strong> {selectedLote.produccion.feedMillHatchery}</Text></Col>
-                <Col span={12}><Text><strong>Feed Mill Farm:</strong> {selectedLote.produccion.feedMillFarm}</Text></Col>
-              </Row>
-
-              {/* Tratamiento */}
-              <Title level={4}>Tratamiento</Title>
-              <Row gutter={16}>
-                <Col span={12}><Text><strong>Antibiotic Treatment:</strong> {selectedLote.tratamiento.antibioticTreatment}</Text></Col>
-                <Col span={12}><Text><strong>Initial Date:</strong> {selectedLote.tratamiento.initialDate}</Text></Col>
-                <Col span={12}><Text><strong>Ending Date:</strong> {selectedLote.tratamiento.endingDate}</Text></Col>
-              </Row>
-
-              {/* Condiciones */}
-              <Title level={4}>Condiciones</Title>
-              <Row gutter={16}>
-                <Col span={12}><Text><strong>Salinity (ppm):</strong> {selectedLote.condiciones.salinityPpm}</Text></Col>
-                <Col span={12}><Text><strong>Water Source Type:</strong> {selectedLote.condiciones.waterSourceType}</Text></Col>
-                <Col span={12}><Text><strong>Cycle Water Use:</strong> {selectedLote.condiciones.cycleWaterUse}</Text></Col>
-                <Col span={12}><Text><strong>CO2 Footprint:</strong> {selectedLote.condiciones.co2Footprint}</Text></Col>
-              </Row>
-
-              {/* Cosecha */}
-              <Title level={4}>Cosecha</Title>
-              <Row gutter={16}>
-                <Col span={12}><Text><strong>Harvest Process:</strong> {selectedLote.cosecha.harvestProcess}</Text></Col>
-                <Col span={12}><Text><strong>Harvest Date:</strong> {selectedLote.cosecha.harvestDate}</Text></Col>
-                <Col span={12}><Text><strong>Harvest Density:</strong> {selectedLote.cosecha.harvestDensity}</Text></Col>
-                <Col span={12}><Text><strong>Harvest Time Lapse:</strong> {selectedLote.cosecha.harvestTimeLapse}</Text></Col>
-                <Col span={12}><Text><strong>Harvest Temperature:</strong> {selectedLote.cosecha.harvestTemperature}</Text></Col>
-              </Row>
-
-              {/* Custodia */}
-              <Title level={4}>Custodia</Title>
-              <Row gutter={16}>
-                <Col span={12}><Text><strong>Transport Time Lapse:</strong> {selectedLote.custodia.custodyTransportTimeLapse}</Text></Col>
-                <Col span={12}><Text><strong>Transport Temperature:</strong> {selectedLote.custodia.custodyTransportTemperature}</Text></Col>
-                <Col span={12}><Text><strong>Plant Registry Temperature:</strong> {selectedLote.custodia.plantRegistryTemperature}</Text></Col>
-              </Row>
-            </div>
-
-            {/* Columna Derecha: Código QR */}
+            <LoteDetails selectedLote={selectedLote} />
             <div>
               <Title level={4} style={{ display: 'flex', alignItems: 'center' }}>
                 <span
@@ -569,14 +315,23 @@ function TraceabilityLotesCustody() {
                     marginRight: '8px',
                   }}
                 />
-                QR
+                {selectedLote.SM_Batch}
               </Title>
               <QRCodeSVG
                 value={JSON.stringify({
                   id: selectedLote.id,
-                  analisis: selectedLote.analisis,
-                  custodia: selectedLote.custodia,
-                  origen: selectedLote.origen,
+                  analisis: {
+                    quality: selectedLote.quality_test || 'N/A',
+                    organoleptic: selectedLote.organoleptic_test || 'N/A',
+                  },
+                  custodia: {
+                    transportTime: selectedLote.custody_transport_time || 'N/A',
+                    transportTemp: selectedLote.custody_transport_temperature || 'N/A',
+                  },
+                  origen: {
+                    hatchery: selectedLote.bp_org_name || 'N/A',
+                    broodstock: selectedLote.lote_org_name || 'N/A',
+                  },
                 })}
                 size={228}
                 includeMargin
@@ -584,7 +339,7 @@ function TraceabilityLotesCustody() {
             </div>
           </div>
         )}
-      </Modal >
+      </Modal>
     </>
   );
 }

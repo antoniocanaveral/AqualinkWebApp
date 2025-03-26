@@ -75,6 +75,7 @@ function CoordinationParamLabs() {
       foodOnTheGo: coordination ? coordination.SM_FoodOnTheGo : false,
       alkalinity: 0,
       pre_breeding_pool_ph: 0,
+      SM_PreliminaryLaboratoryCount: 0
     }
   });
 
@@ -112,21 +113,10 @@ function CoordinationParamLabs() {
     });
   }, []);
 
-  // Función auxiliar para manejar cambios en campos de texto e inputs
-  const handleInputChange = (field, value) => {
-    setState(prevState => ({
-      ...prevState,
-      form: {
-        ...prevState.form,
-        [field]: value,
-      },
-    }));
-  };
-
 
   const next = () => {
     return new Promise((resolve, reject) => {
-      if (current < 3) {
+      if (current < 4) {
         form.validateFields().then(() => {
           setState({
             ...state,
@@ -198,7 +188,7 @@ function CoordinationParamLabs() {
   const onSave = () => {
 
     form.validateFields().then(() => {
-      dispatch(enviarParamsLabCoord(id, coordination.SM_Coordination_ID.id, state.form.alkalinity, state.form.pre_breeding_pool_ph, () => {
+      dispatch(enviarParamsLabCoord(id, coordination.SM_Coordination_ID.id, state.form.alkalinity, state.form.pre_breeding_pool_ph, state.form.SM_PreliminaryLaboratoryCount, () => {
         message.success("Parámetros enviados!");
         navigate("/lab/coords");
       }));
@@ -618,14 +608,6 @@ function CoordinationParamLabs() {
                                             />
                                           </Form.Item>
 
-                                          {<div style={{ marginBottom: 15 }}>
-                                            <Button size="default" type="primary" onClick={() => {
-                                              onSave()
-                                            }}>
-                                              <UilHdd />
-                                              Enviar
-                                            </Button>
-                                          </div>}
 
                                         </Form>
                                       </div>
@@ -635,7 +617,47 @@ function CoordinationParamLabs() {
                               </BasicFormWrapper>
                             ),
                           },
+                          {
+                            title: 'Conteo Preliminar',
+                            className: 'wizard-step-item',
+                            icon: <UilFileCheckAlt className="steps-icon" />,
+                            content: (
+                              <BasicFormWrapper style={{ width: '100%' }}>
+                                <div className="atbd-form-checkout">
+                                  <Row justify="center">
+                                    <Col sm={20} xs={24}>
+                                      <div className="shipping-form" style={{ marginTop: "10px" }}>
+                                        <Heading as="h4" style={{ textAlign: "center" }}>4. Conteo Preliminar Laboratorio</Heading>
+                                        <Form form={form} name="address">
 
+                                          <Form.Item name="SM_PreliminaryLaboratoryCount" label="Conteo Preliminar Laboratorio" rules={[{ required: true, message: 'Por favor ingrese un valor' }]}>
+                                            <InputNumber
+                                              value={state.form.SM_PreliminaryLaboratoryCount}
+                                              formatter={(value) => inputFormatter(value)}
+                                              parser={(value) => parserNumber(value)}
+                                              max={200}
+                                              min={60}
+                                              onChange={(value) => {
+                                                setState({
+                                                  ...state,
+                                                  form: {
+                                                    ...state.form,
+                                                    SM_PreliminaryLaboratoryCount: value,
+                                                  },
+                                                });
+                                              }}
+                                            />
+                                          </Form.Item>
+
+
+                                        </Form>
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              </BasicFormWrapper>
+                            ),
+                          },
                           {
                             title: 'Reportes',
                             className: 'wizard-step-item',
@@ -698,17 +720,57 @@ function CoordinationParamLabs() {
                                       </Row>
 
                                       {/* Segunda Fila */}
-                                      <Row style={{ width: '100%' }} justify="center">
+                                      <Row style={{ width: '100%' }} gutter={25} justify="center">
                                         <Col xs={24} sm={20} md={12}>
                                           <Heading as="h4" style={{ textAlign: "center", marginBottom: "20px" }}>3. Información de Calidad de Agua</Heading>
                                           <Table
                                             className="custom-table_lab"
-                                            dataSource={[
+                                            /*dataSource={[
                                               { key: '1', label: 'PH', value: form.getFieldValue('ph') || '-' },
                                               { key: '2', label: 'Salinidad (ppm)', value: form.getFieldValue('salinity') || '-' },
                                               { key: '3', label: 'Oxígeno Disuelto (mg/L)', value: form.getFieldValue('oxygen') || '-' },
                                               { key: '4', label: 'Temperatura (°C)', value: form.getFieldValue('temperature') || '-' },
                                               { key: '5', label: 'PL/Gramo (Predespacho)', value: form.getFieldValue('plPerGram') || '-' },
+                                            ]}*/
+                                            dataSource={[
+                                              { key: '1', label: 'Alcalinidad', value: state.form.alkalinity || '-' },
+                                              { key: '2', label: 'Ph Tanque', value: state.form.pre_breeding_pool_ph || '-' },
+                                            ]}
+                                            columns={[
+                                              {
+                                                title: '',
+                                                dataIndex: 'label',
+                                                key: 'label',
+                                                width: '50%',
+                                                render: (text) => <strong>{text}</strong>,
+                                              },
+                                              {
+                                                title: '',
+                                                dataIndex: 'value',
+                                                key: 'value',
+                                                width: '50%',
+                                              },
+                                            ]}
+                                            pagination={false}
+                                            showHeader={false}
+                                            bordered
+                                            rowClassName={() => 'custom-table-row'}
+                                            style={{ fontSize: '14px', textAlign: 'center' }}
+                                          />
+                                        </Col>
+                                        <Col xs={24} sm={20} md={12}>
+                                          <Heading as="h4" style={{ textAlign: "center", marginBottom: "20px" }}>4. Conteo Preliminar</Heading>
+                                          <Table
+                                            className="custom-table_lab"
+                                            /*dataSource={[
+                                              { key: '1', label: 'PH', value: form.getFieldValue('ph') || '-' },
+                                              { key: '2', label: 'Salinidad (ppm)', value: form.getFieldValue('salinity') || '-' },
+                                              { key: '3', label: 'Oxígeno Disuelto (mg/L)', value: form.getFieldValue('oxygen') || '-' },
+                                              { key: '4', label: 'Temperatura (°C)', value: form.getFieldValue('temperature') || '-' },
+                                              { key: '5', label: 'PL/Gramo (Predespacho)', value: form.getFieldValue('plPerGram') || '-' },
+                                            ]}*/
+                                            dataSource={[
+                                              { key: '1', label: 'Conteo Preliminar Laboratorio', value: state.form.SM_PreliminaryLaboratoryCount || '-' },
                                             ]}
                                             columns={[
                                               {
@@ -733,6 +795,7 @@ function CoordinationParamLabs() {
                                           />
                                         </Col>
                                       </Row>
+
                                     </Row>
 
                                   </div>
@@ -743,7 +806,9 @@ function CoordinationParamLabs() {
                         ]}
                         onNext={next}
                         onPrev={prev}
-                        onDone={done}
+                        onDone={() => {
+                          onSave()
+                        }}
                         isfinished={isFinished}
                       />
                     </WizardTwo>

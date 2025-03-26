@@ -19,7 +19,7 @@ function LabCoordinationsRoutes() {
       <Route path="/notification/:id/view" element={<NotificationSeedingResumen />} />
       <Route path=":id/view" element={<CoordinationLabsResumen />} />
       <Route path=":id/param" element={<CoordinationParamLabs />} />
-      <Route path=":id/params" element={<CoordinationLabsParams />} />
+      <Route path=":id/params" element={<CoordinationParamLabs />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

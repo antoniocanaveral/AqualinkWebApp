@@ -98,6 +98,41 @@ export const fetchProductCatalogFarm = () => async (dispatch) => {
 };
 
 
+export const fetchProductCatalogLab = () => async (dispatch) => {
+  try {
+    dispatch(opCatalogLoading());
+    const clientId = Cookies.get('selectedClientId');
+
+    if (!clientId) {
+      throw new Error('Client ID no encontrado en las cookies.');
+    }
+
+    const response = await DataService.get(`/models/m_product_catalog?$filter=org_type eq 'LAB'`);
+
+    if (response.data && response.data.records) {
+      const farmCatalogs = response.data.records;
+
+      const catalogsByCategory = farmCatalogs.reduce((acc, catalog) => {
+        const category = catalog.M_Product_Category_ID?.identifier || 'Sin Categoría';
+
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+
+        acc[category].push(catalog);
+        return acc;
+      }, {});
+
+      dispatch(opCatalogLoaded(catalogsByCategory));
+    } else {
+      dispatch(opCatalogError('No se encontraron catálogos con org_type "FARM".'));
+    }
+  } catch (err) {
+    dispatch(opCatalogError(err.message || 'Error al cargar el catálogo de productos.'));
+    handleApiError(err, dispatch, opCatalogError);
+  }
+};
+
 export const fetchProductCatalogCustody = () => async (dispatch) => {
   try {
     dispatch(opCatalogLoading());

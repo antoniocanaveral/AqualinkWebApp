@@ -220,18 +220,18 @@ function AQxCustodityMenu({ toggleCollapsed }) {
     ),
 
     
-    getItem(t('Reportes Cosecha'), 'ReportesCosecha', !topMenu && <UilCalendarAlt />, [
+    getItem(t('Reportes de Proceso'), 'ReportesCosecha', !topMenu && <UilCalendarAlt />, [
 
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/reports/lote/add`}>
-          {t('Añadir')} {t('Lote')}
+          {t('Añadir Lote a Proceso')}
         </NavLink>,
         'add-lote',
         null,
       ),
       getItem(
         <NavLink className="menuItem-iocn" to={`${path}/reports/lote/view`}>
-          {t('Ver')} {t('Lote')}
+          {t("Ver Lotes Procesados")}
         </NavLink>,
         'view-lote',
         null,

@@ -254,7 +254,7 @@ const loadUserAccess = () => {
           const orgIds = orgInfoResponse.data.records.map((info) => info.id);
           const adOrgFilter = orgIds.map((id) => `AD_Org_ID eq ${id}`).join(" or ");
           const orgLocationResponse = await DataService.get(
-            `/models/ad_org?$filter=${encodeURIComponent(adOrgFilter)}&$expand=m_warehouse`
+            `/models/ad_org?$filter=${encodeURIComponent(adOrgFilter)}&$expand=m_warehouse($expand=M_Locator)`
           );
 
           const locationMap = {};
@@ -283,6 +283,7 @@ const loadUserAccess = () => {
             };
             const orgDetails = orgDetailsMap[info.id] || {};
             const mappedPools = location.pools.map(mapPoolRecord);
+            console.log("MAPPEPD",mappedPools)
             const baseOrgData = mapOrgRecord(info, orgMap[info.id], orgDetails, location, mappedPools);
 
             switch (info.AD_OrgType_ID?.identifier) {

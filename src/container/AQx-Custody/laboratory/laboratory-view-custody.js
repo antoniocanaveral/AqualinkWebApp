@@ -30,6 +30,11 @@ const LaboratoryViewCustody = () => {
 
 
 
+    useEffect(() => {
+        dispatch(fetchLabanalysis());
+    }, [dispatch, selectedOrg]);
+
+
     const handleOrgChange = (orgId) => {
         setSelectedOrg(orgId);
         const selectedOrg = organizations.find(org => org.orgId === orgId);

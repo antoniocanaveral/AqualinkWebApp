@@ -87,55 +87,44 @@ function ReportOpFarm() {
     // 2) Convertimos ese objeto en un array de filas
     // --------------------------------------------------
     const dataSource = Object.values(groupedData).map((group) => {
-        // La maestra
         const master = group.master;
-        // Hijas
         const children = group.children || [];
-
-        // Ejemplo: Para "Engorde Final" juntamos todas las piscinas de las hijas (o también la maestra, si aplica)
-        // Ajusta la lógica según tus necesidades.
+      
+        // Creamos el arreglo de piscinas para Engorde Final:
         const finalPonds = [
-            // Si la maestra también tiene Engorde Final, inclúyelo
-            master?.M_Warehouse_ID?.identifier,
-            // Luego las de las hijas
-            ...children.map((c) => c.M_Warehouse_ID?.identifier),
-        ]
-            .filter(Boolean) // filtramos null/undefined
-            .join(', ');
-
-        // Fecha de inicio de engorde final (ejemplo de tu regla con 'TF')
-        // Ojo: si NO existen sm_plannedtransferdate1/2, ajusta la lógica
+          // Si la maestra también tiene Engorde Final, la incluimos
+          master?.M_Warehouse_ID?.identifier,
+          // Luego las de las hijas
+          ...children.map((c) => c.M_Warehouse_ID?.identifier),
+        ].filter(Boolean); // filtramos valores nulos/undefined
+      
+        // Determinamos la fecha de inicio de Engorde Final según la lógica
         let fechaInicioEngordeFinal = master?.SM_PlannedFinishDate;
         if (master?.sm_template_description?.includes('TF')) {
-            // Suponiendo que si tiene "TF" usamos sm_plannedtransferdate2
-            // (o la que corresponda a tu lógica)
-            fechaInicioEngordeFinal = master.sm_plannedtransferdate2 || "";
-        }else{
-            fechaInicioEngordeFinal= master.SM_PlannedFinishDate
+          fechaInicioEngordeFinal = master.sm_plannedtransferdate2 || "";
+        } else {
+          fechaInicioEngordeFinal = master.SM_PlannedFinishDate;
         }
-
-
+      
+        console.log(master)
         return {
-            key: master?.id || Math.random(),
-            lote: master?.SM_Batch,
-
-            // Pre Cría
-            preCriaPiscina: master?.SM_PreBreedingPool_ID?.identifier,
-            preCriaFechaInicio: master?.SM_PlannedPlantingDate,
-            preCriaFechaFinal: master?.sm_plannedtransferdate1,
-            // Pre Engorde
-            preEngordePiscina: master?.SM_PreFatteningPond_ID?.identifier,
-            preEngordeFechaInicio: master?.sm_plannedtransferdate1,
-            preEngordeFechaFinal: master?.sm_plannedtransferdate2,
-
-            // (Si necesitas otra fecha de inicio para pre-engorde, puedes agregarla)
-            // Engorde Final
-            engordeFinalPiscinas: finalPonds,
-            engordeFinalFechaInicio: fechaInicioEngordeFinal,
-            engordeFinalFechaFin: master?.sm_plannedfinishdate,
-            protocolo: master?.sm_template_description,
+          key: master?.id,
+          lote: master?.SM_Batch,
+          // Pre Cría
+          preCriaPiscina: master?.SM_PreBreedingPool_ID?.identifier,
+          preCriaFechaInicio: master?.SM_PlannedPlantingDate,
+          preCriaFechaFinal: master?.sm_plannedtransferdate1,
+          // Pre Engorde
+          preEngordePiscina: master?.SM_PreFatteningPond_ID?.identifier,
+          preEngordeFechaInicio: master?.sm_plannedtransferdate1,
+          preEngordeFechaFinal: master?.sm_plannedtransferdate2,
+          // Engorde Final: aquí dejamos el arreglo sin unir
+          engordeFinalPiscinas: finalPonds,
+          engordeFinalFechaInicio: fechaInicioEngordeFinal,
+          engordeFinalFechaFin: master?.SM_PlannedFinishDate,
+          protocolo: master?.sm_template_description,
         };
-    });
+      });
 
     // --------------------------------------------------
     // 3) Definimos las columnas "agrupadas" estilo la tabla de tu imagen
@@ -145,91 +134,108 @@ function ReportOpFarm() {
             title: 'Lote',
             dataIndex: 'lote',
             key: 'lote',
+            className: 'lote-header', // ✅ Nueva clase
             width: 120,
         },
         {
             title: 'Protocolo',
             dataIndex: 'protocolo',
             key: 'protocolo',
+            className: 'protocolo-header', // ✅ Nueva clase
             width: 200,
         },
         {
             title: 'Pre Cría',
+            className: 'pre-cria-header',
             children: [
                 {
                     title: '#Piscina',
                     dataIndex: 'preCriaPiscina',
                     key: 'preCriaPiscina',
+                    className: 'pre-cria-header',
                     width: 100,
                 },
                 {
                     title: 'Fecha Inicio',
                     dataIndex: 'preCriaFechaInicio',
                     key: 'preCriaFechaInicio',
+                    className: 'pre-cria-header',
                     width: 120,
                 },
                 {
-                    title: 'Fecha Final',
+                    title: 'Fecha Fin',
                     dataIndex: 'preCriaFechaFinal',
                     key: 'preCriaFechaFinal',
+                    className: 'pre-cria-header',
                     width: 120,
                 },
             ],
         },
         {
             title: 'Pre Engorde',
+            className: 'pre-engorde-header',
             children: [
                 {
                     title: '#Piscina',
                     dataIndex: 'preEngordePiscina',
                     key: 'preEngordePiscina',
+                    className: 'pre-engorde-header',
                     width: 100,
                 },
                 {
                     title: 'Fecha Inicio',
                     dataIndex: 'preEngordeFechaInicio',
                     key: 'preEngordeFechaInicio',
+                    className: 'pre-engorde-header',
                     width: 120,
                 },
                 {
-                    title: 'Fecha Final',
+                    title: 'Fecha Fin',
                     dataIndex: 'preEngordeFechaFinal',
                     key: 'preEngordeFechaFinal',
+                    className: 'pre-engorde-header',
                     width: 120,
                 },
             ],
         },
         {
             title: 'Engorde Final',
+            className: 'engorde-final-header',
             children: [
                 {
                     title: '#Piscina(s)',
                     dataIndex: 'engordeFinalPiscinas',
                     key: 'engordeFinalPiscinas',
+                    className: 'engorde-final-header',
                     width: 120,
+                    render: (pools) =>
+                        pools && pools.length
+                            ? pools.map((pool, idx) => <div key={idx}>{pool}</div>)
+                            : null,
                 },
                 {
                     title: 'Fecha Inicio',
                     dataIndex: 'engordeFinalFechaInicio',
                     key: 'engordeFinalFechaInicio',
+                    className: 'engorde-final-header',
                     width: 120,
                 },
                 {
-                    title: 'Fecha Final',
-                    dataIndex: 'engordeFinalFechaInicio',
-                    key: 'engordeFinalFechaInicio',
+                    title: 'Fecha Fin',
+                    dataIndex: 'engordeFinalFechaFin',
+                    key: 'engordeFinalFechaFin',
+                    className: 'engorde-final-header',
                     width: 120,
                 },
             ],
         },
-
     ];
-
+    
     return (
         <>
             <PageHeader
                 highlightText="Aqualink Camaronera"
-                title="Reporte de Operación"
+                title="Reporte de Operaciones"
                 selectOptions={combinedSelectOptions}
                 selectedOrg={selectedOrg}
             />

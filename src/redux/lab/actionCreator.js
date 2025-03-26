@@ -88,12 +88,13 @@ const loadLabCoord = (id, callback) => {
     };
 };
 
-const enviarParamsLabCoord = (id, coordId, alkalinity, pre_breeding_pool_ph, callback) => {
+const enviarParamsLabCoord = (id, coordId, alkalinity, pre_breeding_pool_ph,  SM_PreliminaryLaboratoryCount, callback) => {
     return async (dispatch) => {
         try {
             await DataService.put(`/models/sm_coordinationclient/${id}`, {
                 "SM_Alkalinity": parseInt(alkalinity),
-                "SM_PreBreedingPH": parseInt(pre_breeding_pool_ph)
+                "SM_PreBreedingPH": parseInt(pre_breeding_pool_ph),
+                "SM_PreliminaryLaboratoryCount": parseInt(SM_PreliminaryLaboratoryCount)
             });
             await DataService.put(`/models/sm_coordination/${coordId}`, {
                 "SM_CoordinationStatus": 'CONFIRMADO'
@@ -134,7 +135,7 @@ const submitLabCoord = (id, form, callback) => {
                 "SM_Module": form.module,
                 "SM_Tank": form.tank,
                 "SM_TankTotalPlanting": form.tankTotal,
-                "SM_PreliminaryLaboratoryCount": form.labCount,
+                "sm_estimatedlabcount": form.labCount,
                 "SM_AnsweredPL": form.pl,
                 "SM_ConfirmedSalinity": form.salinity,
                 "SM_ShippingMethod": form.methodName,
@@ -143,7 +144,6 @@ const submitLabCoord = (id, form, callback) => {
                 "SM_FoodOnTheGo": form.foodOnTheGo,
                 "SM_ConfirmedTotal": form.confirmedTotal,
                 "sm_lablote_ID": form.sm_lablote_ID
-
             });
             console.log(coordClientResponse);
             const newReservedBiomass = form.tankTotal - form.confirmedTotal;

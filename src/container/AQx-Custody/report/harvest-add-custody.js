@@ -175,10 +175,20 @@ function LoteAddCustody() {
                         </Select>
                     </Form.Item>
                     <Row gutter={16}>
-                        <Row gutter={16}>
-                            <Col span={12}><Form.Item label="Hora de llegada a planta" name="sm_arrivaltime" rules={[{ required: true, message: 'Ingrese la hora de llegada' }]}><Input type="datetime-local" /></Form.Item></Col>
-                            <Col span={12}><Form.Item label="Hora de inicio de proceso" name="sm_processstarttime" rules={[{ required: true, message: 'Ingrese la hora de inicio' }]}><Input type="datetime-local" /></Form.Item></Col>
-                        </Row>
+                        <Col span={8}><Form.Item label="Fecha y Hora de llegada a planta" name="sm_arrivaltime" rules={[{ required: true, message: 'Ingrese la hora de llegada' }]}><Input type="datetime-local" /></Form.Item></Col>
+                        <Col span={8}>
+                            <Form.Item
+                                label="Temperatura a Proceso °C"
+                                name="sm_processtemperature"
+                                rules={[{ required: true, message: 'Debe ingresar un valor' }]}
+                            >
+                                <Input
+                                    min={0}
+                                    style={{ width: '100%' }}
+                                    type="number" placeholder="Volumen" />
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}><Form.Item label="Fecha y Hora de inicio de proceso" name="sm_processstarttime" rules={[{ required: true, message: 'Ingrese la hora de inicio' }]}><Input type="datetime-local" /></Form.Item></Col>
                     </Row>
                     <Row gutter={16}>
                         <Col span={12}>
@@ -282,7 +292,7 @@ function LoteAddCustody() {
 
     return (
         <>
-            <PageHeader highlightText="Aqualink Empacadora" title="Añadir Lote Custodia"
+            <PageHeader highlightText="Aqualink Empacadora" title="Añadir Lote a Proceso"
                 organizations={organizations}
                 selectOptions={combinedSelectOptions}
                 selectedOrg={selectedOrg}

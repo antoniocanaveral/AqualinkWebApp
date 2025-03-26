@@ -8,7 +8,7 @@ console.log(apiKey)
 const GoogleMaps = GoogleApiWrapper({
   apiKey,
 })((property) => {
-  
+
   const {
     latitude,
     longitude,
@@ -67,7 +67,7 @@ const GoogleMaps = GoogleApiWrapper({
           <Marker
             key={marker.id}
             onClick={onMarkerClick}
-            position={marker?.position }
+            position={marker?.position}
             icon={require(`../../static/img/map/mpc.png`)}
           />
         ))}
@@ -106,8 +106,8 @@ GoogleMaps.defaultProps = {
   width: '100%',
   height: '100%',
   zoom: 13,
-  markers: [], 
-  polygons: [], 
+  markers: [],
+  polygons: [],
   infoWindow: (
     <div>
       <h1>Hello world</h1>

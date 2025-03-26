@@ -20,16 +20,6 @@ function LaboratoryAddCustody() {
     const [selectedOrg, setSelectedOrg] = useState(Cookies.get('orgName'));
     const [lotId, setLotId] = useState(null); // Estado para almacenar el LOTE ID seleccionado
 
-    const PageRoutes = [
-        {
-            path: '/custody',
-            breadcrumbName: selectedOrg,
-        },
-        {
-            path: 'first',
-            breadcrumbName: 'Coordinaciones',
-        },
-    ];
 
     // Obtener datos desde Redux
     const { parameters, loading } = useSelector((state) => state.labanalysis);

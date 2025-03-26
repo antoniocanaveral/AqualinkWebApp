@@ -202,7 +202,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
           const sectorPayload = {
             AD_Client_ID: selectedClientId,
             AD_Org_ID: response.data.id,
-            Name: org_type === "FARM"  ? `Sector ${i}` : `Módulo ${i}` ,
+            Name: org_type === "FARM" ? `Sector ${i}` : `Módulo ${i}`,
           };
 
           const sectorResponse = await DataService.post('/models/c_salesregion', sectorPayload);
@@ -238,7 +238,6 @@ export const createPools = (pools) => async (dispatch) => {
 
   try {
     dispatch(poolsLoading());
-
     const transformedPools = pools.map(pool => ({
       AD_Client_ID: selectedClientId,
       AD_Org_ID: CreatedOrg.id,
@@ -256,9 +255,8 @@ export const createPools = (pools) => async (dispatch) => {
       SM_Geolocation: pool.nodes ? JSON.stringify(pool.nodes) : null
     }));
 
-
-
-    console.log(transformedPools)
+    console.log(transformedPools);
+    // Creación de los pools (almacenes)
     const poolResponses = await Promise.all(
       transformedPools.map(pool =>
         DataService.post('/models/m_warehouse', pool)
@@ -266,11 +264,30 @@ export const createPools = (pools) => async (dispatch) => {
     );
     const createdPools = poolResponses.map(res => res.data);
 
+    // Creación del locator para cada pool creado
+    const locatorResponses = await Promise.all(
+      createdPools.map(pool => {
+        const locatorPayload = {
+          AD_Client_ID: selectedClientId,
+          AD_Org_ID: CreatedOrg.id,
+          M_Warehouse_ID: pool.id,
+          X: "0",
+          Y: "0",
+          Z: "0"
+        };
+        return DataService.post('/models/m_locator', locatorPayload);
+      })
+    );
+
+    // Opcional: puedes guardar o hacer log de los locators creados
+    console.log("Locators creados:", locatorResponses.map(res => res.data));
+
+    // Creación de alimentadores para cada pool
     const createdFeeders = await Promise.all(
       pools.map(async (pool, index) => {
         const poolId = createdPools[index].id;
         const feeders = pool.feeders || [];
-        console.log("feeders", feeders)
+        console.log("feeders", feeders);
         return Promise.all(
           feeders.map(feeder =>
             DataService.post('/models/SM_Feeders', {

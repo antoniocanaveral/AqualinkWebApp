@@ -439,7 +439,7 @@ function CoordinationLabs() {
                                                   </Form.Item>
                                                 </Col>
                                                 <Col xs={24} sm={6}>
-                                                  <Form.Item name="labCount" label="Conteo Preliminar Lab (pl/gr)" rules={[{ required: true, message: 'Por favor agregue el Conteo Preliminar' }]}>
+                                                  <Form.Item name="labCount" label="Conteo Estimado Lab (pl/gr)" rules={[{ required: true, message: 'Por favor agregue el Conteo Preliminar' }]}>
                                                     <Input
                                                       value={state.form.labCount}
                                                       onChange={(e) => {

@@ -1,4 +1,56 @@
-/* Utilitiy classes */
+/* 🔹 Estilos para Lote */
+.ant-table-thead > tr > th.lote-header {
+  background-color: #F3F3F3 !important; /* Gris suave */
+  font-weight: bold !important;
+  text-align: center !important;
+}
+
+/* 🔹 Estilos para Protocolo */
+.ant-table-thead > tr > th.protocolo-header {
+  background-color: #D6E4FF !important; /* Azul suave */
+  font-weight: bold !important;
+  text-align: center !important;
+}
+
+/* 🔹 Colores para los grupos */
+.ant-table-thead > tr > th.pre-cria-header {
+  background-color: #FFD8B1 !important; /* Naranja pastel */
+}
+
+.ant-table-thead > tr > th.pre-engorde-header {
+  background-color: #B3E5FC !important; /* Celeste claro */
+}
+
+.ant-table-thead > tr > th.engorde-final-header {
+  background-color: #C8E6C9 !important; /* Verde menta */
+}
+
+/* 🔹 Estilos para asegurar el color en subcolumnas */
+.ant-table-thead > tr:nth-child(2) > th.lote-header {
+  background-color: #F3F3F3 !important;
+}
+
+.ant-table-thead > tr:nth-child(2) > th.protocolo-header {
+  background-color: #D6E4FF !important;
+}
+
+.ant-table-thead > tr:nth-child(2) > th.pre-cria-header {
+  background-color: #FFD8B1 !important;
+}
+
+.ant-table-thead > tr:nth-child(2) > th.pre-engorde-header {
+  background-color: #B3E5FC !important;
+}
+
+.ant-table-thead > tr:nth-child(2) > th.engorde-final-header {
+  background-color: #C8E6C9 !important;
+}
+
+/* 🔹 Evitamos sombras blancas de Ant Design */
+.ant-table-thead th::before {
+  background-color: transparent !important;
+}
+
 
 .spin {
   height: 100vh;

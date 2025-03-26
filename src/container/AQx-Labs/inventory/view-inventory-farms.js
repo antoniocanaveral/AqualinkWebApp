@@ -1,219 +1,223 @@
-import React, { useState } from 'react';
-import { Table, Select, Row, Col, Card, Modal, Button } from 'antd';
-import { optionsInventory, sampleData } from './data.js';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Table, Select, Row, Col, Card, Modal, Button, Tooltip } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers.js';
 import { Main } from '../../styled.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInventory } from '../../../redux/inventory/actionCreator.js';
+import { selectFarmsOrgsWithPools, selectLabOrgsWithWarehouses } from '../../../redux/authentication/selectors.js';
+import Cookies from 'js-cookie';
 
 function InventoryTableLabs() {
-    const [selectedCategory, setSelectedCategory] = useState('all');
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+  const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.inventory || {});
+  const organizations = useSelector((state) => state.auth.labsOrgs);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedWarehouse, setSelectedWarehouse] = useState('all');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
 
-    // Filtrar datos según la categoría seleccionada
-    const filteredData = selectedCategory === 'all'
-        ? sampleData
-        : sampleData.filter(item => item.categoria === selectedCategory);
+  useEffect(() => {
+    dispatch(fetchInventory("LAB"));
+  }, [dispatch, selectedOrg]);
 
-    // Columnas de la tabla
-    const columns = [
-        {
-            title: 'Categoría',
-            dataIndex: 'categoria',
-            key: 'categoria',
-            width: '15%'
-        },
-        {
-            title: 'Código',
-            dataIndex: 'codigo',
-            key: 'codigo',
-            width: '10%'
-        },
-        {
-            title: 'Nombre',
-            dataIndex: 'nombre',
-            key: 'nombre',
-            width: '16%'
-        },
-        {
-            title: 'Descripción',
-            dataIndex: 'descripcion',
-            key: 'descripcion',
-            width: '23%'
-        },
-        {
-            title: 'Marca',
-            dataIndex: 'marca',
-            key: 'marca',
-            width: '10%'
-        },
-        {
-            title: 'Modelo',
-            dataIndex: 'modelo',
-            key: 'modelo',
-            width: '10%'
-        },
-        {
-            title: 'Unidades',
-            dataIndex: 'disponibilidad_unidad',
-            key: 'disponibilidad_unidad',
-            render: (text) => text || 'N/A', // Valor por defecto si no está disponible
-            width: '10%'
-        },
-        {
-            title: 'Volumen',
-            dataIndex: 'volumen_disponibilidad',
-            key: 'volumen_disponibilidad',
-            render: (text) => text || 'N/A', // Valor por defecto si no está disponible
-            width: '12%'
-        },
-        {
-            title: 'Detalles',
-            key: 'detalles',
-            render: (_, record) => (
-                <Button type="link" onClick={() => showDetails(record)}>Ver detalles</Button>
-            ),
-            width: '8%'
-        }
-    ];
+  // Aplanamos las categorías para obtener todos los items de inventario
+  const allInventoryItems = useMemo(() => {
+    return Object.values(categories).flat() || [];
+  }, [categories]);
 
-    // Función para mostrar el modal con los detalles adicionales
-    const showDetails = (item) => {
-        const additionalInfo = optionsInventory
-            .find(option => option.categoria === item.categoria)
-            ?.items.find(optItem => optItem.codigo === item.codigo);
+  // Lista única de almacenes a partir de los registros de inventario
+  const warehouseOptions = useMemo(() => {
+    const warehouses = [...new Set(allInventoryItems.map(item => item.warehouse))].filter(Boolean);
+    return warehouses;
+  }, [allInventoryItems]);
 
-        setSelectedItem({ ...item, ...additionalInfo });
-        setIsModalVisible(true);
-    };
+  // Filtrado de inventario según almacén y categoría
+  const filteredInventory = useMemo(() => {
+    let data = allInventoryItems;
+    if (selectedWarehouse !== 'all') {
+      data = data.filter(item => item.warehouse === selectedWarehouse);
+    }
+    // Se utiliza "product_category_identifier" para filtrar la categoría
+    if (selectedCategory !== 'all') {
+      data = data.filter(item => item.product_category_identifier === selectedCategory);
+    }
+    return data;
+  }, [allInventoryItems, selectedWarehouse, selectedCategory]);
 
-    // Manejar el cambio de categoría
-    const handleCategoryChange = (value) => {
-        setSelectedCategory(value);
-    };
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+  };
 
-    // Cerrar el modal
-    const handleCloseModal = () => {
-        setIsModalVisible(false);
-        setSelectedItem(null);
-    };
+  const handleWarehouseChange = (value) => {
+    setSelectedWarehouse(value);
+  };
 
-    return (
-        <>
-            <PageHeader
-                highlightText="Aqualink Laboratorio"
-                title="Inventario"
-            />
-            <Main>
-                <Card title="Inventario de productos">
-                    <Row gutter={16} style={{ marginBottom: '20px' }}>
-                        <Col span={8}>
-                            <Select
-                                placeholder="Seleccione una categoría"
-                                onChange={handleCategoryChange}
-                                style={{ width: '100%' }}
-                            >
-                                <Select.Option value="all">Todas las categorías</Select.Option>
-                                {optionsInventory.map(option => (
-                                    <Select.Option key={option.categoria} value={option.categoria}>
-                                        {option.categoria}
-                                    </Select.Option>
-                                ))}
-                            </Select>
-                        </Col>
-                    </Row>
-                    <Table
-                        className='table-responsive'
-                        columns={columns}
-                        dataSource={filteredData}
-                        pagination={{ pageSize: 5 }}
-                        bordered
-                    />
-                </Card>
-            </Main>
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setSelectedItem(null);
+  };
 
-            {/* Modal para mostrar detalles adicionales */}
-            <Modal
-                title="Detalles del Producto"
-                visible={isModalVisible}
-                onCancel={handleCloseModal}
-                footer={[
-                    <Button key="close" onClick={handleCloseModal}>
-                        Cerrar
-                    </Button>
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
+    console.log(JSON.stringify(organizations));
+  };
+
+  const orgSelectOptions = organizations.length > 0 ? [
+    {
+      options: organizations.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Empacadora',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+
+  const columnsInventory = [
+    { title: 'Código', dataIndex: 'Value', key: 'Value', width: '10%' },
+    { title: 'Nombre', dataIndex: 'product_name', key: 'product_name', width: '16%' },
+    {
+      title: 'Marca',
+      dataIndex: 'Group1',
+      key: 'Group1',
+      width: '25%',
+      ellipsis: true,
+      render: (text) => <Tooltip title={text}><span>{text}</span></Tooltip>
+    },
+    {
+      title: 'Presentación',
+      key: 'Classification',
+      render: (_, record) => {
+        const classification = record.Classification || 'N/A';
+        const uomSymbol = record.UOMSymbol || '';
+        return `${classification} ${uomSymbol}`.trim();
+      },
+      width: '8%'
+    },
+    { title: 'Unidades', dataIndex: 'QtyOnHand', key: 'QtyOnHand', render: (text) => text ?? 'N/A', width: '8%' },
+    {
+      title: 'Volumen',
+      key: 'Volumen',
+      render: (_, record) => {
+        const qtyOnHand = parseFloat(record.QtyOnHand) || 0;
+        const classification = parseFloat(record.Classification) || 1;
+        const uomSymbol = record.UOMSymbol || '';
+        return `${qtyOnHand * classification} ${uomSymbol}`.trim();
+      },
+      width: '8%'
+    },
+    {
+      title: 'Detalles',
+      key: 'detalles',
+      render: (_, record) => (
+        <Button type="link" onClick={() => {
+          setSelectedItem(record);
+          setIsModalVisible(true);
+        }}>Ver detalles</Button>
+      ),
+      width: '10%'
+    }
+  ];
+
+  return (
+    <>
+      <PageHeader
+        highlightText="Aqualink Laboratorio"
+        title="Inventario"
+        selectOptions={orgSelectOptions}
+        selectedOrg={selectedOrg}
+      />
+      <Main>
+        <Card title="Inventario">
+          <Row gutter={16} style={{ marginBottom: '20px' }}>
+            <Col span={8}>
+              <Select
+                placeholder="Seleccione un Almacén"
+                onChange={handleWarehouseChange}
+                style={{ width: '100%' }}
+                value={selectedWarehouse}
+              >
+                <Select.Option value="all">Todos los Almacenes</Select.Option>
+                {warehouseOptions.map(wh => (
+                  <Select.Option key={wh} value={wh}>{wh}</Select.Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={8}>
+              <Select
+                placeholder="Seleccione una categoría"
+                onChange={handleCategoryChange}
+                style={{ width: '100%' }}
+                value={selectedCategory}
+              >
+                <Select.Option value="all">Todas las categorías</Select.Option>
+                {/* Se asume que product_category_identifier es el valor clave para la categoría */}
+                {Object.values(categories).flat().map(item => item.product_category_identifier)
+                  .filter((v, i, a) => v && a.indexOf(v) === i)
+                  .map(categoryName => (
+                    <Select.Option key={categoryName} value={categoryName}>{categoryName}</Select.Option>
+                ))}
+              </Select>
+            </Col>
+          </Row>
+          <Table
+            columns={columnsInventory}
+            dataSource={filteredInventory}
+            pagination={{ pageSize: 5 }}
+            bordered
+            rowKey="id"
+          />
+        </Card>
+      </Main>
+
+      {/* Modal para mostrar detalles adicionales */}
+      <Modal
+        title="Detalles del Producto"
+        visible={isModalVisible}
+        onCancel={handleCloseModal}
+        footer={[
+          <Button key="close" onClick={handleCloseModal}>
+            Cerrar
+          </Button>
+        ]}
+        width={700} // Aumenta el ancho del modal para mejor visualización
+      >
+        {selectedItem && (
+          <div className="content-row" style={{ display: "flex", flexWrap: "wrap" }}>
+            {/* Tabla principal con información clave */}
+            <div>
+              <Table
+                dataSource={[
+                  { key: 'categoria', label: 'Categoría', value: selectedItem.product_category_identifier },
+                  { key: 'codigo', label: 'Código', value: selectedItem.Value },
+                  { key: 'rsu', label: 'RSU', value: selectedItem.rsu_code },
+                  { key: 'nombre', label: 'Nombre', value: selectedItem.product_name },
+                  { key: 'descripcion', label: 'Descripción', value: selectedItem.description_long },
+                  { key: 'help_1', label: 'Forma Terapéutica', value: selectedItem.Help },
+                  { key: 'documentnote', label: 'Clasificación Terapéutica', value: selectedItem.DocumentNote },
+                  { key: 'help_2', label: 'Tipo de Formulación', value: selectedItem.help_2 },
+                  { key: 'marca', label: 'Marca', value: selectedItem.Group1 }
                 ]}
-                width={800} // Aumenta el ancho del modal para mejor visualización
-            >
-                {selectedItem && (
-                    <div className="content-row" style={{display:"flex", flexWrap:"wrap"}}>
-                        {/* Tabla principal con información clave */}
-                        <div >
-                            <Table
-                                dataSource={[
-                                    { key: 'categoria', label: 'Categoría', value: selectedItem.categoria },
-                                    { key: 'codigo', label: 'Código', value: selectedItem.codigo },
-                                    { key: 'nombre', label: 'Nombre', value: selectedItem.nombre },
-                                    { key: 'descripcion', label: 'Descripción', value: selectedItem.descripcion },
-                                    { key: 'marca', label: 'Marca', value: selectedItem.marca },
-                                    { key: 'modelo', label: 'Modelo', value: selectedItem.modelo },
-                                    { key: 'disponibilidad_unidad', label: 'Disponibilidad por Unidad', value: selectedItem.disponibilidad_unidad || 'N/A' },
-                                    { key: 'volumen_disponibilidad', label: 'Volumen de Disponibilidad (lb)', value: selectedItem.volumen_disponibilidad || 'N/A' }
-                                ]}
-                                columns={[
-                                    { title: 'Campo', dataIndex: 'label', key: 'label', width: '40%' },
-                                    { title: 'Valor', dataIndex: 'value', key: 'value', width: '60%' }
-                                ]}
-                                pagination={false}
-                                bordered
-                                rowKey="key"
-                            />
-                        </div>
-
-                        {/* Información adicional en formato de "cards" */}
-                        <div >
-                            <div className="information-grid">
-                                <div className="info-item">
-                                    <span className="info-label">Tipo</span>
-                                    <span className="info-value">{selectedItem.tipo || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Proteína</span>
-                                    <span className="info-value">{selectedItem.proteina || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Forma</span>
-                                    <span className="info-value">{selectedItem.forma || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Fase</span>
-                                    <span className="info-value">{selectedItem.fase || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Tamaño</span>
-                                    <span className="info-value">{selectedItem.tamanio || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Origen</span>
-                                    <span className="info-value">{selectedItem.origen || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Estado</span>
-                                    <span className="info-value">{selectedItem.estado || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Presentación</span>
-                                    <span className="info-value">{selectedItem.presentacion || 'N/A'}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Certificación</span>
-                                    <span className="info-value">{selectedItem.certificacion || 'N/A'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </Modal>
-        </>
-    );
+                columns={[
+                  { title: 'Campo', dataIndex: 'label', key: 'label', width: '40%' },
+                  { title: 'Valor', dataIndex: 'value', key: 'value', width: '60%' }
+                ]}
+                pagination={false}
+                bordered
+                rowKey="key"
+              />
+            </div>
+          </div>
+        )}
+      </Modal>
+    </>
+  );
 }
 
 export default InventoryTableLabs;
