@@ -191,6 +191,7 @@ const mapOrgRecord = (info, baseOrg, orgDetails, location, mappedPools) => {
     SM_ProductionType_ID: orgDetails.SM_ProductionType?.id,
     SM_ProductionType_Identifier: orgDetails.SM_ProductionType?.identifier,
     SM_SafetyCertificate: orgDetails.SM_SafetyCertificate,
+    SM_NurseryArea: orgDetails.SM_NurseryArea,
     TaxID: orgDetails.TaxID,
     Updated: orgDetails.Updated,
     UpdatedBy_ID: orgDetails.UpdatedBy?.id,

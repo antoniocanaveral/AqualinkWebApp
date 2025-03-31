@@ -45,6 +45,8 @@ import { labloteReducer } from './lablote/reducers';
 import { batchReportReducer } from './views/batch-report/reducers';
 import { traceabilityReportReducer } from './traceability/reducer';
 import { feedingreportReducer } from './views/feeding-report/reducers';
+import { productionReportReducer } from './views/production-report/reducers';
+import { waterflowReportReducer } from './views/waterflow/reducer';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -74,6 +76,9 @@ const rootReducers = combineReducers({
   batchReport: batchReportReducer,
   traceabilityReport: traceabilityReportReducer,
   feedingreport: feedingreportReducer,
+  productionReport: productionReportReducer,
+  waterflowReport: waterflowReportReducer,
+
   cost: costReducer,
   gallery: galleryReducer,
   email: emailReducer,

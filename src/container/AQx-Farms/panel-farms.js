@@ -144,7 +144,7 @@ function PanelFarms() {
     {
       options: poolsOptions,
       onChange: handlePoolChange,
-      placeholder: 'Seleccione una Pool',
+      placeholder: 'Seleccione una Piscina',
       disabled: poolsOptions.length === 0,
       value: selectedPool || undefined,
     },

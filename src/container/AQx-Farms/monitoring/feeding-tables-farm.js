@@ -137,19 +137,19 @@ function FeedingTableFarms() {
           {/* Card para Datos Generales */}
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <FeedingGeneralCard feedingreport={feedingreports[1]} />
+              <FeedingGeneralCard feedingreport={feedingreports[0]} />
             </Suspense>
           </Col>
           <Col xl={8} xs={24} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <PreCriaCard feedingreport={feedingreports[1]} />
-              <PreEngordeCard feedingreport={feedingreports[1]} />
+              <PreCriaCard feedingreport={feedingreports[0]} />
+              <PreEngordeCard feedingreport={feedingreports[0]} />
             </Suspense>
           </Col>
           {/* Card para Piscina */}
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <DatosRealesCard feedingreport={feedingreports[1]} />
+              <DatosRealesCard feedingreport={feedingreports[0]} />
             </Suspense>
           </Col>
         </Row>
@@ -162,7 +162,7 @@ function FeedingTableFarms() {
                 </Cards>
               }
             >
-              <FeedingProjectedTable feedingreport={feedingreports[1]} />
+              <FeedingProjectedTable feedingreport={feedingreports[0]} />
             </Suspense>
           </Col>
         </Row>
@@ -175,7 +175,7 @@ function FeedingTableFarms() {
                 </Cards>
               }
             >
-              <FeedingRealTable feedingreport={feedingreports[1]} />
+              <FeedingRealTable feedingreport={feedingreports[0]} />
             </Suspense>
           </Col>
         </Row>

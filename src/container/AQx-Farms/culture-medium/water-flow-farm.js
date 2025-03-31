@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Row, Col, Typography, Card, Skeleton, Space } from 'antd';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -9,106 +9,114 @@ import WaterFlowCycleChart from './charts/WaterFlowCycleChart';
 
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+import { fetchWaterflowReports } from '../../../redux/views/waterflow/actionCreator';
 
 function WaterFlowFarm() {
+  const dispatch = useDispatch();
+  const { waterflowReports, loading } = useSelector(state => state.waterflowReport);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
-    const [selectedSector, setSelectedSector] = useState(null);
-    const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
-  
-  
-    const organizations = useSelector((state) => state.auth.farmsOrgs);
-    const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
-  
-    const handleOrgChange = (orgId, orgEmail) => {
-      setSelectedOrg(orgId);
-      Cookies.set('orgId', orgId);
-      Cookies.set('orgEmail', orgEmail || '');
-      Cookies.remove('poolId');
-      setSelectedPool(null);
-      setSelectedSector(null);
-    };
-  
-    const handleSectorChange = (sectorId) => {
-      setSelectedSector(sectorId);
-      setSelectedPool(null);
-    };
-  
-    const handlePoolChange = (poolId) => {
-      setSelectedPool(poolId);
-      Cookies.set('poolId', poolId);
-    };
-  
-    const farmsSelectOptions = organizations.length > 0 ? [
-      {
-        options: farmsOrgsWithPools.map(org => ({
-          value: org.orgId,
-          label: org.orgName,
-          email: org.orgEmail,
-        })),
-        onChange: handleOrgChange,
-        placeholder: 'Seleccione una Farm',
-        value: selectedOrg || undefined,
-      },
-    ] : [];
-  
-    const sectorsOptions = selectedOrg
-      ? farmsOrgsWithPools
-        .find(org => org.orgId === selectedOrg)?.pools
-        .reduce((acc, pool) => {
-          if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
-            acc.push({
-              value: pool.salesRegion.id,
-              label: pool.salesRegion.name,
-            });
-          }
-          return acc;
-        }, [])
-      : [];
-  
-    const sectorSelectOptions = selectedOrg ? [
-      {
-        options: sectorsOptions,
-        onChange: handleSectorChange,
-        placeholder: 'Seleccione un Sector',
-        value: selectedSector || undefined,
-      },
-    ] : [];
-  
-    const poolsOptions = selectedSector
-      ? farmsOrgsWithPools
-        .find(org => org.orgId === selectedOrg)?.pools
-        .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
-        .map(pool => ({
-          value: pool.poolId,
-          label: pool.poolName,
-        }))
-      : [];
-  
-    const poolsSelectOptions = selectedSector ? [
-      {
-        options: poolsOptions,
-        onChange: handlePoolChange,
-        placeholder: 'Seleccione una Pool',
-        disabled: poolsOptions.length === 0,
-        value: selectedPool || undefined,
-      },
-    ] : [];
-  
-    const combinedSelectOptions = [
-      ...farmsSelectOptions,
-      ...sectorSelectOptions,
-      ...poolsSelectOptions,
-    ];
-  
-  
+  const [selectedSector, setSelectedSector] = useState(null);
+  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+
+
+  const organizations = useSelector((state) => state.auth.farmsOrgs);
+  const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
+    setSelectedPool(null);
+    setSelectedSector(null);
+  };
+
+  const handleSectorChange = (sectorId) => {
+    setSelectedSector(sectorId);
+    setSelectedPool(null);
+  };
+
+  const handlePoolChange = (poolId) => {
+    setSelectedPool(poolId);
+    Cookies.set('poolId', poolId);
+  };
+
+  const farmsSelectOptions = organizations.length > 0 ? [
+    {
+      options: farmsOrgsWithPools.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Farm',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+
+  const sectorsOptions = selectedOrg
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .reduce((acc, pool) => {
+        if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
+          acc.push({
+            value: pool.salesRegion.id,
+            label: pool.salesRegion.name,
+          });
+        }
+        return acc;
+      }, [])
+    : [];
+
+  const sectorSelectOptions = selectedOrg ? [
+    {
+      options: sectorsOptions,
+      onChange: handleSectorChange,
+      placeholder: 'Seleccione un Sector',
+      value: selectedSector || undefined,
+    },
+  ] : [];
+
+  const poolsOptions = selectedSector
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
+      .map(pool => ({
+        value: pool.poolId,
+        label: pool.poolName,
+      }))
+    : [];
+
+  const poolsSelectOptions = selectedSector ? [
+    {
+      options: poolsOptions,
+      onChange: handlePoolChange,
+      placeholder: 'Seleccione una Pool',
+      disabled: poolsOptions.length === 0,
+      value: selectedPool || undefined,
+    },
+  ] : [];
+
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
+    ...sectorSelectOptions,
+    ...poolsSelectOptions,
+  ];
+
+  const poolSizeHa = waterflowReports[0].SM_PoolSize || 0;
+  const poolSizeM2 = poolSizeHa * 10000; // Convertimos Ha a m²
+
+  const areaPiscina = `${poolSizeHa} Ha`;
+
+
   const reportData = {
-    areaPiscina: "5.4 Ha",
+    areaPiscina: `${waterflowReports[0].SM_PoolSize + " Ha"}`,
     superficie: [
-      { label: "Área", porcentaje: "100%", valor: "0 m2" },
-      { label: "Mesa", porcentaje: "45%", valor: "0 m2" },
-      { label: "Prestamo", porcentaje: "55%", valor: "0 m2" },
+      { label: "Área", porcentaje: "100%", valor: `${poolSizeM2} m2` },
+      { label: "Mesa", porcentaje: "45%", valor: `${(poolSizeM2 * 0.45).toFixed(0)} m2` },
+      { label: "Préstamo", porcentaje: "55%", valor: `${(poolSizeM2 * 0.55).toFixed(0)} m2` },
     ],
     profundidad: [
       { label: "Mesa", valor: "1.45 mts" },
@@ -129,10 +137,16 @@ function WaterFlowFarm() {
     ],
   };
 
+
+  useEffect(() => {
+    if (selectedPool)
+      dispatch(fetchWaterflowReports());
+  }, [dispatch, selectedPool]);
+  // Datos de la tabla principal
   return (
     <>
       <PageHeader
-        
+
         highlightText="AquaLink Cultivo"
         title="Flujo y Recambio de Agua"
         selectOptions={combinedSelectOptions}

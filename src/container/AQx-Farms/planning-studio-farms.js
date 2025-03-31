@@ -189,7 +189,7 @@ function PlanningStudioFarms() {
   // Clonar y modificar un escenario
   const cloneAndModifyScenario = (scenario) => {
     const newScenario = { ...scenario };
-    
+
     // Incrementar los valores según sea necesario
     newScenario.density = scenario.density + 1000; // Ejemplo: incrementar la densidad
     newScenario.stimated_weight = scenario.stimated_weight + 1; // Incrementar peso
@@ -198,9 +198,9 @@ function PlanningStudioFarms() {
     newScenario.total_cost = parseFloat((scenario.total_cost * 1.05).toFixed(2)); // Aumentar costo total en un 5%
     newScenario.total_income = parseFloat((scenario.total_income * 1.05).toFixed(2)); // Aumentar ingreso total en un 5%
     newScenario.estimated_production_lb = scenario.estimated_production_lb + 10000; // Incrementar biomasa
-    
+
     // Asegúrate de que otros campos que necesiten ser únicos o modificados también se actualicen
-    
+
     return newScenario;
   };
 
@@ -237,7 +237,7 @@ function PlanningStudioFarms() {
 
       // Actualiza el estado agregando el nuevo escenario al array existente
       const updatedScenarios = [...scenarios, response.data];
-      
+
       // Verificar si se han agregado 3 escenarios para añadir el cuarto automáticamente
       if (updatedScenarios.length === 3) {
         // Crear el cuarto escenario basado en el tercero
@@ -263,13 +263,20 @@ function PlanningStudioFarms() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={7} xs={24} >
+          <Col xl={7} xs={24} style={{display: "flex"}} >
+         
+
             <AqualinkMaps
+              width={'100%'}
+              height={
+                window.innerWidth >= 2000 ? '600px' :
+                  '305px'
+              }
+              descriptionColumn={2}
               selectedOrg={selectedOrg}
               selectedSector={selectedSector}
               selectedPool={selectedPool}
               farmsOrgsWithPools={farmsOrgsWithPools} // Pasa farmsOrgsWithPools como prop
-              height={ 315}
             />
           </Col>
           <Col xl={17} xs={24} >
@@ -511,7 +518,7 @@ function PlanningStudioFarms() {
                       </Form.Item>
                     </Col>
 
-                    
+
                     {/* Costo x Kg Alimento */}
                     <Col xs={24} md={12} lg={6}>
                       <Form.Item
@@ -608,9 +615,9 @@ function PlanningStudioFarms() {
             <Col xl={6} xs={24} key={index}>
               <Cards
                 image={require(`../../static/img/AQx-IMG/shrimp16.svg`).default}
-                title={index == 3 ? "Escenario Aqualink": `Escenario ${index + 1}`} size="large">
+                title={index == 3 ? "Escenario Aqualink" : `Escenario ${index + 1}`} size="large">
                 <div style={{ marginBottom: '15px' }}>
-             
+
 
                   <Row gutter={[16, 16]}>
                     <div className='flex-row_space-between'>
@@ -620,7 +627,7 @@ function PlanningStudioFarms() {
                     <hr style={{ width: '100%', border: '0.1px solid #ddd', marginTop: '0px' }} />
 
                     <div className='flex-row_space-between'>
-                      <Typography.Text  strong>Peso estimado</Typography.Text>
+                      <Typography.Text strong>Peso estimado</Typography.Text>
                       <Typography.Text>{scenario.inputs.stimated_weight}g</Typography.Text>
                     </div>
                     <hr style={{ width: '100%', border: '0.1px solid #ddd', marginTop: '0px' }} />
@@ -653,7 +660,7 @@ function PlanningStudioFarms() {
                         alignItems: 'center',
                         padding: '16px',
                         borderRadius: '4px',
-                        backgroundColor: index == 3 ? "#01b81a": scenario.estimated_production_lb === 0
+                        backgroundColor: index == 3 ? "#01b81a" : scenario.estimated_production_lb === 0
                           ? '#ff4d4f'
                           : scenario.estimated_production_lb > 10
                             ? '#258fdb'
@@ -671,13 +678,13 @@ function PlanningStudioFarms() {
                         <Typography.Text style={{ fontSize: '1.5em', fontWeight: 'bold', color: index == 3 ? "black" : '#73879c' }}>
                           ${scenario.total_cost}
                         </Typography.Text>
-                        <Typography.Text style={{ display: 'block',  color: index == 3 ? "black" : '#73879c' }}>Costo Estimado</Typography.Text>
+                        <Typography.Text style={{ display: 'block', color: index == 3 ? "black" : '#73879c' }}>Costo Estimado</Typography.Text>
                       </div>
                       <div style={{ textAlign: 'center' }}>
-                        <Typography.Text style={{ fontSize: '1.5em', fontWeight: 'bold',  color: index == 3 ? "black" : '#73879c'}}>
+                        <Typography.Text style={{ fontSize: '1.5em', fontWeight: 'bold', color: index == 3 ? "black" : '#73879c' }}>
                           ${scenario.total_income}
                         </Typography.Text>
-                        <Typography.Text style={{ display: 'block',  color: index == 3 ? "black" : '#73879c' }}>Venta Estimada</Typography.Text>
+                        <Typography.Text style={{ display: 'block', color: index == 3 ? "black" : '#73879c' }}>Venta Estimada</Typography.Text>
                       </div>
                     </div>
                     <hr style={{ width: '100%', border: '0.5px solid #ddd', marginTop: '8px' }} />

@@ -15,7 +15,7 @@ const FeedingGeneralCard = ({ feedingreport }) => {
           { label: 'Densidad x Ha', value: feedingreport?.SM_DensityPerHectare },
           { label: 'FCA Estimado', value: 1.1},
           { label: 'Peso Inicial Engorde', value:  1 / feedingreport.SM_RequestedPL},
-          { label: 'Protocolo Alimentación', value: feedingreport?.SM_FeedingProtocols_ID.identifier },
+          { label: 'Protocolo Alimentación', value: feedingreport?.SM_FeedingProtocols_ID?.identifier },
           { label: 'WGR (gr/w)', value: feedingreport?.wgr },
           { label: 'Supervivencia Estimada', value: feedingreport?.SM_Survival },
           { label: 'Peso Promedio Objetivo', value: feedingreport?.SM_TargetWeight },

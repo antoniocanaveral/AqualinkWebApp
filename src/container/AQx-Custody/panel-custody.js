@@ -130,14 +130,6 @@ function PanelCustody() {
         </Row>
 
         <Row gutter={25}>
-          <Col xl={24} xs={24} style={{ display: 'flex' }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <AqualinkMaps height={window.innerWidth >= 2000 ? 600 : 430} />
-            </Suspense>
-          </Col>
-        </Row>
-
-        <Row gutter={25}>
           <Col xl={24} xs={24}>
             <center>
               <Typography.Title level={4}>Coordinaciones Activas</Typography.Title>

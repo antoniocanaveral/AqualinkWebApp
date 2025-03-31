@@ -24,7 +24,7 @@ function LaboratoryAddCustody() {
     // Obtener datos desde Redux
     const { parameters, loading } = useSelector((state) => state.labanalysis);
     const organizations = useSelector((state) => state.auth.custodyOrgs);
-    const coordinations = useSelector((state) => state.custody.coordinations);
+    const coordinations = useSelector((state) => state.lab.coordinations);
 
     useEffect(() => {
         dispatch(fetchParameters());
@@ -209,7 +209,7 @@ function LaboratoryAddCustody() {
         <>
             <PageHeader
                 highlightText="Aqualink"
-                title="Coordinaciones Pesca"
+                title="Análisis de Laboratorio"
                 organizations={organizations}
                 selectOptions={combinedSelectOptions}
                 selectedOrg={selectedOrg}

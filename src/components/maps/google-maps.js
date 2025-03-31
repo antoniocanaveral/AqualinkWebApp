@@ -22,12 +22,12 @@ const GoogleMaps = GoogleApiWrapper({
     styles,
     infoWindow,
   } = property;
-
   const [state, setState] = useState({
     showingInfoWindow: false,
-    activeMarker: {},
-    selectedPlace: {},
+    activeMarker: null,
+    selectedPlace: {}, // Nunca undefined
   });
+
 
   const onMarkerClick = (props, marker) => {
     setState({
@@ -68,10 +68,12 @@ const GoogleMaps = GoogleApiWrapper({
             key={marker.id}
             onClick={onMarkerClick}
             position={marker?.position}
+            name={marker.name}
+            email={marker.email}
             icon={require(`../../static/img/map/mpc.png`)}
           />
-        ))}
 
+        ))}
         {/* Renderizar polígonos */}
         {polygons.map((polygon) => (
           <Polygon
@@ -86,6 +88,25 @@ const GoogleMaps = GoogleApiWrapper({
             }}
           />
         ))}
+        {polygons.map((polygon) => (
+          <Marker
+            key={`${polygon.id}-label`}
+            position={polygon.centroid}
+            label={{
+              text: polygon.label,
+              color: 'black',
+              fontSize: '14px',
+              fontWeight: 'bold',
+            }}
+            icon={{
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 0.01, // hace invisible el ícono
+              fillOpacity: 0,
+              strokeOpacity: 0,
+              anchor: new google.maps.Point(0, 0),
+            }}
+          />
+        ))}
 
         {/* InfoWindow */}
         <InfoWindow
@@ -93,8 +114,16 @@ const GoogleMaps = GoogleApiWrapper({
           marker={state.activeMarker}
           visible={state.showingInfoWindow}
         >
-          {infoWindow}
+          {state.selectedPlace && state.selectedPlace.name ? (
+            <div>
+              <h3>{state.selectedPlace.name}</h3>
+              {state.selectedPlace.email && <p>{state.selectedPlace.email}</p>}
+            </div>
+          ) : null}
         </InfoWindow>
+
+
+
       </Map>
     </GmapWraper>
   );

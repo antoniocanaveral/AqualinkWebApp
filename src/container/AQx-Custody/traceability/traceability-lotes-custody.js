@@ -249,7 +249,7 @@ function TraceabilityLotesCustody() {
               >
                 <div style={{ flex: '0 0 40px', marginRight: '15px' }}>
                   <img
-                      src={require('../../../../public/logo.svg').default}
+                    src={require('../../../../public/logo.svg').default}
                     alt="logo"
                     style={{ width: '40px', height: '40px', objectFit: 'contain' }}
                   />
@@ -270,7 +270,7 @@ function TraceabilityLotesCustody() {
       </Main>
 
       <Modal
-        title={`Product Batch ID: ${selectedLote?.SM_Batch}`}
+        title={``}
         visible={isModalVisible}
         onOk={handleDetailOk}
         onCancel={handleDetailCancel}
@@ -290,55 +290,66 @@ function TraceabilityLotesCustody() {
         ]}
       >
         {selectedLote && (
-          <div ref={reportRef}
+          <div
+            ref={reportRef}
             style={{
               border: '2px solid #e3e3e3',
               borderRadius: '8px',
               boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
               padding: '20px',
               display: 'flex',
-              flexDirection: 'row',
+              flexDirection: 'column', // <--- Cambia a columna
               gap: '20px',
-              flexWrap: 'wrap',
             }}
           >
-            <LoteDetails selectedLote={selectedLote} />
-            <div>
-              <Title level={4} style={{ display: 'flex', alignItems: 'center' }}>
-                <span
-                  style={{
-                    display: 'inline-block',
-                    width: '10px',
-                    height: '10px',
-                    backgroundColor: '#2196F3',
-                    borderRadius: '50%',
-                    marginRight: '8px',
-                  }}
+            {/* Primera fila: LoteDetails + QR */}
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '20px', flexWrap: 'wrap' }}>
+              <div style={{ flex: '1 1 60%', minWidth: '300px' }}>
+                <LoteDetails selectedLote={selectedLote} />
+              </div>
+              <div style={{ flex: '1 1 35%', minWidth: '200px' }}>
+                <Title level={4} style={{ display: 'flex', alignItems: 'center' }}>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      width: '10px',
+                      height: '10px',
+                      backgroundColor: '#2196F3',
+                      borderRadius: '50%',
+                      marginRight: '8px',
+                    }}
+                  />
+                  {selectedLote.SM_Batch}
+                </Title>
+                <QRCodeSVG
+                  value={JSON.stringify({
+                    id: selectedLote.id,
+                    analisis: {
+                      quality: selectedLote.quality_test || 'N/A',
+                      organoleptic: selectedLote.organoleptic_test || 'N/A',
+                    },
+                    custodia: {
+                      transportTime: selectedLote.custody_transport_time || 'N/A',
+                      transportTemp: selectedLote.custody_transport_temperature || 'N/A',
+                    },
+                    origen: {
+                      hatchery: selectedLote.bp_org_name || 'N/A',
+                      broodstock: selectedLote.lote_org_name || 'N/A',
+                    },
+                  })}
+                  size={358}
+                  includeMargin
                 />
-                {selectedLote.SM_Batch}
-              </Title>
-              <QRCodeSVG
-                value={JSON.stringify({
-                  id: selectedLote.id,
-                  analisis: {
-                    quality: selectedLote.quality_test || 'N/A',
-                    organoleptic: selectedLote.organoleptic_test || 'N/A',
-                  },
-                  custodia: {
-                    transportTime: selectedLote.custody_transport_time || 'N/A',
-                    transportTemp: selectedLote.custody_transport_temperature || 'N/A',
-                  },
-                  origen: {
-                    hatchery: selectedLote.bp_org_name || 'N/A',
-                    broodstock: selectedLote.lote_org_name || 'N/A',
-                  },
-                })}
-                size={228}
-                includeMargin
-              />
+              </div>
+            </div>
+
+            {/* Segunda fila: sección extra de 3 columnas usando TODO el ancho */}
+            <div style={{ width: '100%' }}>
+              <LoteDetails selectedLote={selectedLote} fromSection="SPECIES HEALTH & WELLFARE" />
             </div>
           </div>
         )}
+
       </Modal>
     </>
   );
