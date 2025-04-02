@@ -117,7 +117,7 @@ const OverviewDataList = React.memo(() => {
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilCloudDataConnection />
-          <PageHeader  title="Smart AquaCulture EcoSystem" />
+          <PageHeader  title="Smart WebApps" />
         </div>
       </Col>
       {overviewCardData.map((item) => (
