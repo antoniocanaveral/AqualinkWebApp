@@ -37,7 +37,7 @@ const DatosRealesCard = ({ feedingreport }) => {
                 <div className="harvest-report-divider-2" />
                 <div className="flex-row"><span className="label">FCA Real (DdC):</span><span>{lastFca || 'N/A'}</span></div>
                 <div className="harvest-report-divider-2" />
-                <div className="flex-row"><span className="label">Peso Inicial Engorde:</span><span>{feedingreport?.pesoInicialEngorde || 'N/A'}</span></div>
+                <div className="flex-row"><span className="label">Peso Inicial Engorde:</span><span>{1 /feedingreport?.SM_AnimalsPerGramFatten || 'N/A'}</span></div>
                 <div className="harvest-report-divider-2" />
                 <div className="flex-row"><span className="label">Protocolo Alimentación:</span><span>{feedingreport?.SM_FeedingProtocols_ID?.identifier || 'N/A'}</span></div>
                 <div className="harvest-report-divider-2" />

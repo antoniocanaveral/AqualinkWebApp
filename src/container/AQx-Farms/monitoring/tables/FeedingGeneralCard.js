@@ -16,7 +16,7 @@ const FeedingGeneralCard = ({ feedingreport }) => {
           { label: 'FCA Estimado', value: 1.1},
           { label: 'Peso Inicial Engorde', value:  1 / feedingreport.SM_RequestedPL},
           { label: 'Protocolo Alimentación', value: feedingreport?.SM_FeedingProtocols_ID?.identifier },
-          { label: 'WGR (gr/w)', value: feedingreport?.wgr },
+          { label: 'WGR (gr/w)', value: feedingreport?.SM_EstimatedWeeklyGrowth },
           { label: 'Supervivencia Estimada', value: feedingreport?.SM_Survival },
           { label: 'Peso Promedio Objetivo', value: feedingreport?.SM_TargetWeight },
         ].map((item, idx) => (

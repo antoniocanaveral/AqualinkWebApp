@@ -238,6 +238,7 @@ export const createPools = (pools) => async (dispatch) => {
 
   try {
     dispatch(poolsLoading());
+    console.log(pools)
     const transformedPools = pools.map(pool => ({
       AD_Client_ID: selectedClientId,
       AD_Org_ID: CreatedOrg.id,
@@ -245,8 +246,8 @@ export const createPools = (pools) => async (dispatch) => {
       sm_pooltype: pool.type,
       SM_PoolSize: pool.sm_poolsize,
       SM_OppDepth: pool.sm_oppdepth,
-      SM_PlantingDepth: pool.sm_plantingdepth,
-      sm_transferdepth: pool.sm_transferdepth,
+      sm_profundidadmesa: pool.sm_profundidadmesa,
+      sm_profundidadprestamo: pool.sm_profundidadprestamo,
       sm_mechanicalaeration: pool.sm_mechanicalaeration,
       feeding_method: pool.feeding_method ? "AUTOMATIC" : "MANUAL",
       food_quantity: pool.food_quantity,

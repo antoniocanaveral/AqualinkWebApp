@@ -12,6 +12,7 @@ import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
 import { fetchWaterflowReports } from '../../../redux/views/waterflow/actionCreator';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function WaterFlowFarm() {
   const dispatch = useDispatch();
@@ -105,29 +106,45 @@ function WaterFlowFarm() {
     ...poolsSelectOptions,
   ];
 
-  const poolSizeHa = waterflowReports[0].SM_PoolSize || 0;
-  const poolSizeM2 = poolSizeHa * 10000; // Convertimos Ha a m²
+  const report = waterflowReports?.[0] || {};
+  const poolSizeHa = report.SM_PoolSize || 0;
+  const poolSizeM2 = poolSizeHa * 10000;
 
-  const areaPiscina = `${poolSizeHa} Ha`;
+  const profundidadMesa = parseFloat(report.sm_profundidadmesa) || 0;
+  const profundidadPrestamo = parseFloat(report.sm_profundidadprestamo) || 0;
 
+  // Promedio de profundidades
+  const profundidadCombinada = ((profundidadMesa + profundidadPrestamo) / 2).toFixed(2);
+
+  // Superficies
+  const superficieMesa = poolSizeM2 * 0.45;
+  const superficiePrestamo = poolSizeM2 * 0.55;
+
+  // Volumen Operativo (OP) en m³
+  const volumenOP = (superficieMesa * profundidadMesa) + (superficiePrestamo * profundidadPrestamo);
+
+  // Sub-volúmenes basados en porcentajes
+  const volumenSiembra = volumenOP * 0.40;
+  const volumenTRNFR = volumenOP * 0.60;
+  const volumenPesca = volumenOP * 0.40;
 
   const reportData = {
-    areaPiscina: `${waterflowReports[0].SM_PoolSize + " Ha"}`,
+    areaPiscina: `${poolSizeHa} Ha`,
     superficie: [
-      { label: "Área", porcentaje: "100%", valor: `${poolSizeM2} m2` },
-      { label: "Mesa", porcentaje: "45%", valor: `${(poolSizeM2 * 0.45).toFixed(0)} m2` },
-      { label: "Préstamo", porcentaje: "55%", valor: `${(poolSizeM2 * 0.55).toFixed(0)} m2` },
+      { label: "Área", porcentaje: "100%", valor: `${poolSizeM2.toFixed(0)} m2` },
+      { label: "Mesa", porcentaje: "45%", valor: `${superficieMesa.toFixed(0)} m2` },
+      { label: "Préstamo", porcentaje: "55%", valor: `${superficiePrestamo.toFixed(0)} m2` },
     ],
     profundidad: [
-      { label: "Mesa", valor: "1.45 mts" },
-      { label: "Prestamo", valor: "1.85 mts" },
-      { label: "Prof. combinada", valor: "1.65 mts" },
+      { label: "Mesa", valor: `${profundidadMesa} mts` },
+      { label: "Prestamo", valor: `${profundidadPrestamo} mts` },
+      { label: "Prof. combinada", valor: `${profundidadCombinada} mts` },
     ],
     volumen: [
-      { label: "Volumen OP o masa de agua", valor: "0 m3" },
-      { label: "Volumen a siembra", porcentaje: "30%", valor: "0 m3" },
-      { label: "Volumen TRNFR", porcentaje: "60%", valor: "0 m3" },
-      { label: "Volumen a pesca", porcentaje: "40%", valor: "0 m3" },
+      { label: "Volumen OP o masa de agua", valor: `${volumenOP.toFixed(0)} m3` },
+      { label: "Volumen a siembra", porcentaje: "40%", valor: `${volumenSiembra.toFixed(0)} m3` },
+      { label: "Volumen TRNFR", porcentaje: "60%", valor: `${volumenTRNFR.toFixed(0)} m3` },
+      { label: "Volumen a pesca", porcentaje: "40%", valor: `${volumenPesca.toFixed(0)} m3` },
     ],
     protocolos: [
       { label: "Protocolo de flujo 1", porcentaje: "3%", valor: "0" },
@@ -157,33 +174,17 @@ function WaterFlowFarm() {
         <Row gutter={[10, 0]} equal-heights>
           <Col xl={10} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Geolocalización" size="large" style={{ marginBottom: 0 }}>
-                <Row gutter={[5, 5]} align="top">
-                  <Col xs={24} md={24}>
-                    <div>
-                      <GoogleMaps height={"350px"} />
-                    </div>
-                  </Col>
-                  <Col xs={24} md={24}>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                          <Typography.Text>Área: 307.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                          <Typography.Text>Área: 5.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                          <Typography.Text>Área: 1.35 ha</Typography.Text>
-                        </div>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
+              <AqualinkMaps
+                width={'100%'}
+                height={
+                  window.innerWidth >= 2000 ? '600px' :
+                    '305px'
+                }
+                selectedOrg={selectedOrg}
+                selectedSector={selectedSector}
+                selectedPool={selectedPool}
+                farmsOrgsWithPools={farmsOrgsWithPools} // Pasa farmsOrgsWithPools como prop
+              />
             </Suspense>
 
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>

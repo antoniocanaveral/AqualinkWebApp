@@ -6,6 +6,7 @@ export const selectAuthError = (state) => state.auth.error;
 export const selectCustodyOrgs = (state) => state.auth.custodyOrgs
 
 export const selectLabOrgs = (state) => state.auth.labsOrgs
+export const selectOrgToAudit = (state) => state.auth.orgToAudit;
 
 
 export const selectFarmsOrgsWithPools = (state) => {

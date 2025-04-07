@@ -4,6 +4,7 @@ import { DataService } from '../../config/dataService/dataService';
 
 const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr, rolesBegin, rolesSuccess, rolesErr, moduleSelection, loadAccess } = actions;
 
+
 const login = (values, callback) => {
   return async (dispatch) => {
     dispatch(loginBegin());
@@ -11,35 +12,74 @@ const login = (values, callback) => {
       Cookies.remove('access_token');
       Cookies.remove('access_token_initial');
 
+      // Paso 1: Login inicial con user/pass
       const response = await DataService.post('/auth/tokens', values, {}, false, true);
       Cookies.set('access_token_initial', response.data.token);
 
       const client = response.data.clients[0];
-      const rolesResponse = await DataService.get(`/auth/roles?client=${client.id}`, true);
-      console.log(rolesResponse)
-      let selectedRoleId = null;
-      if (rolesResponse.data.roles.length === 1) {
-        selectedRoleId = rolesResponse.data.roles[0].id;
-        Cookies.set('selectedRoleId', selectedRoleId);
-      }
-
       Cookies.set('selectedClientId', client.id);
-      Cookies.set('roles', JSON.stringify(rolesResponse.data.roles));
+
+      // Paso 2: Obtener roles
+      const rolesResponse = await DataService.get(`/auth/roles?client=${client.id}`, true);
+      const roles = rolesResponse.data.roles;
+
+      Cookies.set('roles', JSON.stringify(roles));
       Cookies.set('logedIn', true);
 
-      if (selectedRoleId !== null) {
-        await selectRoleUtil(selectedRoleId, client.id);
-        callback(selectedRoleId);
-      } else {
-        callback(selectedRoleId !== null);
+      let selectedRoleId = null;
+      let selectedRoleName = null;
+
+      if (roles.length === 1) {
+        const selectedRole = roles[0];
+        selectedRoleId = selectedRole.id;
+        selectedRoleName = selectedRole.name;
+
+        Cookies.set('selectedRoleId', selectedRoleId);
+        Cookies.set('selectedRoleName', selectedRoleName);
+
+        // Continuamos solo si hay un único rol (flujo automático)
+        let validOrgId = 0;
+
+        try {
+          const orgsResponse = await DataService.get(`/auth/organizations?client=${client.id}&role=${selectedRoleId}`, true);
+          const orgs = orgsResponse.data.organizations;
+          if (orgs.length > 0) {
+            validOrgId = orgs[0].id;
+          }
+        } catch (orgErr) {
+          console.warn("Fallo al obtener organizaciones, se usará organizationId: 0", orgErr);
+        }
+
+        // PUT con login final
+        const finalLoginResponse = await DataService.put('/auth/tokens', {
+          clientId: client.id,
+          roleId: selectedRoleId,
+          organizationId: validOrgId,
+          language: 'en'
+        }, true);
+
+        Cookies.set('access_token', finalLoginResponse.data.token);
+        Cookies.set('refresh_token', finalLoginResponse.data.refresh_token);
+        Cookies.set('selectedOrganizationId', validOrgId);
       }
-      dispatch(loginSuccess({ success: true, roles: rolesResponse.data.roles, selectedRoleId: selectedRoleId, selectedClientId: client.id }));
+
+      // Paso 3: Dispatch final
+      dispatch(loginSuccess({
+        success: true,
+        roles,
+        selectedRoleId,
+        selectedClientId: client.id,
+        selectedRoleName,
+      }));
+
+      callback(selectedRoleId);
     } catch (err) {
       dispatch(loginErr(err));
       callback(false, err);
     }
   };
 };
+
 
 const findRoles = (callback) => {
   return async (dispatch) => {
@@ -215,7 +255,9 @@ const loadUserAccess = () => {
   return async (dispatch) => {
     try {
       const roleId = Cookies.get("selectedRoleId");
+      const roleName = Cookies.get("selectedRoleName");
       const clientId = Cookies.get("selectedClientId");
+      const orgIdFromCookie = Cookies.get("orgId");
 
       const orgResponse = await DataService.get(
         `/auth/organizations?client=${clientId}&role=${roleId}`,
@@ -226,32 +268,25 @@ const loadUserAccess = () => {
       let withLabs = false;
       let withCustody = false;
       let withControl = false;
+
       let labsOrgs = [];
       let custodyOrgs = [];
       let farmsOrgs = [];
       let controlsOrgs = [];
+      let orgToAudit = null;
 
-      if (
-        orgResponse &&
-        orgResponse.data &&
-        orgResponse.data.organizations
-      ) {
+      if (orgResponse?.data?.organizations) {
         let params = "";
         const orgMap = {};
+
         orgResponse.data.organizations.forEach((org, index) => {
           params += (index > 0 ? " OR " : "") + `AD_Org_ID eq ${org.id}`;
           orgMap[org.id] = org;
         });
 
-        const orgInfoResponse = await DataService.get(
-          `/models/ad_orginfo?$filter=${params}`
-        );
+        const orgInfoResponse = await DataService.get(`/models/ad_orginfo?$filter=${params}`);
 
-        if (
-          orgInfoResponse &&
-          orgInfoResponse.data &&
-          orgInfoResponse.data.records
-        ) {
+        if (orgInfoResponse?.data?.records) {
           const orgIds = orgInfoResponse.data.records.map((info) => info.id);
           const adOrgFilter = orgIds.map((id) => `AD_Org_ID eq ${id}`).join(" or ");
           const orgLocationResponse = await DataService.get(
@@ -261,51 +296,55 @@ const loadUserAccess = () => {
           const locationMap = {};
           const orgDetailsMap = {};
 
-          if (
-            orgLocationResponse &&
-            orgLocationResponse.data &&
-            orgLocationResponse.data.records
-          ) {
+          if (orgLocationResponse?.data?.records) {
             orgLocationResponse.data.records.forEach((org) => {
               locationMap[org.id] = {
                 latitude: org.SM_Latitude || null,
                 longitude: org.SM_Longitude || null,
-                pools: org.m_warehouse || [] // Piscinas obtenidas con $expand
+                pools: org.m_warehouse || []
               };
               orgDetailsMap[org.id] = org;
             });
           }
 
           for (let info of orgInfoResponse.data.records) {
-            const location = locationMap[info.id] || {
-              latitude: null,
-              longitude: null,
-              pools: []
-            };
+            const location = locationMap[info.id] || { latitude: null, longitude: null, pools: [] };
             const orgDetails = orgDetailsMap[info.id] || {};
             const mappedPools = location.pools.map(mapPoolRecord);
-            console.log("MAPPEPD",mappedPools)
             const baseOrgData = mapOrgRecord(info, orgMap[info.id], orgDetails, location, mappedPools);
+            const orgType = info.AD_OrgType_ID?.identifier;
 
-            switch (info.AD_OrgType_ID?.identifier) {
+            switch (orgType) {
               case "FARM":
                 withFarms = true;
-                farmsOrgs.push({ ...baseOrgData, pools: location.pools.map(mapPoolRecord) });
+                farmsOrgs.push({ ...baseOrgData, pools: mappedPools });
                 break;
               case "LAB":
                 withLabs = true;
-                labsOrgs.push({ ...baseOrgData, pools: location.pools.map(mapPoolRecord) });
+                labsOrgs.push({ ...baseOrgData, pools: mappedPools });
                 break;
               case "CUSTODY":
                 withCustody = true;
-                custodyOrgs.push({ ...baseOrgData, pools: location.pools.map(mapPoolRecord) });
+                custodyOrgs.push({ ...baseOrgData, pools: mappedPools });
                 break;
               case "CONTROL":
                 withControl = true;
-                controlsOrgs.push({ ...baseOrgData, pools: location.pools.map(mapPoolRecord) });
+                controlsOrgs.push({ ...baseOrgData, pools: mappedPools });
                 break;
               default:
                 break;
+            }
+
+            // ✅ Auditor externo: guardar organización y tipo
+            if (
+              roleName === "Cumplimiento - Auditor Externo" &&
+              info.id.toString() === orgIdFromCookie
+            ) {
+              orgToAudit = { ...baseOrgData, pools: mappedPools };
+              console.log("orgToAudit", orgToAudit)
+              if (orgType) {
+                Cookies.set('orgAuditType', orgType); // Guardar tipo en cookie
+              }
             }
           }
         }
@@ -321,7 +360,8 @@ const loadUserAccess = () => {
           labsOrgs,
           custodyOrgs,
           farmsOrgs,
-          controlsOrgs
+          controlsOrgs,
+          orgToAudit
         })
       );
     } catch (err) {
@@ -399,9 +439,11 @@ const logOut = (callback) => {
       Cookies.remove('access_token');
       Cookies.remove('access_token_initial');
       Cookies.remove('selectedRoleId');
+      Cookies.remove('selectedRoleName');
       Cookies.remove('selectedClientId');
       Cookies.remove('roles');
       Cookies.remove('selectedModule');
+      Cookies.remove('orgId');
       dispatch(logoutSuccess(false));
       callback();
     } catch (err) {

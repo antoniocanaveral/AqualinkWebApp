@@ -9,17 +9,17 @@ const PreEngordeCard = ({ feedingreport }) => {
       <div style={{ fontSize: "12px" }}>
         <div className="flex-row">
           <span className="label">Piscina:</span>
-          <span>{feedingreport?.SM_PreFatteningPool_ID?.identifier || 'N/A'}</span>
+          <span>{feedingreport?.SM_PreFatteningPond_ID?.identifier || 'N/A'}</span>
         </div>
         <div className="harvest-report-divider-2" />
         <div className="flex-row">
           <span className="label">Px Transfer 1:</span>
-          <span>{feedingreport?.pxTransfer1 || 'N/A'}</span>
+          <span>{1 /feedingreport?.SM_AnimalsPerGramPreFatten || 'N/A'}</span>
         </div>
         <div className="harvest-report-divider-2" />
         <div className="flex-row">
           <span className="label">Px Transfer 2:</span>
-          <span>{feedingreport?.pxTransfer2 || 'N/A'}</span>
+          <span>{1 /feedingreport?.SM_AnimalsPerGramFatten || 'N/A'}</span>
         </div>
         <div className="harvest-report-divider-2" />
         <div className="flex-row">

@@ -10,6 +10,9 @@ import {
   fetchUsersLoading,
   fetchUsersSuccess,
   fetchUsersError,
+  sendAuditorEmailLoading,
+  sendAuditorEmailSuccess,
+  sendAuditorEmailError,
 } from './actions';
 import { message } from 'antd';
 
@@ -103,6 +106,29 @@ export const createUserFarm = (values, selectedOrgId) => async (dispatch) => {
   }
 };
 
+export const sendAuditorEmailProcess = (values) => async (dispatch) => {
+  try {
+    dispatch(sendAuditorEmailLoading());
+
+    const payload = {
+      Role_Type: 'Auditor Externo', // Valor fijo
+      Email: values.correo,
+      Certificate_Org: values.asc,
+      Organizations: values.orgsConcatenated,
+      Name: values.nombre,
+      Dni: values.cc,
+      Phone: `${values.codigoPais} ${values.telefono}`,
+    };
+
+    const response = await DataService.post('/processes/send_auditor_email_process', payload);
+
+    dispatch(sendAuditorEmailSuccess(response.data));
+    message.success('Proceso de auditor enviado exitosamente');
+  } catch (error) {
+    dispatch(sendAuditorEmailError(error.message));
+    message.error(`Error al enviar el proceso de auditor: ${error.message}`);
+  }
+};
 
 export const fetchUsersByClient = () => async (dispatch) => {
   try {

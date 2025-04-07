@@ -22,7 +22,6 @@ import {
     UilEnvelope,
     UilExchange,
     UilExclamationOctagon,
-    // UilExpandArrowsAlt,
     UilFile,
     UilFileShieldAlt,
     UilHeadphones,

@@ -1,7 +1,23 @@
+// actions.js
+
 export const FETCH_ROLES_LOADING = 'FETCH_ROLES_LOADING';
 export const FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS';
 export const FETCH_ROLES_ERROR = 'FETCH_ROLES_ERROR';
 
+export const CREATE_USER_LOADING = 'CREATE_USER_LOADING';
+export const CREATE_USER_SUCCESS = 'CREATE_USER_SUCCESS';
+export const CREATE_USER_ERROR = 'CREATE_USER_ERROR';
+
+export const FETCH_USERS_LOADING = 'FETCH_USERS_LOADING';
+export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
+export const FETCH_USERS_ERROR = 'FETCH_USERS_ERROR';
+
+// Nuevos tipos para el proceso de auditor externo
+export const SEND_AUDITOR_EMAIL_LOADING = 'SEND_AUDITOR_EMAIL_LOADING';
+export const SEND_AUDITOR_EMAIL_SUCCESS = 'SEND_AUDITOR_EMAIL_SUCCESS';
+export const SEND_AUDITOR_EMAIL_ERROR = 'SEND_AUDITOR_EMAIL_ERROR';
+
+// Acciones para roles
 export const fetchRolesLoading = () => ({
   type: FETCH_ROLES_LOADING,
 });
@@ -16,11 +32,7 @@ export const fetchRolesError = (error) => ({
   payload: { error },
 });
 
-
-export const CREATE_USER_LOADING = 'CREATE_USER_LOADING';
-export const CREATE_USER_SUCCESS = 'CREATE_USER_SUCCESS';
-export const CREATE_USER_ERROR = 'CREATE_USER_ERROR';
-
+// Acciones para crear usuario
 export const createUserLoading = () => ({
   type: CREATE_USER_LOADING,
 });
@@ -35,11 +47,7 @@ export const createUserError = (error) => ({
   payload: error,
 });
 
-
-export const FETCH_USERS_LOADING = 'FETCH_USERS_LOADING';
-export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
-export const FETCH_USERS_ERROR = 'FETCH_USERS_ERROR';
-
+// Acciones para usuarios
 export const fetchUsersLoading = () => ({
   type: FETCH_USERS_LOADING,
 });
@@ -54,3 +62,17 @@ export const fetchUsersError = (error) => ({
   payload: error,
 });
 
+// Nuevas acciones para el proceso de auditor externo
+export const sendAuditorEmailLoading = () => ({
+  type: SEND_AUDITOR_EMAIL_LOADING,
+});
+
+export const sendAuditorEmailSuccess = (data) => ({
+  type: SEND_AUDITOR_EMAIL_SUCCESS,
+  payload: data,
+});
+
+export const sendAuditorEmailError = (error) => ({
+  type: SEND_AUDITOR_EMAIL_ERROR,
+  payload: error,
+});

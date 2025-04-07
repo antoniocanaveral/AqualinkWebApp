@@ -43,6 +43,10 @@ const OverviewDataList = React.memo(() => {
     [navigate, dispatch]
   );
 
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
   // Definir los datos para cada card de forma acorde a OverviewCard
   const overviewCardData = [
     {
@@ -117,7 +121,7 @@ const OverviewDataList = React.memo(() => {
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilCloudDataConnection />
-          <PageHeader  title="Smart AquaCulture EcoSystem" />
+          <PageHeader title="Smart AquaCulture EcoSystem" />
         </div>
       </Col>
       {overviewCardData.map((item) => (
@@ -135,7 +139,7 @@ const OverviewDataList = React.memo(() => {
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilSlack />
-          <PageHeader  im title="Solutions" />
+          <PageHeader im title="Solutions" />
         </div>
       </Col>
       <Col xs={24} xl={8} md={8}>
@@ -146,7 +150,12 @@ const OverviewDataList = React.memo(() => {
       </Col>
 
       <Col xs={24} xl={8} md={8}>
-        <InfoCard icon="UilAnalytics" img={"M&E.png"} type={"solutions"} />
+        <div onClick={
+          () => gotModule('MONITORING', { orgId: null, orgName: null, orgEmail: null }, '/monitoring')
+        }
+        >
+          <InfoCard icon="UilAnalytics" img={"M&E.png"} type={"solutions"} />
+        </div>
       </Col>
       <Col xs={24} xl={8} md={8}>
         <InfoCard icon="UilBriefcaseAlt" img={"B2b.png"} type={"solutions"} />
@@ -164,7 +173,7 @@ const OverviewDataList = React.memo(() => {
       <Col xs={8}>
         <div className="flex_row">
           <UilBooks />
-          <PageHeader  title="Knowledge Center" />
+          <PageHeader title="Knowledge Center" />
         </div>
         <InfoCard icon="UilBrain" img={"AquaDemia.png"} type={"solutions"} />
       </Col>

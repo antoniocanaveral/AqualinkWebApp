@@ -19,7 +19,7 @@ const PreCriaCard = ({ feedingreport }) => {
         <div className="harvest-report-divider-2" />
         <div className="flex-row">
           <span className="label">Px Transferencia:</span>
-          <span>{feedingreport?.pxTransferencia || 'N/A'}</span>
+          <span>{1 /feedingreport?.SM_AnimalsPerGramPreFatten || 1 /feedingreport?.SM_AnimalsPerGramFatten ||  'N/A'}</span>
         </div>
         <div className="harvest-report-divider-2" />
         <div className="flex-row">

@@ -350,13 +350,15 @@ function AnalyticReportFarm() {
             key: 'poolsize_mwarehouse',
             descripcion: 'Peso Inicial de Siembra',
             ...getCiclosValues(productionReports, r =>
-                1 / (r.animals_per_gram || 0)
+                1 / (r.pc_production_json.animals_per_gram || 0)
             ),
         },
         {
             key: 'poolsize_mwarehouse',
             descripcion: 'Peso final a Transferencia',
-            ...getCiclosValues(productionReports, r => r.pesoFinal)
+            ...getCiclosValues(productionReports, r =>
+                1 / r?.SM_AnimalsPerGramPreFatten || 1 / r?.SM_AnimalsPerGramFatten || 'N/A'
+            )
         },
         {
             key: 'poolsize_mwarehouse',
@@ -407,25 +409,26 @@ function AnalyticReportFarm() {
         {
             key: 'poolsize_mwarehouse',
             descripcion: 'Desidad de Transferencia',
-            ...getCiclosValues(productionReports, r => r.pe_production_json.none),
+            ...getCiclosValues(productionReports, r => 
+                r.SM_DensityPerHectarePreFatten * r.poolsize_prefattening
+            ),
         },
 
         {
             key: 'poolsize_mwarehouse',
             descripcion: 'Desidad por Ha(Pre Engorde)',
             ...getCiclosValues(productionReports, r =>
-                (r.pc_production_json.none || 0) /
-                (r.poolsize_prebreeding || 0)
+                (r.SM_DensityPerHectarePreFatten)
             ),
         },
         {
             key: 'poolsize_mwarehouse',
-            descripcion: 'Desidad de Siembra en Pre Engorde por m2',
+            descripcion: 'Densidad de Siembra en Pre Engorde por m²',
             ...getCiclosValues(productionReports, r =>
-                (r.pc_production_json.none || 0) /
-                ((r.poolsize_prebreeding || 0) * 10000)
+                r.SM_DensityPerHectarePreFatten / 10000
             ),
         },
+        
         {
             key: 'poolsize_mwarehouse',
             descripcion: 'Sobrevivencia',
@@ -436,13 +439,15 @@ function AnalyticReportFarm() {
             key: 'poolsize_mwarehouse',
             descripcion: 'Peso Inicial de Transferencia',
             ...getCiclosValues(productionReports, r =>
-                1 / (r.none || 0)
+                1 / r?.SM_AnimalsPerGramPreFatten || 'N/A'
             ),
         },
         {
             key: 'poolsize_mwarehouse',
             descripcion: 'Peso final a Transferencia',
-            ...getCiclosValues(productionReports, r => r.pesoFinal)
+            ...getCiclosValues(productionReports, r =>
+                1 / r?.SM_AnimalsPerGramFatten || 'N/A'
+            )
         },
         {
             key: 'poolsize_mwarehouse',
@@ -492,27 +497,27 @@ function AnalyticReportFarm() {
         {
             key: 'poolsize_mwarehouse',
             descripcion: 'Desidad de Transferencia',
-            ...getCiclosValues(productionReports, r => r.e_production_json.none),
+            ...getCiclosValues(productionReports, r => 
+                r.SM_DensityPerHectareFatten * r.poolsize_mwarehouse
+            ),
         },
 
         {
             key: 'poolsize_mwarehouse',
             descripcion: 'Desidad por Ha(Engorde)',
             ...getCiclosValues(productionReports, r =>
-                (r.pe_production_json.none || 0) /
-                (r.poolsize_prebreeding || 0)
+                (r.SM_DensityPerHectarePreFatten)
             ),
         },
         {
             key: 'poolsize_mwarehouse',
-            descripcion: 'Desidad de Siembra en Engorde por m2',
+            descripcion: 'Densidad de Siembra Engorde por m²',
             ...getCiclosValues(productionReports, r =>
-                (r.pe_production_json.none || 0) /
-                ((r.poolsize_prebreeding || 0) * 10000)
+                r.SM_DensityPerHectareFatten / 10000
             ),
         },
 
-        { 
+        {
             key: 'poolsize_mwarehouse',
             descripcion: 'Días de Cultivo',
             ...getCiclosValues(productionReports, r => r.e_production_json.fatten_weeks * 7)
@@ -525,7 +530,7 @@ function AnalyticReportFarm() {
         {
             key: 'poolsize_mwarehouse',
             descripcion: 'Días de Engorde',
-            ...getCiclosValues(productionReports, r => (r.e_production_json.fatten_weeks * 7)+5)
+            ...getCiclosValues(productionReports, r => (r.e_production_json.fatten_weeks * 7) + 5)
         },
         {
             key: 'poolsize_mwarehouse',

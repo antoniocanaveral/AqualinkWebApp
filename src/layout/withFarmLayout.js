@@ -20,6 +20,7 @@ const { theme } = require('../config/theme/themeVariables');
 const { Header, Sider, Content } = Layout;
 
 const ThemeLayout = (WrappedComponent) => {
+
   const { darkMode } = theme; // Accedemos directamente a darkMode
 
   class LayoutComponent extends Component {

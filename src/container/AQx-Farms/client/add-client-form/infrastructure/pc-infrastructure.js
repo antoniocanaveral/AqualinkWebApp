@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Col, Form, InputNumber, Row, Select, Switch, Input } from "antd";
 
 const { Option } = Select;
 
 export const PreCriaInfrastructure = ({ form, prefix, brandFeeders, selectedSalesRegion }) => {
   const [metodoAlimentacion, setMetodoAlimentacion] = useState("");
+  const [tienePrestamo, setTienePrestamo] = useState(false);
+
+  const profundidadMesa = Form.useWatch([prefix, 'sm_profundidadmesa'], form);
+  const profundidadPrestamo = Form.useWatch([prefix, 'sm_profundidadprestamo'], form);
+
+  useEffect(() => {
+    if (tienePrestamo && profundidadMesa && profundidadPrestamo) {
+      const promedio = (parseFloat(profundidadMesa || 0) + parseFloat(profundidadPrestamo || 0)) / 2;
+      form.setFieldsValue({ [prefix]: { ...form.getFieldValue(prefix), sm_oppdepth: promedio } });
+    }
+  }, [tienePrestamo, profundidadMesa, profundidadPrestamo]);
 
   return (
     <>
       <Row gutter={16}>
-       
         <Col span={12}>
           <Form.Item
             label="Número Manual"
@@ -21,7 +31,6 @@ export const PreCriaInfrastructure = ({ form, prefix, brandFeeders, selectedSale
         </Col>
       </Row>
 
-      {/* Resto de campos para Pre Cría */}
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item
@@ -35,48 +44,75 @@ export const PreCriaInfrastructure = ({ form, prefix, brandFeeders, selectedSale
             <InputNumber min={0.01} step={0.01} style={{ width: "100%" }} />
           </Form.Item>
         </Col>
+
         <Col span={12}>
-          <Form.Item
-            label="Profundidad Operativa (mts)"
-            name={[prefix, 'sm_oppdepth']}
-            rules={[
-              { required: true, message: "Requerido" },
-              { type: "number", min: 0.1, message: "Mínimo 0.1" },
-              { type: "number", max: 5, message: "Máximo 5" },
-            ]}
-          >
-            <InputNumber min={0.1} max={5} step={0.1} style={{ width: "100%" }} />
+          <Form.Item label="¿Tiene préstamo?" valuePropName="checked">
+            <Switch checked={tienePrestamo} onChange={setTienePrestamo} />
           </Form.Item>
         </Col>
       </Row>
 
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item
-            label="Profundidad de Siembra (mts)"
-            name={[prefix, 'sm_plantingdepth']}
-            rules={[
-              { required: true, message: "Requerido" },
-              { type: "number", min: 0.1, message: "Mínimo 0.1" },
-              { type: "number", max: 1, message: "Máximo 1" }
-            ]}
-          >
-            <InputNumber min={0.1} max={1} step={0.1} style={{ width: "100%" }} />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item
-            label="Profundidad de Transferencia (mts)"
-            name={[prefix, 'sm_transferdepth']}
-            rules={[
-              { required: true, message: "Requerido" },
-              { type: "number", min: 0.1, message: "Mínimo 0.1" },
-            ]}
-          >
-            <InputNumber min={0.1} step={0.1} style={{ width: "100%" }} />
-          </Form.Item>
-        </Col>
-      </Row>
+      {tienePrestamo ? (
+        <>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Profundidad Mesa (mts)"
+                name={[prefix, 'sm_profundidadmesa']}
+                rules={[
+                  { required: true, message: "Requerido" },
+                  { type: "number", min: 0.01, max: 5, message: "Entre 0.01 y 5" },
+                ]}
+              >
+                <InputNumber min={0.01} max={5} step={0.1} style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item
+                label="Profundidad Préstamo (mts)"
+                name={[prefix, 'sm_profundidadprestamo']}
+                rules={[
+                  { required: true, message: "Requerido" },
+                  { type: "number", min: 0.01, max: 5, message: "Entre 0.01 y 5" },
+                ]}
+              >
+                <InputNumber min={0.01} max={5} step={0.1} style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Profundidad Operativa (mts)"
+                name={[prefix, 'sm_oppdepth']}
+                rules={[
+                  { required: true, message: "Requerido" },
+                  { type: "number", min: 0.1, max: 5, message: "Entre 0.1 y 5" },
+                ]}
+              >
+                <InputNumber disabled style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </>
+      ) : (
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Profundidad Operativa (mts)"
+              name={[prefix, 'sm_oppdepth']}
+              rules={[
+                { required: true, message: "Requerido" },
+                { type: "number", min: 0.1, max: 5, message: "Entre 0.1 y 5" },
+              ]}
+            >
+              <InputNumber min={0.1} max={5} step={0.1} style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+        </Row>
+      )}
 
       <Row gutter={16}>
         <Col span={12}>
@@ -87,6 +123,7 @@ export const PreCriaInfrastructure = ({ form, prefix, brandFeeders, selectedSale
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
         </Col>
+
         <Col span={12}>
           <Form.Item
             label="Método de Alimentación"
@@ -99,12 +136,9 @@ export const PreCriaInfrastructure = ({ form, prefix, brandFeeders, selectedSale
             </Select>
           </Form.Item>
         </Col>
+
         <Col span={12}>
-          <Form.Item
-            hidden
-            label="Sector"
-            name={[prefix, 'c_salesregion_id']}
-          >
+          <Form.Item hidden label="Sector" name={[prefix, 'c_salesregion_id']}>
             <Input value={selectedSalesRegion} defaultValue={selectedSalesRegion} style={{ width: "100%" }} />
           </Form.Item>
         </Col>
@@ -139,11 +173,10 @@ export const PreCriaInfrastructure = ({ form, prefix, brandFeeders, selectedSale
                       >
                         <Select placeholder="Seleccione">
                           {brandFeeders?.map((group) => (
-                            <Select.Option key={group?.id} value={group?.id}>
+                            <Option key={group?.id} value={group?.id}>
                               {group?.Name}
-                            </Select.Option>
-                          ))
-                          }
+                            </Option>
+                          ))}
                         </Select>
                       </Form.Item>
                     </Col>
