@@ -1,29 +1,11 @@
 import {
-  UilUser,
-  UilAirplay,
-  UilMoneyBill,
-  UilCalendarAlt,
-  UilChart,
-  UilChartBar,
-  UilClipboardAlt,
   UilDesktop,
-  UilFlaskPotion,
   UilHeadphones,
-  UilQuestionCircle,
-  UilWater,
   //for message-notifications-center
   UilBell,
 } from '@iconscout/react-unicons';
 
 
-import {
-  UilWifiRouter,
-} from '@iconscout/react-unicons';
-
-import {
-  UilArchive,
-  UilUserCircle,
-} from '@iconscout/react-unicons';
 
 import { Menu } from 'antd';
 import React from 'react';
@@ -123,19 +105,7 @@ function AQxMonitoringMenu({ toggleCollapsed }) {
       ),
     ),
 
-    
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/lotes`}>
-        {t('Lotes Activos')}
-      </NavLink>,
-      'lotes',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/lotes`}>
-          <UilDesktop />
-        </NavLink>
-      ),
-    ),
-
+   
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('HEALTH & WELLFARE')}</NavTitle>,
       'submenu-informacion',

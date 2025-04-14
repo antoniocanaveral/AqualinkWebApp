@@ -17,3 +17,16 @@ export const fetchFeedingreports = () => async (dispatch) => {
         message.error(`Error al obtener feedingreport: ${error.message}`);
     }
 };
+
+
+export const fetchFeedingreportsOrg = () => async (dispatch) => {
+    dispatch(fetchFeedingreportLoading());
+    try {
+        const org_id = Cookies.get('orgId');
+        const response = await DataService.get(`/models/sm_feedingreport_view?$filter=AD_Org_ID eq ${org_id}`);
+        dispatch(fetchFeedingreportSuccess(response.data.records));
+    } catch (error) {
+        dispatch(fetchFeedingreportError(error.message));
+        message.error(`Error al obtener feedingreport: ${error.message}`);
+    }
+};

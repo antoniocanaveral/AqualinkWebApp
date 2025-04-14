@@ -2,19 +2,19 @@ import themes from './themeConfigure';
 
 const { lightMode, darkMode } = themes;
 
-const primaryColor = '#0372CE';
+const primaryColor = '#0e3c63' ;
 const primaryHover = '#6726A8';
-const secondaryColor = '#5840FF';
+const secondaryColor = '#0f95e9';
 const secondaryHover = '#3520C8';
 const linkColor = '#1890ff';
 const linkHover = '#0d79df';
-const successColor = '#01B81A';
+const successColor = '#0e3c63';
 const successHover = '#0D811D';
 const warningColor = '#FA8B0C';
 const warningHover = '#D9790A';
 const errorColor = '#FF0F0F';
 const errorHover = '#CB0000';
-const infoColor = '#00AAFF';
+const infoColor = '#0372ce';
 const infoHover = '#0787C7';
 const darkColor = '#0A0A0A';
 const darkHover = '#272525';

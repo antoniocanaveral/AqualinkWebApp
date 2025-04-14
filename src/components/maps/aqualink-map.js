@@ -28,17 +28,13 @@ const AqualinkMaps = ({
   selectedSector,
   selectedPool,
   farmsOrgsWithPools,
-  type, // Nuevo prop para identificar si es LabClient
-  totalTanks, // Número total de tanques
-  totalModules,// Número total de módulos
+  type,
+  totalTanks,
+  totalModules,
   descriptionColumn = 4
-
 }) => {
-  // Encuentra la organización seleccionada
   const organization = farmsOrgsWithPools.find(org => org.orgId === selectedOrg);
-  console.log(organization);
 
-  // Prepara los marcadores
   const markers = organization ? [{
     id: organization.orgId.toString(),
     name: organization.orgName,
@@ -49,28 +45,28 @@ const AqualinkMaps = ({
     email: organization.orgEmail,
   }] : [];
 
-  // Obtiene todas las piscinas de la organización seleccionada
   const organizationPools = organization ? organization.pools : [];
 
-  // Filtra las piscinas según el sector seleccionado
+  // Para el mapa: aplicar filtros por sector y piscina
   const filteredPools = selectedSector
     ? organizationPools.filter(pool => pool.salesRegion.id === selectedSector)
     : organizationPools;
 
-  // Si se ha seleccionado una pool específica, filtra por poolId
   const finalPools = selectedPool
     ? filteredPools.filter(pool => pool.poolId === selectedPool)
     : filteredPools;
 
-  // Agrupa las piscinas por poolType.id ("PC" para Pre Cría, "PE" para Engorde)
+  // Para las estadísticas: agrupar por tipo usando TODAS las piscinas si no hay sector
+  const poolsToGroup = selectedSector ? finalPools : organizationPools;
+
   const allowedTypes = ['PE', 'E', 'PC'];
 
-  const groupedPools = finalPools.reduce((groups, pool) => {
+  const groupedPools = poolsToGroup.reduce((groups, pool) => {
     const typeId = pool.poolType.id || 'Other';
     const typeName = pool.poolType.identifier || 'Otro';
 
     if (!allowedTypes.includes(typeName)) {
-      return groups; // salta este pool si no está permitido
+      return groups;
     }
 
     if (!groups[typeId]) {
@@ -84,23 +80,19 @@ const AqualinkMaps = ({
     return groups;
   }, {});
 
-  // Calcula el área total por tipo de piscina
   const calculateTotalArea = (pools) => {
     const total = pools.reduce((sum, pool) => sum + pool.poolSize, 0);
-    return Math.round(total * 100) / 100; // redondea a 2 decimales
+    return Math.round(total * 100) / 100;
   };
 
-  // Definición de colores para cada tipo
   const typeColors = {
     "PC": "#debb02",
     "PE": "#2584b8",
     "E": "#FF5733"
   };
 
-  // Prepara los polígonos con sus coordenadas y etiqueta (label) para el nombre
   const polygons = finalPools.map(pool => {
     const paths = pool.geoLocation.map(loc => ({
-      // Invertimos: latitud viene de loc.longitude y longitud de loc.latitude
       lat: parseFloat(loc.longitude),
       lng: parseFloat(loc.latitude),
     }));
@@ -110,14 +102,11 @@ const AqualinkMaps = ({
       name: pool.poolName,
       type: pool.poolType.identifier,
       paths,
-      label: pool.poolName, // Se usará para mostrar el nombre sobre el área pintada
+      label: pool.poolName,
       color: typeColors[pool.poolType.identifier] || '#2584b8',
       centroid: calculateCentroid(paths),
     };
   });
-
-  console.log("finalPools", finalPools);
-  console.log("polu", JSON.stringify(polygons));
 
   return (
     <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
@@ -133,7 +122,6 @@ const AqualinkMaps = ({
           </Col>
 
           {type === "LabClient" ? (
-            // Si es LabClient, renderiza Descriptions
             <Col xs={24} md={24}>
               <Descriptions
                 column={{ xs: 1, sm: 2, md: 3 }}
@@ -150,7 +138,6 @@ const AqualinkMaps = ({
               </Descriptions>
             </Col>
           ) : (
-            // Si NO es LabClient, renderiza la info original
             <Col xs={24} md={24}>
               <Descriptions
                 column={{ xs: 1, sm: 2, md: descriptionColumn }}
@@ -170,20 +157,19 @@ const AqualinkMaps = ({
 
                   const label =
                     group.name === "PC" ? "P. Pre Cría" :
-                      group.name === "PE" ? "P. Pre Engorde" :
-                        group.name === "E" ? "P. Engorde" : "Almacén";
+                    group.name === "PE" ? "P. Pre Engorde" :
+                    group.name === "E" ? "P. Engorde" : "Otro";
 
                   return (
                     <Descriptions.Item key={poolTypeKey} style={{ fontSize: "13px" }} label={<Space>{label}</Space>}>
                       <Text># Piscinas: {group.pools.length}</Text>
                       <br />
-                      <Text>Área: {calculateTotalArea(group.pools)}m2</Text>
+                      <Text>Área: {calculateTotalArea(group.pools)} m²</Text>
                     </Descriptions.Item>
                   );
                 })}
               </Descriptions>
             </Col>
-
           )}
         </Row>
       </Cards>
@@ -202,7 +188,6 @@ AqualinkMaps.defaultProps = {
   totalTanks: 0,
   totalModules: 0,
   descriptionColumn: 4
-
 };
 
 AqualinkMaps.propTypes = {
@@ -215,8 +200,7 @@ AqualinkMaps.propTypes = {
   type: PropTypes.string,
   totalTanks: PropTypes.number,
   totalModules: PropTypes.number,
-  descriptionColumn:  PropTypes.number
-
+  descriptionColumn: PropTypes.number
 };
 
 export { AqualinkMaps };

@@ -13,6 +13,7 @@ import { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function TransferFarm() {
   // Selección de org, sector y pool
@@ -126,12 +127,17 @@ function TransferFarm() {
       key: 'loteId',
     },
     {
-      title: 'Pc',
+      title: 'Ppc',
       dataIndex: 'pc',
       key: 'pc',
     },
     {
-      title: 'Pe',
+      title: 'Ppe',
+      dataIndex: 'pe',
+      key: 'pe',
+    },
+    {
+      title: 'Pef',
       dataIndex: 'pe',
       key: 'pe',
     },
@@ -170,7 +176,7 @@ function TransferFarm() {
       loteId: 'L001',
       pc: 10,
       pe: 5,
-      densidadSembrada: '300/m³',
+      densidadSembrada: '300/m2',
       diasPc: 30,
       pesoPromedio: '200g',
       pesoTotalTransferido: '200kg',
@@ -182,7 +188,7 @@ function TransferFarm() {
       loteId: 'L002',
       pc: 12,
       pe: 6,
-      densidadSembrada: '400/m³',
+      densidadSembrada: '400/m2',
       diasPc: 25,
       pesoPromedio: '250g',
       pesoTotalTransferido: '300kg',
@@ -222,37 +228,25 @@ function TransferFarm() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={9} xs={24} style={{ display: "flex" }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={24} md={24}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={24} md={24}>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                          <Typography.Text>Área: 307.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                          <Typography.Text>Área: 5.35 ha</Typography.Text>
-                        </div>
-                        <div className="content-block">
-                          <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                          <Typography.Text>Área: 1.35 ha</Typography.Text>
-                        </div>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
+          <Col xl={9} xs={24} xxl={10} style={{ display: 'flex' }}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <AqualinkMaps
+                width={'100%'}
+                height={
+                  window.innerWidth >= 2000 ? '600px' :
+                    '305px'
+                }
+                selectedOrg={selectedOrg}
+                selectedSector={selectedSector}
+                selectedPool={selectedPool}
+                farmsOrgsWithPools={farmsOrgsWithPools}
+              />
             </Suspense>
           </Col>
           <Col xl={15} xs={24} style={{ display: "flex" }}>

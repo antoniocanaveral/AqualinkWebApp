@@ -1,14 +1,23 @@
-import { GoogleApiWrapper, InfoWindow, Map, Marker, Polygon } from 'google-maps-react-18-support';
+import { GoogleApiWrapper, InfoWindow, Map, Marker } from 'google-maps-react-18-support';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { Card, Tag } from 'antd';
 import { GmapWraper } from './map-style';
 
-const apiKey = "AIzaSyBxh0Pe8bW0wSPKCyJZ1Y0KjsCjCMBFWJ4"
-console.log(apiKey)
+const apiKey = 'AIzaSyBxh0Pe8bW0wSPKCyJZ1Y0KjsCjCMBFWJ4';
+
+const estadoColors = {
+  Confirmado: '#108ee9',
+  Iniciada: '#faad14',
+  Terminada: '#52c41a',
+  Custodia: '#13c2c2',
+  Control: '#722ed1',
+  'En Proceso': '#f5222d',
+};
+
 const GoogleMaps = GoogleApiWrapper({
   apiKey,
-})((property) => {
-
+})((props) => {
   const {
     latitude,
     longitude,
@@ -18,20 +27,19 @@ const GoogleMaps = GoogleApiWrapper({
     zoom,
     mapStyles,
     markers = [],
-    polygons = [],
     styles,
-    infoWindow,
-  } = property;
+    type = 'org', // Nuevo prop con valor por defecto
+  } = props;
+
   const [state, setState] = useState({
     showingInfoWindow: false,
     activeMarker: null,
-    selectedPlace: {}, // Nunca undefined
+    selectedPlace: {},
   });
 
-
-  const onMarkerClick = (props, marker) => {
+  const onMarkerClick = (markerProps, marker) => {
     setState({
-      selectedPlace: props,
+      selectedPlace: markerProps,
       activeMarker: marker,
       showingInfoWindow: true,
     });
@@ -52,96 +60,105 @@ const GoogleMaps = GoogleApiWrapper({
     });
   };
 
+  const fallbackLat = -2.18;
+  const fallbackLng = -79.92;
+
+  const center = {
+    lat: markers.length > 0
+      ? parseFloat(markers[0].position.lat)
+      : parseFloat(latitude) || fallbackLat,
+    lng: markers.length > 0
+      ? parseFloat(markers[0].position.lng)
+      : parseFloat(longitude) || fallbackLng,
+  };
+
+  // Determinar ícono en base al tipo
+  const getMarkerIcon = () => {
+    if (type === 'geo') {
+      return {
+        url: require('../../static/img/map/car.png'),
+        scaledSize: new google.maps.Size(45, 32), // tamaño reducido
+      };
+    }
+    return require('../../static/img/map/mpc.png');
+  };
+
   return (
     <GmapWraper width={width} height={height}>
       <Map
+        google={google}
+        zoom={zoom}
+        center={center}
         onClick={onMapClicked}
         styles={mapStyles}
-        google={google}
         style={{ ...styles, width, height }}
-        center={{ lat: parseFloat(markers[0]?.position.lat), lng: parseFloat(markers[0]?.position.lng) }}
-        zoom={zoom}
+        onReady={(_, map) => {
+          map.setCenter(center);
+        }}
       >
-        {/* Renderizar marcadores */}
+        {/* Marcador por defecto si no hay markers */}
+        {markers.length === 0 && (
+          <Marker
+            position={center}
+            icon={getMarkerIcon()}
+          />
+        )}
+
+        {/* Marcadores con InfoWindow */}
         {markers.map((marker) => (
           <Marker
             key={marker.id}
             onClick={onMarkerClick}
-            position={marker?.position}
-            name={marker.name}
-            email={marker.email}
-            icon={require(`../../static/img/map/mpc.png`)}
-          />
-
-        ))}
-        {/* Renderizar polígonos */}
-        {polygons.map((polygon) => (
-          <Polygon
-            key={polygon.id}
-            paths={polygon.paths}
-            options={{
-              fillColor: polygon.color,
-              strokeColor: polygon.color,
-              strokeOpacity: 0.8,
-              strokeWeight: 2,
-              fillOpacity: 0.35,
+            position={{
+              lat: parseFloat(marker.position.lat),
+              lng: parseFloat(marker.position.lng),
             }}
-          />
-        ))}
-        {polygons.map((polygon) => (
-          <Marker
-            key={`${polygon.id}-label`}
-            position={polygon.centroid}
-            label={{
-              text: polygon.label,
-              color: 'black',
-              fontSize: '14px',
-              fontWeight: 'bold',
-            }}
-            icon={{
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 0.01, // hace invisible el ícono
-              fillOpacity: 0,
-              strokeOpacity: 0,
-              anchor: new google.maps.Point(0, 0),
-            }}
+            name={marker.lote}
+            descripcion={marker.descripcion}
+            estado={marker.estado}
+            icon={getMarkerIcon()}
           />
         ))}
 
-        {/* InfoWindow */}
         <InfoWindow
-          onClose={onInfoWindowClose}
           marker={state.activeMarker}
           visible={state.showingInfoWindow}
+          onClose={onInfoWindowClose}
         >
           {state.selectedPlace && state.selectedPlace.name ? (
-            <div>
-              <h3>{state.selectedPlace.name}</h3>
-              {state.selectedPlace.email && <p>{state.selectedPlace.email}</p>}
-            </div>
-          ) : null}
+            <Card
+              title=""
+              size="small"
+              style={{ width: 250 }}
+              bordered={false}
+            >
+               <p><strong>Lote:</strong> {state.selectedPlace.name} </p>
+              <p><strong>Descripción:</strong> {state.selectedPlace.descripcion}</p>
+              <p><strong>Tiempo Est. de Llegada:</strong> {state.selectedPlace.eta || '9:25 AM'}</p>
+              <p>
+                <strong>Estado:</strong>{' '}
+                <Tag color={estadoColors[state.selectedPlace.estado] || '#000'}>
+                  {state.selectedPlace.estado}
+                </Tag>
+              </p>
+            </Card>
+          ) : (
+            <div>No data available</div>
+          )}
         </InfoWindow>
-
-
-
       </Map>
     </GmapWraper>
   );
 });
 
 GoogleMaps.defaultProps = {
-  latitude: '-2.19616',
-  longitude: '-79.88621',
+  latitude: '-2.18',
+  longitude: '-79.92',
   width: '100%',
-  height: '100%',
-  zoom: 13,
+  height: '400px',
+  zoom: 14,
   markers: [],
-  polygons: [],
-  infoWindow: (
-    <div>
-      <h1>Hello world</h1>
-    </div>
-  ),
+  type: 'org', // Nuevo default
   styles: {
     width: '100%',
     height: '100%',
@@ -157,22 +174,20 @@ GoogleMaps.propTypes = {
   width: PropTypes.string,
   height: PropTypes.string,
   zoom: PropTypes.number,
-  markers: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    position: PropTypes.shape({
-      lat: PropTypes.number.isRequired,
-      lng: PropTypes.number.isRequired,
-    }).isRequired,
-  })),
-  polygons: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    paths: PropTypes.arrayOf(PropTypes.shape({
-      lat: PropTypes.number.isRequired,
-      lng: PropTypes.number.isRequired,
-    })).isRequired,
-    color: PropTypes.string.isRequired,
-  })),
-  infoWindow: PropTypes.node,
+  type: PropTypes.oneOf(['org', 'geo']),
+  markers: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      lote: PropTypes.string,
+      descripcion: PropTypes.string,
+      estado: PropTypes.string,
+      position: PropTypes.shape({
+        lat: PropTypes.number.isRequired,
+        lng: PropTypes.number.isRequired,
+      }).isRequired,
+    })
+  ),
+  styles: PropTypes.object,
 };
 
 export { GoogleMaps };

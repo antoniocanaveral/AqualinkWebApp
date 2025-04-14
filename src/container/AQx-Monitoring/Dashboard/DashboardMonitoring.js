@@ -5,14 +5,14 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import StatusBox from './StatusBox';
-import UilHdd from '@iconscout/react-unicons/icons/uil-hdd';
-import UilTrash from '@iconscout/react-unicons/icons/uil-trash';
-import UilChartPie from '@iconscout/react-unicons/icons/uil-chart-pie';
 import UilCheck from '@iconscout/react-unicons/icons/uil-check';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadUserAccess } from '../../../redux/authentication/actionCreator';
 import Cookies from 'js-cookie';
-
+import { FaGavel } from "react-icons/fa";
+import { FaLeaf } from "react-icons/fa";
+import { FaMapMarkedAlt } from "react-icons/fa";
+import { FaShrimp } from "react-icons/fa6";
 function DashboardMonitoring() {
     const dispatch = useDispatch();
     const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
@@ -42,16 +42,16 @@ function DashboardMonitoring() {
             <Main>
                 <Row gutter={25}>
                     <Col xs={24} sm={12} md={6}>
-                        <StatusBox icon={UilHdd} label="Legal" />
+                        <StatusBox icon={FaGavel} percentage={80} label="Legal" />
                     </Col>
                     <Col xs={24} sm={12} md={6}>
-                        <StatusBox icon={UilCheck} label="Health" />
+                        <StatusBox icon={FaShrimp} percentage={60} label="Health" />
                     </Col>
                     <Col xs={24} sm={12} md={6}>
-                        <StatusBox icon={UilTrash} label="Ambiental" />
+                        <StatusBox icon={FaLeaf} percentage={90} label="Ambiental" />
                     </Col>
                     <Col xs={24} sm={12} md={6}>
-                        <StatusBox icon={UilChartPie} label="Tracking" />
+                        <StatusBox icon={FaMapMarkedAlt} percentage={40} label="Tracking" />
                     </Col>
                 </Row>
                 <br />

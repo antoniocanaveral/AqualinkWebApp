@@ -1,34 +1,29 @@
 import React, { Suspense } from 'react';
-import axios from 'axios';
-import { Row, Col, Skeleton, Typography, Badge, Space, Form, Input, DatePicker, Select, Button, Divider } from 'antd';
-import { PageHeader } from '../../../components/page-headers/page-headers';
+import { Row, Col, Skeleton } from 'antd';
+import GrowthChart from './general/GrowthChart';
+import SurvivalChart from './general/SurvivalChart';
+import ConsumptionSuppliesChart from './general/ConsumptionSuppliesChart';
+import BiomassChart from './general/BiomassChart';
+import FCAChart from './general/FCAChart';
+import CostsHaDayChart from './general/CostsHaDayChart';
+import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
-import { GoogleMaps } from '../../../components/maps/google-maps';
-import { BasicFormWrapper, HorizontalFormStyleWrap, Main } from '../../styled';
-import DissolvedOxygenBehaviorChart from './charts/DissolvedOxygenBehaviorChart';
-import DissolvedOxygenPMChart from './charts/DissolvedOxygenPMChart';
-import DissolvedOxygenHalfDayChart from './charts/DissolvedOxygenHalfDayChart';
-import DissolvedOxygenAMDayChart from './charts/DissolvedOxygenAMDayChart';
-
+import { PageHeader } from '../../../components/page-headers/page-headers';
 
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
-import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
-function ODParametersFarms() {
-  // Selección de org, sector y pool
+function GeneralMonitoringMonitoring() {
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
 
-  // Datos de organizaciones
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-  // Manejo de selección de org
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -38,19 +33,16 @@ function ODParametersFarms() {
     setSelectedSector(null);
   };
 
-  // Manejo de selección de sector
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-  // Manejo de selección de pool
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
 
-  // Opciones para Farms
   const farmsSelectOptions = organizations.length > 0 ? [
     {
       options: farmsOrgsWithPools.map(org => ({
@@ -64,7 +56,6 @@ function ODParametersFarms() {
     },
   ] : [];
 
-  // Opciones para sectores
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -88,7 +79,6 @@ function ODParametersFarms() {
     },
   ] : [];
 
-  // Opciones para pools
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -109,7 +99,6 @@ function ODParametersFarms() {
     },
   ] : [];
 
-  // Combinación de selects en el PageHeader
   const combinedSelectOptions = [
     ...farmsSelectOptions,
     ...sectorSelectOptions,
@@ -117,19 +106,21 @@ function ODParametersFarms() {
   ];
 
 
-
-
   return (
     <>
-      <PageHeader highlightText={"AquaLink Parámetros:"}
-        title="OD y Temperatura"
+      <PageHeader
+        highlightText="Aqualink Monitoreo "
+        title="Monitoreo General"
         selectOptions={combinedSelectOptions}
         selectedOrg={selectedOrg}
         selectedPool={selectedPool}
       />
       <Main>
+
+
+
         <Row gutter={25}>
-          <Col xl={10} xs={24} xxl={10} style={{ display: 'flex' }}>
+          <Col xl={8} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -137,53 +128,85 @@ function ODParametersFarms() {
                 </Cards>
               }
             >
-              <AqualinkMaps
-                width={'100%'}
-                height={
-                  window.innerWidth >= 2000 ? '600px' :
-                    '305px'
-                }
-                selectedOrg={selectedOrg}
-                selectedSector={selectedSector}
-                selectedPool={selectedPool}
-                farmsOrgsWithPools={farmsOrgsWithPools}
-              />
-            </Suspense>
-          </Col>
-          <Col xl={13} xs={24} style={{ display: "flex" }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Comportamiento de Oxígeno Disuelto" size="large">
-                <DissolvedOxygenBehaviorChart />
+              <Cards title="Crecimiento" size="large" style={{ width: '100%', height: '100%' }}>
+                <GrowthChart />
               </Cards>
             </Suspense>
           </Col>
+          <Col xl={8} xs={24} style={{ display: 'flex' }}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <Cards title="Supervivencia" size="large" style={{ width: '100%', height: '100%' }}>
+                <SurvivalChart />
+              </Cards>
+            </Suspense>
+          </Col>
+          <Col xl={8} xs={24} style={{ display: 'flex' }}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <Cards title="Consumo de suministro" size="large" style={{ width: '100%', height: '100%' }}>
+                <ConsumptionSuppliesChart />
+              </Cards>
+            </Suspense>
+          </Col>
+
         </Row>
 
         <Row gutter={25}>
-          <Col xl={8} xs={24} style={{ display: "flex" }}>
-            <Cards title="Oxígeno Disuelto AM" size="large">
-              <DissolvedOxygenAMDayChart />
-            </Cards>
-          </Col>
-          <Col xl={8} xs={24} style={{ display: "flex" }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Oxígeno Disuelto Medio día" size="large">
-                <DissolvedOxygenHalfDayChart />
+          <Col xl={8} xs={24} style={{ display: 'flex' }}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <Cards title="Biomasa" size="large" style={{ width: '100%', height: '100%' }}>
+                <BiomassChart />
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={8} xs={24} style={{ display: "flex" }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Oxígeno Disuelto PM" size="large">
-                <DissolvedOxygenPMChart />
+          <Col xl={8} xs={24} style={{ display: 'flex' }}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <Cards title="FCA" size="large" style={{ width: '100%', height: '100%' }}>
+                <FCAChart />
               </Cards>
             </Suspense>
           </Col>
+          <Col xl={8} xs={24} style={{ display: 'flex' }}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <Cards title="Costos(USD) Ha/Día" size="large" style={{ width: '100%', height: '100%' }}>
+                <CostsHaDayChart />
+              </Cards>
+            </Suspense>
+          </Col>
+
         </Row>
-      </Main >
+      </Main>
     </>
   );
 }
 
-export default ODParametersFarms;
-
+export default GeneralMonitoringMonitoring;

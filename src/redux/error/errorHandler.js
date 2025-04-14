@@ -11,7 +11,7 @@ export const handleApiError = (error, dispatch, errorAction) => {
 
   dispatch(errorAction({ error: error.message || 'Error en la solicitud API.' }));
 
-  message.error(`Error: ${error.message || 'Ocurrió un problema en la solicitud.'}`);
+  message.error(`${error.message || 'Sesión terminada. Por su seguridad inicie sesión nuevamente.'}`);
 
   if (error?.response?.status === 401 || error.invalidTokenError) {
     console.warn("Token inválido o expirado. Cerrando sesión...");

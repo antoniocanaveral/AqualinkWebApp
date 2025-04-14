@@ -534,38 +534,43 @@ function PanelFarms() {
             </Suspense>
           </Col>
 
-          <Col xl={10} xs={24} xxl={9} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <Col xl={10} xs={24} xxl={9} style={{ display: 'flex', flexDirection: 'column' }}>
             {/* Gráfico de Proyección de Costos */}
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
+            <div>
+              <Suspense
+                fallback={
+                  <Cards headless>
+                    <Skeleton active />
+                  </Cards>
+                }
+              >
+                <Cards title="Proyección de Costos" size="large"  >
+                  <CostProjectionWrapLab />
                 </Cards>
-              }
-            >
-              <Cards title="Proyección de Costos" size="large" style={{ flex: 1 }}>
-                <CostProjectionWrapLab />
-              </Cards>
-            </Suspense>
+              </Suspense>
+            </div>
 
-            {/* Tabla de Inventario de Productos */}
-            <Suspense
-              fallback={
-                <Cards headless>
-                  <Skeleton active />
+            <div >
+              {/* Tabla de Inventario de Productos */}
+              <Suspense
+                fallback={
+                  <Cards headless>
+                    <Skeleton active />
+                  </Cards>
+                }
+              >
+                <Cards title="Inventario de Productos" size="large"  style={{ minHeight:"600px"}}>
+                  <Table
+                  style={{minHeight:"250px"}}
+                    dataSource={inventoryData}
+                    columns={inventoryColumns}
+                    pagination={{ pageSize: 5 }}
+                    rowKey="Value"
+                  />
                 </Cards>
-              }
-            >
-              <Cards title="Inventario de Productos" size="large" style={{ flex: 1 }}>
-                <Table
-                  dataSource={inventoryData}
-                  columns={inventoryColumns}
-                  pagination={{ pageSize: 5 }}
-                  rowKey="Value"
-                />
-              </Cards>
 
-            </Suspense>
+              </Suspense>
+            </div>
           </Col>
         </Row>
 

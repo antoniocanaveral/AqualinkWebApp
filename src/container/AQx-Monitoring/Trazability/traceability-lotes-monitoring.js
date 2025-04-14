@@ -9,8 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchTraceabilityReports } from '../../../redux/traceability/actionCreator';
 import Cookies from 'js-cookie';
 import { fetchLabanalysis } from '../../../redux/labanalysis/actionCreator';
-import LoteDetails from './LoteDetails';
 import { generateBlobPDF } from '../../../utility/generateBlobPDF';
+import LoteDetails from '../../AQx-Custody/traceability/LoteDetails';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -18,7 +18,7 @@ const { RangePicker } = DatePicker;
 
 // ---------------------- DATOS DE EJEMPLO ---------------------- //
 
-function TraceabilityLotesCustody() {
+function TraceabilityLotesMonitoring() {
   const reportRef = useRef();
   const [orientation, setOrientation] = useState('portrait');
   const [selectedCliente, setSelectedCliente] = useState(null);
@@ -43,12 +43,13 @@ function TraceabilityLotesCustody() {
     Cookies.remove('poolId');
   };
 
-  const custodyOrgs = useSelector((state) => state.auth.farmsOrgs);
+  const orgToAudit = useSelector((state) => state.auth.orgToAudit) || [];
+  const activeOrgs = [orgToAudit];
 
-  const farmsSelectOptions = custodyOrgs.length > 0
+  const farmsSelectOptions = activeOrgs.length > 0
     ? [
       {
-        options: custodyOrgs.map(org => ({
+        options: activeOrgs.map(org => ({
           value: org.orgId,
           label: org.orgName,
           email: org.orgEmail,
@@ -170,38 +171,7 @@ function TraceabilityLotesCustody() {
         <div style={{ marginBottom: 20 }}>
           <Row gutter={16}>
             {/* SELECT CLIENTE (Finca) */}
-            <Col>
-              <Select
-                style={{ width: 200 }}
-                placeholder="Seleccione Cliente"
-                value={selectedCliente || undefined}
-                onChange={handleSelectCliente}
-                allowClear
-              >
-                {listaClientes.map((cliente) => (
-                  <Option key={cliente} value={cliente}>
-                    {cliente}
-                  </Option>
-                ))}
-              </Select>
-            </Col>
 
-            <Col>
-              <Select
-                style={{ width: 200 }}
-                placeholder="Seleccione Proveedor"
-                value={selectedProveedor || undefined}
-                onChange={handleSelectProveedor}
-                disabled={!selectedCliente || selectedCliente === 'Todos'}
-                allowClear
-              >
-                {listaProveedores.map((prov) => (
-                  <Option key={prov} value={prov}>
-                    {prov}
-                  </Option>
-                ))}
-              </Select>
-            </Col>
 
             <Col>
               <RangePicker
@@ -355,4 +325,4 @@ function TraceabilityLotesCustody() {
   );
 }
 
-export default TraceabilityLotesCustody;
+export default TraceabilityLotesMonitoring;

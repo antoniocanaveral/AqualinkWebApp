@@ -30,7 +30,7 @@ const FeedingRealTable = ({ feedingreport }) => {
     { title: 'Biomasa', dataIndex: 'biomasa', key: 'biomasa' },
     { title: 'SGR', dataIndex: 'sm_lineargrowthreal', key: 'sm_lineargrowthreal' },
     { title: 'WGR', dataIndex: 'sm_weeklygrowthreal', key: 'sm_weeklygrowthreal' },
-    { title: 'Dieta', dataIndex: 'dieta', key: 'dieta' },
+    { title: 'Dieta Aqualink', dataIndex: 'dieta', key: 'dieta' },
     { title: 'Kgs TTL día', dataIndex: 'sm_dailydosereal', key: 'sm_dailydosereal' },
     { title: 'Kgs TTL Ha', dataIndex: 'sm_dailydose_per_hectare', key: 'sm_dailydose_per_hectare' },
     { title: 'Alimento Acumulado', dataIndex: 'sm_accumulatedfoodreal', key: 'sm_accumulatedfoodreal' },

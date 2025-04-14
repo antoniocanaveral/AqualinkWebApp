@@ -1,32 +1,28 @@
 import React, { Suspense } from 'react';
-import axios from 'axios';
-import { Row, Col, Skeleton, Typography, Badge, Space, Form, Input, DatePicker, Select, Button, Divider } from 'antd';
-import { PageHeader } from '../../../components/page-headers/page-headers';
-import { Cards } from '../../../components/cards/frame/cards-frame';
-import { GoogleMaps } from '../../../components/maps/google-maps';
-import { BasicFormWrapper, HorizontalFormStyleWrap, Main } from '../../styled';
-import DissolvedOxygenBehaviorChart from './charts/DissolvedOxygenBehaviorChart';
-import DissolvedOxygenPMChart from './charts/DissolvedOxygenPMChart';
-import DissolvedOxygenHalfDayChart from './charts/DissolvedOxygenHalfDayChart';
-import DissolvedOxygenAMDayChart from './charts/DissolvedOxygenAMDayChart';
+import { Row, Col, Skeleton, Typography, Badge, Space, Table, Button } from 'antd';
+import { Link } from 'react-router-dom';
 
 
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
-import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { PageHeader } from '../../../components/page-headers/page-headers';
+import { Main } from '../../styled';
+import { Cards } from '../../../components/cards/frame/cards-frame';
+import ComparativeRunsBarChart from '../../AQx-Farms/analytics/charts/ComparativeRunsBarChart';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
+import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
 
-function ODParametersFarms() {
-  // Selección de org, sector y pool
-  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
-  const [selectedSector, setSelectedSector] = useState(null);
-  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+function SoilQualityMonitoring() {
+  const dispatch = useDispatch();
+    const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+    const [selectedSector, setSelectedSector] = useState(null);
+    const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
-
-  // Datos de organizaciones
-  const organizations = useSelector((state) => state.auth.farmsOrgs);
-  const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+    
+    const organizations = useSelector((state) => state.auth.orgToAudit)|| [];
+    const activeOrgs = [organizations];
+    const auditType = Cookies.get('orgAuditType');
 
   // Manejo de selección de org
   const handleOrgChange = (orgId, orgEmail) => {
@@ -51,9 +47,9 @@ function ODParametersFarms() {
   };
 
   // Opciones para Farms
-  const farmsSelectOptions = organizations.length > 0 ? [
+  const farmsSelectOptions = activeOrgs.length > 0 ? [
     {
-      options: farmsOrgsWithPools.map(org => ({
+      options: activeOrgs.map(org => ({
         value: org.orgId,
         label: org.orgName,
         email: org.orgEmail,
@@ -66,7 +62,7 @@ function ODParametersFarms() {
 
   // Opciones para sectores
   const sectorsOptions = selectedOrg
-    ? farmsOrgsWithPools
+    ? activeOrgs
       .find(org => org.orgId === selectedOrg)?.pools
       .reduce((acc, pool) => {
         if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
@@ -90,7 +86,7 @@ function ODParametersFarms() {
 
   // Opciones para pools
   const poolsOptions = selectedSector
-    ? farmsOrgsWithPools
+    ? organizations
       .find(org => org.orgId === selectedOrg)?.pools
       .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
       .map(pool => ({
@@ -117,12 +113,29 @@ function ODParametersFarms() {
   ];
 
 
+  const soilQualityColumns = [
+    { title: 'CICLO', dataIndex: 'dia', key: 'dia' },
+    { title: 'FECHA', dataIndex: 'fecha', key: 'fecha' },
+    { title: 'PH', dataIndex: 'ph', key: 'ph' },
+    { title: 'ALC', dataIndex: 'alcalinidad', key: 'alcalinidad' },
+    { title: 'AMONIO', dataIndex: 'amonio', key: 'amonio' },
+    { title: 'M. O.', dataIndex: 'materiaOrganica', key: 'materiaOrganica' },
+    { title: 'REDOX', dataIndex: 'redox', key: 'redox' },
+    { title: 'C:N', dataIndex: 'relacionCN', key: 'relacionCN' },
+  ];
 
+  const soilQualityData = [
+    { key: '2', dia: '1', ph: '7.5', alcalinidad: '150', amonio: '0.5', materiaOrganica: '2.0', redox: '-100', relacionCN: '12:1' },
+    { key: '3', dia: '2', ph: '8.2', alcalinidad: '160', amonio: '0.8', materiaOrganica: '2.1', redox: '-90', relacionCN: '11:1' },
+    { key: '4', dia: '3', ph: '7.9', alcalinidad: '140', amonio: '0.6', materiaOrganica: '1.8', redox: '-85', relacionCN: '12:1' },
+    { key: '5', dia: '4', ph: '7.8', alcalinidad: '170', amonio: '0.4', materiaOrganica: '2.2', redox: '-75', relacionCN: '13:1' },
+    { key: '6', dia: '5', ph: '8.1', alcalinidad: '155', amonio: '0.7', materiaOrganica: '2.0', redox: '-80', relacionCN: '12:1' },
+  ];
 
   return (
     <>
       <PageHeader highlightText={"AquaLink Parámetros:"}
-        title="OD y Temperatura"
+        title="Calidad de Suelo"
         selectOptions={combinedSelectOptions}
         selectedOrg={selectedOrg}
         selectedPool={selectedPool}
@@ -146,44 +159,50 @@ function ODParametersFarms() {
                 selectedOrg={selectedOrg}
                 selectedSector={selectedSector}
                 selectedPool={selectedPool}
-                farmsOrgsWithPools={farmsOrgsWithPools}
+                farmsOrgsWithPools={activeOrgs}
               />
             </Suspense>
           </Col>
           <Col xl={13} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Comportamiento de Oxígeno Disuelto" size="large">
-                <DissolvedOxygenBehaviorChart />
-              </Cards>
+              <ComparativeRunsBarChart />
             </Suspense>
           </Col>
+
         </Row>
 
         <Row gutter={25}>
-          <Col xl={8} xs={24} style={{ display: "flex" }}>
-            <Cards title="Oxígeno Disuelto AM" size="large">
-              <DissolvedOxygenAMDayChart />
-            </Cards>
-          </Col>
-          <Col xl={8} xs={24} style={{ display: "flex" }}>
+          <Col xl={24} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Oxígeno Disuelto Medio día" size="large">
-                <DissolvedOxygenHalfDayChart />
+              <Cards title="Calidad de Suelo" size="large">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "20px" }}>
+                  <div>
+                    Alc: Alcalinidad <br />
+                  </div>
+                  <div>
+                    M.O: Materia Orgánica <br />
+                  </div>
+                  <div>
+                    C:N: Relación C:N <br />
+                  </div>
+                </div>
+                <Table
+                  className='table-responsive'
+                  dataSource={soilQualityData} columns={soilQualityColumns} pagination={false} />
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={8} xs={24} style={{ display: "flex" }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Oxígeno Disuelto PM" size="large">
-                <DissolvedOxygenPMChart />
-              </Cards>
-            </Suspense>
-          </Col>
+
         </Row>
-      </Main >
+        <center>
+          <Link to="/farm/culture-medium/preparation-bioremediation">
+            <Button type="primary" style={{ marginTop: "20px" }}
+            >Ir a Biorremediación</Button>
+          </Link>
+        </center>
+      </Main>
     </>
   );
 }
 
-export default ODParametersFarms;
-
+export default SoilQualityMonitoring;

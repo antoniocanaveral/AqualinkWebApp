@@ -234,9 +234,25 @@ function HarvestFarm() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={10} xs={24} style={{ display: "flex" }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <AqualinkMaps />
+          <Col xl={10} xs={24} xxl={10} style={{ display: 'flex' }}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <AqualinkMaps
+                width={'100%'}
+                height={
+                  window.innerWidth >= 2000 ? '600px' :
+                    '305px'
+                }
+                selectedOrg={selectedOrg}
+                selectedSector={selectedSector}
+                selectedPool={selectedPool}
+                farmsOrgsWithPools={farmsOrgsWithPools}
+              />
             </Suspense>
           </Col>
           <Col xl={14} xs={24} style={{ display: "flex" }}>

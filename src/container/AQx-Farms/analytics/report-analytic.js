@@ -368,7 +368,7 @@ function AnalyticReportFarm() {
         {
             key: 'poolsize_mwarehouse',
             descripcion: 'Días de Pre Cría',
-            ...getCiclosValues(productionReports, r => r.prebreeding_weeks * 7)
+            ...getCiclosValues(productionReports, r => r.pc_production_json.prebreeding_weeks * 7)
         },
         {
             key: 'poolsize_mwarehouse',

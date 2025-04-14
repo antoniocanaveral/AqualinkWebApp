@@ -28,8 +28,6 @@ const OverviewDataList = React.memo(() => {
   const labsOrgs = useSelector((state) => state.auth.labsOrgs);
   const withCustody = useSelector((state) => state.auth.withCustody);
   const custodyOrgs = useSelector((state) => state.auth.custodyOrgs);
-  const withControl = useSelector((state) => state.auth.withControl);
-  const controlsOrgs = useSelector((state) => state.auth.controlsOrgs);
 
   // Función para manejar la navegación cuando se hace clic en un módulo
   const gotModule = useCallback(
@@ -121,7 +119,7 @@ const OverviewDataList = React.memo(() => {
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilCloudDataConnection />
-          <PageHeader  title="Smart WebApps" />
+          <PageHeader  title="Smart Apps & WebApps" />
         </div>
       </Col>
       {overviewCardData.map((item) => (

@@ -38,6 +38,21 @@ import ClientFarm from '../../container/AQx-Farms/client/client-farm';
 import GeneralPathologyLab from '../../container/AQx-Labs/crop/general-pathology-farm';
 import WaterFlowFarm from '../../container/AQx-Farms/culture-medium/water-flow-farm';
 import ShrimpFarm from '../../container/AQx-Farms/crop/shrimp-farm';
+import Cookies from 'js-cookie';
+import ClientLabs from '../../container/AQx-Labs/client/client-farm-view.js';
+import ClientCustody from '../../container/AQx-Custody/client/client-custody.js';
+import GeneralMonitoringMonitoring from '../../container/AQx-Monitoring/Heath&Wellfare/monitoreo-general-monitoring.js';
+import GeneralPathologyFarm from '../../container/AQx-Farms/crop/general-pathology-farm.js';
+import GeneralPathologyMonitoring from '../../container/AQx-Monitoring/Heath&Wellfare/general-pathology-monitoring.js';
+import SoilQualityMonitoring from '../../container/AQx-Monitoring/Heath&Wellfare/soil-quality-parameters-monitoring.js';
+import PanelFarms from '../../container/AQx-Farms/panel-farms.js';
+import ReportOpMonitoring from '../../container/AQx-Monitoring/Trazability/report-op-monitoring.js';
+import TransferFarm from '../../container/AQx-Farms/crop/transfer-farm.js';
+import HarvestFarm from '../../container/AQx-Farms/crop/harvest-farm.js';
+import TraceabilityLotesMonitoring from '../../container/AQx-Monitoring/Trazability/traceability-lotes-monitoring.js';
+import { MaintananceWrapper } from '../../container/pages/style.js';
+import Maintenance from '../../container/pages/Maintenance.js';
+
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const   Monitoring = React.memo(() => {
@@ -46,6 +61,8 @@ const   Monitoring = React.memo(() => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  const auditType = Cookies.get('orgAuditType');
   return (
     <Suspense
       fallback={
@@ -59,11 +76,12 @@ const   Monitoring = React.memo(() => {
 
         <Route path="/menu-orgs/*" element={<PanelFarmRoutes />} />  
         <Route path="/dashboard/*" element={<DashboardMonitoring />} />  
-        <Route path="/legal-infrastructure/*" element={<ClientFarm />} />
+        <Route path="/legal-infrastructure/*" element={ auditType === "FARM" ? <ClientFarm /> : auditType === "LAB" ?<ClientLabs/>: <ClientCustody/>} />
 
-        <Route path="/parameters/*" element={<GeneralMonitoringFarm />} />
-        <Route path="/soil-quality/*" element={<SoilQualityFarm />} />
-        <Route path="/veterinary-plan/*" element={<GeneralPathologyLab />} />
+
+        <Route path="/parameters/*" element={<GeneralMonitoringMonitoring />} />
+        <Route path="/soil-quality/*" element={<SoilQualityMonitoring />} />
+        <Route path="/veterinary-plan/*" element={<GeneralPathologyMonitoring />} />
 
 
         <Route path="/water-flow/*" element={<WaterFlowFarm />} />
@@ -71,8 +89,13 @@ const   Monitoring = React.memo(() => {
         <Route path="/do-parameters/*" element={<ODParametersFarms />} />
         
 
-        <Route path="/op-report/*" element={<ReportOpFarm />} />
+        <Route path="/op-report/*" element={<ReportOpMonitoring />} />
         <Route path="/siembra/*" element={<ShrimpFarm />} />
+        <Route path="/transferencia/*" element={<TransferFarm />} />
+        <Route path="/cosecha/*" element={<HarvestFarm />} />
+
+        <Route path="/tracking/*" element={<TraceabilityLotesMonitoring />} />
+        <Route path="/full-report/*" element={<Maintenance />} />
         <Route path="/do-parameters/*" element={<ODParametersFarms />} />
         
         

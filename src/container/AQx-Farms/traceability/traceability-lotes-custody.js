@@ -378,7 +378,7 @@ function TraceabilityLotesCustody() {
 
   return (
     <>
-      <PageHeader highlightText="AquaLink Traking" title="" />
+      <PageHeader highlightText="AquaLink Tracking" title="" />
       <Main>
         <div style={{ marginBottom: 20 }}>
           <Row gutter={16}>

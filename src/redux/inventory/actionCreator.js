@@ -167,141 +167,133 @@ export const fetchProductCatalogCustody = () => async (dispatch) => {
     handleApiError(err, dispatch, opCatalogError);
   }
 };
+// addProductToInventory.js
 
+/**
+ * RECEPCIÓN (M_InOut) + FACTURA (C_Invoice) enlazadas
+ * ➜ iDempiere genera MatchInv + CostDetail con costo real.
+ */
 export const addProductToInventory = (productData) => async (dispatch) => {
-  console.log('Datos recibidos para añadir producto:', productData);
-  
   try {
     dispatch(opAddProductLoading());
+
+    /* ----------------------------------------------------------------
+     * 0. Credenciales
+     * ---------------------------------------------------------------- */
     const clientId = Cookies.get('selectedClientId');
-    const orgId = Cookies.get('orgId');
+    const orgId    = Cookies.get('orgId');
+    if (!clientId || !orgId) throw new Error('Faltan credenciales');
 
-    if (!clientId || !orgId) {
-      throw new Error('Faltan credenciales en las cookies');
-    }
+    /* ================================================================
+     * 1. RECEPCIÓN (cabecera + línea)
+     * ================================================================ */
+    const inOutResp = await DataService.post('/models/M_InOut', {
+      AD_Client_ID  : +clientId,
+      AD_Org_ID     : +orgId,
+      C_DocType_ID  : 1000014,                // MMR
+      MovementDate  : new Date().toISOString().split('T')[0],
+      C_BPartner_ID : productData.C_BPartner_ID,
+      C_BPartner_Location_ID: productData.C_BPartner_Location_ID,
+      Description   : 'Recepción (ingreso inventario)',
+      IsSOTrx       : false,
+      MovementType  : 'V+',
+      M_Warehouse_ID: productData.M_Warehouse_ID
+    });
+    const mInOutId = inOutResp.data.id;
 
-    const invoicePayload = {
-      AD_Client_ID: Number(clientId),
-      AD_Org_ID: Number(orgId),
-      C_DocType_ID: 1000005,
-      DateInvoiced: new Date().toISOString().split('T')[0],
-      C_BPartner_ID: productData.C_BPartner_ID,
+    const inOutLineResp = await DataService.post('/models/M_InOutLine', {
+      AD_Client_ID : +clientId,
+      AD_Org_ID    : +orgId,
+      M_InOut_ID   : mInOutId,
+      Line         : 10,
+      M_Product_ID : productData.M_Product_ID,
+      MovementQty  : productData.quantity,
+      QtyEntered   : productData.quantity,
+      C_UOM_ID     : 1000000,
+      M_Locator_ID : productData.M_Locator_ID,
+      Description  : 'Recepción de producto',
+      IsActive     : true
+    });
+    const mInOutLineId = inOutLineResp.data.id;
+
+    /* ================================================================
+     * 2. FACTURA (cabecera + línea enlazada)
+     * ================================================================ */
+    const invoiceResp = await DataService.post('/models/C_Invoice', {
+      AD_Client_ID  : +clientId,
+      AD_Org_ID     : +orgId,
+      C_DocType_ID  : 1000005,               
+      DateInvoiced  : new Date().toISOString().split('T')[0],
+      C_BPartner_ID : productData.C_BPartner_ID,
       C_BPartner_Location_ID: productData.C_BPartner_Location_ID,
       M_PriceList_ID: 1000000,
-      Description: "Factura de compra de inventario",
-      IsSOTrx: false
-    };
+      Description   : 'Factura de compra de inventario',
+      IsSOTrx       : false
+    });
+    const cInvoiceId = invoiceResp.data.id;
 
-    console.log('Paso 1/6 - Enviando payload para crear factura:', invoicePayload);
-    const invoiceResponse = await DataService.post('/models/c_invoice', invoicePayload);
-    console.log('Respuesta creación factura:', invoiceResponse.data);
+    await DataService.post('/models/C_InvoiceLine', {
+      AD_Client_ID   : +clientId,
+      AD_Org_ID      : +orgId,
+      C_Invoice_ID   : cInvoiceId,
+      Line           : 10,
+      M_Product_ID   : productData.M_Product_ID,
+      PriceList      : productData.priceList,
+      PriceActual    : productData.priceList,
+      QtyInvoiced    : productData.quantity,
+      QtyEntered     : productData.quantity,
+      C_UOM_ID       : 1000000,
+      C_Tax_ID       : 1000000,
+      LineTotalAmt   : productData.priceList * productData.quantity,
+      M_InOutLine_ID : mInOutLineId          // 🔗 enlace para MatchInv
+    });
+
+    /* ================================================================
+     * 3. Completar documentos
+     * ================================================================ */
+    await DataService.put(`/models/M_InOut/${mInOutId}`, { 'doc-action': 'CO' });
+    await DataService.put(`/models/C_Invoice/${cInvoiceId}`, { 'doc-action': 'CO' });
+
+    /* ================================================================
+     * 4. Ejecutar Costing Run (CostCreate) para generar CostDetail
+     * ================================================================ */
+    await DataService.post('/processes/m_cost-create', {
+      AD_Client_ID : +clientId,
+      AD_Org_ID    : 0,
+      DateAcct     : new Date().toISOString().split('T')[0],
+      M_Product_ID : productData.M_Product_ID     // 👈 producto válido
+    });
     
-    const cInvoiceId = invoiceResponse.data?.id;
-    if (!cInvoiceId) throw new Error('Error al crear la factura');
 
-    const invoiceLinePayload = {
-      AD_Client_ID: Number(clientId),
-      AD_Org_ID: Number(orgId),
-      C_Invoice_ID: cInvoiceId,
-      Line: 10,
-      M_Product_ID: productData.M_Product_ID,
-      PriceList: productData.priceList,
-      PriceActual: productData.priceList,
-      QtyInvoiced: productData.quantity,
-      QtyEntered: productData.quantity,
-      C_UOM_ID: 1000000,
-      C_Tax_ID: 1000000,
-      LineTotalAmt: productData.priceList * productData.quantity
-    };
+    /* ================================================================
+     * 5. Verificar CostDetail
+     * ================================================================ */
+    const costResp = await DataService.get(
+      `/models/M_CostDetail?filter=M_InOutLine_ID eq ${mInOutLineId}`
+    );
 
-    console.log('Paso 2/6 - Enviando payload para línea de factura:');
-    await DataService.post('/models/c_invoiceline', invoiceLinePayload);
+    if (costResp.data.length === 0) {
+      console.warn('⚠️  CostDetail aún no se creó; revisa configuración de costeo.');
+    } else {
+      console.log('✅ CostDetail generado:', costResp.data[0]);
+    }
 
-    console.log(`Paso 3/6 - Completando factura ID: ${cInvoiceId}`);
-    await DataService.put(`/models/C_Invoice/${cInvoiceId}`, { "doc-action": "CO" });
-
-    const inOutPayload = {
-      AD_Client_ID: Number(clientId),
-      AD_Org_ID: Number(orgId),
-      C_DocType_ID: 1000014,
-      MovementDate: new Date().toISOString().split('T')[0],
-      C_BPartner_ID: productData.C_BPartner_ID,
-      C_BPartner_Location_ID: productData.C_BPartner_Location_ID,
-      Description: "Recepción",
-      IsSOTrx: false,
-      MovementType: "V+",
-      M_Warehouse_ID: productData.M_Warehouse_ID
-    };
-
-    console.log('Paso 4/6 - Enviando payload para entrada de inventario:', inOutPayload);
-    const inOutResponse = await DataService.post('/models/M_InOut', inOutPayload);
-    
-    const mInOutId = inOutResponse.data?.id;
-    if (!mInOutId) throw new Error('Error al crear el registro M_InOut');
-
-    const linePayload = {
-      AD_Client_ID: Number(clientId),
-      AD_Org_ID: Number(orgId),
-      M_InOut_ID: mInOutId,
-      Line: 40,
-      M_Product_ID: productData.M_Product_ID,
-      MovementQty: productData.quantity,
-      QtyEntered: productData.quantity,
-      C_UOM_ID: 1000000,
-      M_Locator_ID: productData.M_Locator_ID,
-      Description: "Recepción de producto",
-      IsActive: true
-    };
-
-    console.log('Paso 5/6 - Enviando payload para línea de inventario:', linePayload);
-    await DataService.post('/models/M_InOutLine', linePayload);
-
-    const completePayload = {
-      M_InOut_ID: mInOutId,
-      Lines: [{
-        AD_Org_ID: Number(orgId),
-        M_InOut_ID: mInOutId,
-        Line: 40,
-        M_Product_ID: productData.M_Product_ID,
-        MovementQty: productData.quantity,
-        C_UOM_ID: 1000000,
-        M_Locator_ID: 1000024,
-        Description: "Recepción de producto",
-        IsActive: true
-      }]
-    };
-
-    console.log('Paso 6/6 - Enviando payload para completar proceso:', completePayload);
-    const completeResponse = await DataService.post('/processes/complete_minout_processs', completePayload);
-
-    const summary = JSON.parse(completeResponse.data.summary);
-    if (summary.error) throw new Error(summary.message);
-
-    console.log('Proceso completado exitosamente!');
     dispatch(opAddProductLoaded());
     return true;
-
   } catch (error) {
     console.error('Error en el proceso:', error);
-    let errorMessage = error.message;
-    
-    if (error.response) {
-      console.error('Error response data:', error.response.data);
-      if (error.response.data?.summary) {
-        try {
-          const summary = JSON.parse(error.response.data.summary);
-          errorMessage = summary.message || errorMessage;
-        } catch (e) {
-          console.error('Error parsing summary:', e);
-        }
-      }
+    let msg = error.message;
+    if (error.response?.data?.summary) {
+      try {
+        msg = JSON.parse(error.response.data.summary).message || msg;
+      } catch { /* ignore */ }
     }
-    
-    dispatch(opAddProductError(errorMessage));
+    dispatch(opAddProductError(msg));
     handleApiError(error, dispatch, opAddProductError);
     return false;
   }
 };
+
 
 
 export const fetchSecurityKits = (kitType) => async (dispatch) => {

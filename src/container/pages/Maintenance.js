@@ -8,10 +8,10 @@ function Maintenance() {
     <Main>
       <MaintananceWrapper>
         <img src={require(`../../static/img/pages/maintenance.svg`).default} alt="maintenance" />
-        <Heading as="h3">We are currently performing maintenance</Heading>
+        <Heading as="h3">Estamos trabajando en esta página</Heading>
         <p>
-          We&rsquo;re making the system more awesome. <br />
-          We&rsquo;ll be back shortly.
+          Esta sección se encuentra actualmente en construcción. <br />
+          Estará disponible muy pronto. ¡Gracias por tu paciencia!
         </p>
       </MaintananceWrapper>
     </Main>

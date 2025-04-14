@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { useState } from 'react';
 import { Row, Col, Skeleton, Typography, Space, Table } from 'antd';
 import { Main } from '../../styled';
@@ -6,178 +6,158 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import ProteinGrowthEvolutionChart from './feeding/ProteinGrowthEvolutionChart';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
-
+import { fetchFeedingreports, fetchFeedingreportsOrg } from '../../../redux/views/feeding-report/actionCreator';
 
 function ProteinPercentageFarm() {
-   // Selección de org, sector y pool
-    const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
-    const [selectedSector, setSelectedSector] = useState(null);
-    const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
-  
-  
-    // Datos de organizaciones
-    const organizations = useSelector((state) => state.auth.farmsOrgs);
-    const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
-  
-    // Manejo de selección de org
-    const handleOrgChange = (orgId, orgEmail) => {
-      setSelectedOrg(orgId);
-      Cookies.set('orgId', orgId);
-      Cookies.set('orgEmail', orgEmail || '');
-      Cookies.remove('poolId');
-      setSelectedPool(null);
-      setSelectedSector(null);
-    };
-  
-    // Manejo de selección de sector
-    const handleSectorChange = (sectorId) => {
-      setSelectedSector(sectorId);
-      setSelectedPool(null);
-    };
-  
-    // Manejo de selección de pool
-    const handlePoolChange = (poolId) => {
-      setSelectedPool(poolId);
-      Cookies.set('poolId', poolId);
-    };
-  
-    // Opciones para Farms
-    const farmsSelectOptions = organizations.length > 0 ? [
-      {
-        options: farmsOrgsWithPools.map(org => ({
-          value: org.orgId,
-          label: org.orgName,
-          email: org.orgEmail,
-        })),
-        onChange: handleOrgChange,
-        placeholder: 'Seleccione una Farm',
-        value: selectedOrg || undefined,
-      },
-    ] : [];
-  
-    // Opciones para sectores
-    const sectorsOptions = selectedOrg
-      ? farmsOrgsWithPools
-        .find(org => org.orgId === selectedOrg)?.pools
-        .reduce((acc, pool) => {
-          if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
-            acc.push({
-              value: pool.salesRegion.id,
-              label: pool.salesRegion.name,
-            });
-          }
-          return acc;
-        }, [])
-      : [];
-  
-    const sectorSelectOptions = selectedOrg ? [
-      {
-        options: sectorsOptions,
-        onChange: handleSectorChange,
-        placeholder: 'Seleccione un Sector',
-        value: selectedSector || undefined,
-      },
-    ] : [];
-  
-    // Opciones para pools
-    const poolsOptions = selectedSector
-      ? farmsOrgsWithPools
-        .find(org => org.orgId === selectedOrg)?.pools
-        .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
-        .map(pool => ({
-          value: pool.poolId,
-          label: pool.poolName,
-        }))
-      : [];
-  
-    const poolsSelectOptions = selectedSector ? [
-      {
-        options: poolsOptions,
-        onChange: handlePoolChange,
-        placeholder: 'Seleccione una Pool',
-        disabled: poolsOptions.length === 0,
-        value: selectedPool || undefined,
-      },
-    ] : [];
-  
-    // Combinación de selects en el PageHeader
-    const combinedSelectOptions = [
-      ...farmsSelectOptions,
-      ...sectorSelectOptions,
-      ...poolsSelectOptions,
-    ];
-  // Definición de columnas para la nueva tabla de Alimentación por tipo de Proteína
+  const dispatch = useDispatch();
+  const { feedingreports, loading } = useSelector(state => state.feedingreport);
+  const [selectedBatch, setSelectedBatch] = useState(null);
+
+  // Selección de org, sector y pool
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+
+  // Datos de organizaciones
+  const organizations = useSelector((state) => state.auth.farmsOrgs);
+  const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+
+  // Manejo de selección de org
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
+  };
+
   const feedingColumns = [
-    { title: 'Ciclo', dataIndex: 'ciclo', key: 'ciclo' },
-    { title: 'Lote ID', dataIndex: 'loteId', key: 'loteId' },
-    { title: 'P Pre Cría', dataIndex: 'pPreCria', key: 'pPreCria' },
-    { title: 'P Engorde', dataIndex: 'pEngorde', key: 'pEngorde' },
-    { title: 'Sistema', dataIndex: 'sistema', key: 'sistema' },
-    { title: 'Alimento', dataIndex: 'alimento', key: 'alimento' },
-    { title: '# Días', dataIndex: 'dias', key: 'dias' },
-    { title: 'Crecimiento Semanal', dataIndex: 'crecimientoSemanal', key: 'crecimientoSemanal' },
-    { title: 'Supervivencia Semanal', dataIndex: 'supervivenciaSemanal', key: 'supervivenciaSemanal' },
-    { title: 'IEP ', dataIndex: 'iep', key: 'iep' },
+    {
+      title: 'Lote ID',
+      dataIndex: 'loteId',
+      key: 'loteId'
+    },
+    {
+      title: <span>% Proteína<br />Pc</span>,
+      align: "center",
+      dataIndex: 'pPreCria',
+      key: 'pPreCria'
+    },
+    {
+      title: <span>% Proteína<br />Ppe</span>,
+      dataIndex: 'pPreEngorde',
+      align: "center",
+      key: 'pPreEngorde'
+    },
+    {
+      title: <span>% Proteína<br />Pe</span>,
+      align: "center",
+      dataIndex: 'pEngorde',
+      key: 'pEngorde'
+    },
+    {
+      title: 'Protocolo de Cultivo',
+      dataIndex: 'sistema',
+      key: 'sistema'
+    },
+    {
+      title: 'Alimento',
+      dataIndex: 'alimento',
+      key: 'alimento'
+    },
+    {
+      title: '# Días',
+      dataIndex: 'dias',
+      key: 'dias'
+    },
+    {
+      title: <span>Crecimiento <br /> Semanal</span>,
+      align: "center",
+      dataIndex: 'crecimientoSemanal',
+      key: 'crecimientoSemanal'
+    },
+    {
+      title: <span>Supervivencia <br /> Semanal</span>,
+      align: "center",
+      dataIndex: 'supervivenciaSemanal',
+      key: 'supervivenciaSemanal'
+    },
   ];
 
-  // Datos ficticios para la tabla de Alimentación por tipo de Proteína
-  const feedingData = [
+  const generateFeedingData = (feedingreports) => {
+    return feedingreports.map(report => {
+      // Asegurarse de que los arrays existan antes de usar map
+      const preCriaProteins = report.pc_production_json?.map(product => `${product.foodproteinbase}%`).join('-') || '';
+      const preEngordeProteins = report.pe_production_json?.map(product => `${product.foodproteinbase}%`).join('-') || '';
+      const engordeProteins = report.e_production_json?.map(product => `${product.foodproteinbase}%`).join('-') || '';
+
+      // Convertir formatos de alimento a acrónimos
+      const alimentos = [...(report.pc_production_json || []), ...(report.pe_production_json || [])]
+        .map(product => {
+          const format = product.sm_productformat || '';
+          if (format.includes('MICROEXTRUIDO')) return 'ME';
+          if (format.includes('EXTRUIDO')) return 'E';
+          if (format.includes('GRANULADO')) return 'G';
+          if (format.includes('PELETIZADO')) return 'P';
+          if (format.includes('LIQUIDO')) return 'L';
+          return format;
+        }).join('-') || '';
+
+      // Asegurarse de que los valores de semanas existen antes de hacer el cálculo
+      const totalDias = ((report.SM_PreBreedingWeeks || 0) + (report.SM_FattenWeeks || 0) + (report.SM_PreFatteningWeeks || 0)) * 7;
+
+      const realData = report.feedingdata_realjson;
+      let maxSmIndexObject = 0
+      if (Array.isArray(realData) && realData.length > 0) {
+         maxSmIndexObject = realData.reduce((max, current) => {
+          return (current.sm_index > max.sm_index) ? current : max;
+        }, realData[0]);
+
+        console.log("Objeto con el sm_index más alto:", maxSmIndexObject);
+        console.log("El sm_index más alto es:", maxSmIndexObject.sm_index);
+      } else {
+        console.error("El array 'feedingdata_realjson' no está definido o está vacío.");
+      }
+
+
+      return {
+        loteId: report.SM_Batch,
+        pPreCria: preCriaProteins,
+        pPreEngorde: preEngordeProteins,
+        pEngorde: engordeProteins,
+        sistema: report.sm_template_description,
+        alimento: alimentos,
+        dias: totalDias ,
+        crecimientoSemanal: maxSmIndexObject?.sm_weeklygrowthreal || 0,
+        supervivenciaSemanal: maxSmIndexObject?.superv || 0,
+      };
+    });
+  };
+
+  const feedingData = generateFeedingData(feedingreports);
+
+
+  // Opciones para Farms
+  const farmsSelectOptions = organizations.length > 0 ? [
     {
-      key: '1',
-      ciclo: 'Ciclo 1',
-      loteId: 'L01',
-      pPreCria: '10%',
-      pEngorde: '15%',
-      sistema: 'Intensivo',
-      alimento: 'Pellet',
-      dias: 7,
-      crecimientoSemanal: '3%',
-      supervivenciaSemanal: '90%',
-      iep: '1.2',
+      options: farmsOrgsWithPools.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Farm',
+      value: selectedOrg || undefined,
     },
-    {
-      key: '2',
-      ciclo: 'Ciclo 1',
-      loteId: 'L02',
-      pPreCria: '12%',
-      pEngorde: '18%',
-      sistema: 'Semi-Intensivo',
-      alimento: 'Gránulo',
-      dias: 7,
-      crecimientoSemanal: '2.8%',
-      supervivenciaSemanal: '88%',
-      iep: '1.1',
-    },
-    {
-      key: '3',
-      ciclo: 'Ciclo 2',
-      loteId: 'L01',
-      pPreCria: '15%',
-      pEngorde: '20%',
-      sistema: 'Extensivo',
-      alimento: 'Pellet',
-      dias: 14,
-      crecimientoSemanal: '3.5%',
-      supervivenciaSemanal: '85%',
-      iep: '1.3',
-    },
-    {
-      key: '4',
-      ciclo: 'Ciclo 2',
-      loteId: 'L03',
-      pPreCria: '11%',
-      pEngorde: '17%',
-      sistema: 'Intensivo',
-      alimento: 'Gránulo',
-      dias: 10,
-      crecimientoSemanal: '3.2%',
-      supervivenciaSemanal: '92%',
-      iep: '1.0',
-    },
-    // Agrega más registros si es necesario
+  ] : [];
+
+  // Combinación de selects en el PageHeader
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
   ];
+
+  useEffect(() => {
+    dispatch(fetchFeedingreportsOrg());
+  }, [dispatch, selectedOrg]);
 
   return (
     <>
@@ -186,32 +166,48 @@ function ProteinPercentageFarm() {
         title="Porcentaje de Proteína"
         selectOptions={combinedSelectOptions}
         selectedOrg={selectedOrg}
-        selectedPool={selectedPool}
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
+          <Col xl={24} xs={24} >
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Alimentación por tipo de Proteína" size="large">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "20px" }}>
+                  <div>
+                    ME: Microextruido<br />
+                  </div>
+                  <div>
+                    E: Extruido<br />
+                  </div>
+                  <div>
+                    G: Granulado<br />
+                  </div>
+                  <div>
+                    P: Peletizado<br />
+                  </div>
+                  <div>
+                    L: Líquido<br />
+                  </div>
+                </div>
                 <Table
                   className='table-responsive'
-                  dataSource={feedingData} columns={feedingColumns} pagination={{ pageSize: 5 }} />
+                  dataSource={feedingData}
+                  columns={feedingColumns}
+                  pagination={{ pageSize: 5 }}
+                  onRow={(record) => ({
+                    onClick: () => setSelectedBatch(record.loteId)
+                  })}
+                />
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
+          <Col xl={24} xs={24} >
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Evolución de Crecimiento por tipo de Proteína" size="large">
-                <ProteinGrowthEvolutionChart />
+                <ProteinGrowthEvolutionChart
+                  selectedBatch={selectedBatch}
+                  feedingreports={feedingreports} />
               </Cards>
-            </Suspense>
-          </Col>
-        </Row>
-
-        <Row gutter={25} equal-heights>
-          <Col xl={24} xs={24} style={{ display: 'flex' }}>
-            <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-             
             </Suspense>
           </Col>
         </Row>

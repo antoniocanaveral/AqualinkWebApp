@@ -1,23 +1,23 @@
-import React, { lazy, Suspense, useState } from 'react';
-import { Row, Col, Skeleton, Typography, Space, Table } from 'antd';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { Row, Col, Skeleton, Typography, Space, Table, Select } from 'antd';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers';
-import { GoogleMaps } from '../../../components/maps/google-maps';
-import { Badge } from '../../pages/style';
 import ProjectedSuggestedFeedingChart from './feeding/ProjectedSuggestedFeedingChart';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
-
+import { fetchFeedingreportsOrg } from '../../../redux/views/feeding-report/actionCreator';
 
 function RealAndProjectedFeeding() {
+
+  const dispatch = useDispatch();
+  const { feedingreports, loading } = useSelector(state => state.feedingreport);
+  const [selectedBatch, setSelectedBatch] = useState(null);
+
   // Selección de org, sector y pool
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
-  const [selectedSector, setSelectedSector] = useState(null);
-  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
-
 
   // Datos de organizaciones
   const organizations = useSelector((state) => state.auth.farmsOrgs);
@@ -29,20 +29,6 @@ function RealAndProjectedFeeding() {
     Cookies.set('orgId', orgId);
     Cookies.set('orgEmail', orgEmail || '');
     Cookies.remove('poolId');
-    setSelectedPool(null);
-    setSelectedSector(null);
-  };
-
-  // Manejo de selección de sector
-  const handleSectorChange = (sectorId) => {
-    setSelectedSector(sectorId);
-    setSelectedPool(null);
-  };
-
-  // Manejo de selección de pool
-  const handlePoolChange = (poolId) => {
-    setSelectedPool(poolId);
-    Cookies.set('poolId', poolId);
   };
 
   // Opciones para Farms
@@ -59,114 +45,107 @@ function RealAndProjectedFeeding() {
     },
   ] : [];
 
-  // Opciones para sectores
-  const sectorsOptions = selectedOrg
-    ? farmsOrgsWithPools
-      .find(org => org.orgId === selectedOrg)?.pools
-      .reduce((acc, pool) => {
-        if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
-          acc.push({
-            value: pool.salesRegion.id,
-            label: pool.salesRegion.name,
-          });
-        }
-        return acc;
-      }, [])
-    : [];
-
-  const sectorSelectOptions = selectedOrg ? [
-    {
-      options: sectorsOptions,
-      onChange: handleSectorChange,
-      placeholder: 'Seleccione un Sector',
-      value: selectedSector || undefined,
-    },
-  ] : [];
-
-  // Opciones para pools
-  const poolsOptions = selectedSector
-    ? farmsOrgsWithPools
-      .find(org => org.orgId === selectedOrg)?.pools
-      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
-      .map(pool => ({
-        value: pool.poolId,
-        label: pool.poolName,
-      }))
-    : [];
-
-  const poolsSelectOptions = selectedSector ? [
-    {
-      options: poolsOptions,
-      onChange: handlePoolChange,
-      placeholder: 'Seleccione una Pool',
-      disabled: poolsOptions.length === 0,
-      value: selectedPool || undefined,
-    },
-  ] : [];
-
   // Combinación de selects en el PageHeader
   const combinedSelectOptions = [
     ...farmsSelectOptions,
-    ...sectorSelectOptions,
-    ...poolsSelectOptions,
   ];
 
+  // Procesar datos para la tabla
+  const processFeedingData = () => {
+    return feedingreports.flatMap(report => {
+      const projectedData = report.feedingdata_projectedjson || [];
+      const realData = report.feedingdata_realjson || [];
 
-  // Definición de columnas para la nueva tabla de Alimentación
+      // Combinar y ordenar datos por sm_index
+      const combinedData = projectedData.map(proj => {
+        const real = realData.find(r => r.sm_index === proj.sm_index) || {};
+        return {
+          sm_index: proj.sm_index,
+          projected: proj.sm_accumulatedfood || 0,
+          real: real.sm_accumulatedfoodreal || 0,
+          tipoAlimento: proj.sm_productformat || real.sm_productformat || '',
+          proteina: proj.foodproteinbase || real.foodproteinbase || 0
+        };
+      }).sort((a, b) => a.sm_index - b.sm_index);
+
+      return combinedData.map((entry, index) => ({
+        key: `${report.SM_Batch}-${index}`,
+        lote: report.SM_Batch,
+        dia: entry.sm_index,
+        alimentoProyectado: entry.projected.toFixed(2),
+        alimentoEntregado: entry.real.toFixed(2),
+        alimentoAjustado: 0.00, // Valor por defecto
+        tipoAlimento: entry.tipoAlimento,
+        proteina: entry.proteina.toFixed(2)
+      }));
+    });
+  };
+
+  const feedingData = processFeedingData();
+
+  // Filtrar los datos según el lote seleccionado
+  const filteredFeedingData = selectedBatch
+    ? feedingData.filter(item => item.lote === selectedBatch)
+    : feedingData;
+
   const feedingColumns = [
-    { title: 'CÓDIGO', dataIndex: 'codigo', key: 'codigo' },
-    { title: 'CORRIDA', dataIndex: 'corrida', key: 'corrida' },
-    { title: 'LOTE', dataIndex: 'lote', key: 'lote' },
-    { title: 'DÍA', dataIndex: 'dia', key: 'dia' },
     {
-      title: (
-        <center>
-          ALIMENTO <br /> PROYECTADO
-        </center>
-
-      ),
+      title: 'LOTE',
+      dataIndex: 'lote',
+      key: 'lote',
+      sorter: (a, b) => a.lote.localeCompare(b.lote)
+    },
+    {
+      title: 'DÍA',
+      dataIndex: 'dia',
+      key: 'dia',
+      sorter: (a, b) => a.dia - b.dia
+    },
+    {
+      title: <center>ALIMENTO<br />PROYECTADO</center>,
       dataIndex: 'alimentoProyectado',
       key: 'alimentoProyectado',
-      render: (text) => <center style={{ whiteSpace: 'pre-wrap' }}>{`${text}kg`}</center>,
+      render: (text) => <center>{`${text}kg`}</center>,
+      sorter: (a, b) => a.alimentoProyectado - b.alimentoProyectado
     },
     {
-      title: (
-        <center>
-          ALIMENTO <br /> ENTREGADO
-        </center>
-      ),
+      title: <center>ALIMENTO<br />ENTREGADO</center>,
       dataIndex: 'alimentoEntregado',
       key: 'alimentoEntregado',
-      render: (text) => <center style={{ whiteSpace: 'pre-wrap' }}>{`${text}kg`}</center>,
+      render: (text) => <center>{`${text}kg`}</center>,
+      sorter: (a, b) => a.alimentoEntregado - b.alimentoEntregado
     },
     {
-      title:
-        (
-          <center>
-            ALIMENTO <br /> AJUSTADO
-          </center>
-        ),
+      title: <center>ALIMENTO<br />AJUSTADO</center>,
       dataIndex: 'alimentoAjustado',
       key: 'alimentoAjustado',
-      render: (text) => <center style={{ whiteSpace: 'pre-wrap' }}>{`${text}kg`}</center>,
+      render: (text) => <center>{`${text}kg`}</center>,
+      sorter: (a, b) => a.alimentoAjustado - b.alimentoAjustado
     },
-    { title: 'TIPO DE ALIMENTO', dataIndex: 'tipoAlimento', key: 'tipoAlimento' },
-    { title: '% PROTEÍNA', dataIndex: 'proteina', key: 'proteina' },
+    {
+      title: 'TIPO DE ALIMENTO',
+      dataIndex: 'tipoAlimento',
+      key: 'tipoAlimento',
+      sorter: (a, b) => a.tipoAlimento.localeCompare(b.tipoAlimento)
+    },
+    {
+      title: '% PROTEÍNA',
+      dataIndex: 'proteina',
+      key: 'proteina',
+      render: (text) => <center>{`${text}%`}</center>,  // Aquí se agrega el símbolo de porcentaje
+      sorter: (a, b) => a.proteina - b.proteina
+  }
+  
   ];
 
-  // Datos ficticios para la nueva tabla de Alimentación
-  const feedingData = [
-    { key: '1', codigo: 'A001', corrida: '1', lote: 'L01', dia: '01 Nov', alimentoProyectado: 50, alimentoEntregado: 48, alimentoAjustado: 52, tipoAlimento: 'Pellet', proteina: 30 },
-    { key: '2', codigo: 'A002', corrida: '1', lote: 'L02', dia: '02 Nov', alimentoProyectado: 55, alimentoEntregado: 53, alimentoAjustado: 56, tipoAlimento: 'Pellet', proteina: 32 },
-    { key: '3', codigo: 'A003', corrida: '1', lote: 'L03', dia: '03 Nov', alimentoProyectado: 60, alimentoEntregado: 59, alimentoAjustado: 62, tipoAlimento: 'Pellet', proteina: 28 },
-    { key: '4', codigo: 'A004', corrida: '2', lote: 'L01', dia: '04 Nov', alimentoProyectado: 65, alimentoEntregado: 63, alimentoAjustado: 68, tipoAlimento: 'Gránulo', proteina: 35 },
-    { key: '5', codigo: 'A005', corrida: '2', lote: 'L02', dia: '05 Nov', alimentoProyectado: 70, alimentoEntregado: 68, alimentoAjustado: 72, tipoAlimento: 'Gránulo', proteina: 33 },
-    { key: '6', codigo: 'A006', corrida: '2', lote: 'L03', dia: '06 Nov', alimentoProyectado: 75, alimentoEntregado: 73, alimentoAjustado: 78, tipoAlimento: 'Pellet', proteina: 31 },
-    { key: '7', codigo: 'A007', corrida: '3', lote: 'L01', dia: '07 Nov', alimentoProyectado: 80, alimentoEntregado: 79, alimentoAjustado: 83, tipoAlimento: 'Gránulo', proteina: 34 },
-    { key: '8', codigo: 'A008', corrida: '3', lote: 'L02', dia: '08 Nov', alimentoProyectado: 85, alimentoEntregado: 84, alimentoAjustado: 88, tipoAlimento: 'Pellet', proteina: 29 },
-    { key: '9', codigo: 'A009', corrida: '3', lote: 'L03', dia: '09 Nov', alimentoProyectado: 90, alimentoEntregado: 88, alimentoAjustado: 92, tipoAlimento: 'Gránulo', proteina: 36 },
-    { key: '10', codigo: 'A010', corrida: '3', lote: 'L04', dia: '10 Nov', alimentoProyectado: 95, alimentoEntregado: 92, alimentoAjustado: 98, tipoAlimento: 'Pellet', proteina: 30 },
-  ];
+  useEffect(() => {
+    dispatch(fetchFeedingreportsOrg());
+  }, [dispatch, selectedOrg]);
+
+  // Crear un array de lotes para el selector
+  const batchOptions = feedingreports
+    .map(report => report.SM_Batch)
+    .filter((value, index, self) => self.indexOf(value) === index) // Filtrar duplicados
 
   return (
     <>
@@ -175,7 +154,6 @@ function RealAndProjectedFeeding() {
         title="Alimentación Real Vs Proyectada"
         selectOptions={combinedSelectOptions}
         selectedOrg={selectedOrg}
-        selectedPool={selectedPool}
       />
       <Main>
         <Row gutter={25}>
@@ -214,13 +192,27 @@ function RealAndProjectedFeeding() {
                 </Cards>
               }
             >
+
               {/* Tabla de Alimentación */}
               <Cards title="Alimentación" size="large">
+                <Select
+                  style={{ width: '100%' }}
+                  placeholder="Seleccionar un lote"
+                  value={selectedBatch}
+                  onChange={setSelectedBatch}
+                >
+                  {batchOptions.map(batch => (
+                    <Select.Option key={batch} value={batch}>
+                      {batch}
+                    </Select.Option>
+                  ))}
+                </Select>
+                <br/>
                 <Table
                   className='table-responsive'
-                  dataSource={feedingData}
+                  dataSource={filteredFeedingData}
                   columns={feedingColumns}
-                  pagination={{ pageSize: 5 }}
+                  pagination={{ pageSize: 7 }}
                 />
               </Cards>
             </Suspense>
