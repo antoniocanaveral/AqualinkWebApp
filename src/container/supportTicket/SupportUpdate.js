@@ -15,7 +15,7 @@ function SupportUpdate({ visible, onCancel, onSuccess, editableData }) {
 
   useEffect(() => {
     if (editableData) {
-      // Inicializa el formulario con datos actuales del ticket, incluyendo response_text si existe.
+
       form.setFieldsValue({
         status: editableData.R_Status_ID?.identifier,
         description: editableData.Summary || '',
@@ -27,7 +27,7 @@ function SupportUpdate({ visible, onCancel, onSuccess, editableData }) {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      // Se arma el payload base
+
       const payload = {
         id: editableData.id,
         R_Status_ID: {
@@ -35,12 +35,12 @@ function SupportUpdate({ visible, onCancel, onSuccess, editableData }) {
           identifier: values.status,
         },
       };
-      // Solo se agrega response_text si el estado es Closed
+
       if (values.status === "3_Closed") {
         payload.response_text = values.response_text;
       }
       await dispatch(updateRequestStatus(payload));
-      // Se notifica el éxito para refrescar la lista
+
       onSuccess();
     } catch (error) {
       console.error('Error updating ticket:', error);

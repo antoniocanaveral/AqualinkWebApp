@@ -72,7 +72,7 @@ const GoogleMaps = GoogleApiWrapper({
       : parseFloat(longitude) || fallbackLng,
   };
 
-  // Determinar ícono en base al tipo
+
   const getMarkerIcon = () => {
     if (type === 'geo') {
       return {

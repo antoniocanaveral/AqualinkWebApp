@@ -108,7 +108,7 @@ const rootReducers = combineReducers({
   SingleAxiosCrud: axiosSingleCrudReducer,
 
 
-  //views
+
   view_coords: CoordsViewReducer
 });
 

@@ -44,7 +44,7 @@ const ProjectSorting = Styled.div`
         align-items: center;
         margin: 0 -10px;
         @media only screen and (max-width: 1299px){
-            // flex-direction: column;
+
             justify-content: space-between;
         }
         .project-sort-group{

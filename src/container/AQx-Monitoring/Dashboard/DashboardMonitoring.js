@@ -24,11 +24,11 @@ function DashboardMonitoring() {
     }, [dispatch]);
     console.log("asd")
 
-    const orgToAudit = useSelector((state) => state.auth.orgToAudit)|| [];
+    const orgToAudit = useSelector((state) => state.auth.orgToAudit) || [];
     const activeOrgs = [orgToAudit];
     const auditType = Cookies.get('orgAuditType');
 
-    // Puedes usar activeOrgs[0] para mostrar datos si es auditor
+
     console.log("Organización activa:", orgToAudit);
     console.log("Organización activa:", auditType);
 
@@ -42,16 +42,36 @@ function DashboardMonitoring() {
             <Main>
                 <Row gutter={25}>
                     <Col xs={24} sm={12} md={6}>
-                        <StatusBox icon={FaGavel} percentage={80} label="Legal" />
+                        <StatusBox
+                            icon={FaGavel}
+                            percentage={80}
+                            label="Legal"
+                            color="#8B4513" // Marrón
+                        />
                     </Col>
                     <Col xs={24} sm={12} md={6}>
-                        <StatusBox icon={FaShrimp} percentage={60} label="Health" />
+                        <StatusBox
+                            icon={FaShrimp}
+                            percentage={60}
+                            label="Health & WellFare"
+                            color="#FA8C16" // Naranja
+                        />
                     </Col>
                     <Col xs={24} sm={12} md={6}>
-                        <StatusBox icon={FaLeaf} percentage={90} label="Ambiental" />
+                        <StatusBox
+                            icon={FaLeaf}
+                            percentage={90}
+                            label="Ambiental"
+                            color="#52C41A" // Verde
+                        />
                     </Col>
                     <Col xs={24} sm={12} md={6}>
-                        <StatusBox icon={FaMapMarkedAlt} percentage={40} label="Tracking" />
+                        <StatusBox
+                            icon={FaMapMarkedAlt}
+                            percentage={40}
+                            label="Tracking"
+                            color="#1E90FF" // Azul tipo DodgerBlue
+                        />
                     </Col>
                 </Row>
                 <br />

@@ -14,7 +14,7 @@ const props = {
   },
   onChange(info) {
     if (info.file.status !== 'uploading') {
-      // console.log(info.file, info.fileList);
+
     }
     if (info.file.status === 'done') {
       message.success(`${info.file.name} file uploaded successfully`);
@@ -93,7 +93,7 @@ function Uploads() {
       return;
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
+
       getBase64(info.file.originFileObj, (imageUrl) =>
         setState({
           imageUrl,
@@ -108,7 +108,7 @@ function Uploads() {
     fileList = fileList.slice(-2);
     fileList = fileList.map((file) => {
       if (file.response) {
-        // eslint-disable-next-line no-param-reassign
+
         file.url = file.response.url;
       }
       return file;

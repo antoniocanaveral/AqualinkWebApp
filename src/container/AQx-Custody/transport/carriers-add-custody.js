@@ -26,7 +26,7 @@ function CarriersAddCustody() {
         await form.validateFields();
       }
       if (currentStep === 0) {
-        // Inicializar el array de vehículos según el número ingresado
+
         const numVehiculos = parseInt(form.getFieldValue('numVehiculos'), 10) || 0;
         if (numVehiculos > 0) {
           setVehiculos(
@@ -219,11 +219,11 @@ function CarriersAddCustody() {
 
   const onFinish = async () => {
     try {
-      // Validamos y extraemos los datos del transportista
+
       const carrierValues = await form.validateFields();
       const vehicleValues = await vehiculoForm.validateFields();
 
-      // Armar el payload usando los nombres de campo que corresponden a la tabla
+
       const carrierData = {
         SM_Code: carrierValues.sm_code, // Código TR
         TaxID: carrierValues.TaxID, // RUC
@@ -235,16 +235,16 @@ function CarriersAddCustody() {
 
       console.log('Carrier Data:', carrierData); // Verificar que los datos estén correctos
 
-      // Registrar el carrier y obtener el resultado
+
       const carrierResult = await dispatch(registerCarrier(carrierData));
 
-      // Verificamos que se obtuvo el ID
+
       const carrierId = carrierResult && carrierResult.id;
       if (!carrierId) {
         throw new Error('No se pudo obtener el ID del transportista.');
       }
 
-      // Registrar cada vehículo asignándole el carrierId
+
       for (const vehiculo of vehiculos) {
         await dispatch(registerVehicle(carrierId, vehiculo));
       }

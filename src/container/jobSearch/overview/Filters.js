@@ -20,7 +20,7 @@ const Filters = React.memo(() => {
       min: value[0],
       max: value[1],
     });
-    // dispatch(filterByPriceRange(value));
+
   };
 
   const optionsJobTypes = [

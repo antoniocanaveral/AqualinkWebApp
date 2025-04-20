@@ -41,7 +41,7 @@ function InventaryAddSupplyCustody() {
     }
   };
 
-  // 🔹 Función para procesar el CSV y almacenar los datos en el estado
+
   const handleFileUpload = (file) => {
     Papa.parse(file, {
       complete: (result) => {
@@ -71,7 +71,7 @@ function InventaryAddSupplyCustody() {
     return false;
   };
 
-  // 🔹 Función para subir los kits en masa
+
   const handleMassUpload = async () => {
     if (csvData.length === 0) {
       message.error('No hay datos para subir.');
@@ -94,7 +94,7 @@ function InventaryAddSupplyCustody() {
     message.success(`Carga completada: ${successCount} éxitos, ${errorCount} errores.`);
   };
 
-  // 🔹 Definir columnas para vista previa del CSV
+
   const columns = [
     { title: 'Código del Kit', dataIndex: 'SM_KitCode', key: 'SM_KitCode' },
     { title: 'Sello 1', dataIndex: 'SM_Stamp1', key: 'SM_Stamp1' },

@@ -21,7 +21,7 @@ const formatNumber = (value) => {
   return new Intl.NumberFormat("es-Es").format(value)
 }
 
-// formatter and parser input number
+
 const inputFormatter = (val) => {
   if (!val) return 0;
   return `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(/\.(?=\d{0,2}$)/g, ",");

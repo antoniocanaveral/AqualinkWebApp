@@ -100,7 +100,7 @@ const theme = {
   'btn-height-extra-small': btnxs,
   'btn-default-color': darkColor,
 
-  // cards
+
   'card-head-background': '#ffffff',
   'card-head-color': darkColor,
   'card-background': '#ffffff',
@@ -109,7 +109,7 @@ const theme = {
   'card-radius': '10px',
   'card-shadow': '0 5px 20px rgba(146,153,184,0.03)',
 
-  // Layout
+
   'layout-body-background': '#F4F5F7',
   'layout-header-background': '#ffffff',
   'layout-footer-background': '#fafafa',
@@ -122,12 +122,12 @@ const theme = {
   'layout-trigger-color': '#fff',
   'layout-zero-trigger-width': '36px',
   'layout-zero-trigger-height': '42px',
-  // Layout light theme
+
   'layout-sider-background-light': '#fff',
   'layout-trigger-background-light': '#fff',
   'layout-trigger-color-light': 'rgba(0, 0, 0, 0.65)',
 
-  // PageHeader
+
   'page-header-padding': '24px',
   'page-header-padding-vertical': '16px',
   'page-header-padding-breadcrumb': '12px',
@@ -135,26 +135,26 @@ const theme = {
   'page-header-ghost-bg': 'inherit',
   'page-header-heading-sub-title': '15px',
 
-  // Popover body background color
+
   'popover-color': darkColor,
 
-  // alert
+
   'alert-success-border-color': successColor,
   'alert-success-bg-color': successColor + 15,
   'alert-error-bg-color': errorColor + 15,
   'alert-warning-bg-color': warningColor + 15,
   'alert-info-bg-color': infoColor + 15,
 
-  // radio btn
+
   'radio-button-checked-bg': primaryColor,
 
-  // gutter width
+
   'grid-gutter-width': 25,
 
-  // skeleton
+
   'skeleton-color': borderLight,
 
-  // slider
+
   'slider-rail-background-color': sliderRailColor,
   'slider-rail-background-color-hover': sliderRailColor,
   'slider-track-background-color': primaryColor,
@@ -162,7 +162,7 @@ const theme = {
   'slider-handle-color': primaryColor,
   'slider-handle-size': '16px',
 
-  // input
+
   'input-border-color': borderNormal,
   'input-height-base': '40px',
   'input-height-sm': '30px',
@@ -171,34 +171,34 @@ const theme = {
   'input-padding-horizontal-lg': '20px',
   'input-padding-vertical-base': '12px',
 
-  // rate
+
   'rate-star-color': warningColor,
   'rate-star-size': '13px',
 
-  // Switch
+
   'switch-min-width': '35px',
   'switch-sm-min-width': '30px',
   'switch-height': '18px',
   'switch-sm-height': '15px',
 
-  // result
+
   'result-title-font-size': '20px',
   'result-subtitle-font-size': '12px',
   'result-icon-font-size': '50px',
 
-  // tabs
+
   'tabs-horizontal-padding': '12px 15px',
   'tabs-horizontal-margin': '0',
 
-  // list
+
   'list-item-padding': '10px 24px',
 
-  // Tags
+
   'tag-default-bg': '#EFF0F3',
   'tag-default-color': darkColor,
   'tag-font-size': '11px',
 
-  // Progress
+
   'progress-default-color': primaryColor,
   'progress-text-font-size': '14px',
 };

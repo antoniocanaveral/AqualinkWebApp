@@ -33,7 +33,7 @@ function NotificationFishingCustody() {
     },
   ];
 
-  // Datos quemados
+
   const coordinations = [
     {
       proveedor: 'EcSSA Manabí',
@@ -115,7 +115,7 @@ function NotificationFishingCustody() {
     },
   ];
 
-  // Función para determinar el color de "cierre" en función del tiempo restante
+
   const getCierreColor = (cierre) => {
     const days = parseInt(cierre.split('d')[0], 10);
     if (days < 1) {
@@ -127,7 +127,7 @@ function NotificationFishingCustody() {
     }
   };
 
-  // Generar los datos de la tabla de manera reactiva usando useMemo
+
   const tableDataScource = useMemo(() => {
     return coordinations.map((item) => {
       return {

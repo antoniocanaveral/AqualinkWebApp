@@ -1,4 +1,4 @@
-// actionCreators.js
+
 import { message } from 'antd';
 import { fetchStatusLoading, fetchStatusSuccess, fetchStatusError, fetchCategoriesLoading, fetchCategoriesSuccess, fetchCategoriesError, fetchRequestsSuccess, fetchRequestsError, fetchRequestsLoading } from './actions';
 import { DataService } from '../../config/dataService/dataService';
@@ -41,7 +41,7 @@ export const fetchCategories = () => async (dispatch) => {
 };
 
 
-// actionCreators.js
+
 export const createRequest = (requestData) => async (dispatch) => {
   const selectedClientId = Cookies.get('selectedClientId');
   if (!selectedClientId) {
@@ -76,7 +76,7 @@ export const createRequest = (requestData) => async (dispatch) => {
       console.log("ad_user_id:", responseEmail);
 
       message.success('Ticket creado exitosamente!');
-      //sendEmail(R_Request_ID); // Enviar nombre de la categoría como subject
+
       return response.data;
     }
   } catch (error) {
@@ -94,11 +94,11 @@ export const updateRequestStatus = (requestData) => async (dispatch) => {
   }
 
   try {
-    // Se arma el payload base
+
     const payload = {
       R_Status_ID: requestData.R_Status_ID.id
     };
-    // Se agrega response_text si se encuentra en el requestData
+
     if (requestData.response_text) {
       payload.response_text = requestData.response_text;
     }
@@ -169,7 +169,7 @@ export const sendEmailChangeToCloseStatus = async (R_Request_ID) => {
 
 
 
-// actionCreators.js
+
 export const fetchRequestsByClientC = () => async (dispatch) => {
 
   const selectedClientId = Cookies.get('selectedClientId');
@@ -195,7 +195,7 @@ export const fetchRequestsByClientC = () => async (dispatch) => {
 };
 
 
-// actionCreators.js
+
 
 
 export const fetchRequestsByClient = () => async (dispatch) => {

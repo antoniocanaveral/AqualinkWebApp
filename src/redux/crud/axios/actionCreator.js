@@ -95,7 +95,7 @@ const axiosDataRead = () => {
         await dispatch(axiosReadSuccess(query.data.data));
       } else {
         await dispatch(axiosReadSuccess([]));
-        // await dispatch(axiosAddErr('No Unauthorize access'));
+
       }
     } catch (err) {
       await dispatch(axiosReadErr(err));

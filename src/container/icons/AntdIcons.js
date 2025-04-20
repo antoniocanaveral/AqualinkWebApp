@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'antd';
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import * as Icons from '@ant-design/icons';
 import { AnIcon, IconWrapper } from './IconStyled';
 import { PageHeader } from '../../components/page-headers/page-headers';

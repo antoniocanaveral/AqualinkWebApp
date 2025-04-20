@@ -2,13 +2,13 @@ import React from 'react';
 import GaugeChart from 'react-gauge-chart';
 
 const Speedometer = ({ value }) => {
-    // Ajusta el rango del valor entre 0 y 1 para el Gauge
+
     const normalizedValue = value / 100;
 
-    // Colores de los segmentos
+
     const colors = ['#1E88E5', '#43A047', '#FFEB3B', '#FB8C00', '#E53935'];
 
-    // Función para determinar el color de la aguja
+
     const getNeedleColor = (value) => {
         if (value <= 20) return colors[0]; // Azul
         if (value > 20 && value <= 40) return colors[1]; // Verde

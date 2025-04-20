@@ -16,13 +16,13 @@ function GeneralPathologyLab() {
   const [isVeterinaryPlanModalVisible, setIsVeterinaryPlanModalVisible] = useState(false);
   const [selectedVeterinaryPlan, setSelectedVeterinaryPlan] = useState(null);
 
-  // Mostrar el modal del plan veterinario
+
   const showVeterinaryPlanModal = (record) => {
     setSelectedVeterinaryPlan(veterinaryPlans[record.key - 1]); // Asociar el plan según la semana
     setIsVeterinaryPlanModalVisible(true);
   };
 
-  // Cerrar el modal del plan veterinario
+
   const handleVeterinaryPlanModalCancel = () => {
     setIsVeterinaryPlanModalVisible(false);
     setSelectedVeterinaryPlan(null);
@@ -178,13 +178,13 @@ function GeneralPathologyLab() {
   ];
 
 
-  // Mostrar modal con los detalles
+
   const showModal = (record) => {
     setSelectedRecord(record);
     setIsModalVisible(true);
   };
 
-  // Cerrar modal
+
   const handleCancel = () => {
     setIsModalVisible(false);
     setSelectedRecord(null);

@@ -114,7 +114,7 @@ function PlanningStudioFarms() {
     ...poolsSelectOptions,
   ];
 
-  // Mapeo de opciones fijas a nombres de campos reales
+
   const fixedOptionFieldNames = {
     densidad: 'density',
     ciclo: 'days_to_harvest',
@@ -123,7 +123,7 @@ function PlanningStudioFarms() {
   }; // Maneja el cambio de tipo de simulación
 
 
-  // Maneja el cambio de opción fija
+
   const handleFixedOptionChange = (value) => {
     setFixedOption(value);
     const fieldName = fixedOptionFieldNames[value];
@@ -132,13 +132,13 @@ function PlanningStudioFarms() {
     }
   };
 
-  // Obtiene el nombre del campo fijo
+
   const fixedFieldName = fixedOption ? fixedOptionFieldNames[fixedOption] : '';
 
-  // Observa el valor del campo fijo
+
   const fixedFieldValue = Form.useWatch(fixedFieldName, form);
 
-  // useEffect para verificar si el campo fijo necesita valor y si debe deshabilitarse
+
   useEffect(() => {
     if (simulationType === 'fijo' && fixedOption) {
       if (!fixedFieldValue) {
@@ -154,7 +154,7 @@ function PlanningStudioFarms() {
     }
   }, [simulationType, fixedOption, fixedFieldValue]);
 
-  // Observa el valor de 'food_price'
+
   const foodPrice = Form.useWatch('food_price', form);
 
   useEffect(() => {
@@ -183,14 +183,14 @@ function PlanningStudioFarms() {
     selling_price: "Precio est de venta",
   };
 
-  // Claves que quieres renderizar
+
   const allowedKeys = ["density", "stimated_weight", "pre_breeding_weeks", "selling_price", "stimated_survival"];
 
-  // Clonar y modificar un escenario
+
   const cloneAndModifyScenario = (scenario) => {
     const newScenario = { ...scenario };
 
-    // Incrementar los valores según sea necesario
+
     newScenario.density = scenario.density + 1000; // Ejemplo: incrementar la densidad
     newScenario.stimated_weight = scenario.stimated_weight + 1; // Incrementar peso
     newScenario.days_to_harvest = scenario.days_to_harvest + 5; // Incrementar días
@@ -199,7 +199,7 @@ function PlanningStudioFarms() {
     newScenario.total_income = parseFloat((scenario.total_income * 1.05).toFixed(2)); // Aumentar ingreso total en un 5%
     newScenario.estimated_production_lb = scenario.estimated_production_lb + 10000; // Incrementar biomasa
 
-    // Asegúrate de que otros campos que necesiten ser únicos o modificados también se actualicen
+
 
     return newScenario;
   };
@@ -231,18 +231,18 @@ function PlanningStudioFarms() {
       };
       console.log("dataToSend:", dataToSend);
 
-      // Envía los datos al servidor
+
       const response = await axios.post('http://localhost:8080/planning_scenarios', dataToSend);
       console.log("Escenario añadido:", response.data);
 
-      // Actualiza el estado agregando el nuevo escenario al array existente
+
       const updatedScenarios = [...scenarios, response.data];
 
-      // Verificar si se han agregado 3 escenarios para añadir el cuarto automáticamente
+
       if (updatedScenarios.length === 3) {
-        // Crear el cuarto escenario basado en el tercero
+
         const fourthScenario = cloneAndModifyScenario(response.data);
-        // Agrega el cuarto escenario al estado
+
         updatedScenarios.push(fourthScenario);
       }
 

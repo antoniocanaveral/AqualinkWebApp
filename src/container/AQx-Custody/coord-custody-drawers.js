@@ -42,7 +42,7 @@ function CoordinationCustodyDrawers() {
   const { carriers, error } = useSelector((state) => state.carriers);
   const [selectedCarrier, setSelectedCarrier] = useState(null);
 
-  // Cargar los transportistas al montar el componente
+
   useEffect(() => {
     dispatch(fetchCarriers());
     dispatch(fetchOrgFishingDrawerStamp());
@@ -80,27 +80,27 @@ function CoordinationCustodyDrawers() {
     selectedTreater: undefined, // Estado para el tratador seleccionado
   });
 
-  // Agrega la siguiente línea para obtener los kits de seguridad (si no la tienes ya)
+
   const { organizationSecurityKits = [], organizationFishingDrawerStamp = [], fishingDrawerInfo, fishingDrawerInfoLoading, treaters, treatersLoading } = useSelector((state) => state.bin_drawers || {});
 
-  // Nuevo state para almacenar los furgones agregados
+
   const [addedFurgones, setAddedFurgones] = useState([]);
 
   const [availableKitsState, setAvailableKitsState] = useState([]);
   const [availableVehiclesState, setAvailableVehiclesState] = useState([]);
 
   useEffect(() => {
-    // Inicializar kits disponibles
+
     setAvailableKitsState(organizationSecurityKits);
 
-    // Obtener lista de vehículos disponibles excluyendo los ya asignados
+
     const usedVehicleIds = new Set(
       organizationFishingDrawerStamp
         .map(bin => bin.sm_vehicle_id)
         .filter(id => id !== undefined && id !== null)
     );
 
-    // Filtrar vehículos disponibles en base a los que están en `carriers`
+
     const filteredVehicles = carriers.flatMap(carrier =>
       carrier.sm_vehicle.filter(vehicle => !usedVehicleIds.has(vehicle.id))
     );
@@ -112,7 +112,7 @@ function CoordinationCustodyDrawers() {
 
   useEffect(() => {
     if (!fishingDrawerInfoLoading && fishingDrawerInfo.length > 0) {
-      // Mapeo de los datos a la estructura esperada
+
       const formattedData = fishingDrawerInfo.map(item => ({
         van: item.sm_furgon, // "1 - GEL-7774"
         kitCode: item.sm_kitcode, // "Kit123456"
@@ -658,7 +658,7 @@ function CoordinationCustodyDrawers() {
                                                                   return;
                                                                 }
 
-                                                                // Buscar el vehículo seleccionado
+
                                                                 const selectedVeh =
                                                                   carriers.find((carrier) => carrier.id === selectedCarrier)
                                                                     ?.sm_vehicle.find((veh) => veh.id === vehicleId) || {};

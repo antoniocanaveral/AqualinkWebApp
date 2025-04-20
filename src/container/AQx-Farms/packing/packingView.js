@@ -15,19 +15,19 @@ function PackingViewFarm() {
     (state) => state.directories
   );
 
-  // Estado para el texto de búsqueda
+
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     dispatch(fetchDirectories('CUSTODY'));
   }, [dispatch]);
 
-  // Filtramos la data según el texto de búsqueda en "Name"
+
   const filteredData = directories.filter((item) => {
     return item.Name?.toLowerCase().includes(searchText.toLowerCase());
   });
 
-  // Definimos las columnas de la tabla
+
   const columns = [
 
     {
@@ -87,12 +87,12 @@ function PackingViewFarm() {
       key: 'contact_name',
       width: '20%',
     },
-    // Si quisieras mostrar el tipo (org_type):
-    // {
-    //   title: 'Tipo',
-    //   dataIndex: 'org_type',
-    //   key: 'org_type',
-    // },
+
+
+
+
+
+
   ];
 
   if (directoriesLoading) {

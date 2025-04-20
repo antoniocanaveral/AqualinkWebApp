@@ -13,7 +13,7 @@ function CostAddLabs() {
   const speedometerStaticValue = 25.89; // Valor del input
   const [inputValue, setInputValue] = useState(''); // Valor del input
 
-  // Estados para los rangos de fechas
+
   const [previousWeekRange, setPreviousWeekRange] = useState([]);
   const [currentWeekRange, setCurrentWeekRange] = useState([]);
 
@@ -30,11 +30,11 @@ function CostAddLabs() {
   useEffect(() => {
     const today = moment();
 
-    // Calcular el inicio y fin de la semana actual (lunes a domingo)
+
     const startOfCurrentWeek = today.clone().startOf('isoWeek'); // Lunes
     const endOfCurrentWeek = today.clone().endOf('isoWeek'); // Domingo
 
-    // Calcular el inicio y fin de la semana previa
+
     const startOfPreviousWeek = startOfCurrentWeek.clone().subtract(1, 'week');
     const endOfPreviousWeek = endOfCurrentWeek.clone().subtract(1, 'week');
 

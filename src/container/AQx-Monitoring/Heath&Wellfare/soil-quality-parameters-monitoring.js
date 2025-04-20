@@ -24,7 +24,7 @@ function SoilQualityMonitoring() {
     const activeOrgs = [organizations];
     const auditType = Cookies.get('orgAuditType');
 
-  // Manejo de selección de org
+
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -34,19 +34,19 @@ function SoilQualityMonitoring() {
     setSelectedSector(null);
   };
 
-  // Manejo de selección de sector
+
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-  // Manejo de selección de pool
+
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
 
-  // Opciones para Farms
+
   const farmsSelectOptions = activeOrgs.length > 0 ? [
     {
       options: activeOrgs.map(org => ({
@@ -60,7 +60,7 @@ function SoilQualityMonitoring() {
     },
   ] : [];
 
-  // Opciones para sectores
+
   const sectorsOptions = selectedOrg
     ? activeOrgs
       .find(org => org.orgId === selectedOrg)?.pools
@@ -84,7 +84,7 @@ function SoilQualityMonitoring() {
     },
   ] : [];
 
-  // Opciones para pools
+
   const poolsOptions = selectedSector
     ? organizations
       .find(org => org.orgId === selectedOrg)?.pools
@@ -105,7 +105,7 @@ function SoilQualityMonitoring() {
     },
   ] : [];
 
-  // Combinación de selects en el PageHeader
+
   const combinedSelectOptions = [
     ...farmsSelectOptions,
     ...sectorSelectOptions,

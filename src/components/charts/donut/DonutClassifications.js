@@ -18,7 +18,7 @@ function DonutClassifications({
     }));
     const { themeColor } = config;
 
-    // Configuración dinámica del gráfico
+
     const chartjsDonutChart = {
         height: chartHeight,
         width: chartWidth,
@@ -57,7 +57,7 @@ function DonutClassifications({
     );
 }
 
-// Definición de las PropTypes para validación de props
+
 DonutClassifications.propTypes = {
     labels: PropTypes.arrayOf(PropTypes.string),
     data: PropTypes.arrayOf(PropTypes.number),
@@ -67,7 +67,7 @@ DonutClassifications.propTypes = {
     title: PropTypes.string,
 };
 
-// Valores por defecto si no se pasan props
+
 DonutClassifications.defaultProps = {
     labels: ['O2', 'Temperatura', 'Salinidad', 'Ph', 'Salinidad'],
     data: [20, 20, 30, 5, 25],

@@ -77,7 +77,7 @@ function PanelLogisticLabs() {
       }
     ]
 
-  // Datos de la tabla de Coordinación de Cosechas
+
   const data = [
     { key: '1', finca: 'Finca El Progreso', loteID: 'L-001', larva: '40-50', kilos: '1,200', estado: 'Pendiente' },
     { key: '2', finca: 'AgroMar', loteID: 'L-002', larva: '60-70', kilos: '1,500', estado: 'Completado' },
@@ -92,7 +92,7 @@ function PanelLogisticLabs() {
   ];
 
 
-  // Definición de columnas para la tabla de Coordinación de Cosechas
+
   const columns = [
     { title: 'LoteID', dataIndex: 'loteID', key: 'loteID' },
     { title: 'Clasificación', dataIndex: 'larva', key: 'larva' },

@@ -17,6 +17,7 @@ import Control from './routes/control';
 import Auth from './routes/auth';
 import Ecosystem from './routes/ecosystem';
 import Monitoring from './routes/monitoring';
+import Network from './routes/network';
 import './static/css/style.css';
 import Cookies from 'js-cookie';
 import SelectOrganization from './container/AQx-Monitoring/Menu/SelectOrganization';
@@ -101,7 +102,8 @@ function ProviderConfig() {
               {selectedModule === 'FARM' && <Route path="/farm/*" element={<ProtectedRoute path="/*" Component={Farm} />} />}
               {selectedModule === 'LAB' && <Route path="/lab/*" element={<ProtectedRoute path="/*" Component={Lab} />} />}
               {selectedModule === 'CUSTODY' && <Route path="/custody/*" element={<ProtectedRoute path="/*" Component={Custody} />} />}
-              {selectedModule === 'MONITORING' && <Route path="/monitoring/*" element={<ProtectedRoute path="/*" Component={Monitoring} />} />}
+              {selectedModule === 'MONITORING' && <Route path="/monitoring/*" element={<ProtectedRoute allowedRoles={['Cumplimiento - Auditor Externo']}  path="/*" Component={Monitoring} />} />}
+              {selectedModule === 'NETWORK' && <Route path="/network/*" element={<ProtectedRoute path="/*" Component={Network} />} />}
               {selectedModule === 'CONTROL' && <Route path="/control" element={<ProtectedRoute path="/*" Component={Control} />} />}
               <Route path="/admin/*" element={<ProtectedRoute path="/*" Component={Admin} />} />
               <Route path="/monitoring-select-org/*" element={<ProtectedRoute Component={Admin} />} />

@@ -165,7 +165,7 @@ const loadBinesByCoord = (id, callback) => {
 const submitBin = (fishingId, binsData, callback) => {
     return async (dispatch) => {
         try {
-            // Filtrar solo los bins que tengan un kit asignado (es decir, que no sean "NA")
+
             const validBins = binsData.filter((bin) => bin.sm_securitykits_id !== "NA");
 
             if (validBins.length === 0) {
@@ -175,10 +175,10 @@ const submitBin = (fishingId, binsData, callback) => {
             if (!selectedOrgId) {
                 throw new Error('Org ID no encontrado en las cookies.');
             }
-            // Para cada bin válido, validar que no exista conflicto
+
             for (const bin of validBins) {
                 let binValidationQuery = `SM_Fishing_ID eq ${fishingId} AND Name eq '${escape(bin.bin)} AND AD_org_ID eq ${selectedOrgId}'`;
-                // Validar también por el kit de seguridad usando el id asignado
+
                 if (bin.sm_securitykits_id) {
                     binValidationQuery += ` OR sm_securitykits_id eq ${bin.sm_securitykits_id}`;
                 }
@@ -195,7 +195,7 @@ const submitBin = (fishingId, binsData, callback) => {
                 }
             }
 
-            // Si pasan las validaciones, insertar los bins
+
             for (const bin of validBins) {
                 console.log(bin)
                 const payload = {
@@ -317,18 +317,18 @@ const deleteDrawerStamp = (stampId, callback) => {
 const deleteDrawerStampByVehicle = (vehicleId, callback) => {
     return async (dispatch) => {
         try {
-            // Obtener todos los registros de sm_fishingdrawerstamp
+
             const response = await DataService.get(`/models/sm_fishingdrawerstamp`);
             const existingRecords = response.data.records || []; // Extraer los registros correctamente
 
-            // Encontrar el registro que tenga el ID del vehículo
+
             const recordToDelete = existingRecords.find(record => record.SM_Vehicle_ID === vehicleId);
 
             if (!recordToDelete) {
                 throw new Error("No se encontró un registro con este vehículo.");
             }
 
-            // Eliminar el registro encontrado
+
             await DataService.delete(`/models/sm_fishingdrawerstamp/${recordToDelete.id}`);
 
             callback(true);
@@ -380,29 +380,29 @@ const submitDrawerStamp = (fishingId, form, callback) => {
 const submitDrawerStampV2 = (fishingId, form, callback) => {
     return async (dispatch) => {
         try {
-            // Obtener todos los registros para verificar duplicados a nivel global
+
             const response = await DataService.get(`/models/sm_fishingdrawerstamp`);
             const existingRecords = response.data.records || [];  // Extraer los registros correctamente
 
-            // Validar si hay un kit de seguridad repetido o un vehículo repetido
+
             console.log(existingRecords)
             const isDuplicateKit = existingRecords.some(record => record.SM_SecurityKits_ID?.id === form.kitId);
             const isDuplicateVehicle = existingRecords.some(record => record.SM_Vehicle_ID?.id === form.vehicleId);
 
             console.log(isDuplicateKit)
             console.log(isDuplicateVehicle)
-            // Construir mensaje de error si hay duplicados
+
             let errorMessage = "";
             if (isDuplicateKit) errorMessage += "El Kit de Seguridad ya está registrado.\n";
             if (isDuplicateVehicle) errorMessage += "El Vehículo ya está registrado.\n";
 
-            // Si hay algún duplicado, lanzar error y detener el proceso
+
             if (errorMessage) {
                 message.error(errorMessage);  // Muestra el mensaje en UI si se usa Ant Design
                 throw new Error(errorMessage.trim());
             }
 
-            // Construcción del payload con los nuevos campos
+
             const payload = {
                 "SM_Fishing_ID": fishingId,
                 "Name": form.seal,
@@ -412,7 +412,7 @@ const submitDrawerStampV2 = (fishingId, form, callback) => {
                 "sm_sdrawerscount": parseInt(form.drawerSolidas)
             };
 
-            // Si es una actualización (ya tiene un ID de sello)
+
             if (form.sealId) {
                 await DataService.put(`/models/sm_fishingdrawerstamp/${form.sealId}`, payload);
             } else {
@@ -460,7 +460,7 @@ const sendDrawerInfo = (fishingId, coordId, selectedTreaterId, drawerIce, drawer
 
     return async (dispatch) => {
         try {
-            // Validar si existen gavetas registradas
+
             const binValidationQuery = `SM_Fishing_ID eq ${fishingId}`;
             const bBinesResponse = await DataService.get(`/models/sm_fishingdrawer?$filter=${binValidationQuery}`);
 
@@ -469,7 +469,7 @@ const sendDrawerInfo = (fishingId, coordId, selectedTreaterId, drawerIce, drawer
                 return;
             }
 
-            // Enviar la actualización con el nuevo payload
+
             await DataService.put(`/models/sm_coordination/${coordId}`, {
                 "AD_User_ID": selectedTreaterId, // ID del tratador seleccionado
                 "SM_Ice": drawerIce, // Cantidad de hielo

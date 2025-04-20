@@ -5,22 +5,22 @@ import config from '../../../../config/config';
 import { SalesOverviewStyleWrap2 } from './Style';
 
 const CostProjectionWrapLab = React.memo(() => {
-  // Acceder al estado de Redux para obtener 'mainContent'
+
   const { mainContent } = useSelector((state) => ({
     mainContent: state.ChangeLayoutMode.mode,
   }));
   const { themeColor } = config;
 
-  // Estado local para controlar la renderización del gráfico
+
   const [showChart, setShowChart] = useState(false);
 
   useEffect(() => {
-    // Introduce un retraso de 1 segundo antes de renderizar el gráfico
+
     const timer = setTimeout(() => {
       setShowChart(true);
     }, 1000); // 1000 milisegundos = 1 segundo
 
-    // Limpia el timeout si el componente se desmonta antes de que termine
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -54,7 +54,7 @@ const CostProjectionWrapLab = React.memo(() => {
     },
   };
 
-  // <-- Ajustamos color de tooltip a negro
+
   const tooltip = {
     backgroundColor: '#FFF',
     titleFont: { size: 16 },
@@ -64,7 +64,7 @@ const CostProjectionWrapLab = React.memo(() => {
     displayColors: false,
   };
 
-  // Cálculo de la suma total
+
   const totalSale = datasets[0].data.reduce((a, b) => a + b, 0);
 
   return (

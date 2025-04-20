@@ -19,7 +19,7 @@ function ScheduleDispatchLab({ data }) {
 
   const eventTypes = ['primary', 'secondary', 'info', 'warning'];
 
-  // Función para convertir fecha en formato "Día Mes Año - HH:MM"
+
   const formatDateTime = (dateString) => {
     if (!dateString) return 'N/A';
     
@@ -46,7 +46,7 @@ function ScheduleDispatchLab({ data }) {
     setState({ ...state, tabValue: value });
   };
 
-  // Construcción de la tabla, solo muestra datos si `coordinations_json` tiene elementos válidos
+
   const dataSource = eventState.flatMap((value, index) => {
     const { warehouse_name = 'N/A', coordinations_json = [], id } = value;
 
@@ -54,7 +54,7 @@ function ScheduleDispatchLab({ data }) {
       return []; // No retorna nada si no hay coordinaciones
     }
 
-    // Mapear cada coordinación en una fila de la tabla
+
     return coordinations_json
       .filter(coord => coord.coordination_value && coord.sm_confirmedtotal) // Filtrar registros inválidos
       .map((coord, coordIndex) => {
@@ -115,7 +115,7 @@ function ScheduleDispatchLab({ data }) {
   ) : null; // No muestra nada si no hay despachos
 }
 
-// Añadir PropTypes para validación de props
+
 ScheduleDispatchLab.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { ButtonStyled, ButtonStyledGroup } from './styled';
 
-// @Todo props spreading
+
 
 function Button(props) {
   const {

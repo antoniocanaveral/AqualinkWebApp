@@ -66,7 +66,7 @@ function WizardsTwo() {
         const bgImage = element.previousSibling;
         bgImage.classList.remove('wizard-steps-item-active');
         bgImage.classList.add('success-step-item');
-        // if(bgImage.classList.has('.ant-steps-item-active'))
+
       }
     });
   });

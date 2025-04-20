@@ -1,4 +1,4 @@
-// eslint-disable-next-line max-classes-per-file
+
 import { DatePicker } from 'antd';
 import { addDays } from 'date-fns';
 import React, { useState } from 'react';
@@ -60,7 +60,7 @@ function DateRangePickerOne() {
 }
 
 class CustomDateRange extends React.Component {
-  // eslint-disable-next-line react/state-in-constructor
+
   state = {
     startValue: null,
     endValue: null,

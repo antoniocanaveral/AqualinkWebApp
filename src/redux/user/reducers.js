@@ -1,4 +1,4 @@
-// reducer.js
+
 import {
     FETCH_ROLES_LOADING,
     FETCH_ROLES_SUCCESS,
@@ -24,7 +24,7 @@ import {
     usersLoading: false,
     users: [],
     usersError: null,
-    // Nuevo estado para el proceso de auditor externo
+
     auditorProcessLoading: false,
     auditorProcessData: null,
     auditorProcessError: null,
@@ -92,7 +92,7 @@ import {
           users: [],
           usersError: action.payload,
         };
-      // Nuevos casos para auditor externo
+
       case SEND_AUDITOR_EMAIL_LOADING:
         return {
           ...state,

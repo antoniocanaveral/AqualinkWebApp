@@ -1,4 +1,4 @@
-// src/redux/operation/reducer.js
+
 import {
   OP_INVENTORY_LOADING,
   OP_INVENTORY_LOADED,
@@ -26,7 +26,7 @@ const initialState = {
   categories: {},
   categoriesCatalog: {},
 
-  //to add
+
   addProductLoading: false,
   addProductError: null,
 

@@ -9,7 +9,7 @@ const PreCriaVolumeDonutChart = () => {
     }));
     const themeColor = {
         default: { 'white-background': '#ffffff' },
-        // Agregar otros colores según config si es necesario
+
     };
 
     const labels = ['Pre Cría 1', 'Pre Cría 2', 'Pre Cría 3'];

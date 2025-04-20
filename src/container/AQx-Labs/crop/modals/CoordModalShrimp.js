@@ -29,7 +29,7 @@ function CoordModalShrimp() {
     ];
 
   
-    // Valores binarios para usar checkbox
+
     const columns = [
         {
             title: '', dataIndex: 'label', key: 'label', width: '55%', render: (text) => (

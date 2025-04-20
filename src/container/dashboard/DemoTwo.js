@@ -7,7 +7,7 @@ import { Main } from '../styled';
 const OverviewDataList = lazy(() => import('./overview/demoTwo/OverviewDataList'));
 const SaleRevenue = lazy(() => import('./overview/demoTwo/SaleRevenue'));
 const NewProduct = lazy(() => import('./overview/demoTwo/NewProduct'));
-// const RevenueGenerated = lazy(() => import('./overview/demoTwo/RevenueGenerated'));
+
 const SourceRevenueGenerated = lazy(() => import('./overview/demoTwo/SourceRevenueGenerated'));
 const BestSeller = lazy(() => import('./overview/demoTwo/BestSeller'));
 

@@ -19,19 +19,19 @@ function CenterCostFarm() {
   const { Text } = Typography;
   const dispatch = useDispatch();
 
-  // Datos de organizaciones
+
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-  // Selección de org, sector y pool
+
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
-  // Datos de la vista costcenter
+
   const costCenterData = useSelector((state) => state.cost.costCenterData);
 
-  // Manejo de selección de org
+
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -41,19 +41,19 @@ function CenterCostFarm() {
     setSelectedSector(null);
   };
 
-  // Manejo de selección de sector
+
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-  // Manejo de selección de pool
+
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
 
-  // Opciones para Farms
+
   const farmsSelectOptions = organizations.length > 0 ? [
     {
       options: farmsOrgsWithPools.map(org => ({
@@ -67,7 +67,7 @@ function CenterCostFarm() {
     },
   ] : [];
 
-  // Opciones para sectores
+
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -91,7 +91,7 @@ function CenterCostFarm() {
     },
   ] : [];
 
-  // Opciones para pools
+
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -112,33 +112,33 @@ function CenterCostFarm() {
     },
   ] : [];
 
-  // Combinación de selects en el PageHeader
+
   const combinedSelectOptions = [
     ...farmsSelectOptions,
     ...sectorSelectOptions,
     ...poolsSelectOptions,
   ];
 
-  // Efecto para fetch de costCenter
+
   useEffect(() => {
     if (selectedPool != null){
       dispatch(fetchCostCenterInfo());
     }
   }, [dispatch, selectedPool]);
 
-  // Cálculos de datos
+
   const computedData = costCenterData.map((item, index) => {
-    // Asumiendo que el LOTE ID es 'SM_Batch' si la vista lo trae como item.sm_batch
-    // Si no, usaremos item.C_Campaign_ID?.identifier como fallback
+
+
     const loteId = item.SM_Batch || 'N/A';
 
-    // Días totales de corrida (StartDate a EndDate)
+
     const diasCorrida = moment(item.EndDate).diff(moment(item.StartDate), 'days');
 
-    // Supervivencia estimada = 0.4 * días de corrida
+
     const supervivenciaEstimada = 0.4 * diasCorrida;
 
-    // Producción estimada = (Densidad * Peso Objetivo * supervivencia * poolsize) / 1000
+
     const produccionEstimada = ((
 
       item.SM_Density * item.SM_PoolSize * supervivenciaEstimada) *
@@ -147,30 +147,30 @@ function CenterCostFarm() {
     ) / 1000;
 
 
-    // Alimentación estimada (FCA = 1.2)
+
     const alimentacionEstimada = 1.2 * produccionEstimada;
 
-    // Costo AB = avg_feed_price * alimentacion_estimada
+
     const costoAB = item.avg_feed_price * alimentacionEstimada;
 
-    // Larva = ((densidad * poolsize) / 1000) * 2
+
     const larva = ((item.SM_Density * item.SM_PoolSize) / 1000) * 2;
 
-    // Valor proyectado
+
     const valorProyectado = costoAB + larva;
 
-    // Días de corrida transcurridos (fecha actual - StartDate)
+
     const diasCorridaDdc = moment().diff(moment(item.StartDate), 'days');
 
-    // Costo proyectado DdC = (valorProyectado / díasCorridaTotal) * díasCorridaDdc
+
     const costoProyectadoDdc = diasCorrida === 0
       ? 0
       : (valorProyectado / diasCorrida) * diasCorridaDdc;
 
-    // Costo Real DdC
+
     const costoRealDdc = 1988;
 
-    // Rendimiento = ((costoProyectadoDdc - costoRealDdc) / costoProyectadoDdc) * 100
+
     const rendimiento = costoProyectadoDdc === 0
       ? 0
       : ((costoProyectadoDdc - costoRealDdc) / costoProyectadoDdc) * 100;
@@ -206,7 +206,7 @@ function CenterCostFarm() {
     };
   });
 
-  // Columnas finales solicitadas
+
   const columns = [
     {
       title: <Text style={{ fontSize: '12px' }}>LOTE ID</Text>,
@@ -256,7 +256,7 @@ function CenterCostFarm() {
     },
   ];
 
-  // Datos de ejemplo para Suministros y la gráfica
+
   const dataSyplyCost = [
     { label: 'Balanceado 30%', value: 6600, color: '#aa61c8' },
     { label: 'Bacteria', value: 1700, color: '#39a7f0' },

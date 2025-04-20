@@ -9,7 +9,7 @@ import { UpcomingEventsStyleWrap } from '../../dashboard/Style';
 import PropTypes from 'prop-types'; // Importar PropTypes para validación
 
 function ScheduleFarm({ plannedFarming }) {
-  // Añadir un console.log para verificar los props recibidos
+
   console.log('ScheduleFarm props:', { plannedFarming });
 
   const [state, setState] = useState({
@@ -23,10 +23,10 @@ function ScheduleFarm({ plannedFarming }) {
   });
   const [eventState, setEventState] = useState(null);
 
-  // Definir los tipos en orden
+
   const eventTypes = ['primary', 'secondary', 'info', 'warning'];
 
-  // Función para convertir mes numérico a nombre en español
+
   const getMonthName = (monthNumber) => {
     const monthNames = [
       'Enero',
@@ -42,7 +42,7 @@ function ScheduleFarm({ plannedFarming }) {
       'Noviembre',
       'Diciembre',
     ];
-    // Ajustar si el mes viene como número (1-12)
+
     const monthIndex = parseInt(monthNumber, 10) - 1;
     if (monthIndex >= 0 && monthIndex < 12) {
       return monthNames[monthIndex];
@@ -54,7 +54,7 @@ function ScheduleFarm({ plannedFarming }) {
     let unmounted = false;
 
     if (!unmounted) {
-      // Asignar eventState basado en el valor de la pestaña actual
+
       switch (state.tabValue) {
         case 'today':
           setEventState(plannedFarming);
@@ -82,7 +82,7 @@ function ScheduleFarm({ plannedFarming }) {
     });
   };
 
-  // Optimización del mapeo de datos
+
   const dataSource = eventState
     ? eventState.map((value, index) => {
         const {
@@ -93,13 +93,13 @@ function ScheduleFarm({ plannedFarming }) {
           id,
         } = value;
 
-        // Supongamos que SM_PlannedDate viene en formato 'DD/MM' o 'DD-MM'
+
         const dateParts = SM_PlannedDate.split(/[/-]/);
         const day = dateParts[2];
         const month = dateParts[1];
         const monthName = getMonthName(month);
 
-        // Asignar el tipo de manera secuencial
+
         const type = eventTypes[index % eventTypes.length];
 
         return {
@@ -169,7 +169,7 @@ function ScheduleFarm({ plannedFarming }) {
   );
 }
 
-// Añadir PropTypes para validación de props
+
 ScheduleFarm.propTypes = {
   plannedFarming: PropTypes.arrayOf(
     PropTypes.shape({

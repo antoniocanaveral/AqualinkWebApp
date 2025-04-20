@@ -6,7 +6,7 @@ const { Option } = Select;
 export const PreCriaInfrastructure = ({ index, alimentadores, handleAddAlimentador, form }) => {
     const [metodoAlimentacion, setMetodoAlimentacion] = useState(""); // Estado para controlar el método de alimentación
 
-    // Registrar campos dinámicos en el formulario al montar el componente
+
     useEffect(() => {
         form.setFieldsValue({
             [`piscinaPreCriaId-${index}`]: form.getFieldValue(`piscinaPreCriaId-${index}`) || 0, // Valor por defecto 0 si no está definido

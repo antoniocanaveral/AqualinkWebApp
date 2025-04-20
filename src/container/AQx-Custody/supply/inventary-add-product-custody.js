@@ -17,7 +17,7 @@ function InventaryAddProductCustody() {
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectCustodyOrgsWithWarehouses);
 
-  // Estados del formulario
+
   const [form] = Form.useForm();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredGroups, setFilteredGroups] = useState([]);
@@ -41,7 +41,7 @@ function InventaryAddProductCustody() {
     Cookies.set('poolId', value);
   };
 
-  // Filtrar pools: solo las que tienen salesRegion nulo o cuyo id sea nulo
+
   const poolsOptions =
     selectedOrg && farmsOrgsWithPools
       ? (farmsOrgsWithPools.find((org) => org.orgId === selectedOrg)?.pools || [])
@@ -157,7 +157,7 @@ function InventaryAddProductCustody() {
       C_BPartner_Location_ID: selectedProduct.C_BPartner_Location_ID.id,
       priceList: parseFloat(values.precio_lista),
       quantity: parseInt(values.cantidad, 10),
-      //Envio de id de warehouse
+
       M_Warehouse_ID: selectedPool,
       M_Locator_ID: M_Locator_ID
     };

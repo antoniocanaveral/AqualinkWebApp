@@ -2,7 +2,7 @@ import { Col, Form, Input, InputNumber, Row, Select } from "antd";
 const { Option } = Select;
 
 export const LegalPersonForm = ({ regions, cities, clientType }) => {
-    // Determinar si se debe deshabilitar y preseleccionar el valor
+
     const disableOrgSelect = clientType === "GIV" || clientType === "GPA";
     const defaultOrgValue = disableOrgSelect ? clientType : undefined;
 

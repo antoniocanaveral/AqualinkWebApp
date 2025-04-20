@@ -1,4 +1,4 @@
-// ./map-style.js
+
 import styled from 'styled-components';
 
 export const GmapWraper = styled.div`

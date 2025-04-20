@@ -84,7 +84,7 @@ function AddClientCustody() {
 
     const validateCurrentStep = async () => {
 
-        // Paso 0: Registro Pre Crías
+
         if (currentStep === 0) {
             const cantidadPreCrias = form.getFieldValue("cantidadPreCrias") || 0;
 
@@ -130,7 +130,7 @@ function AddClientCustody() {
             }
         }
 
-        // Paso 1: Registro Pre Engorde
+
         if (currentStep === 1) {
 
             const cantidadPreEngorde = form.getFieldValue("cantidadPiscinasPreEngorde") || 0;
@@ -188,7 +188,7 @@ function AddClientCustody() {
     };
 
 
-    // Generar código automático
+
     const generateCode = () => {
         const randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, "0");
         setGeneratedCode(`AQLK-${randomNumber}`);
@@ -199,7 +199,7 @@ function AddClientCustody() {
     }, []);
 
 
-    // Manejar navegación al siguiente tab
+
     const handleNextTab = () => {
         setActiveTab("2");
     };
@@ -306,7 +306,7 @@ function AddClientCustody() {
 
 
     const done = () => {
-        // Paso 2: Registro Engorde
+
         if (currentStep === 2) {
 
             const cantidadEngorde = form.getFieldValue("cantidadPiscinasEngorde") || 0;
@@ -485,21 +485,21 @@ function AddClientCustody() {
                                         onChange={(value) => setSelectedPiscina(value)}
                                     >
                                         {[
-                                            // Identificadores de Pre Cría
+
                                             ...Array.from({ length: form.getFieldValue("cantidadPreCrias") || 0 }, (_, index) => ({
                                                 key: `Ppc-${index + 1}`,
                                                 value: form.getFieldValue(`piscinaPreCriaId-${index}`),
                                                 label: `Ppc- ${form.getFieldValue(`piscinaPreCriaId-${index}`)}`,
                                             })).filter(({ value }) => value), // Filtrar valores nulos o undefined
 
-                                            // Identificadores de Pre Engorde
+
                                             ...Array.from({ length: form.getFieldValue("cantidadPiscinasPreEngorde") || 0 }, (_, index) => ({
                                                 key: `Ppe-${index + 1}`,
                                                 value: form.getFieldValue(`piscinaPreEngordeId-${index}`),
                                                 label: `Ppe- ${form.getFieldValue(`piscinaPreEngordeId-${index}`)}`,
                                             })).filter(({ value }) => value),
 
-                                            // Identificadores de Engorde
+
                                             ...Array.from({ length: form.getFieldValue("cantidadPiscinasEngorde") || 0 }, (_, index) => ({
                                                 key: `Pef-${index + 1}`,
                                                 value: form.getFieldValue(`piscinaEngordeId-${index}`),

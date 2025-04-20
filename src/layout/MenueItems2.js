@@ -22,7 +22,7 @@ import {
   UilEnvelope,
   UilExchange,
   UilExclamationOctagon,
-  // UilExpandArrowsAlt,
+
   UilFile,
   UilFileShieldAlt,
   UilHeadphones,
@@ -532,13 +532,13 @@ function MenuItems({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
-    // getItem(
-    //   <NavLink onClick={toggleCollapsed} to={`${path}/app/kanban`}>
-    //     {t('kanban Board')}
-    //   </NavLink>,
-    //   'kanban',
-    //   !topMenu && <UilExpandArrowsAlt />,
-    // ),
+
+
+
+
+
+
+
     getItem(`${t('import')} ${t('export')}`, 'importExport', !topMenu && <UilExchange />, [
       getItem(
         <NavLink onClick={toggleCollapsed} to={`${path}/importExport/import`}>
@@ -1432,7 +1432,7 @@ function MenuItems({ toggleCollapsed }) {
       onOpenChange={onOpenChange}
       onClick={onClick}
       mode={!topMenu || window.innerWidth <= 991 ? 'inline' : 'horizontal'}
-      // // eslint-disable-next-line no-nested-ternary
+
       defaultSelectedKeys={
         !topMenu
           ? [

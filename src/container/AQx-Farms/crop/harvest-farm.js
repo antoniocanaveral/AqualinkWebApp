@@ -24,22 +24,22 @@ function HarvestFarm() {
   const [updatedObservation, setUpdatedObservation] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
 
-  //Modales
+
   const [modalCoord, setModalCoord] = useState(false);
   const [modalHarvest, setModalHarvest] = useState(false);
   const [modalPacking, setModalPacking] = useState(false);
 
-  // Selección de org, sector y pool
+
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
 
-  // Datos de organizaciones
+
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-  // Manejo de selección de org
+
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -49,19 +49,19 @@ function HarvestFarm() {
     setSelectedSector(null);
   };
 
-  // Manejo de selección de sector
+
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-  // Manejo de selección de pool
+
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
 
-  // Opciones para Farms
+
   const farmsSelectOptions = organizations.length > 0 ? [
     {
       options: farmsOrgsWithPools.map(org => ({
@@ -75,7 +75,7 @@ function HarvestFarm() {
     },
   ] : [];
 
-  // Opciones para sectores
+
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -99,7 +99,7 @@ function HarvestFarm() {
     },
   ] : [];
 
-  // Opciones para pools
+
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -120,7 +120,7 @@ function HarvestFarm() {
     },
   ] : [];
 
-  // Combinación de selects en el PageHeader
+
   const combinedSelectOptions = [
     ...farmsSelectOptions,
     ...sectorSelectOptions,

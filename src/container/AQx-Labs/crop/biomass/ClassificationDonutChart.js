@@ -4,19 +4,19 @@ import DoughnutChart from '../../../../components/charts/DoughnutChart';
 import { SalesOverviewStyleWrap2 } from '../../../dashboard/Style';
 
 const ClassificationDonutChart = ({ data }) => {
-  // Simulamos que tenemos un tema por defecto, para asignar el color de borde
+
   const themeColor = {
     default: { 'white-background': '#ffffff' },
   };
 
-  // 1. Sumar porcentajes por clasificación y asignar colores
+
   const classificationSums = data
     .map(item => {
       const sum = data
         .filter(d => d.clasificacion === item.clasificacion)
         .reduce((acc, d) => acc + parseFloat(d.porcentaje) || 0, 0);
 
-      // Redondear a dos decimales
+
       const roundedSum = parseFloat(sum.toFixed(2));
 
       return {
@@ -25,17 +25,17 @@ const ClassificationDonutChart = ({ data }) => {
         color: item.color,
       };
     })
-    // Filtrar duplicados
+
     .filter((value, index, self) =>
       index === self.findIndex((t) => t.label === value.label)
     );
 
-  // 2. Preparar etiquetas y valores
+
   const labels = classificationSums.map(item => item.label);
   const datasetValues = classificationSums.map(item => item.value);
   const backgroundColors = classificationSums.map(item => item.color);
 
-  // 3. Configurar dataset
+
   const datasets = [
     {
       data: datasetValues,
@@ -45,7 +45,7 @@ const ClassificationDonutChart = ({ data }) => {
     },
   ];
 
-  // 4. Configurar opciones de la dona
+
   const options = {
     cutout: 62,
     borderWidth: 2,
@@ -56,14 +56,14 @@ const ClassificationDonutChart = ({ data }) => {
       legend: {
         display: false,
       },
-      // Plugin personalizado para texto central
+
       beforeDraw: (chart) => {
         const ctx = chart.ctx;
         ctx.save();
         const centerX = chart.getDatasetMeta(0).data[0].x;
         const centerY = chart.getDatasetMeta(0).data[0].y;
 
-        // Ajusta aquí el tamaño y estilo del texto
+
         ctx.font = 'bold 12px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -81,7 +81,7 @@ const ClassificationDonutChart = ({ data }) => {
     },
   };
 
-  // 5. Ajuste del tooltip para texto en negro (versión Chart.js 3+)
+
   const tooltipConfig = {
     backgroundColor: '#FFF',        // Fondo blanco
     titleColor: '#000',             // Título en negro
@@ -91,7 +91,7 @@ const ClassificationDonutChart = ({ data }) => {
     displayColors: false,
   };
 
-  // 6. Cálculo de la suma total de porcentajes
+
   const totalPercentage = datasetValues.reduce((a, b) => a + b, 0);
 
   return (

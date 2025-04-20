@@ -34,7 +34,7 @@ export const fetchOrgBins = () => async (dispatch) => {
     );
 
     if (response.data && response.data.records) {
-      // Ordenar los registros por 'Name' convertido a número
+
       const sortedRecords = response.data.records.sort((a, b) => {
         return Number(a.Name) - Number(b.Name);
       });

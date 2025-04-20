@@ -20,7 +20,7 @@ function Tags() {
     checke: null,
   });
   const log = () => {
-    // console.log(e);
+
   };
 
   const checked = (checke) => {
@@ -28,7 +28,7 @@ function Tags() {
   };
 
   const preventDefault = () => {
-    // console.log('Clicked! But prevent default.');
+
   };
 
   return (

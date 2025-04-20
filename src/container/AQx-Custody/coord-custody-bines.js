@@ -74,7 +74,7 @@ function CoordinationCustodyBines() {
     selectedTreater: undefined,
   });
 
-  // Agrega la siguiente línea para obtener los kits de seguridad (si no la tienes ya)
+
   const { treaters, treatersLoading } = useSelector((state) => state.bin_drawers || {});
 
   const { status, isFinished, current } = state;

@@ -2,20 +2,20 @@ import UilFacebook from '@iconscout/react-unicons/icons/uil-facebook-f';
 import UilGithub from '@iconscout/react-unicons/icons/uil-github';
 import UilTwitter from '@iconscout/react-unicons/icons/uil-twitter';
 import { Button, Col, Form, Input, Row, Radio } from 'antd';
-//import { Auth0Lock } from 'auth0-lock';
+
 import React, { useCallback, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { ReactSVG } from 'react-svg';
 import { AuthFormWrap } from './style';
 import { logOut, selectRole } from '../../../../redux/authentication/actionCreator';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
-//import { auth0options } from '../../../../config/auth0';
 
-//const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-//const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+
+
+
 
 const RadioGroup = Radio.Group;
 

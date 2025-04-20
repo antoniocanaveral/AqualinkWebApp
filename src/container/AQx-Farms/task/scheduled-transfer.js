@@ -9,7 +9,7 @@ import { UpcomingEventsStyleWrap } from '../../dashboard/Style';
 import PropTypes from 'prop-types'; // Importar PropTypes para validación
 
 function ScheduleTransfer({ plannedTransfers, loading, error }) {
-  // Añadir un console.log para verificar los props recibidos
+
   console.log('ScheduleTransfer props:', { plannedTransfers });
 
   const [state, setState] = useState({
@@ -17,10 +17,10 @@ function ScheduleTransfer({ plannedTransfers, loading, error }) {
   });
   const [eventState, setEventState] = useState(null);
 
-  // Definir los tipos en orden
+
   const eventTypes = ['primary', 'secondary', 'info', 'warning'];
 
-  // Función para convertir mes numérico a nombre en español
+
   const getMonthName = (monthNumber) => {
     const monthNames = [
       'Enero',
@@ -36,7 +36,7 @@ function ScheduleTransfer({ plannedTransfers, loading, error }) {
       'Noviembre',
       'Diciembre',
     ];
-    // Ajustar si el mes viene como número (1-12)
+
     const monthIndex = parseInt(monthNumber, 10) - 1;
     if (monthIndex >= 0 && monthIndex < 12) {
       return monthNames[monthIndex];
@@ -48,7 +48,7 @@ function ScheduleTransfer({ plannedTransfers, loading, error }) {
     let unmounted = false;
 
     if (!unmounted) {
-      // Asignar eventState basado en el valor de la pestaña actual
+
       switch (state.tabValue) {
         case 'today':
           setEventState(plannedTransfers);
@@ -76,7 +76,7 @@ function ScheduleTransfer({ plannedTransfers, loading, error }) {
     });
   };
 
-  // Optimización del mapeo de datos
+
   const dataSource = eventState
     ? eventState.map((value, index) => {
       const {
@@ -90,13 +90,13 @@ function ScheduleTransfer({ plannedTransfers, loading, error }) {
 
     
     
-        // Supongamos que SM_PlannedDate viene en formato 'DD/MM' o 'DD-MM'
+
         const dateParts = SM_TransferDate.split(/[/-]/);
         const day = dateParts[2];
         const month = dateParts[1];
         const monthName = getMonthName(month);
 
-      // Asignar el tipo de manera secuencial
+
       const type = eventTypes[index % eventTypes.length];
 
       return {
@@ -179,7 +179,7 @@ function ScheduleTransfer({ plannedTransfers, loading, error }) {
   );
 }
 
-// Añadir PropTypes para validación de props
+
 ScheduleTransfer.propTypes = {
   plannedTransfers: PropTypes.arrayOf(
     PropTypes.shape({

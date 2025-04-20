@@ -1,4 +1,4 @@
-// LoteRendimientoWrapLab.js
+
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import DoughnutChart from '../../../../components/charts/DoughnutChart';
@@ -14,7 +14,7 @@ const LoteRendimientoWrapLab = React.memo(({ title, hocategoryLabels, hocategory
 
   const [showChart, setShowChart] = useState(false);
 
-  // Retraso de 1 segundo para mostrar el gráfico
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowChart(true);
@@ -23,7 +23,7 @@ const LoteRendimientoWrapLab = React.memo(({ title, hocategoryLabels, hocategory
     return () => clearTimeout(timer);
   }, []);
 
-  // Colores (puedes personalizarlos)
+
   const backgroundColor = [
     '#0372CE', '#00AAFF', '#FA8B0C', '#00C49A',
     '#FF4560', '#775DD0', '#5350C6', '#FDAC34',

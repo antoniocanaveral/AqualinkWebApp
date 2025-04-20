@@ -11,7 +11,7 @@ function DoughnutChart({ datasets, tooltip, centerTextSize, ...props }) {
       chartInstance.current.destroy(); // Destruye la instancia anterior del gráfico si existe
     }
 
-    // Crea una nueva instancia del gráfico
+
     chartInstance.current = new Chart(chartRef.current, {
       type: 'doughnut',
       data: {
@@ -29,7 +29,7 @@ function DoughnutChart({ datasets, tooltip, centerTextSize, ...props }) {
       },
     });
 
-    // Limpia la instancia al desmontar o actualizar el componente
+
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();

@@ -1,21 +1,21 @@
-// src/redux/operation/actions.js
 
-// Tipos de acción existentes
+
+
 export const OP_SCREEN_TASK_LOADING = 'OP_SCREEN_TASK_LOADING';
 export const OP_SCREEN_TASK_LOADED = 'OP_SCREEN_TASK_LOADED';
 export const OP_SCREEN_TASK_ERROR = 'OP_SCREEN_TASK_ERROR';
 
-// Nuevos tipos de acción para sm_shrimp_farming_transfer_v
+
 export const OP_SHRIMP_FARMING_TRANSFER_LOADING = 'OP_SHRIMP_FARMING_TRANSFER_LOADING';
 export const OP_SHRIMP_FARMING_TRANSFER_LOADED = 'OP_SHRIMP_FARMING_TRANSFER_LOADED';
 export const OP_SHRIMP_FARMING_TRANSFER_ERROR = 'OP_SHRIMP_FARMING_TRANSFER_ERROR';
 
-// Nuevos tipos de acción para las listas separadas
+
 export const OP_PLANNED_FARMING_LOADED = 'OP_PLANNED_FARMING_LOADED';
 export const OP_PLANNED_HARVESTING_LOADED = 'OP_PLANNED_HARVESTING_LOADED';
 export const OP_PLANNED_TRANSFERS_LOADED = 'OP_PLANNED_TRANSFERS_LOADED';
 
-// Action creators existentes
+
 export const opScreenTaskLoading = () => ({
   type: OP_SCREEN_TASK_LOADING,
 });

@@ -9,7 +9,7 @@ export default function ProductCycleRadarChart({ limeData }) {
     const productos = [...new Set(limeData.map(item => item.producto))]; // Productos únicos
     const ciclos = [...new Set(limeData.map(item => item.ciclo))]; // Ciclos únicos
 
-    // Crear un dataset por producto
+
     const datasets = productos.map((producto, index) => {
         const cantidades = ciclos.map(ciclo => {
             const item = limeData.find(entry => entry.ciclo === ciclo && entry.producto === producto);

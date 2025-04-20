@@ -2,16 +2,16 @@ import React from 'react';
 import MultiLineChart from '../../../../components/charts/line/MuiltiLineChart';
 
 function ProteinGrowthEvolutionChart({ selectedBatch, feedingreports }) {
-  // Obtener los datos del lote seleccionado o el primero por defecto
+
   const selectedReport = feedingreports.find(report => 
     selectedBatch ? report.SM_Batch === selectedBatch : true
   ) || feedingreports[0];
 
-  // Procesar los datos para el gráfico
+
   const processChartData = () => {
     if (!selectedReport?.feedingdata_realjson) return { chartData: [], proteinGroups: {} };
 
-    // Agrupar por proteína y ordenar por sm_index
+
     const proteinGroups = selectedReport.feedingdata_realjson.reduce((acc, entry) => {
       const proteinKey = `Proteína ${entry.foodproteinbase}%`;
       const week = Math.ceil(entry.sm_index / 7);
@@ -49,7 +49,7 @@ function ProteinGrowthEvolutionChart({ selectedBatch, feedingreports }) {
 
   const { chartData, proteinGroups } = processChartData();
 
-  // Configuración del eje Y
+
   const yDomain = [0, 42];
   const yTicks = Array.from({ length: 22 }, (_, i) => i * 2);
 

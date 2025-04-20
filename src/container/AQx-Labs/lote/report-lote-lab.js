@@ -174,7 +174,7 @@ function LoteViewLab() {
 
   const combinedSelectOptions = [...farmsSelectOptions];
 
-  // Función para extraer valores de coordinaciones (máximo 3)
+
   const extractCoordinationData = (coordinations) => {
     const despacho = ['', '', ''];
     const cantidad = ['', '', ''];

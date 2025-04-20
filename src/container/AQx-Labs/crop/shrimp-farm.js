@@ -116,7 +116,7 @@ function ShrimpLab() {
       pl: 220,
       cicloPc: 'Ciclo 2',
     },
-    // ...otros registros
+
   ];
 
   return (

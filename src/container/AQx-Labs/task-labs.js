@@ -1,4 +1,4 @@
-// src/components/TaskFarms.js
+
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { Row, Col, Skeleton, notification } from 'antd';
@@ -55,7 +55,7 @@ function TaskLabs() {
     ];
 
 
-    // Función para extraer valores de coordinaciones (máximo 3)
+
     const extractCoordinationData = (coordinations) => {
         const despacho = ['', '', ''];
         const cantidad = ['', '', ''];

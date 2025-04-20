@@ -67,8 +67,8 @@ class DataService {
  * For more details on axios interceptor see https://github.com/axios/axios#interceptors
  */
 client.interceptors.request.use((config) => {
-  // do something before executing the request
-  // For example tag along the bearer access token to request header or set a cookie
+
+
   const requestConfig = config;
   const { headers } = config;
   if(headers.Authorization) {
@@ -105,7 +105,7 @@ client.interceptors.response.use(
           error
         });
       } else if (response.status === 500 || response.status === 400) {
-        // do something here
+
         return Promise.reject({
           withError: true,
           invalidTokenError: false,

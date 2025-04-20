@@ -18,17 +18,17 @@ import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selector
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function ODParametersFarms() {
-  // Selección de org, sector y pool
+
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
 
-  // Datos de organizaciones
+
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-  // Manejo de selección de org
+
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -38,19 +38,19 @@ function ODParametersFarms() {
     setSelectedSector(null);
   };
 
-  // Manejo de selección de sector
+
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-  // Manejo de selección de pool
+
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
 
-  // Opciones para Farms
+
   const farmsSelectOptions = organizations.length > 0 ? [
     {
       options: farmsOrgsWithPools.map(org => ({
@@ -64,7 +64,7 @@ function ODParametersFarms() {
     },
   ] : [];
 
-  // Opciones para sectores
+
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -88,7 +88,7 @@ function ODParametersFarms() {
     },
   ] : [];
 
-  // Opciones para pools
+
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -109,7 +109,7 @@ function ODParametersFarms() {
     },
   ] : [];
 
-  // Combinación de selects en el PageHeader
+
   const combinedSelectOptions = [
     ...farmsSelectOptions,
     ...sectorSelectOptions,

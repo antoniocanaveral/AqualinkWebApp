@@ -19,7 +19,7 @@ function ScheduleHarvestLab({ data }) {
 
   const eventTypes = ['primary', 'secondary', 'info', 'warning'];
 
-  // Función para convertir mes numérico a nombre en español
+
   const getMonthName = (dateString) => {
     if (!dateString) return 'N/A';
 
@@ -53,7 +53,7 @@ function ScheduleHarvestLab({ data }) {
     setState({ ...state, tabValue: value });
   };
 
-  // Construcción de la tabla
+
   const dataSource = eventState.map((value, index) => {
     const {
       Value = 'N/A', // Lote
@@ -122,7 +122,7 @@ function ScheduleHarvestLab({ data }) {
   );
 }
 
-// Añadir PropTypes para validación de props
+
 ScheduleHarvestLab.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({

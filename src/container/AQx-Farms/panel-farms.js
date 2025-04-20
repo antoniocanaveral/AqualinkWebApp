@@ -46,12 +46,12 @@ function PanelFarms() {
     dispatch(fetchInventory("FARM"));
 
   }, [dispatch, selectedOrg]);
-  // Obtener datos de inventario como lista plana
+
   const inventoryData = Object.values(categories).flat() || [];
   console.log(inventoryData)
   console.log(categories)
 
-  // Definir columnas para la tabla de inventario
+
   const inventoryColumns = [
     { title: 'Nombre', dataIndex: 'product_name', key: 'product_name' },
     {
@@ -180,7 +180,7 @@ function PanelFarms() {
   ];
   const validCoordinationInfo = Array.isArray(coordinationInfo) ? coordinationInfo : [];
 
-  // Filtrar registros únicos basados en loteId (SM_Coordination_ID.identifier)
+
   const uniqueRecords = {};
   validCoordinationInfo.forEach(record => {
     const loteId = record.SM_Coordination_ID?.identifier || 'N/A';
@@ -213,7 +213,7 @@ function PanelFarms() {
   });
 
 
-  // Datos de la tabla de Coordinación de Cosechas
+
 
   const tankData = [
     {

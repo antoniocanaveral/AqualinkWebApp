@@ -100,7 +100,7 @@ function MyProfile() {
 }
 
 MyProfile.propTypes = {
-  // match: propTypes.object,
+
 };
 
 export default MyProfile;

@@ -102,7 +102,7 @@ function ClassificationFarm() {
     ...sectorSelectOptions,
     ...poolsSelectOptions,
   ];
-  // Datos de ejemplo que incluyen el color de fondo para cada categoría
+
   const data = [
     { clasificacion: "150/200", color: "#ffe0b2", pesoEspecifico: 5, muestra: "", pesoTotal: "", porcentaje: "" },
     { clasificacion: "150/200", color: "#ffe0b2", pesoEspecifico: 6, muestra: "", pesoTotal: "", porcentaje: "" },
@@ -127,7 +127,7 @@ function ClassificationFarm() {
     { clasificacion: "30/40", color: "#ffcdd2", pesoEspecifico: 26, muestra: 4, pesoTotal: 104, porcentaje: "3.31%" },
   ];
 
-  // Función para generar filas con rowspan y color de fondo personalizado
+
   const renderRows = () => {
     let previousClasification = null;
     let rowspan = 1;
@@ -136,7 +136,7 @@ function ClassificationFarm() {
     data.forEach((row, index) => {
       const isFirstRowOfGroup = row.clasificacion !== previousClasification;
 
-      // Calcula el rowspan solo en la primera fila del grupo
+
       if (isFirstRowOfGroup) {
         rowspan = 1;
         for (let i = index + 1; i < data.length; i++) {
@@ -144,7 +144,7 @@ function ClassificationFarm() {
           else break;
         }
 
-        // Calcula el porcentaje agregado para el grupo
+
         const porcentajeAgregado = data
           .filter(item => item.clasificacion === row.clasificacion)
           .reduce((total, item) => {

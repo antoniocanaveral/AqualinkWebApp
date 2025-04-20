@@ -19,7 +19,7 @@ function AddInventoryFarms() {
 
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-  // Estados del formulario
+
   const [form] = Form.useForm();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredGroups, setFilteredGroups] = useState([]);
@@ -43,7 +43,7 @@ function AddInventoryFarms() {
 
 
 
-  // Filtrar pools: solo las que tienen salesRegion nulo o cuyo id sea nulo
+
   const poolsOptions =
     selectedOrg && farmsOrgsWithPools
       ? (farmsOrgsWithPools.find((org) => org.orgId === selectedOrg)?.pools || [])

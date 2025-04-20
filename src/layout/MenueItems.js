@@ -29,7 +29,7 @@ import {
   UilEstate,
   UilExchange,
   UilExclamationOctagon,
-  // UilExpandArrowsAlt,
+
   UilFlaskPotion,
   UilFile,
   UilFileCheckAlt,
@@ -583,7 +583,7 @@ function MenuItems({ toggleCollapsed }) {
       onOpenChange={onOpenChange}
       onClick={onClick}
       mode={!topMenu || window.innerWidth <= 991 ? 'inline' : 'horizontal'}
-      // // eslint-disable-next-line no-nested-ternary
+
       defaultSelectedKeys={
         !topMenu
           ? [

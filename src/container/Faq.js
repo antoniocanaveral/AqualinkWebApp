@@ -173,7 +173,7 @@ const faqContent = {
 function FaqComponent() {
   const [selectedSubmenu, setSelectedSubmenu] = useState('Descripción QMS');
 
-  // Maneja la selección del submenú
+
   const handleSubmenuClick = (submenu) => {
     setSelectedSubmenu(submenu);
   };
@@ -314,9 +314,9 @@ function FaqComponent() {
               <Cards headless title="FAQ Contenido">
                 <Collapse
                   bordered={false}
-                  // Remove activeKey to allow panels to open/close independently
-                  // If you want a panel open by default, use defaultActiveKey
-                  // defaultActiveKey={selectedSubmenu === 'Descripción QMS' ? ['0'] : undefined}
+
+
+
                   expandIcon={({ isActive }) => (isActive ? <UilMinus /> : <UilPlus />)}
                 >
                   {faqContent[selectedSubmenu].map((item, index) => (

@@ -12,7 +12,7 @@ function DispatchReportLab() {
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const { lablotes, lablotesLoading, lablotesError } = useSelector((state) => state.lablote);
   const labOrgs = useSelector((state) => state.auth.labsOrgs);
-  // Estado para la data que enviaremos al gráfico
+
   const [chartDataVariations, setChartDataVariations] = useState([]);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ function DispatchReportLab() {
   const validLablotes = Array.isArray(lablotes) ? lablotes : [];
 
 
-  // Función para calcular las constantes a partir del objeto de coordinación
+
   function getCalculatedConstants(coord) {
     if (!coord) {
       return {
@@ -52,7 +52,7 @@ function DispatchReportLab() {
         cantidadSembrado: 0,
       };
     }
-    // Se convierten los valores a Number para asegurar los cálculos
+
     const cantidadProyectada = coord.sm_density || 0;
     const cantidadCoordinada = coord.sm_confirmedtotal || 0;
     const cantidadDespachada = (coord.sm_confirmedtotal * 1000) * coord.sm_preliminarylaboratorycount
@@ -60,7 +60,7 @@ function DispatchReportLab() {
     return { cantidadProyectada, cantidadCoordinada, cantidadDespachada, cantidadSembrado };
   }
 
-  // Función para calcular las variaciones en porcentaje
+
   function getVariations(coord) {
     console.log(coord)
     const { cantidadProyectada, cantidadCoordinada, cantidadDespachada, cantidadSembrado } = getCalculatedConstants(coord);
@@ -79,21 +79,21 @@ function DispatchReportLab() {
 
   useEffect(() => {
     if (validLablotes.length > 0) {
-      // Tomamos el primer lote que tenga coordinations_json
+
       const firstLote = validLablotes.find(l => Array.isArray(l.coordinations_json) && l.coordinations_json.length > 0);
       if (firstLote) {
-        // Tomar las primeras 5 coordinaciones
+
         const coordinations = firstLote.coordinations_json.slice(0, 5);
-        // Asegurarnos de que tenga 5 posiciones (rellenamos con null si faltan)
+
         while (coordinations.length < 5) {
           coordinations.push(null);
         }
-        // Para cada coordinación calculamos las variaciones
+
         const variationsArray = coordinations.map(coord => getVariations(coord));
-        // Guardamos ese array en el estado
+
         setChartDataVariations(variationsArray);
       } else {
-        // Si no hay ningún lote con coordinaciones, dejamos el array vacío
+
         setChartDataVariations([]);
       }
     }
@@ -164,7 +164,7 @@ function DispatchReportLab() {
         return '';
       }
     },
-    // Usando las nuevas funciones para calcular las variaciones
+
     {
       key: 'variacion_larva_coordinada',
       descripcion: 'Variación de larva coordinada',

@@ -1079,7 +1079,7 @@ const TopMenuStyle = Styled.div`
             flex-wrap: wrap;
         }
     }
-    // Mega Menu
+
     .ninjadash-top-menu{
         >ul{
             >li{

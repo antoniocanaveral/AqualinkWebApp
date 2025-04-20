@@ -21,7 +21,7 @@ function LaboratoryAddCustody() {
     const [lotId, setLotId] = useState(null); // Estado para almacenar el LOTE ID seleccionado
 
 
-    // Obtener datos desde Redux
+
     const { parameters, loading } = useSelector((state) => state.labanalysis);
     const organizations = useSelector((state) => state.auth.custodyOrgs);
     const coordinations = useSelector((state) => state.lab.coordinations);
@@ -63,7 +63,7 @@ function LaboratoryAddCustody() {
     const handleLotChange = (value) => {
         setLotId(value); // Guardar el LOTE ID seleccionado en el estado
 
-        // Buscar la coordinación asociada en `coordinations`
+
         const selectedCoordination = coordinations.find(coord => coord.SM_FishingNotification === value);
 
         if (selectedCoordination) {
@@ -105,7 +105,7 @@ function LaboratoryAddCustody() {
                 return;
             }
 
-            // **Crear registros para cada parámetro**
+
             const labanalysisData = Object.keys(formData).map((paramName) => {
                 const param = parameters.find(p => p.sm_parametername === paramName);
                 return param ? {
@@ -116,7 +116,7 @@ function LaboratoryAddCustody() {
                 } : null;
             }).filter(entry => entry !== null); // Eliminar valores nulos
 
-            // **Enviar los datos a Redux**
+
             await dispatch(registerLabanalysis(labanalysisData));
 
             setModalVisible(false);
@@ -133,7 +133,7 @@ function LaboratoryAddCustody() {
         return acc;
     }, {});
 
-    // Convertir el objeto en un array ordenado según el orden específico
+
     const sortedGroupedParameters = Object.fromEntries(
         order
             .filter(key => groupedParameters[key]) // Filtrar solo las claves existentes en groupedParameters
@@ -142,7 +142,7 @@ function LaboratoryAddCustody() {
 
     console.log(sortedGroupedParameters);
 
-    // **2. Generar Steps dinámicamente**
+
     const steps = [
         {
             title: 'Selector de LOTE ID',

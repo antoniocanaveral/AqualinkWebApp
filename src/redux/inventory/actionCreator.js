@@ -1,4 +1,4 @@
-// src/redux/operation/actionCreator.js
+
 
 import { message } from 'antd';
 import { DataService } from '../../config/dataService/dataService';
@@ -167,7 +167,7 @@ export const fetchProductCatalogCustody = () => async (dispatch) => {
     handleApiError(err, dispatch, opCatalogError);
   }
 };
-// addProductToInventory.js
+
 
 /**
  * RECEPCIÓN (M_InOut) + FACTURA (C_Invoice) enlazadas
@@ -240,6 +240,7 @@ export const addProductToInventory = (productData) => async (dispatch) => {
       M_Product_ID   : productData.M_Product_ID,
       PriceList      : productData.priceList,
       PriceActual    : productData.priceList,
+      PriceEntered      : productData.priceList,
       QtyInvoiced    : productData.quantity,
       QtyEntered     : productData.quantity,
       C_UOM_ID       : 1000000,

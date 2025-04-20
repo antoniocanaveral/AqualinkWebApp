@@ -8,7 +8,7 @@ import ProjectedSuggestedFeedingChart from '../../AQx-Farms/monitoring/feeding/P
 import { AqualinkMapLab } from '../../../components/maps/aqualink-map-lab';
 
 function RealAndProjectedFeedingLab() {
-  // Definición de columnas para la nueva tabla de Alimentación
+
   const feedingColumns = [
     { title: 'CÓDIGO', dataIndex: 'codigo', key: 'codigo' },
     { title: 'CORRIDA', dataIndex: 'corrida', key: 'corrida' },
@@ -50,7 +50,7 @@ function RealAndProjectedFeedingLab() {
     { title: '% PROTEÍNA', dataIndex: 'proteina', key: 'proteina' },
   ];
 
-  // Datos ficticios para la nueva tabla de Alimentación
+
   const feedingData = [
     { key: '1', codigo: 'A001', corrida: '1', lote: 'L01', dia: '01 Nov', alimentoProyectado: 50, alimentoEntregado: 48, alimentoAjustado: 52, tipoAlimento: 'Pellet', proteina: 30 },
     { key: '2', codigo: 'A002', corrida: '1', lote: 'L02', dia: '02 Nov', alimentoProyectado: 55, alimentoEntregado: 53, alimentoAjustado: 56, tipoAlimento: 'Pellet', proteina: 32 },

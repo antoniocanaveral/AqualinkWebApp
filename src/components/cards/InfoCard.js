@@ -1,18 +1,31 @@
 import * as Unicons from '@iconscout/react-unicons';
-import propTypes from 'prop-types';
+import * as RiIcons from 'react-icons/ri';
+import * as SiIcons from 'react-icons/si';
+import * as FaIcons from 'react-icons/fa';
+// Agrega más según necesites...
+
+import PropTypes from 'prop-types';
 import React from 'react';
 import { InfoCardStyle } from './Style';
 
-function InfoCard({ icon, text, counter, type, img }) {
-  const IconTag = Unicons[icon];
+const iconLibraries = {
+  unicons: Unicons,
+  ri: RiIcons,
+  si: SiIcons,
+  fa: FaIcons,
+  // agrega más sets aquí si usas otros: md, bs, etc.
+};
+
+function InfoCard({ icon, iconLib, text, counter, type, img }) {
+  const IconSet = iconLibraries[iconLib] || Unicons; // default: Unicons
+  const IconTag = IconSet[icon];
 
   return (
     <InfoCardStyle type={type}>
       <span className="ninjadash-infocard-icon">
-        <IconTag />
+        {IconTag && <IconTag />}
       </span>
 
-      {/* Si el type es 'solutions' mostrar la imagen, de lo contrario mostrar el texto y el contador */}
       {type === 'solutions' ? (
         <img
           src={require(`../../static/img/AQx-IMG/${img}`)}
@@ -30,19 +43,20 @@ function InfoCard({ icon, text, counter, type, img }) {
 }
 
 InfoCard.propTypes = {
-  counter: propTypes.string,
-  text: propTypes.string,
-  icon: propTypes.string,
-  type: propTypes.oneOf(['primary', 'secondary', 'solutions']),
-  img: propTypes.string, // Nueva propiedad opcional para la imagen
+  counter: PropTypes.string,
+  text: PropTypes.string,
+  icon: PropTypes.string,
+  iconLib: PropTypes.oneOf(['unicons', 'ri', 'si', 'fa']), // extiende si necesitas más
+  type: PropTypes.oneOf(['primary', 'secondary', 'solutions']),
+  img: PropTypes.string,
 };
 
 InfoCard.defaultProps = {
   counter: '21k',
   text: 'Total Products',
-  icon: 'briefcase',
-  type: 'primary',
-  img: '', // Valor por defecto para img
+  icon: 'UilBriefcase',
+  iconLib: 'unicons',
+  img: '',
 };
 
 export default InfoCard;

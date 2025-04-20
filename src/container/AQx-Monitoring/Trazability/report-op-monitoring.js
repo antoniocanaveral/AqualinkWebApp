@@ -41,13 +41,13 @@ function ReportOpMonitoring() {
 
     const combinedSelectOptions = [...farmsSelectOptions];
 
-    // --------------------------------------------------
-    // 1) Agrupamos las campañas por la maestra
-    // --------------------------------------------------
-    //    - Si un registro es la maestra (SM_IsMainCampaing = true),
-    //      lo guardamos con su 'id' como key del grupo.
-    //    - Si un registro es hijo, se asigna al grupo según SM_MasterCampaing_ID.id
-    //    - Si no tiene maestra y no es maestra, se queda "solo" en su propio grupo.
+
+
+
+
+
+
+
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
@@ -64,77 +64,77 @@ function ReportOpMonitoring() {
 
     const calculateCycleProgress = (startDate, endDate) => {
         if (!startDate || !endDate) return 0;
-      
+
         const start = new Date(startDate);
         const end = new Date(endDate);
         const now = new Date();
-      
-        // Si aún no empieza
+
+
         if (now < start) return 0;
-      
-        // Si ya terminó
+
+
         if (now > end) return 100;
-      
+
         const totalDuration = end.getTime() - start.getTime();
         const elapsed = now.getTime() - start.getTime();
         const progress = (elapsed / totalDuration) * 100;
-      
-        return Math.round(progress);
-      };
 
-      
+        return Math.round(progress);
+    };
+
+
     const mapRecordToTankCardData = (record) => {
         const lastFeeding = [...(record.feedingdata_realjson || [])]
-          .sort((a, b) => b.sm_index - a.sm_index)[0] || {};
-      
+            .sort((a, b) => b.sm_index - a.sm_index)[0] || {};
+
         const getClassification = (r) => {
-          if (r.SM_Category30_40) return "30-40";
-          if (r.SM_Category40_50) return "40-50";
-          if (r.SM_Category50_60) return "50-60";
-          if (r.SM_Category60_70) return "60-70";
-          if (r.SM_Category70_80) return "70-80";
-          if (r.SM_Category80_100) return "80-100";
-          if (r.SM_Category100_120) return "100-120";
-          if (r.SM_Category120_150) return "120-150";
-          return null;
+            if (r.SM_Category30_40) return "30-40";
+            if (r.SM_Category40_50) return "40-50";
+            if (r.SM_Category50_60) return "50-60";
+            if (r.SM_Category60_70) return "60-70";
+            if (r.SM_Category70_80) return "70-80";
+            if (r.SM_Category80_100) return "80-100";
+            if (r.SM_Category100_120) return "100-120";
+            if (r.SM_Category120_150) return "120-150";
+            return null;
         };
-      
+
         const porcentaje = calculateCycleProgress(
-          record.SM_PlannedPlantingDate,
-          record.SM_PlannedFinishDate
+            record.SM_PlannedPlantingDate,
+            record.SM_PlannedFinishDate
         );
-      
+
         return {
-          nombreCamaronara: record.organization_name,
-          piscinaEngorde: record.M_Warehouse_ID?.identifier || 'NA',
-          loteID: record.SM_Batch,
-          porcentaje,
-          inicioCultivo: record.SM_PlannedPlantingDate,
-          finCultivo: record.SM_PlannedFinishDate,
-          biomasaEstimada: record.SM_Biomass || 'NA',
-          supervivenciaReal: lastFeeding.superv || 'NA',
-          fcaReal: lastFeeding.fca_real || 'NA',
-          clasificacionPesca: getClassification(record) || 'NA',
-          lbsPorHa: record.lbsPorHa || 'NA',
-          coordinacionPesca: record.sm_coordination_name || 'NA',
+            nombreCamaronara: record.organization_name,
+            piscinaEngorde: record.M_Warehouse_ID?.identifier || 'NA',
+            loteID: record.SM_Batch,
+            porcentaje,
+            inicioCultivo: record.SM_PlannedPlantingDate,
+            finCultivo: record.SM_PlannedFinishDate,
+            biomasaEstimada: record.SM_Biomass || 'NA',
+            supervivenciaReal: lastFeeding.superv || 'NA',
+            fcaReal: lastFeeding.fca_real || 'NA',
+            clasificacionPesca: getClassification(record) || 'NA',
+            lbsPorHa: record.lbsPorHa || 'NA',
+            coordinacionPesca: record.sm_coordination_name || 'NA',
         };
-      };
-      
+    };
+
 
 
     const groupedData = campaigns.reduce((acc, campaign) => {
-        // Identificamos el "id" de la campaña maestra
+
         let masterId;
         if (campaign.SM_IsMainCampaing) {
             masterId = campaign.id;
         } else if (campaign.SM_MasterCampaing_ID?.id) {
             masterId = campaign.SM_MasterCampaing_ID.id;
         } else {
-            // Si no es maestra ni tiene maestra, la tratamos como su propio "grupo"
+
             masterId = campaign.id;
         }
 
-        // Creamos el grupo si no existe
+
         if (!acc[masterId]) {
             acc[masterId] = {
                 master: null,
@@ -142,24 +142,24 @@ function ReportOpMonitoring() {
             };
         }
 
-        // Si es maestra, la guardamos en acc[masterId].master
+
         if (campaign.SM_IsMainCampaing) {
             acc[masterId].master = campaign;
         } else if (campaign.SM_MasterCampaing_ID?.id === masterId) {
-            // Es hijo de esa maestra
+
             acc[masterId].children.push(campaign);
         } else {
-            // Caso especial: no es maestra ni hijo, lo consideramos “master” sin SM_IsMainCampaing
-            // (O puedes ponerlo como child si así lo deseas)
+
+
             acc[masterId].master = campaign;
         }
 
         return acc;
     }, {});
 
-    // --------------------------------------------------
-    // 2) Convertimos ese objeto en un array de filas
-    // --------------------------------------------------
+
+
+
     const sortedCampaigns = [...campaigns].sort((a, b) => {
         const getGroupKey = (c) => c.SM_MasterCampaing_ID?.id || c.id;
 
@@ -170,7 +170,7 @@ function ReportOpMonitoring() {
             return groupA - groupB; // <-- comparación numérica correcta
         }
 
-        // Dentro del mismo grupo, muestra primero la maestra
+
         if (a.SM_IsMainCampaing && !b.SM_IsMainCampaing) return -1;
         if (!a.SM_IsMainCampaing && b.SM_IsMainCampaing) return 1;
 
@@ -209,7 +209,7 @@ function ReportOpMonitoring() {
             lbsPorHa: campaign.lbsPorHa, // si existe
             feedingdata_realjson: campaign.feedingdata_realjson || [],
 
-            // Clasificación de pesca
+
             SM_Category30_40: campaign.SM_Category30_40,
             SM_Category40_50: campaign.SM_Category40_50,
             SM_Category50_60: campaign.SM_Category50_60,
@@ -222,9 +222,9 @@ function ReportOpMonitoring() {
     });
 
 
-    // --------------------------------------------------
-    // 3) Definimos las columnas "agrupadas" estilo la tabla de tu imagen
-    // --------------------------------------------------
+
+
+
     const columns = [
         {
             title: 'Lote',

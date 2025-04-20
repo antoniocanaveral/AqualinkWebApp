@@ -16,7 +16,7 @@ import UilUsersAlt from '@iconscout/react-unicons/icons/uil-users-alt';
 import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
 import moment from 'moment';
 import Picker from 'emoji-picker-react';
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { Scrollbars } from '@pezhmanparsaee/react-custom-scrollbars';
 import { SmileOutlined, MoreOutlined } from '@ant-design/icons';
 import { SingleChatWrapper, MessageList, Footer, BackShadowEmoji } from '../style';
@@ -109,7 +109,7 @@ function SingleGroupChat({ match }) {
     listType: 'picture-card',
     onChange(info) {
       if (info.file.status !== 'uploading') {
-        // console.log(info.file, info.fileList);
+
         setState({
           ...state,
           fileList: info.fileList,
@@ -131,7 +131,7 @@ function SingleGroupChat({ match }) {
     },
     onChange(info) {
       if (info.file.status !== 'uploading') {
-        // console.log(info.file, info.fileList);
+
         setState({
           ...state,
           fileList2: info.fileList,

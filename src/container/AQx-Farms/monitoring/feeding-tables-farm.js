@@ -61,7 +61,7 @@ function FeedingTableFarms() {
     },
   ] : [];
 
-  // Opciones para sectores
+
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -85,7 +85,7 @@ function FeedingTableFarms() {
     },
   ] : [];
 
-  // Opciones para pools
+
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools

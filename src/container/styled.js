@@ -1433,7 +1433,7 @@ const Main = Styled.div`
         ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 10px;
     }
 
-    // Ant comment action
+
     .ant-comment-actions{
         li{
             position: relative;
@@ -1460,7 +1460,7 @@ const Main = Styled.div`
         }
     }
 
-    // Emoji Picker React
+
     .emoji-picker-react{
         top: 15px;
         right: 25px;
@@ -1553,7 +1553,7 @@ const Main = Styled.div`
         margin: 0 0 25px;
     }
 
-    // Ant Dragger
+
     .ant-upload-drag{
         background-color: ${({ theme }) => theme[theme.mainContent]['white-background']} !important;
         border-radius: 10px !important;
@@ -1599,7 +1599,7 @@ const Main = Styled.div`
         }
     }
 
-    // Form Validation
+
     .ant-form-item{
         &.ant-form-item-has-success{
             .ant-input{
@@ -1856,7 +1856,7 @@ const ButtonsGroupWrapper = Styled.div`
         .ant-btn-white{
             border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-secondary']};
             background: ${({ theme }) => theme[theme.mainContent]['white-background']} !important;
-            // ${({ theme }) => (theme.rtl ? 'border-left-width' : 'border-right-width')}: 0px;
+
             &:last-child{
                 ${({ theme }) => (theme.rtl ? 'border-left-width' : 'border-right-width')}: 1px;
             }
@@ -3359,7 +3359,7 @@ const TopToolBox = Styled.div`
         }
     }
 
-    // Product Toolbox Styles
+
     .product-list-action{
         @media only screen and (max-width: 991px){
             flex-flow: column;

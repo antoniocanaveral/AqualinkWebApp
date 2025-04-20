@@ -87,14 +87,14 @@ function CoordinationLabs() {
           sm_lablote_ID: labLoteByTank.id
         }
       }));
-      // También, actualizar el campo del formulario (en caso de usar Form.setFieldsValue)
+
       form.setFieldsValue({
         tankTotal: labLoteByTank.sm_reservedbiomass
       });
     }
   }, [labLoteByTank, form]);
 
-  // Validación personalizada para "Total Confirmado (Larvas)"
+
   const validateConfirmedTotal = (_, value) => {
     if (value <= state.form.tankTotal) {
       return Promise.resolve();
@@ -201,7 +201,7 @@ function CoordinationLabs() {
   }, [state.form.confirmedTotal, state.form.unitPerPack]);
 
 
-  // Filtrar módulos (sectores) con base en `orgId`
+
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools

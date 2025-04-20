@@ -26,7 +26,7 @@ function Compose({ close }) {
   };
 
   const onMailSend = async () => {
-    // hit the mail sender api
+
   };
 
   return (

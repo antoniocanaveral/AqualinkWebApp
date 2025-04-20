@@ -4,28 +4,28 @@ import { Main } from '../../styled.js';
 import { Cards } from '../../../components/cards/frame/cards-frame.js';
 import { Row, Col, Select, Button, Modal, InputNumber, Form, message } from 'antd';
 
-// ------------------ DATOS SIMULADOS ------------------ //
+
 const binesArray = Array.from({ length: 2000 }, (_, i) => i + 1);
 
-// Primeros 100 bines ocupados
+
 const occupiedBines = new Set(binesArray.slice(0, 100));
 
-// Sellos simulados (10 códigos aleatorios alfanuméricos)
+
 const generateRandomSeal = () => Math.random().toString(36).substring(2, 12).toUpperCase();
 const sealsArray = Array.from({ length: 10 }, () => generateRandomSeal());
 
-// Controladores simulados desde "BD"
+
 const controllers = ['Controlador A', 'Controlador B', 'Controlador C'];
 
-// ----------------------------------------------------- //
+
 
 function InventaryAddCustody() {
   const [form] = Form.useForm();
 
-  // 1) Nueva manera: usamos un Select múltiple para elegir categorías
+
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  // 2) Estados para manejar modales y selecciones
+
   const [binModalVisible, setBinModalVisible] = useState(false);
   const [selectedBines, setSelectedBines] = useState([]);
   const [rangeStart, setRangeStart] = useState(null);
@@ -33,28 +33,28 @@ function InventaryAddCustody() {
   const [sealModalVisible, setSealModalVisible] = useState(false);
   const [selectedSeals, setSelectedSeals] = useState([]);
 
-  // Manejar cambios de categorías
+
   const handleCategoryChange = (values) => {
     setSelectedCategories(values);
 
-    // Si quitamos la categoría BIN, limpiamos la selección de Bines
+
     if (!values.includes('BIN')) {
       setSelectedBines([]);
       setRangeStart(null);
     }
-    // Si quitamos la categoría SELLOS, limpiamos la selección de Sellos
+
     if (!values.includes('SELLOS')) {
       setSelectedSeals([]);
     }
   };
 
-  // ------ Lógica para mostrar/ocultar Modales ------ //
+
   const handleOpenBinModal = () => setBinModalVisible(true);
   const handleCloseBinModal = () => setBinModalVisible(false);
   const handleOpenSealModal = () => setSealModalVisible(true);
   const handleCloseSealModal = () => setSealModalVisible(false);
 
-  // ------ Lógica de selección de Sellos ------ //
+
   const toggleSealSelection = (seal) => {
     if (selectedSeals.includes(seal)) {
       setSelectedSeals(selectedSeals.filter((s) => s !== seal));
@@ -63,23 +63,23 @@ function InventaryAddCustody() {
     }
   };
 
-  // ------ Lógica de selección de Bines ------ //
+
   const toggleBinSelection = (binNumber) => {
-    // Evitamos seleccionar bines "ocupados"
+
     if (occupiedBines.has(binNumber)) return;
 
     if (rangeStart === null) {
-      // No hay rango de inicio: definimos el bin actual como rangeStart
+
       if (!selectedBines.includes(binNumber)) {
         setSelectedBines([...selectedBines, binNumber]);
         setRangeStart(binNumber);
       } else {
-        // Si ya estaba seleccionado y se hace click, se deselecciona
+
         setSelectedBines(selectedBines.filter((b) => b !== binNumber));
         setRangeStart(null);
       }
     } else {
-      // Ya hay un rangeStart
+
       if (binNumber !== rangeStart) {
         const start = Math.min(rangeStart, binNumber);
         const end = Math.max(rangeStart, binNumber);
@@ -91,7 +91,7 @@ function InventaryAddCustody() {
         const uniqueSelection = Array.from(new Set([...selectedBines, ...range]));
         setSelectedBines(uniqueSelection);
       } else {
-        // Si hacen click en el mismo bin
+
         if (selectedBines.includes(binNumber)) {
           setSelectedBines(selectedBines.filter((b) => b !== binNumber));
         } else {
@@ -102,33 +102,33 @@ function InventaryAddCustody() {
     }
   };
 
-  // ------ Manejo de Submit ------ //
+
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      // Construimos el objeto final según categorías seleccionadas
+
       const dataToSend = { ...values };
 
-      // BIN
+
       if (selectedCategories.includes('BIN')) {
         dataToSend.bines = selectedBines;
       }
-      // GAVETA S (gavetasSolidas)
+
       if (!selectedCategories.includes('GAVETA S')) {
         dataToSend.gavetasSolidas = 0;
       }
-      // GAVETA K (gavetasCaladas)
+
       if (!selectedCategories.includes('GAVETA K')) {
         dataToSend.gavetasCaladas = 0;
       }
-      // HIELO
+
       if (!selectedCategories.includes('HIELO')) {
         dataToSend.hielo = 0;
       }
-      // METABISULFITO
+
       if (!selectedCategories.includes('METABISULFITO')) {
         dataToSend.metabisulfito = 0;
       }
-      // SELLOS
+
       if (selectedCategories.includes('SELLOS')) {
         dataToSend.seals = selectedSeals;
       } else {

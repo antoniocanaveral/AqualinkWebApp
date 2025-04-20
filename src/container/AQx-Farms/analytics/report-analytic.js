@@ -16,19 +16,19 @@ function AnalyticReportFarm() {
 
 
 
-    // Datos de organizaciones
+
     const organizations = useSelector((state) => state.auth.farmsOrgs);
     const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-    // Selección de org, sector y pool
+
     const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
     const [selectedSector, setSelectedSector] = useState(null);
     const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
-    // Datos de la vista costcenter
+
     const costCenterData = useSelector((state) => state.cost.costCenterData);
 
-    // Manejo de selección de org
+
     const handleOrgChange = (orgId, orgEmail) => {
         setSelectedOrg(orgId);
         Cookies.set('orgId', orgId);
@@ -38,19 +38,19 @@ function AnalyticReportFarm() {
         setSelectedSector(null);
     };
 
-    // Manejo de selección de sector
+
     const handleSectorChange = (sectorId) => {
         setSelectedSector(sectorId);
         setSelectedPool(null);
     };
 
-    // Manejo de selección de pool
+
     const handlePoolChange = (poolId) => {
         setSelectedPool(poolId);
         Cookies.set('poolId', poolId);
     };
 
-    // Opciones para Farms
+
     const farmsSelectOptions = organizations.length > 0 ? [
         {
             options: farmsOrgsWithPools.map(org => ({
@@ -64,7 +64,7 @@ function AnalyticReportFarm() {
         },
     ] : [];
 
-    // Opciones para sectores
+
     const sectorsOptions = selectedOrg
         ? farmsOrgsWithPools
             .find(org => org.orgId === selectedOrg)?.pools
@@ -88,7 +88,7 @@ function AnalyticReportFarm() {
         },
     ] : [];
 
-    // Opciones para pools
+
     const poolsOptions = selectedSector
         ? farmsOrgsWithPools
             .find(org => org.orgId === selectedOrg)?.pools
@@ -116,7 +116,7 @@ function AnalyticReportFarm() {
         },
     ] : [];
 
-    // Combinación de selects en el PageHeader
+
     const combinedSelectOptions = [
         ...farmsSelectOptions,
         ...sectorSelectOptions,
@@ -128,7 +128,7 @@ function AnalyticReportFarm() {
         if (selectedPool)
             dispatch(fetchProductionReports());
     }, [dispatch, selectedPool]);
-    // Datos de la tabla principal
+
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -158,7 +158,7 @@ function AnalyticReportFarm() {
         return stickyRows;
     };
 
-    // Uso:
+
     const stickyRows = mapProductionReportsToStickyRows(productionReports);
 
     const feeding_detail = [
@@ -585,9 +585,9 @@ function AnalyticReportFarm() {
             descripcion: 'FCA',
             ...getCiclosValues(productionReports, r => r.e_production_json.sm_fca)
         },
-        //
 
-        //  aquí puedes seguir agregando más filas usando la misma estructura
+
+
     ];
     /* const mainTableData = [
          {
@@ -654,7 +654,7 @@ function AnalyticReportFarm() {
              ciclo4: '13,5',
              ciclo5: '13,5',
          },
-         // Variables de producción Precría
+
          {
              key: 'variables_produccion_precria',
              descripcion: 'VARIABLES DE PRODUCCIÓN PRECRÍA',
@@ -750,7 +750,7 @@ function AnalyticReportFarm() {
              ciclo4: '0,39',
              ciclo5: '0,28',
          },
-         // Costos de producción pre cría
+
          {
              key: 'costos_produccion_precria',
              descripcion: 'COSTOS DE PRODUCCIÓN PRECRÍA',
@@ -846,7 +846,7 @@ function AnalyticReportFarm() {
              ciclo4: '$6.581,10',
              ciclo5: '$5.604,42',
          },
-         // Variables de producción Fase Engorde
+
          {
              key: 'variables_produccion_engorde',
              descripcion: 'VARIABLES DE PRODUCCIÓN FASE ENGORDA',
@@ -1005,7 +1005,7 @@ function AnalyticReportFarm() {
              ciclo4: '1,56',
              ciclo5: '1,36',
          },
-         // Costos de producción
+
          {
              key: 'costos_produccion',
              descripcion: 'COSTOS DE PRODUCCIÓN',
@@ -1094,7 +1094,7 @@ function AnalyticReportFarm() {
          },
      ];*/
 
-    // Datos de la tabla de resultados
+
     const resultsTableData = [
         {
             key: 'ingreso_ventas',
@@ -1177,7 +1177,7 @@ function AnalyticReportFarm() {
         }
     ];
 
-    // Definición de columnas
+
     const columns = [
         {
             title: '',
@@ -1358,7 +1358,7 @@ function AnalyticReportFarm() {
 
     const showDetails = (cycle) => {
 
-        // Construimos el objeto basado en el ciclo seleccionado
+
         const item = {
             marca_alimento: feeding_detail.find((detail) => detail.key === 'marca_alimento')[cycle],
             tipo_alimento_pre_cria: feeding_detail.find((detail) => detail.key === 'tipo_alimento_pre_cria')[cycle],
@@ -1373,7 +1373,7 @@ function AnalyticReportFarm() {
     };
 
 
-    // Cerrar el modal
+
     const handleCloseModal = () => {
         setIsModalVisible(false);
         setSelectedItem(null);

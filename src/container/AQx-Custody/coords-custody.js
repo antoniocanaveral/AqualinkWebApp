@@ -52,7 +52,7 @@ function CoordinationsCustody() {
   ] : [];
   const combinedSelectOptions = [...farmsSelectOptions];
 
-  // Determinar si se debe usar "Finca Seleccionada" o "Empacadora Seleccionada"
+
   const packerOrFarm = selectedModule !== 'FARM' ? 'Finca Seleccionada' : 'Empacadora Seleccionada';
 
   useEffect(() => {
@@ -63,7 +63,7 @@ function CoordinationsCustody() {
 
 
 
-  // Función para determinar la clase de estado
+
   const getStatusClass = (status) => {
     switch (status.toLowerCase()) {
       case 'confirmado':

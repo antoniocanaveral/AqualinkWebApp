@@ -1,4 +1,4 @@
-// Importaciones necesarias
+
 import React, { Suspense, useState, useEffect, useLayoutEffect } from 'react';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Row, Col, Form, Skeleton, Avatar, Typography, Table } from 'antd';
@@ -15,7 +15,7 @@ import DataTable from '../../components/table/DataTable';
 import { GoogleMaps } from '../../components/maps/google-maps';
 import { fetchFishingDrawerInfo } from '../../redux/bines-drawers/actionCreator';
 
-// Definición de columnas para las tablas
+
 const binesDataTableColumnMain = [
   {
     title: 'No. Bin',
@@ -98,16 +98,16 @@ const coordinationDataColumns = [
   { title: '', dataIndex: 'value', key: 'value', width: '55%' },
 ];
 
-// Componente principal de CoordinationCustodyResumen
+
 function CoordinationCustodyResumen() {
   const { organizationSecurityKits = [], organizationFishingDrawerStamp = [], fishingDrawerInfo, fishingDrawerInfoLoading, treaters, treatersLoading } = useSelector((state) => state.bin_drawers || {});
 
-  // Nuevo state para almacenar los furgones agregados
+
   const [addedFurgones, setAddedFurgones] = useState([]);
 
   useEffect(() => {
     if (!fishingDrawerInfoLoading && fishingDrawerInfo.length > 0) {
-      // Mapeo de los datos a la estructura esperada
+
       const formattedData = fishingDrawerInfo.map(item => ({
         van: item.sm_furgon, // "1 - GEL-7774"
         kitCode: item.sm_kitcode, // "Kit123456"

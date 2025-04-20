@@ -35,12 +35,12 @@ export const registerVehicleError = (error) => ({
   payload: error,
 });
 
-// Action Types
+
 export const FETCH_CARRIERS_LOADING = 'FETCH_CARRIERS_LOADING';
 export const FETCH_CARRIERS_SUCCESS = 'FETCH_CARRIERS_SUCCESS';
 export const FETCH_CARRIERS_ERROR = 'FETCH_CARRIERS_ERROR';
 
-// Action Creators
+
 export const fetchCarriersLoading = () => ({
   type: FETCH_CARRIERS_LOADING,
 });

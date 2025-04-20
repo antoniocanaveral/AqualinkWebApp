@@ -32,7 +32,11 @@ const ReporteLote = () => {
         marginTop: '20px',
       }}>
         <LoteDetails selectedLote={report} />
+        <div style={{ width: '100%' }}>
+          <LoteDetails selectedLote={report} fromSection="SPECIES HEALTH & WELLFARE" />
+        </div>
       </div>
+
     </div>
   );
 };

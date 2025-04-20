@@ -11,9 +11,9 @@ const chartLinearGradient = (canvas, height, color) => {
   return gradient;
 };
 
-// Custom Tooltip
+
 const customTooltips = function (context) {
-  // Tooltip Element
+
   let tooltipEl = document.querySelector('.chartjs-tooltip');
   const container = this._chart.canvas.closest('.ninjadash-chart-container');
   if (container && !container.contains(tooltipEl)) {
@@ -36,13 +36,13 @@ const customTooltips = function (context) {
 
   if (tooltipEl !== null) {
     const tooltipModel = context.tooltip;
-    // Hide if no tooltip
+
     if (tooltipModel.opacity === 0) {
       tooltipEl.style.opacity = 0;
       return;
     }
 
-    // Set caret Position
+
     tooltipEl.classList.remove('above', 'below', 'no-transform');
     if (tooltipModel.yAlign) {
       tooltipEl.classList.add(tooltipModel.yAlign);
@@ -50,7 +50,7 @@ const customTooltips = function (context) {
       tooltipEl.classList.add('no-transform');
     }
 
-    // Set Text
+
     if (tooltipModel.body) {
       const titleLines = tooltipModel.title || [];
       const bodyLines = tooltipModel.body.map(getBody);
@@ -83,7 +83,7 @@ const customTooltips = function (context) {
     const toolTip = document.querySelector('.chartjs-tooltip');
     const toolTipHeight = toolTip.clientHeight;
 
-    // Display, position, and set styles for font
+
     tooltipEl.style.opacity = 1;
     tooltipEl.style.left = `${positionX + tooltipModel.caretX}px`;
     tooltipEl.style.top = `${

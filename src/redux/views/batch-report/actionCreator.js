@@ -16,3 +16,14 @@ export const fetchOperationReport = () => async (dispatch) => {
         handleApiError(error, dispatch, error);
     }
 };
+
+export const fetchOperationReportIND = () => async (dispatch) => {
+    dispatch({ type: FETCH_CAMPAIGN_LOADING});
+    try {
+        const response = await DataService.get(`/models/sm_operationreport_view?$filter=SM_OrgType eq 'IND'`);
+        dispatch({ type: FETCH_CAMPAIGN_SUCCESS, payload: response.data.records });
+    } catch (error) {
+        dispatch({ type: FETCH_CAMPAIGN_ERROR, payload: error.message });
+        handleApiError(error, dispatch, error);
+    }
+};

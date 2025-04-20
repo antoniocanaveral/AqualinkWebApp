@@ -126,7 +126,7 @@ function SupportTicket() {
     }
   ];
 
-  // Se hace la carga inicial una única vez
+
   useEffect(() => {
     dispatch(fetchRequestsByClient());
   }, [dispatch]);
@@ -208,7 +208,7 @@ function SupportTicket() {
     setVisibleCreate(true);
   };
 
-  // Ahora, estos métodos solo cierran el modal sin refrescar la data.
+
   const onCancelCreate = () => {
     setVisibleCreate(false);
   };
@@ -221,7 +221,7 @@ function SupportTicket() {
     setVisibleView(false);
   };
 
-  // Estas funciones se ejecutarán al tener éxito en la operación de crear o actualizar
+
   const onCreateSuccess = () => {
     setVisibleCreate(false);
     dispatch(fetchRequestsByClient());

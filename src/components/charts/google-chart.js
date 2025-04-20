@@ -23,7 +23,7 @@ function GoogleBasicBarChart(props) {
           title: 'City',
         },
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '1' }}
     />
   );
@@ -52,7 +52,7 @@ function GoogleMaterialBarChart(props) {
           subtitle,
         },
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '2' }}
     />
   );
@@ -87,7 +87,7 @@ function GoogleStackedChart(props) {
           title: 'City',
         },
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '3' }}
     />
   );
@@ -122,7 +122,7 @@ function GoogleCustomColorChart(props) {
           title: 'City',
         },
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '4' }}
     />
   );
@@ -153,7 +153,7 @@ function GoogleComboChart(props) {
         seriesType: 'bars',
         series: { 5: { type: 'line' } },
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '5' }}
     />
   );
@@ -185,7 +185,7 @@ function GoogleLineChart(props) {
           title: 'Popularity',
         },
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '6' }}
     />
   );
@@ -218,7 +218,7 @@ function GoogleMultiLineChart(props) {
           1: { curveType: 'function' },
         },
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '7' }}
     />
   );
@@ -243,7 +243,7 @@ function GoogleOrgChart(props) {
         chartArea: { width: chartArea },
         allowHtml: true,
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '8' }}
     />
   );
@@ -269,7 +269,7 @@ function GoogleBasicPieChart(props) {
         title,
         chartArea: { width: chartArea },
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '9' }}
     />
   );
@@ -297,7 +297,7 @@ function Google3dPieChart(props) {
         chartArea: { width: chartArea },
         is3D: true,
       }}
-      // For tests
+
       rootProps={{ 'data-testid': '9' }}
     />
   );

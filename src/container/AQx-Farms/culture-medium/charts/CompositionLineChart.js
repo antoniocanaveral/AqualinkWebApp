@@ -5,7 +5,7 @@ import { Bar } from 'react-chartjs-2';
 export default function ProductCycleBarChart({ limeData }) {
   console.log(limeData);
 
-  // Verifica que limeData esté definido y sea un array
+
   if (!Array.isArray(limeData) || limeData.length === 0) {
       return <p>No hay datos disponibles para mostrar el gráfico.</p>;
   }
@@ -13,7 +13,7 @@ export default function ProductCycleBarChart({ limeData }) {
   const ciclos = [...new Set(limeData.map(item => item.ciclo))]; // Obtener los ciclos únicos
   const productos = [...new Set(limeData.map(item => item.producto))]; // Obtener los productos únicos
 
-  // Paleta de colores armónica (tonos azules y verdes)
+
   const colorPalette = [
       "#4A90E2", // Azul
       "#50E3C2", // Verde agua

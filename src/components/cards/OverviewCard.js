@@ -26,11 +26,11 @@ function OverviewCard({ data, className, bottomStatus, contentFirst, halfCircleI
     if (imageElement) {
       imageElement.classList.add('ninjadash-animate-click'); // Añadir la clase de animación
 
-      // Eliminar la clase después de 1 segundo para que pueda volver a animarse en futuros clics
+
       setTimeout(() => {
         imageElement.classList.remove('ninjadash-animate-click');
 
-        // Ejecutar la función pasada como prop después de 1 segundo
+
         if (onClick) {
           onClick();
         }

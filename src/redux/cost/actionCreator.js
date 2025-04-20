@@ -26,14 +26,14 @@ export const registerIndirectCost = (indirectCostData, recordId = null) => async
 
         let response;
         if (recordId) {
-            // Si existe recordId, actualiza (PUT)
+
             response = await DataService.put(`/models/sm_indirectcost/${recordId}`, {
                 AD_Client_ID: Number(adClientId),
                 AD_Org_ID: Number(adOrgId),
                 ...indirectCostData,
             });
         } else {
-            // Si no existe recordId, crea uno nuevo (POST)
+
             response = await DataService.post(`/models/sm_indirectcost`, {
                 AD_Client_ID: Number(adClientId),
                 AD_Org_ID: Number(adOrgId),

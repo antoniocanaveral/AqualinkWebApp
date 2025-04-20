@@ -466,7 +466,7 @@ const Footer = Styled.div`
           z-index: 999999;
           bottom: 70px;
           right: 0;
-          // padding: 15px;
+
           
         }
       }

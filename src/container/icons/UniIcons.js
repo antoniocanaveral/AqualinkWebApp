@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'antd';
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import * as Unicons from '@iconscout/react-unicons';
 import { IconWrapper } from './IconStyled';
 import { PageHeader } from '../../components/page-headers/page-headers';

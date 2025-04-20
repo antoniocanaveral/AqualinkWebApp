@@ -541,7 +541,7 @@ const TopToolBox = Styled.div`
         }
     }
 
-    // Product Toolbox Styles
+
     .product-list-action{
         @media only screen and (max-width: 991px){
             flex-flow: column;

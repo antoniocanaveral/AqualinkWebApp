@@ -1,4 +1,4 @@
-// src/redux/authentication/selectors.js
+
 
 export const selectFarmsOrgs = (state) => state.auth.farmsOrgs;
 export const selectAuthLoading = (state) => state.auth.loading;

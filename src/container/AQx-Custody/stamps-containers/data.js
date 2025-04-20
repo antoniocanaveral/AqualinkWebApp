@@ -1,4 +1,4 @@
-// data.js
+
 
 export const optionsInventory = [
     {
@@ -28,7 +28,7 @@ export const optionsInventory = [
                 hieloSacos: 50,
                 metabisulfito: "100 mg",
             },
-            // Agrega más ítems de bines según sea necesario
+
         ]
     },
     {
@@ -58,12 +58,12 @@ export const optionsInventory = [
                 hieloSacos: 35,
                 metabisulfito: "60 mg",
             },
-            // Agrega más ítems de gavetas según sea necesario
+
         ]
     }
 ];
 
-// Crear una lista plana de ítems para sampleData
+
 export const sampleData = optionsInventory.flatMap(category => 
     category.items.map(item => ({
         key: item.codigo, // Asegúrate de que 'codigo' sea único

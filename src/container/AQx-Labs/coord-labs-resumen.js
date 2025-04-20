@@ -67,7 +67,7 @@ function CoordinationLabsResumen() {
     { key: '1', label: 'PH Tanque de Origen:', value: coordination?.pre_breeding_pool_ph || '' },
   ];
 
-  // Valores binarios para usar checkbox
+
   const binaryFields = [
     { key: '9', label: 'Óxigeno en Camino', icon: 'food.svg', value: coordination?.oxygen_on_the_go ? true : false },
     { key: '10', label: 'Comida en Camino', icon: 'food.svg', value: coordination?.food_on_the_go ? true : false },

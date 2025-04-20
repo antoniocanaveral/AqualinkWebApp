@@ -62,7 +62,7 @@ const regionColumns = [
 ];
 
 const SaleByLocation = React.memo(() => {
-  // Inititalize Default Sales Location
+
   const [state, setState] = useState({
     locationTab: 'today',
   });
@@ -77,7 +77,7 @@ const SaleByLocation = React.memo(() => {
     });
   };
 
-  // Make Data Array for Table
+
   const saleLocationData = [];
   if (salesLocation !== null)
     salesLocation[locationTab].map((item, key) => {
@@ -102,7 +102,7 @@ const SaleByLocation = React.memo(() => {
     style: PropTypes.shape(PropTypes.object).isRequired,
   };
 
-  // Map Configuration
+
   const [position, setPosition] = useState({ coordinates: [0, 0], zoom: 1 });
   const [content, setContent] = useState('');
   const handleZoomIn = () => {

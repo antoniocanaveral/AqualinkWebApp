@@ -16,7 +16,7 @@ import Toolbar from 'react-big-calendar/lib/Toolbar';
 import 'react-calendar/dist/Calendar.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-// eslint-disable-next-line import/no-cycle
+
 import EventForm from './overview/EventForm';
 import { addNewEvents, calendarDeleteData } from '../../../../redux/calendar/actionCreator';
 import { CalendarWrapper, EventModalStyleWrap } from './Style';
@@ -228,7 +228,7 @@ function CalendarTask() {
                 localizer={Localizer}
                 events={events.map(mapToRBCFormat)}
                 resizable
-                // eslint-disable-next-line no-use-before-define
+
                 components={{ toolbar: CustomToolbar }}
                 defaultView="month"
                 defaultDate={new Date()}
@@ -248,9 +248,9 @@ function CalendarTask() {
 export class CustomToolbar extends Toolbar {
   componentDidMount() {
     const toolbarLink = document.querySelectorAll('.calendar-header__right a');
-    // eslint-disable-next-line no-plusplus
+
     for (let i = 0, { length } = toolbarLink; i < length; i++) {
-      // eslint-disable-next-line func-names
+
       toolbarLink[i].onclick = function () {
         const activatedLink = document.querySelector('.calendar-header__right a.active');
         if (activatedLink) activatedLink.classList.remove('active');

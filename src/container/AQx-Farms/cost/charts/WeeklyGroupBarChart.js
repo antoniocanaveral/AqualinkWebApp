@@ -7,13 +7,13 @@ export default function WeeklyGroupedBarChart({ dataSource, height = 300 }) { //
     return <p>No hay datos disponibles para mostrar el gráfico.</p>;
   }
 
-  // Agrupar los datos por semanas
+
   const weeks = [];
   for (let i = 0; i < dataSource.length; i += 7) {
     weeks.push(dataSource.slice(i, i + 7)); // Cada semana contiene 7 días
   }
 
-  // Procesar los datos agrupados por semanas
+
   const categories = ["Balanceado", "Agua", "Otros", "Indirectos"];
   const weeklyData = weeks.map((week) => {
     const balanceado = week.reduce((total, day) => total + day.alimentoBalanceado, 0);
@@ -50,7 +50,7 @@ export default function WeeklyGroupedBarChart({ dataSource, height = 300 }) { //
     return { balanceado, agua, otros, indirectos };
   });
 
-  // Configuración de los datasets para el gráfico
+
   const datasets = categories.map((category, index) => ({
     label: category,
     data: weeklyData.map((week) => week[category.toLowerCase()]),
@@ -63,7 +63,7 @@ export default function WeeklyGroupedBarChart({ dataSource, height = 300 }) { //
     barPercentage: 0.6,
   }));
 
-  // Configuración de los datos y opciones del gráfico
+
   const data = {
     labels: weeks.map((_, i) => `Semana ${i + 1}`),
     datasets,

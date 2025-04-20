@@ -15,17 +15,17 @@ import { useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
 
 function PopulationBiomassFarm() {
-  // Selección de org, sector y pool
+
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
 
-  // Datos de organizaciones
+
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-  // Manejo de selección de org
+
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -35,19 +35,19 @@ function PopulationBiomassFarm() {
     setSelectedSector(null);
   };
 
-  // Manejo de selección de sector
+
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-  // Manejo de selección de pool
+
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
 
-  // Opciones para Farms
+
   const farmsSelectOptions = organizations.length > 0 ? [
     {
       options: farmsOrgsWithPools.map(org => ({
@@ -61,7 +61,7 @@ function PopulationBiomassFarm() {
     },
   ] : [];
 
-  // Opciones para sectores
+
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -85,7 +85,7 @@ function PopulationBiomassFarm() {
     },
   ] : [];
 
-  // Opciones para pools
+
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -106,7 +106,7 @@ function PopulationBiomassFarm() {
     },
   ] : [];
 
-  // Combinación de selects en el PageHeader
+
   const combinedSelectOptions = [
     ...farmsSelectOptions,
     ...sectorSelectOptions,

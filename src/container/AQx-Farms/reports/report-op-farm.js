@@ -40,27 +40,27 @@ function ReportOpFarm() {
 
     const combinedSelectOptions = [...farmsSelectOptions];
 
-    // --------------------------------------------------
-    // 1) Agrupamos las campañas por la maestra
-    // --------------------------------------------------
-    //    - Si un registro es la maestra (SM_IsMainCampaing = true),
-    //      lo guardamos con su 'id' como key del grupo.
-    //    - Si un registro es hijo, se asigna al grupo según SM_MasterCampaing_ID.id
-    //    - Si no tiene maestra y no es maestra, se queda "solo" en su propio grupo.
+
+
+
+
+
+
+
 
     const groupedData = campaigns.reduce((acc, campaign) => {
-        // Identificamos el "id" de la campaña maestra
+
         let masterId;
         if (campaign.SM_IsMainCampaing) {
             masterId = campaign.id;
         } else if (campaign.SM_MasterCampaing_ID?.id) {
             masterId = campaign.SM_MasterCampaing_ID.id;
         } else {
-            // Si no es maestra ni tiene maestra, la tratamos como su propio "grupo"
+
             masterId = campaign.id;
         }
 
-        // Creamos el grupo si no existe
+
         if (!acc[masterId]) {
             acc[masterId] = {
                 master: null,
@@ -68,74 +68,81 @@ function ReportOpFarm() {
             };
         }
 
-        // Si es maestra, la guardamos en acc[masterId].master
+
         if (campaign.SM_IsMainCampaing) {
             acc[masterId].master = campaign;
         } else if (campaign.SM_MasterCampaing_ID?.id === masterId) {
-            // Es hijo de esa maestra
+
             acc[masterId].children.push(campaign);
         } else {
-            // Caso especial: no es maestra ni hijo, lo consideramos “master” sin SM_IsMainCampaing
-            // (O puedes ponerlo como child si así lo deseas)
+
+
             acc[masterId].master = campaign;
         }
 
         return acc;
     }, {});
 
-    // --------------------------------------------------
-    // 2) Convertimos ese objeto en un array de filas
-    // --------------------------------------------------
+
+
+
     const dataSource = Object.values(groupedData).map((group) => {
         const master = group.master;
         const children = group.children || [];
-      
-        // Creamos el arreglo de piscinas para Engorde Final:
+
+
         const finalPonds = [
-          // Si la maestra también tiene Engorde Final, la incluimos
-          master?.M_Warehouse_ID?.identifier,
-          // Luego las de las hijas
-          ...children.map((c) => c.M_Warehouse_ID?.identifier),
+
+            master?.M_Warehouse_ID?.identifier,
+
+            ...children.map((c) => c.M_Warehouse_ID?.identifier),
         ].filter(Boolean); // filtramos valores nulos/undefined
-      
-        // Determinamos la fecha de inicio de Engorde Final según la lógica
+
+
         let fechaInicioEngordeFinal = master?.SM_PlannedFinishDate;
         if (master?.sm_template_description?.includes('TF')) {
-          fechaInicioEngordeFinal = master.sm_plannedtransferdate2 || "";
+            fechaInicioEngordeFinal = master.sm_plannedtransferdate2 || "";
         } else {
-          fechaInicioEngordeFinal = master.SM_PlannedFinishDate;
+            fechaInicioEngordeFinal = master.SM_PlannedFinishDate;
         }
-      
+
         console.log(master)
         return {
-          key: master?.id,
-          lote: master?.SM_Batch,
-          // Pre Cría
-          preCriaPiscina: master?.SM_PreBreedingPool_ID?.identifier,
-          preCriaFechaInicio: master?.SM_PlannedPlantingDate,
-          preCriaFechaFinal: master?.sm_plannedtransferdate1,
-          // Pre Engorde
-          preEngordePiscina: master?.SM_PreFatteningPond_ID?.identifier,
-          preEngordeFechaInicio: master?.sm_plannedtransferdate1,
-          preEngordeFechaFinal: master?.sm_plannedtransferdate2,
-          // Engorde Final: aquí dejamos el arreglo sin unir
-          engordeFinalPiscinas: finalPonds,
-          engordeFinalFechaInicio: fechaInicioEngordeFinal,
-          engordeFinalFechaFin: master?.SM_PlannedFinishDate,
-          protocolo: master?.sm_template_description,
-        };
-      });
+            key: master?.id,
+            lote: [
+                master?.SM_Batch,
+                ...children.map((c) => c.SM_Batch),
+            ]
+                .filter(Boolean) // Elimina nulos
+                .join(', '),
 
-    // --------------------------------------------------
-    // 3) Definimos las columnas "agrupadas" estilo la tabla de tu imagen
-    // --------------------------------------------------
+            preCriaPiscina: master?.SM_PreBreedingPool_ID?.identifier,
+            preCriaFechaInicio: master?.SM_PlannedPlantingDate,
+            preCriaFechaFinal: master?.sm_plannedtransferdate1,
+
+            preEngordePiscina: master?.SM_PreFatteningPond_ID?.identifier,
+            preEngordeFechaInicio: master?.sm_plannedtransferdate1,
+            preEngordeFechaFinal: master?.sm_plannedtransferdate2,
+
+            engordeFinalPiscinas: finalPonds,
+            engordeFinalFechaInicio: fechaInicioEngordeFinal,
+            engordeFinalFechaFin: master?.SM_PlannedFinishDate,
+            protocolo: master?.sm_template_description,
+        };
+    });
+
+
+
+
     const columns = [
         {
             title: 'Lote',
             dataIndex: 'lote',
             key: 'lote',
-            className: 'lote-header', // ✅ Nueva clase
+            className: 'lote-header',
             width: 120,
+            render: (text) =>
+                text?.includes(',') ? text.split(', ').map((l, i) => <div key={i}>{l}</div>) : text,
         },
         {
             title: 'Protocolo',
@@ -230,7 +237,7 @@ function ReportOpFarm() {
             ],
         },
     ];
-    
+
     return (
         <>
             <PageHeader

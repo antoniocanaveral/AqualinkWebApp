@@ -38,8 +38,8 @@ function StepsCoords({
   };
 
   const prev = () => {
-    //const currents = state.currents - 1;
-    //setState({ currents });
+
+
     onPrev().then(() => {
       const currents = state.currents - 1;
       setState({ currents });
@@ -54,9 +54,9 @@ function StepsCoords({
     boxShadow: '0px -1px 0 0 #e8e8e8 inset',
   };
 
-  // console.log(steps);
+
   const onChanges = (curr) => {
-    // console.log('onChange:', current);
+
     setState({ currents: curr });
     if (onChange) onChange(curr);
   };

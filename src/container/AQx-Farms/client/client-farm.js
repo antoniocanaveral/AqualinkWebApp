@@ -13,7 +13,7 @@ import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 const { TabPane } = Tabs;
 
 function ClientFarm() {
-    // Estado local para controlar la renderización del gráfico
+
     const [showChart, setShowChart] = useState(false);
     const [selectedFarmOrg, setSelectedFarmOrg] = useState(null)
     const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
@@ -225,7 +225,7 @@ function ClientFarm() {
         value
     }));
 
-   // Verifica si poolTypesData es un objeto válido antes de acceder a sus propiedades
+
 const preCrias = poolTypesData?.["PC"] || 0;
 const engorde = poolTypesData?.["E"] || 0;
 const preEngorde = poolTypesData?.["PE"] || 0;

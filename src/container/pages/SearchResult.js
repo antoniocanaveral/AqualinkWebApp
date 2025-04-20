@@ -39,7 +39,7 @@ function SearchResult() {
   };
 
   const onHandleChange = (current, pageSize) => {
-    // You can create pagination in here
+
     setState({ ...state, current, pageSize });
   };
 

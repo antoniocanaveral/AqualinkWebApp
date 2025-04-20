@@ -46,7 +46,7 @@ function FormLayout({ onChange }) {
     }
   };
   const log = () => {
-    // console.log(e);
+
   };
   const props = {
     name: 'file',

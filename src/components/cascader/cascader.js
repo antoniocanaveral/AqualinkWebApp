@@ -25,7 +25,7 @@ function Cascader(props) {
   const loadData = (selectedOptions) => {
     const targetOption = selectedOptions[selectedOptions.length - 1];
     targetOption.loading = true;
-    // load options lazily
+
     setTimeout(() => {
       targetOption.loading = false;
       targetOption.children = [

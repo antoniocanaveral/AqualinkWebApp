@@ -1413,7 +1413,7 @@ export const sampleData = [
         unidad_medida: 'kgs'
     },
 
-    // Aditivos
+
     {
         key: '5',
         categoria: 'aditivos',
@@ -1451,7 +1451,7 @@ export const sampleData = [
         unidad_medida: 'kgs'
     },
 
-    // Vitaminas
+
     {
         key: '8',
         categoria: 'vitaminas',
@@ -1489,7 +1489,7 @@ export const sampleData = [
         unidad_medida: 'kgs'
     },
 
-    // Ácidos Orgánicos
+
     {
         key: '11',
         categoria: 'acidos organicos',
@@ -1515,7 +1515,7 @@ export const sampleData = [
         unidad_medida: 'lts'
     },
 
-    // Desparasitantes
+
     {
         key: '13',
         categoria: 'desparasitantes',
@@ -1541,7 +1541,7 @@ export const sampleData = [
         unidad_medida: 'lts'
     },
 
-    // Fertilizantes
+
     {
         key: '15',
         categoria: 'fertilizantes',
@@ -1579,7 +1579,7 @@ export const sampleData = [
         unidad_medida: 'kgs'
     },
 
-    // Medicados
+
     {
         key: '18',
         categoria: 'medicados',

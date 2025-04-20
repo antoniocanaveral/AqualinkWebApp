@@ -39,7 +39,7 @@ const ThemeLayout = (WrappedComponent) => {
       
       console.log('componentDidMount - window.visualViewport.width:', window.visualViewport.width);
     
-      // Aquí añadimos el cambio de estilo cuando el componente se monta
+
       const headerContent = document.querySelector('.ninjadash-header-content__left');
       const isMobile = window.visualViewport.width <= 1024;
       if (headerContent) {
@@ -84,11 +84,11 @@ const ThemeLayout = (WrappedComponent) => {
         const headerContent = document.querySelector('.ninjadash-header-content__left');
         if (headerContent) {
           if (collapsed) {
-            // Añade clase cuando está colapsado
+
             headerContent.classList.remove('header-collapsed');
             headerContent.classList.add('header-not-collapsed');
           } else {
-            // Cambia el color cuando no está colapsado
+
             headerContent.classList.remove('header-not-collapsed');
             headerContent.classList.add('header-collapsed');
           }

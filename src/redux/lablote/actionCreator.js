@@ -39,7 +39,7 @@ console.log(labloteData)
             dispatch({ type: 'REGISTER_LABLOTE_SUCCESS', payload: updateResponse.data });
             message.success('Lote de laboratorio actualizado con éxito');
         } else {
-            // 3️⃣ Si no existe, crear un nuevo registro
+
             const newResponse = await DataService.post(`/models/sm_lablote`, {
                 AD_Client_ID: adClientId,
                 AD_Org_ID: adOrgId,
@@ -90,7 +90,7 @@ export const fetchLabLoteByTank = () => async (dispatch) => {
             `/models/sm_lablote?$filter=AD_Org_ID eq ${adOrgId} and M_Warehouse_ID eq ${poolId}`
         );
 
-        // Suponiendo que la API devuelve una lista y solo necesitamos el primer resultado
+
         const labLote = response.data.records.length > 0 ? response.data.records[0] : null;
 
         dispatch({ type: FETCH_LABLOTE_BY_TANK_SUCCESS, payload: labLote });
@@ -106,6 +106,24 @@ export const fetchLablotesInfo = () => async (dispatch) => {
   
     try {
       const response = await DataService.get(`models/sm_lablote_info_v?$filter=AD_Org_ID eq ${adOrgId}`);
+      
+      if (response.data && response.data.records) {
+        dispatch(fetchLabloteSuccess(response.data.records));
+      } else {
+        dispatch(fetchLabloteError('No se encontraron lotes de laboratorio.'));
+      }
+    } catch (error) {
+      dispatch(fetchLabloteError(error.message || 'Error al cargar los lotes.'));
+      handleApiError(error, dispatch, fetchLabloteError);
+    }
+  };
+
+  
+export const fetchLablotesInfoIND = () => async (dispatch) => {
+    dispatch(fetchLabloteLoading());
+  
+    try {
+      const response = await DataService.get(`models/sm_lablote_info_v?$filter=SM_OrgType eq 'IND'`);
       
       if (response.data && response.data.records) {
         dispatch(fetchLabloteSuccess(response.data.records));

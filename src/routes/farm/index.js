@@ -30,9 +30,9 @@ import AnalyticRoutesFarm from './farmAnalytic';
 import FeedingTableFarms from '../../container/AQx-Farms/monitoring/feeding-tables-farm';
 import RealPlanning from '../../container/AQx-Farms/real-planning';
 import MessageNotificationsCenter from '../../container/AQx-Farms/message-notifications-center/message-notifications-center';
-import TraceabilityLotesFarm from '../../container/AQx-Farms/traceability/traceability-lotes-custody';
 import ReportOpFarm from '../../container/AQx-Farms/reports/report-op-farm';
 import TraceabilityLotesCustody from '../../container/AQx-Custody/traceability/traceability-lotes-custody';
+import TraceabilityLotesFarm from '../../container/AQx-Custody/traceability/traceability-lotes-farm';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -81,7 +81,7 @@ const Farm = React.memo(() => {
         <Route path="/coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/seeding-coords/*" element={<LabCoordinationsRoutes />} />
         <Route path="/fishing-coords/*" element={<CustodyCoordinationsRoutes />} />
-        <Route path="/traceability/tracking/*" element={<TraceabilityLotesCustody />} />
+        <Route path="/traceability/tracking/*" element={<TraceabilityLotesFarm />} />
         <Route path="/operation-report" element={<ReportOpFarm />} />
        
         <Route path="*" element={<NotFound />} />

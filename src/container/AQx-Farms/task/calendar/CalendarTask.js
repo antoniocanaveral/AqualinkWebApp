@@ -21,7 +21,7 @@ import { addNewEvents, calendarDeleteData } from '../../../../redux/calendar/act
 import { CalendarWrapper, EventModalStyleWrap } from './Style';
 import { Main } from '../../../styled';
 
-// Configura moment para usar español
+
 moment.locale('es');  // Cambia el idioma de moment a español
 
 const Localizer = momentLocalizer(moment);  // Configurar localizador con moment en español
@@ -87,7 +87,7 @@ function CalendarTask() {
     });
   };
 
-  // Función para determinar la clase de color para la prioridad
+
   const getPriorityClass = (priority) => {
     switch (priority) {
       case 'alta':
@@ -101,7 +101,7 @@ function CalendarTask() {
     }
   };
 
-  // Función para determinar la clase de color para el estado
+
   const getStatusClass = (status) => {
     switch (status) {
       case 'completado':

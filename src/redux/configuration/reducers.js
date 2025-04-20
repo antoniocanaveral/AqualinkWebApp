@@ -1,4 +1,4 @@
-// src/redux/operation/reducer.js
+
 
 import {
 
@@ -31,43 +31,43 @@ import {
 const initialState = {
   loading: false,
   error: null,
-  //sm_businessgroup
+
   businessGroupsLoading: false,
   businessGroups: [],
   businessGroupsError: null,
 
-  //Clients
+
   adClientLoading: false,
   adClient: null,
   adClientError: null,
 
-  //Region
+
   cRegionLoading: false,
   cRegions: [],
   cRegionError: null,
   cities: [],
 
-  //City
+
   cCityLoading: false,
   cCities: [],
   cCityError: null,
 
-  //AD ORG
+
   adOrgLoading: false,
   adOrg: null,
   adOrgError: null,
 
-  //Pools
+
   poolsLoading: false,
   createdPools: [],
   poolsError: null,
 
-  //Brand feeders
+
   brandFeedersLoading: false,
   brandFeeders: [],
   brandFeedersError: null,
 
-  //Sales Regions
+
   cSalesRegionsLoading: false,
   createdSalesRegions: [],
   cSalesRegionsError: null,

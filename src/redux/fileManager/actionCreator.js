@@ -57,7 +57,7 @@ const DeleteFolder = (folders, paths) => {
   return folders.map((item, key) => {
     if (item.path === paths) {
       folders.delete(key);
-      // return (item.name = 'hello World');
+
     }
     return item.folder.length && DeleteSubFolder(item.folder, paths);
   });

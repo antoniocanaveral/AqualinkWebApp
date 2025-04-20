@@ -1,4 +1,4 @@
-// WeeklyFoodChart.js
+
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -6,7 +6,7 @@ import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, PointElement,
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment';
 
-// Registrar los componentes necesarios para Chart.js
+
 ChartJS.register(
     BarElement,
     CategoryScale,
@@ -26,19 +26,19 @@ ChartJS.register(
  * - height: Número que define la altura del gráfico en píxeles (default: 300).
  */
 export default function WeeklyFoodChart({ dataSource, height = 300 }) {
-    // Validar que dataSource es un arreglo no vacío
+
     if (!Array.isArray(dataSource) || dataSource.length === 0) {
         return <p>No hay datos disponibles para mostrar el gráfico.</p>;
     }
 
-    // Agrupar los datos por semanas (máximo 4 semanas)
+
     const weeks = [];
     for (let i = 0; i < dataSource.length; i += 7) {
         weeks.push(dataSource.slice(i, i + 7)); // Cada semana contiene 7 días
         if (weeks.length === 4) break; // Máximo 4 semanas
     }
 
-    // Procesar los datos agrupados por semanas para Balanceado, Artemia y Algas
+
     const weeklyBalanceado = weeks.map((week) => {
         return week.reduce((total, day) => total + (day.alimentoBalanceado || 0), 0);
     });
@@ -51,13 +51,13 @@ export default function WeeklyFoodChart({ dataSource, height = 300 }) {
         return week.reduce((total, day) => total + (day.agua || 0), 0);
     });
 
-    // Calcular el promedio acumulado para Balanceado
+
     const averageBalanceado = weeklyBalanceado.map((value, index) => {
         const total = weeklyBalanceado.slice(0, index + 1).reduce((sum, val) => sum + val, 0);
         return total / (index + 1);
     });
 
-    // Configuración del gráfico
+
     const data = {
         labels: weeks.map((_, i) => `Semana ${i + 1}`),
         datasets: [
@@ -157,7 +157,7 @@ export default function WeeklyFoodChart({ dataSource, height = 300 }) {
     );
 }
 
-// Definir las PropTypes para asegurar que se reciben los datos correctos
+
 WeeklyFoodChart.propTypes = {
     dataSource: PropTypes.arrayOf(
         PropTypes.shape({

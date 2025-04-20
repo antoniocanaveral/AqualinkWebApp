@@ -29,15 +29,15 @@ const LineChartWithXAxisPadding = ({ data, height: customHeight, width: customWi
     return () => window.removeEventListener('resize', updateSize);
   }, [customHeight]); // Dependemos de customHeight para recalcular el alto
 
-  // Filtra las claves numéricas del primer objeto en `data` para usar como líneas
+
   const lineKeys = data.length > 0 
     ? Object.keys(data[0]).filter((key) => key !== 'name' && typeof data[0][key] === 'number') 
     : [];
 
-  // Array de colores para las líneas
+
   const colors = ['#0372CE', '#00AAFF', '#FA8B0C', '#FF5733', '#64ae78', '#3357FF', '#FF33A2'];
 
-  // Genera un color aleatorio si el array de colores es menor que la cantidad de líneas
+
   const getColor = (index) => colors[index % colors.length];
 
   return (

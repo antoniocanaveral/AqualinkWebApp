@@ -12,14 +12,14 @@ const login = (values, callback) => {
       Cookies.remove('access_token');
       Cookies.remove('access_token_initial');
 
-      // Paso 1: Login inicial con user/pass
+
       const response = await DataService.post('/auth/tokens', values, {}, false, true);
       Cookies.set('access_token_initial', response.data.token);
 
       const client = response.data.clients[0];
       Cookies.set('selectedClientId', client.id);
 
-      // Paso 2: Obtener roles
+
       const rolesResponse = await DataService.get(`/auth/roles?client=${client.id}`, true);
       const roles = rolesResponse.data.roles;
 
@@ -37,7 +37,7 @@ const login = (values, callback) => {
         Cookies.set('selectedRoleId', selectedRoleId);
         Cookies.set('selectedRoleName', selectedRoleName);
 
-        // Continuamos solo si hay un único rol (flujo automático)
+
         let validOrgId = 0;
 
         try {
@@ -50,7 +50,7 @@ const login = (values, callback) => {
           console.warn("Fallo al obtener organizaciones, se usará organizationId: 0", orgErr);
         }
 
-        // PUT con login final
+
         const finalLoginResponse = await DataService.put('/auth/tokens', {
           clientId: client.id,
           roleId: selectedRoleId,
@@ -63,7 +63,7 @@ const login = (values, callback) => {
         Cookies.set('selectedOrganizationId', validOrgId);
       }
 
-      // Paso 3: Dispatch final
+
       dispatch(loginSuccess({
         success: true,
         roles,
@@ -193,10 +193,10 @@ const mapPoolRecord = (record) => ({
 });
 
 const mapOrgRecord = (info, baseOrg, orgDetails, location, mappedPools) => {
-  // Contamos los warehouses
+
   const countWarehouses = mappedPools.length;
 
-  // Extraemos los IDs de SalesRegion y contamos los únicos
+
   const uniqueSalesRegions = new Set(mappedPools.map(pool => pool.salesRegion.id).filter(id => id !== null));
   const countSalesRegion = uniqueSalesRegions.size;
 
@@ -260,10 +260,11 @@ const loadUserAccess = () => {
       const orgIdFromCookie = Cookies.get("orgId");
 
       const orgResponse = await DataService.get(
-        `/auth/organizations?client=${clientId}&role=${roleId}`,
+        `/auth/organizations?client=${clientId}&role=${roleId}&$expand=AD_OrgType_ID`,
         true
       );
-
+     
+    
       let withFarms = false;
       let withLabs = false;
       let withCustody = false;
@@ -335,7 +336,7 @@ const loadUserAccess = () => {
                 break;
             }
 
-            // ✅ Auditor externo: guardar organización y tipo
+
             if (
               roleName === "Cumplimiento - Auditor Externo" &&
               info.id.toString() === orgIdFromCookie

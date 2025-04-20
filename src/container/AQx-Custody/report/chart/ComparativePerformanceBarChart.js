@@ -11,7 +11,7 @@ import {
   Legend,
 } from 'chart.js';
 
-// Registro de componentes de Chart.js
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,10 +24,10 @@ ChartJS.register(
 function ComparativePerformanceBarChart({ cosechas }) {
     console.log("Datos recibidos:", cosechas);
 
-    // Definir etiquetas de los ciclos
+
     const labels = ["CICLO 1", "CICLO 2", "CICLO 3", "CICLO 4", "CICLO 5"];
 
-    // Función para limpiar los valores (eliminar % y convertir en número)
+
     const limpiarValor = (valor) => {
         if (typeof valor === "string") {
             return parseFloat(valor.replace("%", "")) || 0;
@@ -35,7 +35,7 @@ function ComparativePerformanceBarChart({ cosechas }) {
         return valor || 0;
     };
 
-    // Asegurar que haya 5 cosechas, rellenando con valores 0 si faltan datos
+
     const cosechasProcesadas = Array.from({ length: 5 }, (_, i) => ({
         variacionProyVsCoord: limpiarValor(cosechas.find(c => c.key === "variacion")?.[`cosecha${i + 1}`]),
         cumplimientoCosecha: limpiarValor(cosechas.find(c => c.key === "variacion")?.[`cosecha${i + 1}`]),
@@ -44,7 +44,7 @@ function ComparativePerformanceBarChart({ cosechas }) {
 
     console.log("Cosechas procesadas:", cosechasProcesadas);
 
-    // Datos para el gráfico
+
     const data = {
         labels,
         datasets: [
@@ -69,7 +69,7 @@ function ComparativePerformanceBarChart({ cosechas }) {
         ],
     };
 
-    // Opciones de configuración del gráfico
+
     const options = {
         responsive: true,
         maintainAspectRatio: false,

@@ -12,7 +12,7 @@ import WeeklyFoodChart from './charts/WeeklyFoodChart';
 import WeeklyCombinedChart from '../../AQx-Farms/cost/charts/WeeklyCombinedChart';
 
 function CostLabs() {
-  // Columnas de la tabla
+
   const columns = [
     {
       title: <span style={{ fontSize: '11px' }}>Día</span>,
@@ -119,7 +119,7 @@ function CostLabs() {
     );
   };
 
-  // Datos de la tabla con valores quemados
+
   const dataSource = [
     {
       key: 1,
@@ -420,11 +420,11 @@ function CostLabs() {
   ];
 
 
-  // Reutilizamos `dataSource` de la tabla original para los cálculos
+
   const calculateSummaryData = (dataSource) => {
     const semanas = 11; // Asumimos 7 semanas para simplificar
 
-    // Agrupamos los días en semanas y calculamos los subtotales y valores por Ha
+
     const groupedByWeek = Array.from({ length: semanas }, (_, semanaIndex) =>
       dataSource
         .filter((_, index) => Math.floor(index / semanas) === semanaIndex)
@@ -438,7 +438,7 @@ function CostLabs() {
         )
     );
 
-    // Creamos dos filas para la tabla:
+
     const subtotalsRow = {
       key: 'subtotals',
       tipo: 'SUBTOTAL DE COSTOS POR SEMANA',
@@ -460,7 +460,7 @@ function CostLabs() {
     return [subtotalsRow, valoresPorHaRow];
   };
 
-  // Configuramos las columnas dinámicamente
+
   const summaryColumns = [
     {
       title: <span style={{ fontSize: '12px' }}> </span>,
@@ -478,10 +478,10 @@ function CostLabs() {
     })),
   ];
 
-  // Calculamos los datos dinámicos de la tabla usando `calculateSummaryData`
+
   const summaryData = calculateSummaryData(dataSource);
 
-  // Renderizamos la tabla
+
 
   return (
     <>

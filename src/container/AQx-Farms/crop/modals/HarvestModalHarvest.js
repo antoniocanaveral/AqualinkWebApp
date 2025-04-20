@@ -1,4 +1,4 @@
-// Importaciones necesarias
+
 import React, { Suspense, useState, useEffect, useLayoutEffect } from 'react';
 import { Row, Col, Form, Skeleton, Avatar, Typography, Table } from 'antd';
 import { useParams } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { Cards } from '../../../../components/cards/frame/cards-frame';
 import Heading from '../../../../components/heading/heading';
 import DataTable from '../../../../components/table/DataTable';
 
-// Definición de columnas para las tablas
+
 const binesDataTableColumnMain = [
   {
     title: 'No. Bin',
@@ -58,7 +58,7 @@ const drawerDataTableColumnMain = [
 ];
 
 
-// Componente principal de HarvestModalHarvest
+
 function HarvestModalHarvest() {
 
 

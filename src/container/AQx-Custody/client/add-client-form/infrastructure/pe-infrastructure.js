@@ -6,9 +6,9 @@ const { Option } = Select;
 export const PreEngordeInfrastructure = ({ index, alimentadores, handleAddAlimentador, form }) => {
     const [metodoAlimentacion, setMetodoAlimentacion] = useState(""); // Estado para controlar el método de alimentación
 
-    // Registrar campos dinámicos en el formulario al montar el componente
+
     useEffect(() => {
-        // Registrar valores iniciales para todos los campos
+
         form.setFieldsValue({
             [`piscinaEngordeId-${index}`]: form.getFieldValue(`piscinaEngordeId-${index}`) || null,
             [`extensionEngorde-${index}`]: form.getFieldValue(`extensionEngorde-${index}`) || 0.01,

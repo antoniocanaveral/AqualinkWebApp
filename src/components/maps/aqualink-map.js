@@ -6,7 +6,7 @@ import { GoogleMaps } from './google-maps';
 
 const { Title, Text } = Typography;
 
-// Función para calcular el centro (centroid) de un polígono
+
 const calculateCentroid = (paths) => {
   let latSum = 0;
   let lngSum = 0;
@@ -47,7 +47,7 @@ const AqualinkMaps = ({
 
   const organizationPools = organization ? organization.pools : [];
 
-  // Para el mapa: aplicar filtros por sector y piscina
+
   const filteredPools = selectedSector
     ? organizationPools.filter(pool => pool.salesRegion.id === selectedSector)
     : organizationPools;
@@ -56,7 +56,7 @@ const AqualinkMaps = ({
     ? filteredPools.filter(pool => pool.poolId === selectedPool)
     : filteredPools;
 
-  // Para las estadísticas: agrupar por tipo usando TODAS las piscinas si no hay sector
+
   const poolsToGroup = selectedSector ? finalPools : organizationPools;
 
   const allowedTypes = ['PE', 'E', 'PC'];

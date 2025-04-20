@@ -10,7 +10,7 @@ import { UpcomingEventsStyleWrap } from '../../dashboard/Style';
 import PropTypes from 'prop-types'; // Importar PropTypes para validación
 
 function ScheduleHarvest({ plannedHarvesting }) {
-  // Añadir un console.log para verificar los props recibidos
+
   console.log('ScheduleHarvest props:', { plannedHarvesting });
 
   const [state, setState] = useState({
@@ -24,10 +24,10 @@ function ScheduleHarvest({ plannedHarvesting }) {
   });
   const [eventState, setEventState] = useState(null);
 
-  // Definir los tipos en orden
+
   const eventTypes = ['primary', 'secondary', 'info', 'warning'];
 
-  // Función para convertir mes numérico a nombre en español
+
   const getMonthName = (monthNumber) => {
     const monthNames = [
       'Enero',
@@ -43,7 +43,7 @@ function ScheduleHarvest({ plannedHarvesting }) {
       'Noviembre',
       'Diciembre',
     ];
-    // Ajustar si el mes viene como número (1-12)
+
     const monthIndex = parseInt(monthNumber, 10) - 1;
     if (monthIndex >= 0 && monthIndex < 12) {
       return monthNames[monthIndex];
@@ -51,7 +51,7 @@ function ScheduleHarvest({ plannedHarvesting }) {
     return monthNumber; // Si ya está en texto o fuera de rango
   };
 
-  // Función para formatear la fecha ISO a "DD Mes"
+
 const formatDate = (isoDate) => {
   if (!isoDate || isoDate === 'N/A') return 'N/A';
 
@@ -69,7 +69,7 @@ const formatDate = (isoDate) => {
     let unmounted = false;
 
     if (!unmounted) {
-      // Asignar eventState basado en el valor de la pestaña actual
+
       switch (state.tabValue) {
         case 'today':
           setEventState(plannedHarvesting);
@@ -97,7 +97,7 @@ const formatDate = (isoDate) => {
     });
   };
 
-  // Optimización del mapeo de datos
+
   const dataSource = eventState
     ? eventState.map((value, index) => {
         const {
@@ -109,11 +109,11 @@ const formatDate = (isoDate) => {
         } = value;
 
       
-         // Formatear la fecha
+
       const formattedDate = formatDate(SM_FishingDate);
 
 
-        // Asignar el tipo de manera secuencial
+
         const type = eventTypes[index % eventTypes.length];
 
         return {
@@ -183,7 +183,7 @@ const formatDate = (isoDate) => {
   );
 }
 
-// Añadir PropTypes para validación de props
+
 ScheduleHarvest.propTypes = {
   plannedHarvesting: PropTypes.arrayOf(
     PropTypes.shape({

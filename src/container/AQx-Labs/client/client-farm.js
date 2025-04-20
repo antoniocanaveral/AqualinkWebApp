@@ -9,10 +9,10 @@ import { AqualinkMapLab } from '../../../components/maps/aqualink-map-lab';
 const { TabPane } = Tabs;
 
 function ClientLab() {
-    // Estado local para controlar la renderización del gráfico
+
     const [showChart, setShowChart] = useState(false);
 
-    // Datos de la primera tabla
+
     const clientInfo = [
         { key: '1', categoria: 'Razón Social', valor: '' },
         { key: '2', categoria: 'RUC', valor: '' },
@@ -29,7 +29,7 @@ function ClientLab() {
         { key: '13', categoria: 'ROOT Cliente', valor: '' },
     ];
 
-    // Datos de la segunda tabla
+
     const farmInfo = [
         { key: '1', categoria: 'Provincia', valor: '' },
         { key: '2', categoria: 'Cantón', valor: '' },

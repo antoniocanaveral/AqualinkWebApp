@@ -1,17 +1,17 @@
-// src/components/charts/StimatedProductionChart.jsx
+
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 
-// Registrar los componentes necesarios de Chart.js
+
 Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 function StimatedProductionChart({ scenarios }) {
-    // Generar etiquetas para el eje X basadas en los nombres de los escenarios
+
     const labels = scenarios.map((scenario, index) => `Escenario ${index + 1}`);
 
-    // Preparar los datos para el gráfico
+
     const data = {
         labels: labels,
         datasets: [
@@ -24,7 +24,7 @@ function StimatedProductionChart({ scenarios }) {
         ],
     };
 
-    // Configurar las opciones del gráfico
+
     const options = {
         responsive: true,
         maintainAspectRatio: false, // Permite que el gráfico se adapte al contenedor

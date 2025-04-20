@@ -29,7 +29,7 @@ function Notifications() {
       description:
         'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
       onClick: () => {
-        // console.log('Notification Clicked!');
+
       },
     });
   };
@@ -44,7 +44,7 @@ function Notifications() {
   };
 
   const close = () => {
-    // console.log('Notification was closed. Either the close button was clicked or duration time elapsed.');
+
   };
 
   const openNotification3 = () => {

@@ -3,7 +3,7 @@ import { Bar } from 'react-chartjs-2';
 import { Cards } from "../../../../components/cards/frame/cards-frame";
 
 function BioremediationBarChart({ data, height }) {
-    // Generar una escala de colores dispersos en tonos de azul
+
     const generateColorScale = () => [
         '#001F3F', // Azul oscuro
         '#0074D9', // Azul medio

@@ -13,7 +13,7 @@ import UilClosedCaptioningSlash from '@iconscout/react-unicons/icons/uil-closed-
 import UilTrashAlt from '@iconscout/react-unicons/icons/uil-trash-alt';
 import UilUsersAlt from '@iconscout/react-unicons/icons/uil-users-alt';
 import moment from 'moment';
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { SmileOutlined, MoreOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { Scrollbars } from '@pezhmanparsaee/react-custom-scrollbars';
@@ -50,7 +50,7 @@ function SingleChat({ match, dashboard }) {
 
   const { singleContent, name, me, inputValue, fileList, fileList2 } = state;
 
-  // ?
+
   useEffect(() => {
     let unmounted = false;
     if (!unmounted) {
@@ -113,7 +113,7 @@ function SingleChat({ match, dashboard }) {
     listType: 'picture-card',
     onChange(info) {
       if (info.file.status !== 'uploading') {
-        // console.log(info.file, info.fileList);
+
         setState({
           ...state,
           fileList: info.fileList,
@@ -134,7 +134,7 @@ function SingleChat({ match, dashboard }) {
     },
     onChange(info) {
       if (info.file.status !== 'uploading') {
-        // console.log(info.file, info.fileList);
+
         setState({
           ...state,
           fileList2: info.fileList,

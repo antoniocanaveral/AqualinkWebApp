@@ -15,7 +15,7 @@ function CarriersViewCustody() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCarrier, setSelectedCarrier] = useState(null);
 
-  // Cargar los transportistas al montar el componente
+
   useEffect(() => {
     dispatch(fetchCarriers());
   }, [dispatch]);
@@ -54,7 +54,7 @@ function CarriersViewCustody() {
   };
 
   const saveChanges = () => {
-    // Aquí puedes implementar la lógica para guardar los cambios en el backend
+
     closeModal();
   };
 

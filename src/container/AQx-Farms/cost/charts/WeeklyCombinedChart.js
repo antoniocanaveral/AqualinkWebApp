@@ -3,7 +3,7 @@ import { Cards } from "../../../../components/cards/frame/cards-frame";
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
-// Registrar los componentes necesarios para Chart.js
+
 ChartJS.register(
     BarElement,
     CategoryScale,
@@ -19,26 +19,26 @@ export default function WeeklyCombinedChart({ dataSource, height = 300 }) {
         return <p>No hay datos disponibles para mostrar el gráfico.</p>;
     }
 
-    // Agrupar los datos por semanas (máximo 4 semanas)
+
     const weeks = [];
     for (let i = 0; i < dataSource.length; i += 7) {
         weeks.push(dataSource.slice(i, i + 7)); // Cada semana contiene 7 días
         if (weeks.length === 4) break; // Máximo 4 semanas
     }
 
-    // Procesar los datos agrupados por semanas
+
     const weeklyData = weeks.map((week) => {
         const balanceado = week.reduce((total, day) => total + day.alimentoBalanceado, 0);
         return balanceado;
     });
 
-    // Calcular el promedio o dato relevante para la línea
+
     const averageData = weeklyData.map((value, index) => {
         const total = weeklyData.slice(0, index + 1).reduce((sum, val) => sum + val, 0);
         return total / (index + 1);
     });
 
-    // Configuración del gráfico
+
     const data = {
         labels: weeks.map((_, i) => `Semana ${i + 1}`),
         datasets: [

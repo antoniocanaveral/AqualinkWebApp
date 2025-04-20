@@ -58,7 +58,7 @@ function CoordModalShrimp() {
     { key: '12', label: 'PH Tanque de Origen:', value: coordination?.pre_breeding_pool_ph || '6 ppm' },
   ];
 
-  // Valores binarios para usar checkbox
+
   const binaryFields = [
     { key: '9', label: 'Óxigeno en Camino', icon: 'food.svg', value: coordination?.oxygen_on_the_go ? true : false },
     { key: '10', label: 'Comida en Camino', icon: 'food.svg', value: coordination?.food_on_the_go ? true : false },
@@ -170,7 +170,7 @@ function CoordModalShrimp() {
                                 width: "100%"
                               }}>
                               {binaryFields.map((field, index) => (
-                                //poner wrap
+
                                 <div key={index} style={{
                                   display: "flex", flexDirection: window.innerWidth <430  ? "column" : "row",
                                   alignItems: "center"

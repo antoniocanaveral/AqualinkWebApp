@@ -9,12 +9,12 @@ function StampsContainersAdminCustody() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
-    // Filtrar datos según la categoría seleccionada
+
     const filteredData = selectedCategory === 'all'
         ? sampleData
         : sampleData.filter(item => item.categoria === selectedCategory);
 
-    // Columnas de la tabla
+
     const columns = [
         {
             title: 'Categoría',
@@ -79,7 +79,7 @@ function StampsContainersAdminCustody() {
         },
     ];
 
-    // Función para mostrar el modal con los detalles adicionales
+
     const showDetails = (item) => {
         const additionalInfo = optionsInventory
             .find(option => option.categoria === item.categoria)
@@ -89,10 +89,10 @@ function StampsContainersAdminCustody() {
         setIsModalVisible(true);
     };
 
-    // Función para manejar la visualización de insumos de pesca
+
     const verInsumosPesca = (item) => {
-        // Implementa la lógica para ver los insumos de pesca
-        // Por ejemplo, abrir otro modal o redirigir a otra página
+
+
         Modal.info({
             title: 'Insumos de Pesca',
             content: (
@@ -105,12 +105,12 @@ function StampsContainersAdminCustody() {
         });
     };
 
-    // Manejar el cambio de categoría
+
     const handleCategoryChange = (value) => {
         setSelectedCategory(value);
     };
 
-    // Cerrar el modal
+
     const handleCloseModal = () => {
         setIsModalVisible(false);
         setSelectedItem(null);

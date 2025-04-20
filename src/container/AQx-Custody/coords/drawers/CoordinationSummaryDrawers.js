@@ -21,7 +21,7 @@ const DrawerInfoForm = ({
   fishingId,
   cancelDrawerStampForm
 }) => {
-  // Extraer datos de formulario iniciales y summary
+
   const summaryData = [
     { key: '2', label: 'Hielo (#Sacos):', value: `${state.drawerForm.drawerIce} saco${state.drawerForm.drawerIce > 1 ? 's' : ''}` },
     { key: '3', label: 'Metabisulfitos (kg):', value: `${state.drawerForm.drawerMetabisulfito} kg` },
@@ -169,7 +169,7 @@ const DrawerInfoForm = ({
                           type="primary"
                           onClick={() => {
                             form.validateFields().then(() => {
-                              // Lógica para agregar furgón
+
                               const usedKitIds = new Set([
                                 ...addedFurgones.map((furgon) => furgon.kitId),
                                 ...organizationFishingDrawerStamp
@@ -218,7 +218,7 @@ const DrawerInfoForm = ({
                                         ...prev,
                                         addedFurgones: [...prev.addedFurgones, newFurgon],
                                       }));
-                                      // Actualizar kits y vehículos disponibles
+
                                       setState((prev) => ({
                                         ...prev,
                                         availableKitsState: availableKits.slice(1),

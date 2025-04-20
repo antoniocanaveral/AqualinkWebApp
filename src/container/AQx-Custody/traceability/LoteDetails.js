@@ -10,41 +10,41 @@ const LoteDetails = ({ selectedLote , fromSection = null }) => {
     {
       title: 'HATCHERY',
       fields: [
-        { label: 'Hatchery', value: selectedLote.bp_org_name },
-        { label: 'Hatchery HT Code', value: selectedLote.bp_org_value },
-        { label: 'Broodstock', value: selectedLote.lote_org_name },
-        { label: 'Broodstock HT Code', value: selectedLote.lote_org_value },
+        { label: 'Hatchery', value: selectedLote.sm_bpartnerorgname },
+        { label: 'Hatchery HT Code', value: selectedLote.sm_bpartnerorgcode },
+        { label: 'Broodstock', value: selectedLote.sm_selectedLoteorgname },
+        { label: 'Broodstock HT Code', value: selectedLote.sm_selectedLoteorgcode },
         { label: 'Nauplii Code', value: selectedLote.sm_naupliuscode },
-        { label: 'Planting Date', value: selectedLote.lote_plantingdate ? moment(selectedLote.lote_plantingdate).format('YYYY-MM-DD') : 'N/A' },
-        { label: 'Harvest Date', value: selectedLote.SM_FishingDate ? moment(selectedLote.SM_FishingDate).format('YYYY-MM-DD') : 'N/A' },
-        { label: 'Module #', value: selectedLote.module_name },
-        { label: 'Tank#', value: selectedLote.tank_name },
+        { label: 'Planting Date', value: selectedLote.sm_selectedLoteplantingdate ? moment(selectedLote.sm_selectedLoteplantingdate).format('YYYY-MM-DD') : 'N/A' },
+        { label: 'Harvest Date', value: selectedLote.sm_selectedLotefishingdate ? moment(selectedLote.sm_selectedLotefishingdate).format('YYYY-MM-DD') : 'N/A' },
+        { label: 'Module #', value: selectedLote.sm_modulename },
+        { label: 'Tank#', value: selectedLote.sm_tankname },
         { label: 'Density (u/m3)', value: selectedLote.sm_programmeddensity }
       ]
     },
     {
       title: 'FARMING METHOD',
       fields: [
-        { label: 'FARM Name', value: selectedLote.organization_name },
-        { label: 'Farm Code', value: selectedLote.farm_code },
-        { label: 'Growing Protocol', value: selectedLote.sm_protocolharvest },
+        { label: 'FARM Name', value: selectedLote.sm_farmname },
+        { label: 'Farm Code', value: selectedLote.sm_farmcode },
+        { label: 'Growing Protocol', value: selectedLote.sm_productionprotocol },
         { label: 'Production Protocol', value: selectedLote.sm_productionprotocol },
-        { label: 'Water Managing System', value: selectedLote.water_system },
-        { label: 'Nursering Pond #', value: selectedLote.sm_prebreedingpool_name },
-        { label: 'Planting Date', value: selectedLote.campaign_plantingdate ? moment(selectedLote.campaign_plantingdate).format('YYYY-MM-DD') : 'N/A' },
-        { label: 'Initial Nursering Density (u/m2)', value: selectedLote.sm_densityperhectare },
-        { label: 'Pre Growing Pond #', value: selectedLote.sm_prefatteningpond_name },
+        { label: 'Water Managing System', value: selectedLote.sm_watersystem },
+        { label: 'Nursering Pond #', value: selectedLote.sm_prebreedingpoolname },
+        { label: 'Planting Date', value: selectedLote.sm_campaignplantingdate ? moment(selectedLote.sm_campaignplantingdate).format('YYYY-MM-DD') : 'N/A' },
+        { label: 'Initial Nursering Density (u/m2)', value: selectedLote.SM_DensityPerHectare },
+        { label: 'Pre Growing Pond #', value: selectedLote.sm_prefatteningpond_name || 'N/A' },
         { label: 'Transfer Date', value: selectedLote.sm_plannedtransferdate1 ? moment(selectedLote.sm_plannedtransferdate1).format('YYYY-MM-DD') : 'N/A' },
-        { label: 'Initial Pre Growing Density (u/m2)', value: selectedLote.initialPreGrowingDensity },
-        { label: 'Growing Pond #', value: selectedLote.sm_transfer2_warehouse_name },
+        { label: 'Initial Pre Growing Density (u/m2)', value: selectedLote.initialPreGrowingDensity || 'N/A' },
+        { label: 'Growing Pond #', value: selectedLote.sm_transfer2warehousename },
         { label: 'Transfer Date', value: selectedLote.sm_plannedtransferdate2 ? moment(selectedLote.sm_plannedtransferdate2).format('YYYY-MM-DD') : 'N/A' },
-        { label: 'Initial Growing Density (u/m2)', value: selectedLote.sm_densityperhectarefatten }
-      ]
+        { label: 'Initial Growing Density (u/m2)', value: selectedLote.SM_DensityPerHectareFatten }
+           ]
     },
     {
       title: 'SPECIES HEALTH & WELLFARE',
       fields: [
-        { label: 'Source of Protein(1)', value: selectedLote.feeding_product_rsu_code },
+        { label: 'Source of Protein(1)', value: selectedLote.sm_feedingproductrsucode },
         { label: 'Source of Protein(2)', value: selectedLote.feeding_product_rsu_code },
         { label: 'Source of Protein(3)', value: selectedLote.feeding_product_rsu_code },
 
@@ -64,7 +64,7 @@ const LoteDetails = ({ selectedLote , fromSection = null }) => {
       title: 'FARM HARVEST',
       fields: [
         { label: 'Harvest Type', value: selectedLote.harvest_type },
-        { label: 'Harvest Date', value: selectedLote.harvest_date ? moment(selectedLote.harvest_date).format('YYYY-MM-DD') : 'N/A' },
+        { label: 'Harvest Date', value: selectedLote.sm_confirmedfishingdate ? moment(selectedLote.sm_confirmedfishingdate).format('YYYY-MM-DD') : 'N/A' },
         { label: 'Harvest Density (u/m2)', value: selectedLote.harvest_density },
         { label: 'Harvest Time Lapse', value: selectedLote.harvest_time_lapse },
         { label: 'Harvest Process Temperature (ºC)', value: selectedLote.harvest_temperature }
@@ -74,8 +74,8 @@ const LoteDetails = ({ selectedLote , fromSection = null }) => {
     {
       title: 'PROCESSOR',
       fields: [
-        { label: 'Processing Plant Name', value: selectedLote.custody_transport_time },
-        { label: 'Processing Plant Code', value: selectedLote.custody_transport_time },
+        { label: 'Processing Plant Name', value: selectedLote.sm_plantname },
+        { label: 'Processing Plant Code', value: selectedLote.sm_plantcode },
         { label: 'Custody Transport Time Lapse', value: selectedLote.custody_transport_time },
         { label: 'Custody Transport Temperature (ºC)', value: selectedLote.custody_transport_temperature },
         { label: 'Plant Registry Temperature (ºC)', value: selectedLote.plant_registry_temperature }

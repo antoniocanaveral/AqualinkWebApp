@@ -142,7 +142,7 @@ function Kanban() {
     return (
       <div className="ninjadash-kanban-board-item" ref={ref}>
         <Scrollbars
-          // autoHide
+
           autoHideTimeout={500}
           autoHideDuration={200}
           renderThumbVertical={renderThumb}

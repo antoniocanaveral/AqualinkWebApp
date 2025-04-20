@@ -49,13 +49,13 @@ export const createUserFarm = (values, selectedOrgId) => async (dispatch) => {
   try {
     dispatch(createUserLoading());
 
-    // Obtén el clientId desde las cookies (o desde donde lo manejes)
+
     const clientId = Cookies.get('selectedClientId');
     if (!clientId) {
       throw new Error('Client ID no encontrado en las cookies.');
     }
 
-    // 1. Crear el usuario en ad_user
+
     const userPayload = {
       AD_Client_ID: parseInt(clientId, 10),
       AD_Org_ID: selectedOrgId ? selectedOrgId: 0,
@@ -68,13 +68,13 @@ export const createUserFarm = (values, selectedOrgId) => async (dispatch) => {
 
     const userResponse = await DataService.post('models/ad_user', userPayload);
 
-    // Se asume que la respuesta incluye el id del usuario creado (por ejemplo, en userResponse.data.id)
+
     if (!userResponse.data || !userResponse.data.id) {
       throw new Error('Error al crear el usuario');
     }
     const adUserId = userResponse.data.id;
 
-    // 2. Asignar el rol en ad_user_roles
+
     const rolePayload = {
       AD_Client_ID: parseInt(clientId, 10),
       AD_Org_ID: 0,
@@ -84,8 +84,8 @@ export const createUserFarm = (values, selectedOrgId) => async (dispatch) => {
 
     await DataService.post('models/ad_user_roles', rolePayload);
 
-    // 3. Si se seleccionaron piscinas (y el rol tiene warehouses) postea en sm_user_warehouses
-    // values.pools es un array de IDs de piscinas
+
+
     if (values.pools && Array.isArray(values.pools) && values.pools.length > 0) {
       for (const poolId of values.pools) {
         const warehousePayload = {
@@ -139,10 +139,10 @@ export const fetchUsersByClient = () => async (dispatch) => {
       throw new Error('Client ID no encontrado en las cookies.');
     }
 
-    // Construcción de la URL con el Client ID
+
     const url = `models/sm_user_fullroles_v?$filter=AD_Client_ID eq ${selectedClientId}`;
 
-    // Llamada a la API
+
     const response = await DataService.get(url);
 
     if (response.data && response.data.records) {

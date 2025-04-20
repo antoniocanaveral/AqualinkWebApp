@@ -85,7 +85,7 @@ function ToDos({ todoData, showModal, isApp, title, tab, status }) {
   }
 
   const cancel = () => {
-    // console.log(e);
+
   };
 
   return (

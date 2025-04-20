@@ -36,7 +36,7 @@ function Course() {
   };
 
   const onHandleChange = (current, pageSize) => {
-    // You can create pagination in here
+
     setState({ ...state, current, pageSize });
   };
   return (

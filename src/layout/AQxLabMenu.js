@@ -11,7 +11,7 @@ import {
   UilHeadphones,
   UilQuestionCircle,
   UilWater,
-  //for message-notifications-center
+
   UilBell,
 } from '@iconscout/react-unicons';
 
@@ -150,7 +150,7 @@ function AQXLabMenu({ toggleCollapsed }) {
 
 
 
-    //
+
 
     getItem(
       !topMenu && <NavTitle className="ninjadash-sidebar-nav-title">{t('Logística')}</NavTitle>,
@@ -235,7 +235,7 @@ function AQXLabMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // MONITOREO
+
     getItem(
       t('Monitoreo'),
       'monitoreo',
@@ -268,7 +268,7 @@ function AQXLabMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // PARAMETROS
+
     getItem(
       t('Parámetros'),
       'parametros',
@@ -292,7 +292,7 @@ function AQXLabMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // CULTIVO
+
     getItem(
       t('Cultivo'),
       'cultivo',
@@ -333,7 +333,7 @@ function AQXLabMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // MEDIO DE CULTIVO
+
     getItem(
       t('Medio de Cultivo'),
       'medio-cultivo',
@@ -385,7 +385,7 @@ function AQXLabMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // COSTOS
+
     getItem(
       t('Costos'),
       'costos',
@@ -474,7 +474,7 @@ function AQXLabMenu({ toggleCollapsed }) {
     ]),
 
 
-    // FAQ
+
     getItem(
       <NavLink to={`${path}/faq`}>
         {t('FAQ')}
@@ -483,17 +483,17 @@ function AQXLabMenu({ toggleCollapsed }) {
       !topMenu && <UilQuestionCircle />,
     ),
 
-    // Message Notifications Center
+
     getItem(
       <NavLink to={`${path}/message-notifications-center`}>
         {t('Mensajes y Notificaciones')}
       </NavLink>,
       'message-notifications-center',
-      //icon for message-notifications-center
+
       !topMenu && <UilBell />,
     ),
 
-    // SOPORTE
+
     getItem(
       <NavLink to={`${path}/support`}>
         {t('Soporte')}
@@ -511,7 +511,7 @@ function AQXLabMenu({ toggleCollapsed }) {
       onOpenChange={onOpenChange}
       onClick={onClick}
       mode={!topMenu || window.innerWidth <= 1024 ? 'inline' : 'horizontal'}
-      // // eslint-disable-next-line no-nested-ternary
+
       defaultSelectedKeys={
         !topMenu
           ? [

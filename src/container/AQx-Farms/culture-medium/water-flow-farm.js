@@ -113,17 +113,17 @@ function WaterFlowFarm() {
   const profundidadMesa = parseFloat(report.sm_profundidadmesa) || 0;
   const profundidadPrestamo = parseFloat(report.sm_profundidadprestamo) || 0;
 
-  // Promedio de profundidades
+
   const profundidadCombinada = ((profundidadMesa + profundidadPrestamo) / 2).toFixed(2);
 
-  // Superficies
+
   const superficieMesa = poolSizeM2 * 0.45;
   const superficiePrestamo = poolSizeM2 * 0.55;
 
-  // Volumen Operativo (OP) en m³
+
   const volumenOP = (superficieMesa * profundidadMesa) + (superficiePrestamo * profundidadPrestamo);
 
-  // Sub-volúmenes basados en porcentajes
+
   const volumenSiembra = volumenOP * 0.40;
   const volumenTRNFR = volumenOP * 0.60;
   const volumenPesca = volumenOP * 0.40;
@@ -159,7 +159,7 @@ function WaterFlowFarm() {
     if (selectedPool)
       dispatch(fetchWaterflowReports());
   }, [dispatch, selectedPool]);
-  // Datos de la tabla principal
+
   return (
     <>
       <PageHeader

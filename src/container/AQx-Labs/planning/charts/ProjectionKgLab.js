@@ -5,7 +5,7 @@ import { Button, Skeleton } from "antd";
 import ButtonGroup from "antd/lib/button/button-group";
 import moment from "moment";
 
-// Paleta de colores para las barras (se asignan según el orden de la clasificación)
+
 const colorPalette = [
   "#001737",
   "#1ce1ac",
@@ -38,7 +38,7 @@ const ProjectionPlPanel = ({ height, selectedOrg, loading, error, coordinationIn
     currentDate.clone().month(i).format("MMMM")
   );
 
-  // Función para agrupar los datos
+
   const groupData = () => {
     if (!coordinationInfo || !Array.isArray(coordinationInfo)) {
       return { categorySums: {}, labels: [] };
@@ -57,27 +57,27 @@ const ProjectionPlPanel = ({ height, selectedOrg, loading, error, coordinationIn
       labels = yearLabels;
     }
 
-    // Se recorre cada registro (por ejemplo, cada lablote) que contenga coordinations_json
+
     let processedData = [];
     coordinationInfo.forEach(record => {
       if (record.coordinations_json && Array.isArray(record.coordinations_json) && record.coordinations_json.length > 0) {
         record.coordinations_json.forEach(coord => {
           processedData.push({
             created: coord.created,
-            // La clasificación se toma de sm_preliminarylaboratorycount
+
             classification: coord.sm_preliminarylaboratorycount,
-            // El valor de la barra es sm_density (convertido a número)
+
             density: parseFloat(coord.sm_density) || 0,
           });
         });
       }
     });
 
-    // Opcional: si el tipo es "FARM" se puede aplicar un filtro para registros únicos (similar al ejemplo original)
+
     if (type === "FARM") {
       const uniqueRecords = {};
       processedData.forEach(record => {
-        // Puedes definir la llave única según algún identificador (por ejemplo, la fecha + clasificación)
+
         const key = `${record.created}-${record.classification}`;
         if (!uniqueRecords[key]) {
           uniqueRecords[key] = record;
@@ -86,7 +86,7 @@ const ProjectionPlPanel = ({ height, selectedOrg, loading, error, coordinationIn
       processedData = Object.values(uniqueRecords);
     }
 
-    // Se acumulan los valores (density) en buckets de tiempo por cada clasificación
+
     const categorySums = {};
     processedData.forEach(record => {
       const recordDate = moment.utc(record.created).local();
@@ -106,7 +106,7 @@ const ProjectionPlPanel = ({ height, selectedOrg, loading, error, coordinationIn
       }
       if (bucketIndex < 0 || bucketIndex >= bucketsCount) return;
 
-      // Se convierte la clasificación a cadena para usarla como key
+
       const classification = record.classification ? record.classification.toString() : "Unknown";
       if (!categorySums[classification]) {
         categorySums[classification] = Array(bucketsCount).fill(0);
@@ -119,7 +119,7 @@ const ProjectionPlPanel = ({ height, selectedOrg, loading, error, coordinationIn
 
   const { categorySums, labels } = groupData();
 
-  // Se ordenan las clasificaciones (por ejemplo, numéricamente)
+
   const sortedCategories = Object.keys(categorySums).sort((a, b) => parseInt(a) - parseInt(b));
   const datasets = sortedCategories.map((category, index) => ({
     backgroundColor: colorPalette[index % colorPalette.length],

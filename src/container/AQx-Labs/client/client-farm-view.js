@@ -14,7 +14,7 @@ import { Text } from 'recharts';
 const { TabPane } = Tabs;
 
 function ClientLabs() {
-    // Estado local para controlar la renderización del gráfico
+
     const [showChart, setShowChart] = useState(false);
     const [selectedFarmOrg, setSelectedFarmOrg] = useState(null)
 
@@ -228,7 +228,7 @@ function ClientLabs() {
         return uniqueSalesRegions.size;
     };
 
-    // Uso:
+
     const salesRegionCount = getSalesRegionCount(selectedFarmOrg?.pools);
 
 
@@ -236,7 +236,7 @@ function ClientLabs() {
         return pools ? pools.length : 0;
     };
 
-    // Uso:
+
     const totalPools = getTotalPools(selectedFarmOrg?.pools);
 
     const waterVolumeDataByModule = selectedFarmOrg?.pools?.reduce((acc, pool) => {

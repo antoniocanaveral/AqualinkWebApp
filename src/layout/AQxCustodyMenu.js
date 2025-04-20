@@ -8,7 +8,7 @@ import {
   UilBell,
   UilHeadphones,
   UilDesktop,
-  // UilExpandArrowsAlt,
+
   UilFlaskPotion,
 } from '@iconscout/react-unicons';
 
@@ -327,7 +327,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
     ]),
 
 
-    // FAQ
+
     getItem(
       <NavLink to={`${path}/faq`}>
         {t('FAQ')}
@@ -336,17 +336,17 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       !topMenu && <UilQuestionCircle />,
     ),
 
-    // Message Notifications Center
+
     getItem(
       <NavLink to={`${path}/message-notifications-center`}>
         {t('Mensajes y Notificaciones')}
       </NavLink>,
       'message-notifications-center',
-      //icon for message-notifications-center
+
       !topMenu && <UilBell />,
     ),
 
-    // SOPORTE
+
     getItem(
       <NavLink to={`${path}/support`}>
         {t('Soporte')}
@@ -363,7 +363,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       onOpenChange={onOpenChange}
       onClick={onClick}
       mode={!topMenu || window.innerWidth <= 991 ? 'inline' : 'horizontal'}
-      // // eslint-disable-next-line no-nested-ternary
+
       defaultSelectedKeys={
         !topMenu
           ? [

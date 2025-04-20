@@ -45,7 +45,7 @@ function Single() {
   }, [params.id, dispatch]);
 
   const replyMail = async (replyMessage) => {
-    // hit replyMail api
+
     setState({ ...state, replyMessage });
   };
 

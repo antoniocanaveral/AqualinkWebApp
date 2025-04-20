@@ -125,26 +125,26 @@ function LoteAddLab() {
 
     const selectedPoolObject = selectedPool && farmsOrgsWithPools.find(org => org.orgId === selectedOrg)?.pools.find(pool => pool.poolId === selectedPool);
 
-    // Actualizar "sm_tankcapacity" cuando cambia la piscina seleccionada
+
     useEffect(() => {
         form.setFieldsValue({
             sm_tankcapacity: selectedPoolObject?.poolSize || null,
         });
     }, [selectedPoolObject, form]);
 
-    // Función para recalcular Biomasa objetivo
+
     const calculateTargetBiomass = (allValues) => {
         const capacity = selectedPoolObject?.poolSize; // Valor del tanque
         const density = allValues.sm_programmeddensity;
         const mortality = allValues.sm_estimatedmortality;
         if (capacity != null && density != null && mortality != null) {
-            // Fórmula: capacidad * densidad * (1 - mortalidad/100)
+
             return (capacity * density * (1 - mortality / 100).toFixed(2));
         }
         return null;
     };
 
-    // onValuesChange recalcula la biomasa objetivo cada vez que cambia densidad o mortalidad
+
     const onValuesChange = (changedValues, allValues) => {
         if (changedValues.sm_programmeddensity || changedValues.sm_estimatedmortality) {
             const target = calculateTargetBiomass(allValues);

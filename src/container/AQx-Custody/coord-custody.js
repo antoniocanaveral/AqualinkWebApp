@@ -165,7 +165,7 @@ function CoordinationCustody() {
     { key: '10', label: 'Textura:', value: coordination ? coordination.texture : '-' },
   ];
 
-  // Columnas de la tabla
+
   const columns = [
     {
       title: '',

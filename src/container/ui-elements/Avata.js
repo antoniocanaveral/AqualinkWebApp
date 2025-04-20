@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Row, Col, Avatar, Badge } from 'antd';
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { UserOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { AvatarWraperStyle } from './ui-elements-styled';

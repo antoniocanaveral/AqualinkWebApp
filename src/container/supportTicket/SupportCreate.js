@@ -31,7 +31,7 @@ function SupportCreate({ visible, onCancel, onSuccess }) {
     try {
       const response = await dispatch(createRequest(formData, selectedCategory));
       console.log('Ticket creado:', response);
-      // Llamamos a onSuccess para refrescar la lista en el padre
+
       onSuccess();
     } catch (error) {
       console.error('Error al crear el ticket:', error);

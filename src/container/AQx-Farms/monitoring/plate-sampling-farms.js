@@ -8,7 +8,7 @@ import { Badge } from '../../pages/style';
 import ProjectedSuggestedFeedingChart from './feeding/ProjectedSuggestedFeedingChart';
 
 function PlateSamplingFarm() {
-  // Definición de columnas para la tabla de Alimentación/Muestreo de Platos
+
   const feedingColumns = [
     { title: 'DÍA', dataIndex: 'dia', key: 'dia' },
     { title: 'PLATO 1', dataIndex: 'plato1', key: 'plato1' },
@@ -20,7 +20,7 @@ function PlateSamplingFarm() {
     { title: 'VARIACIÓN DE CONSUMO SUGERIDO', dataIndex: 'variacionConsumo', key: 'variacionConsumo' },
   ];
 
-  // Datos ficticios para la tabla de Alimentación/Muestreo de Platos
+
   const feedingData = [
     { key: '1', dia: '01 Nov', plato1: 15, plato2: 18, plato3: 16, plato4: 17, platoN: 20, promedioConsumo: 17.2, variacionConsumo: 1.1 },
     { key: '2', dia: '02 Nov', plato1: 16, plato2: 19, plato3: 18, plato4: 16, platoN: 21, promedioConsumo: 18.0, variacionConsumo: 1.3 },

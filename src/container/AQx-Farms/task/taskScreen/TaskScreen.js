@@ -1,4 +1,4 @@
-// src/components/TasksScreen.js
+
 
 import React, { useState, useEffect } from "react";
 import "./styles.css";
@@ -10,7 +10,7 @@ import { DatePicker, Modal, Button } from "antd"; // Importar Modal y Button de 
 import PropTypes from 'prop-types';
 import { initTaskScreen } from "../../../../redux/operation/actionCreator";
 
-// Componentes SVG para las fases lunares
+
 const NewMoon = ({ isMain }) => {
     const opacity = isMain ? 0.75 : 0.35;
     const color = "#0f95e9";
@@ -110,19 +110,19 @@ const Bullet = ({ parentFill, parentStroke, style }) => {
     );
 };
 
-// Componente de encabezado
+
 const Header = () => (
     <div className="headers">
         Administrador de Tareas
     </div>
 );
 
-// Separador reutilizable
+
 const Separator = ({ className = "separator" }) => (
     <div className={className}></div>
 );
 
-// Funciones utilitarias
+
 const getDateInfo = (date) => {
     const firstDayOfMonth = moment(date).startOf('month').isoWeekday();
     const lastDayOfMonth = moment(date).endOf('month').date();
@@ -164,7 +164,7 @@ const getDateFromStr = (str) => {
     return moment(str, "YYYY-MM-DD").toDate();
 };
 
-// Componente Principal
+
 const TasksScreen = ({ selectedPoolId }) => {
     const dispatch = useDispatch();
 
@@ -182,7 +182,7 @@ const TasksScreen = ({ selectedPoolId }) => {
     } = useSelector((state) => state.operation || {});
 
     const [dateInfo, setDateInfo] = useState(null);
-    // Estados para el nuevo modal de fecha
+
     const [isDateModalVisible, setIsDateModalVisible] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
 
@@ -200,7 +200,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         }
     }, [campaign]);
 
-    // Nuevo manejador para la selección de fecha
+
     const handleDateClick = (day) => {
         setSelectedDate(day);
         setIsDateModalVisible(true);
@@ -213,7 +213,7 @@ const TasksScreen = ({ selectedPoolId }) => {
 
     const weeks = dateInfo ? generateWeeks(dateInfo) : [];
 
-    // Modificar para que no haya onClick en los Bullets
+
     const renderTasksByDate = (day) => {
         const theDate = day.toDate();
         let tasks = screens.filter(item => {
@@ -257,7 +257,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         }
     };
 
-    // Función para obtener las tareas de una fecha específica
+
     const getTasksForDate = (day) => {
         const theDate = day.toDate();
         let tasks = screens.filter(item => {
@@ -282,7 +282,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         return tasks;
     };
 
-    // Función para renderizar las fases lunares
+
     const moon = (lunarCalendar, isMain) => {
         if (lunarCalendar.SM_LunarStage.id === 'SM_LunarStage_Full') {
             return <FullMoon isMain={isMain} />;
@@ -299,7 +299,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         return <></>;
     };
 
-    // Funciones para renderizar fases lunares, días de agua y perigeos permanecen iguales
+
     const renderMoon = (day) => {
         const theDate = day.toDate();
         let previewLc = null;
@@ -320,7 +320,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         return <></>;
     };
 
-    // Función para renderizar los días de agua
+
     const renderWaterDay = (day) => {
         const theDate = day.toDate();
         for (let lc of waterDays) {
@@ -335,7 +335,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         return <></>;
     };
 
-    // Función para renderizar los perigeos lunares
+
     const renderPerigees = (day) => {
         const theDate = day.toDate();
         for (let lc of lunarPerigee) {
@@ -350,7 +350,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         return <></>;
     };
 
-    // Función para renderizar el calendario completo
+
     const renderCalendar = () => {
         if (!dateInfo) {
             return <></>;
@@ -411,7 +411,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         );
     };
 
-    // Función para renderizar las insignias (badges) de tipos de operación
+
     const renderBadgesSection = () => {
         if (!types) {
             return <></>;
@@ -431,7 +431,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         );
     };
 
-    // Función para renderizar el calendario lunar
+
     const renderLunarCalendar = () => {
         return (
             <div className="lunarCalendarBox">
@@ -471,7 +471,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         );
     };
 
-    // Función para renderizar los nombres de los días de la semana
+
     const renderDaysLabels = () => {
         const daysOfWeek = ['LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB', 'DOM'];
         return (
@@ -485,7 +485,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         );
     };
 
-    // Función para renderizar el selector de mes
+
     const renderMonthSelector = () => {
         if (!dateInfo || !campaign) {
             return <></>;
@@ -503,7 +503,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         );
     };
 
-    // Función para renderizar el botón de mes siguiente
+
     const renderNextMonth = () => {
         const lastDate = lastItem && lastItem.SM_PlannedDate
             ? getDateFromStr(lastItem.SM_PlannedDate)
@@ -529,7 +529,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         );
     };
 
-    // Función para renderizar el botón de mes anterior
+
     const renderPrevMonth = () => {
         const activeCampaign = campaign;
         if (activeCampaign) {
@@ -557,7 +557,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         }
     };
 
-    // Función para renderizar un mensaje de error
+
     const renderErrorMsg = () => {
         return (
             <div className="errorContainer">
@@ -566,7 +566,7 @@ const TasksScreen = ({ selectedPoolId }) => {
         );
     };
 
-    // Función para renderizar el contenido del calendario
+
     const renderContent = () => {
         if (!selectedPoolId) {
             return (

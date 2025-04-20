@@ -76,7 +76,7 @@ const TotalEarning = React.memo(() => {
                         tooltip={{
                           custom(tooltip) {
                             if (!tooltip) return;
-                            // disable displaying the color box;
+
                             tooltip.displayColors = false;
                           },
                           callbacks: {

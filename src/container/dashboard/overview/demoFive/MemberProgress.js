@@ -74,7 +74,7 @@ function MemberProgress() {
     if (!unmounted) {
       setMemberProgressState(memberProgressData[state.traffic]);
     }
-    // eslint-disable-next-line no-return-assign
+
     return () => (unmounted = true);
   }, [state.traffic]);
 
@@ -105,7 +105,7 @@ function MemberProgress() {
       });
     });
 
-  // progress-dt progress-primary
+
 
   const handleTabActivation = (value) => {
     setState({

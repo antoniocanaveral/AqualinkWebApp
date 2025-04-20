@@ -10,7 +10,7 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-// ---------------------- DATOS DE EJEMPLO ---------------------- //
+
 
 const initialLotesArray = [
   {

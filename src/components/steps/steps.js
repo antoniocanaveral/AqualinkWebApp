@@ -30,26 +30,26 @@ function Steps({
   });
 
   const next = () => {
-    // Llamar a la función asincrona onNext
+
     onNext().then((isValid) => {
-      // Si onNext retorna true, proceder con el cambio de paso
+
       if (isValid) {
         const currents = state.currents + 1;
         setState({ currents });
       } else {
-        // Si onNext retorna false, no avanzas
+
         message.error("Por favor, complete los campos correctamente.");
       }
     }).catch(err => {
-      // Manejo de errores
+
       console.error("Error al avanzar al siguiente paso:", err);
     });
   };
 
   
   const prev = () => {
-    //const currents = state.currents - 1;
-    //setState({ currents });
+
+
     onPrev().then(() => {
       const currents = state.currents - 1;
       setState({ currents });
@@ -65,9 +65,9 @@ function Steps({
   };
 
 
-  // console.log(steps);
+
   const onChanges = (curr) => {
-    // console.log('onChange:', current);
+
     setState({ currents: curr });
     if (onChange) onChange(curr);
   };

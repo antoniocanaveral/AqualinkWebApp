@@ -63,12 +63,12 @@ const LoteViewCustody = () => {
         setSelectedLote(record);
         setModalVisible(true);
 
-        // Calcular Volumen Total de Entero
+
         const enteroSum = ['30_40', '40_50', '50_60', '60_70', '70_80', '80_100', '100_120', '120_150']
             .reduce((acc, category) => acc + (record[`sm_hocategory${category}`] || 0), 0);
         setTotalEntero(enteroSum);
 
-        // Calcular Volumen Total de Cola
+
         const colaSum = ['21_25', '26_30', '31_35', '36_40', '41_50', '51_60', '61_70', '71_90', '100_120', '120_150']
             .reduce((acc, category) => acc + (record[`sm_hl${category}`] || 0), 0);
         setTotalCola(colaSum);

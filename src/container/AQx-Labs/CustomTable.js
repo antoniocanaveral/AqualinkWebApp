@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from 'antd';
 
 const CustomTable = ({ data, pairsPerRow = 3 }) => {
-    // Transformar los datos en grupos de pares
+
     const groupedData = data.reduce((acc, item, index) => {
         const groupIndex = Math.floor(index / pairsPerRow);
 
@@ -16,7 +16,7 @@ const CustomTable = ({ data, pairsPerRow = 3 }) => {
         return acc;
     }, []);
 
-    // Generar columnas dinámicamente
+
     const dynamicColumns = Array.from({ length: pairsPerRow * 2 }).map((_, colIndex) => ({
         title: '',
         key: `col${colIndex}`,

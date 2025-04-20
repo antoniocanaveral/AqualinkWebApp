@@ -82,7 +82,7 @@ function DataTable({ filterOption, filterOnchange, rowSelection, tableData, colu
           {rowSelection ? (
             <Table
               rowSelection={{
-                // type: state.selectionType,
+
                 ...rowSelection,
               }}
               pagination={{ pageSize: 10, showSizeChanger: true }}

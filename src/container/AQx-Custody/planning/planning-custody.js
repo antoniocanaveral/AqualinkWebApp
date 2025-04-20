@@ -1,4 +1,4 @@
-// src/container/AQx-Custody/stamps-containers/planning-custody.js
+
 
 import React, { Suspense, useEffect, useState } from 'react';
 import { Row, Col, Skeleton, Typography, Table, Button, Modal } from 'antd';
@@ -54,7 +54,7 @@ function PlanningCustody() {
 
 
 
-    // Filtrado para obtener solo registros únicos por `SM_Coordination_ID.identifier`
+
     let processedData = {};
     coordinationInfo.forEach(record => {
         const identifier = record?.SM_Coordination_ID?.identifier;
@@ -64,7 +64,7 @@ function PlanningCustody() {
     });
     processedData = Object.values(processedData); // Convertir a array
 
-    // Filtrar datos en base al campo `SM_OrgType`
+
     const filterDataByType = (type) => processedData
         .filter(record => record.SM_OrgType === type)
         .map(record => ({
@@ -80,7 +80,7 @@ function PlanningCustody() {
     const dataGPA = filterDataByType('GPA');
     const dataIND = filterDataByType('IND');
 
-    // Definición de columnas de la tabla
+
     const columns = [
         { title: "Lote", dataIndex: "lote", key: "lote" },
         { title: "Fecha", dataIndex: "fecha", key: "fecha" },
@@ -99,14 +99,14 @@ function PlanningCustody() {
 
 
 
-    // Función para mostrar los detalles del tanque correspondiente
+
     const showDetails = (record) => {
         setSelectedTank(record);
         setIsModalVisible(true);
 
     };
 
-    // Funciones para cerrar el Modal
+
     const handleOk = () => setIsModalVisible(false);
     const handleCancel = () => setIsModalVisible(false);
 
@@ -182,7 +182,7 @@ function PlanningCustody() {
                 >
                     {selectedTank ? (
                         (() => {
-                            // Calcular la clasificación reportada con base en los datos de selectedTank
+
                             const clasificacionReportada =
                                 selectedTank.fullData.SM_Category30_40 ? '30-40' :
                                     selectedTank.fullData.SM_Category40_50 ? '40-50' :
@@ -194,7 +194,7 @@ function PlanningCustody() {
                                                             selectedTank.fullData.SM_Category120_150 ? '120-150' :
                                                                 selectedTank.fullData.SM_RequestedPL || 'N/A';
 
-                            // Limpiar el estado removiendo < y >
+
                             const estado = selectedTank.fullData.SM_CoordinationStatus?.identifier
                                 ? selectedTank.fullData.SM_CoordinationStatus.identifier.replace(/[<>]/g, '')
                                 : 'Desconocido';

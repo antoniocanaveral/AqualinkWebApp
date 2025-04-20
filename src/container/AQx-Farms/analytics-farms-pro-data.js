@@ -14,7 +14,7 @@ import BiomasaPerformanceChart from './analytics/charts/BiomasaPerformanceChart'
 import OptimizacionCostosPerformanceChart from './analytics/charts/OptimizacionCostosPerformanceChart';
 
 function ProDataAnalyticsFarms() {
-  // Definición de las columnas de la tabla
+
   const columns = [
 
     {
@@ -53,7 +53,7 @@ function ProDataAnalyticsFarms() {
   ];
 
 
-  // Datos ficticios para FCA Performance
+
   const fcaData = [
     { ciclo: 1, fca: 75 },
     { ciclo: 2, fca: 80 },
@@ -63,7 +63,7 @@ function ProDataAnalyticsFarms() {
     { ciclo: 6, fca: 88 },
   ];
 
-  // Datos ficticios para Biomasa Performance
+
   const biomasaData = [
     { ciclo: 1, biomasa: 500 },
     { ciclo: 2, biomasa: 550 },
@@ -73,7 +73,7 @@ function ProDataAnalyticsFarms() {
     { ciclo: 6, biomasa: 620 },
   ];
 
-  // Datos ficticios para Optimización de Costos Performance
+
   const costosData = [
     { ciclo: 1, costos: 20 },
     { ciclo: 2, costos: 18 },
@@ -84,7 +84,7 @@ function ProDataAnalyticsFarms() {
   ];
 
 
-  // Datos ficticios para la tabla
+
   const data = [
     {
       key: '1',

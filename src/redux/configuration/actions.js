@@ -1,4 +1,4 @@
-// src/redux/operation/actions.js
+
 
 export const SM_BUSINESSGROUP_LOADING = 'SM_BUSINESSGROUP_LOADING';
 export const SM_BUSINESSGROUP_LOADED  = 'SM_BUSINESSGROUP_LOADED';
@@ -93,7 +93,7 @@ export const adOrgError = (error) => ({
   payload: { error },
 });
 
-// src/redux/operation/actions.js
+
 export const POOLS_LOADING = 'POOLS_LOADING';
 export const POOLS_CREATED = 'POOLS_CREATED';
 export const POOLS_ERROR = 'POOLS_ERROR';
@@ -103,7 +103,7 @@ export const poolsCreated = (pools) => ({ type: POOLS_CREATED, payload: pools })
 export const poolsError = (error) => ({ type: POOLS_ERROR, payload: { error } });
 
 
-// src/redux/operation/actions.js
+
 
 export const SM_BRAND_FEEDERS_LOADING = 'SM_BRAND_FEEDERS_LOADING';
 export const SM_BRAND_FEEDERS_LOADED = 'SM_BRAND_FEEDERS_LOADED';

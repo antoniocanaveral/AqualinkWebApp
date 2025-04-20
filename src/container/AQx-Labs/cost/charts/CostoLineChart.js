@@ -14,7 +14,7 @@ const CostoLineChart = ({ data, height }) => {
   const chartContainerRef = useRef(null); // Referencia al contenedor del gráfico
   const [chartWidth, setChartWidth] = useState(0); // Estado para el ancho dinámico del gráfico
 
-  // Calcular el ancho del gráfico dinámicamente basado en el tamaño del contenedor
+
   useEffect(() => {
     const updateChartWidth = () => {
       if (chartContainerRef.current) {
@@ -22,7 +22,7 @@ const CostoLineChart = ({ data, height }) => {
       }
     };
 
-    // Escuchar eventos de cambio de tamaño de la ventana
+
     window.addEventListener('resize', updateChartWidth);
     updateChartWidth(); // Actualizar al cargar el componente
 
@@ -31,7 +31,7 @@ const CostoLineChart = ({ data, height }) => {
     };
   }, []);
 
-  // Colores personalizados para las líneas
+
   const colors = {
     'costo real': '#0372CE',
     'costo proyectado': '#00AAFF',

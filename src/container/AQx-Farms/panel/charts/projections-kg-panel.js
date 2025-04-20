@@ -74,7 +74,7 @@ const ProjectionKgPanel = ({ height, selectedOrg, loading, error, coordinationIn
 
         console.log("ccor", coordinationInfo)
         
-        // Aplicar filtro de registros únicos solo si type === "FARM"
+
         if (type === "FARM") {
             const uniqueRecords = {};
             coordinationInfo.forEach((record) => {
@@ -86,7 +86,7 @@ const ProjectionKgPanel = ({ height, selectedOrg, loading, error, coordinationIn
             processedData = Object.values(uniqueRecords);
         }
     
-        // Acumular datos en las categorías
+
         const categorySums = {};
         
         processedData.forEach((record) => {

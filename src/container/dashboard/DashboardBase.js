@@ -9,7 +9,7 @@ import Palette from '../../components/color-palette/palette';
 import config from '../../config/config';
 import Heading from '../../components/heading/heading';
 
-// @Todo console warning from button
+
 
 const { themeColor } = config;
 function DashboardBase() {

@@ -1,4 +1,4 @@
-// src/redux/operation/actionCreator.js
+
 import Cookies from 'js-cookie';
 
 import { DataService } from '../../config/dataService/dataService';
@@ -148,7 +148,6 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
       sm_protocolharvest: orgData.sm_protocolharvest,
       sm_processingcapacityweekly: orgData.sm_processingcapacityweekly,
       sm_processingcapacitydaily: orgData.sm_processingcapacitydaily
-
     };
 
     const response = await DataService.post('/models/ad_org', payload);
@@ -163,10 +162,8 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
         SM_OppDepth: 0.3,
         SM_PlantingDepth: 0.2,
         sm_transferdepth: 0.2,
-      }
-      const warehouseResponse = await DataService.post('/models/m_warehouse', warehouseGeneral)
-
-      console.log(warehouseResponse)
+      };
+      const warehouseResponse = await DataService.post('/models/m_warehouse', warehouseGeneral);
 
       if (warehouseResponse.data) {
         const LocatorGeneral = {
@@ -176,22 +173,56 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
           X: "0",
           Y: "0",
           Z: "0"
-        }
-        await DataService.post('/models/m_locator', LocatorGeneral)
+        };
+        await DataService.post('/models/m_locator', LocatorGeneral);
       }
+
+      // Create C_BPartner record
+      const bpartnerPayload = {
+        AD_Client_ID: selectedClientId,
+        AD_Org_ID: response.data.id,
+        IsActive: 'Y',
+        Value: orgData.email_rl, // Using email_rl as the value
+        Name: orgData.Name, // Using organization name
+        C_BP_Group_ID: org_type === "FARM" ? 1000000
+          : org_type === "LAB" ? 1000001
+            : org_type === "CUSTODY" ? 1000003
+              : 1000000, // Default to FARM group if org_type is unexpected
+        IsCustomer: 'Y',
+        IsVendor: 'N',
+        IsEmployee: 'N',
+        IsSalesRep: 'N',
+        IsSummary: 'N',
+        IsOneTime: 'N',
+        IsProspect: 'N',
+        IsTaxExempt: 'N',
+        IsDiscountPrinted: 'Y',
+        SendEMail: 'N',
+        IsPOTaxExempt: 'N',
+        IsManufacturer: 'N',
+        Is1099Vendor: 'N',
+        SO_CreditLimit: 0,
+        SO_CreditUsed: 0,
+        AcqusitionCost: 0,
+      };
+
+      const bpartnerResponse = await DataService.post('/models/c_bpartner', bpartnerPayload);
+      console.log('C_BPartner created:', bpartnerResponse.data);
+
       dispatch(adOrgCreated(response.data));
       Cookies.set('CreatedOrg', JSON.stringify(response.data));
       Cookies.set('CreatedOrgState', 'pending');
+
       const payload2 = {
         AD_OrgType_ID: org_type === "FARM" ? 1000001
           : org_type === "LAB" ? 1000002
             : org_type === "CUSTODY" ? 1000003
-              : 1000004
-      }
+              : 1000004,
+        email: orgData.email_rl
+      };
 
       const responseinfo = await DataService.put(`/models/ad_orginfo/${response.data.id}`, payload2);
-      console.log(responseinfo.data)
-
+      console.log(responseinfo.data);
 
       const sectors = [];
 
@@ -211,7 +242,6 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
           }
         }
         Cookies.set(org_type === "FARM" ? 'Sectors' : 'Modules', JSON.stringify(sectors));
-
         dispatch(cSalesRegionCreated(sectors));
       }
 
@@ -227,9 +257,6 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
     throw err;
   }
 };
-
-
-// src/redux/operation/actionCreator.js
 
 export const createPools = (pools) => async (dispatch) => {
   const selectedClientId = Cookies.get('selectedClientId');
@@ -257,7 +284,7 @@ export const createPools = (pools) => async (dispatch) => {
     }));
 
     console.log(transformedPools);
-    // Creación de los pools (almacenes)
+
     const poolResponses = await Promise.all(
       transformedPools.map(pool =>
         DataService.post('/models/m_warehouse', pool)
@@ -265,7 +292,7 @@ export const createPools = (pools) => async (dispatch) => {
     );
     const createdPools = poolResponses.map(res => res.data);
 
-    // Creación del locator para cada pool creado
+
     const locatorResponses = await Promise.all(
       createdPools.map(pool => {
         const locatorPayload = {
@@ -280,10 +307,10 @@ export const createPools = (pools) => async (dispatch) => {
       })
     );
 
-    // Opcional: puedes guardar o hacer log de los locators creados
+
     console.log("Locators creados:", locatorResponses.map(res => res.data));
 
-    // Creación de alimentadores para cada pool
+
     const createdFeeders = await Promise.all(
       pools.map(async (pool, index) => {
         const poolId = createdPools[index].id;

@@ -11,7 +11,7 @@ import {
   UilHeadphones,
   UilQuestionCircle,
   UilWater,
-  //for message-notifications-center
+
   UilBell,
 } from '@iconscout/react-unicons';
 
@@ -150,7 +150,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       'group',
     ),
 
-    //REPORTES 
+
     getItem(
       t('Reportes'),
       'reportes',
@@ -183,7 +183,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
       ]
     ),
-    // MONITOREO
+
 
     getItem(
       t('Monitoreo'),
@@ -242,7 +242,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // PARAMETROS
+
     getItem(
       t('Parámetros'),
       'parametros',
@@ -272,7 +272,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // CULTIVO
+
     getItem(
       t('Cultivo'),
       'cultivo',
@@ -332,7 +332,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // MEDIO DE CULTIVO
+
     getItem(
       t('Medio de Cultivo'),
       'medio-cultivo',
@@ -444,7 +444,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ]
     ),
 
-    // COSTOS
+
     getItem(
       t('Costos'),
       'costos',
@@ -533,7 +533,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
     ]),
 
 
-    // FAQ
+
     getItem(
       <NavLink to={`${path}/faq`}>
         {t('FAQ')}
@@ -542,17 +542,17 @@ function AQxFarmMenu({ toggleCollapsed }) {
       !topMenu && <UilQuestionCircle />,
     ),
 
-    // Message Notifications Center
+
     getItem(
       <NavLink to={`${path}/message-notifications-center`}>
         {t('Mensajes y Notificaciones')}
       </NavLink>,
       'message-notifications-center',
-      //icon for message-notifications-center
+
       !topMenu && <UilBell />,
     ),
 
-    // SOPORTE
+
     getItem(
       <NavLink to={`${path}/support`}>
         {t('Soporte')}
@@ -570,7 +570,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       onOpenChange={onOpenChange}
       onClick={onClick}
       mode={!topMenu || window.innerWidth <= 1024 ? 'inline' : 'horizontal'}
-      // // eslint-disable-next-line no-nested-ternary
+
       defaultSelectedKeys={
         !topMenu
           ? [

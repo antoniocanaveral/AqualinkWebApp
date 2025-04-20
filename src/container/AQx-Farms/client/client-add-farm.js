@@ -175,34 +175,34 @@ function AddClientFarm() {
 
 
 
-    // En el formulario de georreferenciación (Tab 3)
-    // Función para finalizar y actualizar cada piscina con sus nodos
+
+
     const handleFinalizar = () => {
-        // Obtiene todos los valores del formulario
+
         const formValues = form.getFieldsValue();
 
-        // Recorre cada piscina agregada
+
         const updatedPiscinas = addedPiscinas.map(pool => {
-            // Lee el nodo inicial
+
             const initialNode = {
                 latitude: formValues[`${pool.identificador}-nodo-inicial-latitude`],
                 longitude: formValues[`${pool.identificador}-nodo-inicial-longitude`],
                 label: "P-1"
             };
 
-            // Lee los nodos dinámicos guardados en el Form.List (si existen)
+
             const dynamicNodes = formValues[`${pool.identificador}-nodos`] || [];
 
-            // Genera los nodos dinámicos asignando etiquetas a partir del segundo nodo
+
             const formattedDynamicNodes = dynamicNodes.map((node, index) => ({
                 ...node,
                 label: `P-${index + 2}`
             }));
 
-            // Junta el nodo inicial con los nodos dinámicos
+
             const nodes = [initialNode, ...formattedDynamicNodes];
 
-            // Filtra nodos válidos (que tengan ambos valores: latitud y longitud)
+
             const validNodes = nodes.filter(n => n.latitude !== undefined && n.longitude !== undefined);
 
             return {

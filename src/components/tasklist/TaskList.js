@@ -59,7 +59,7 @@ function TaskList({ taskStatus, header, description, taskLimit }) {
   const onEditHandle = (editableData, id) => {
     const updatedData = task.map((item) => {
       if (item.id === id) {
-        // eslint-disable-next-line no-param-reassign
+
         item = editableData;
         return item;
       }
@@ -138,7 +138,7 @@ function TaskList({ taskStatus, header, description, taskLimit }) {
                           <Popconfirm
                             title="Are you sure to delete this task?"
                             onConfirm={() => handleTaskDelete(item.id)}
-                            // onCancel={cancel}
+
                             okText="Yes"
                             cancelText="No"
                           >

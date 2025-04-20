@@ -3,7 +3,7 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 
-const TankCard = ({ data }) => {
+const TankCard = ({ data, request = false }) => {
     const navigate = useNavigate();
 
     const plantingDate = moment(data.SM_PlantingDate);
@@ -13,13 +13,13 @@ const TankCard = ({ data }) => {
     let avance = 0;
     if (plantingDate.isValid() && fishingDate.isValid() && today.isValid()) {
         const totalDays = fishingDate.diff(plantingDate, 'days');
-        const elapsedDays = today.diff(plantingDate, 'days'); 
+        const elapsedDays = today.diff(plantingDate, 'days');
         avance = totalDays > 0 ? Math.min((elapsedDays / totalDays) * 100, 100).toFixed(2) : 0;
     }
 
-    const formattedFishingDate = moment(data.SM_FishingDate).isValid() 
-    ? moment(data.SM_FishingDate).format("YYYY-MM-DD") 
-    : 'NA';
+    const formattedFishingDate = moment(data.SM_FishingDate).isValid()
+        ? moment(data.SM_FishingDate).format("YYYY-MM-DD")
+        : 'NA';
     const usado = (data.sm_targetbiomass || 0) - (data.sm_reservedbiomass || 0);
     return (
         <div headless
@@ -130,12 +130,14 @@ const TankCard = ({ data }) => {
                     <span>{data.sm_reservedbiomass || 'NA'}</span>
                 </div>
             </div>
+            {!request && (
+                <button
+                    onClick={() => navigate("/lab/seeding-coords")}
+                    style={{ backgroundColor: '#0372ce', color: 'white', padding: '5px 10px', borderRadius: '5px', border: 'none' }}>
+                    Ver Tanque
+                </button>
+            )}
 
-            <button
-                onClick={() => navigate("/lab/seeding-coords")}
-                style={{ backgroundColor: '#0372ce', color: 'white', padding: '5px 10px', borderRadius: '5px', border: 'none' }}>
-                Ver Tanque
-            </button>
         </div>
     )
 }

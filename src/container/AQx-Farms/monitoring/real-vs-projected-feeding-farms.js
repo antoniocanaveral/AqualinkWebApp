@@ -16,14 +16,14 @@ function RealAndProjectedFeeding() {
   const { feedingreports, loading } = useSelector(state => state.feedingreport);
   const [selectedBatch, setSelectedBatch] = useState(null);
 
-  // Selección de org, sector y pool
+
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
 
-  // Datos de organizaciones
+
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-  // Manejo de selección de org
+
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -31,7 +31,7 @@ function RealAndProjectedFeeding() {
     Cookies.remove('poolId');
   };
 
-  // Opciones para Farms
+
   const farmsSelectOptions = organizations.length > 0 ? [
     {
       options: farmsOrgsWithPools.map(org => ({
@@ -45,18 +45,18 @@ function RealAndProjectedFeeding() {
     },
   ] : [];
 
-  // Combinación de selects en el PageHeader
+
   const combinedSelectOptions = [
     ...farmsSelectOptions,
   ];
 
-  // Procesar datos para la tabla
+
   const processFeedingData = () => {
     return feedingreports.flatMap(report => {
       const projectedData = report.feedingdata_projectedjson || [];
       const realData = report.feedingdata_realjson || [];
 
-      // Combinar y ordenar datos por sm_index
+
       const combinedData = projectedData.map(proj => {
         const real = realData.find(r => r.sm_index === proj.sm_index) || {};
         return {
@@ -83,7 +83,7 @@ function RealAndProjectedFeeding() {
 
   const feedingData = processFeedingData();
 
-  // Filtrar los datos según el lote seleccionado
+
   const filteredFeedingData = selectedBatch
     ? feedingData.filter(item => item.lote === selectedBatch)
     : feedingData;
@@ -142,7 +142,7 @@ function RealAndProjectedFeeding() {
     dispatch(fetchFeedingreportsOrg());
   }, [dispatch, selectedOrg]);
 
-  // Crear un array de lotes para el selector
+
   const batchOptions = feedingreports
     .map(report => report.SM_Batch)
     .filter((value, index, self) => self.indexOf(value) === index) // Filtrar duplicados

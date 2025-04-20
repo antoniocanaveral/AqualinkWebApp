@@ -35,7 +35,6 @@ import ReportOpFarm from '../../container/AQx-Farms/reports/report-op-farm';
 import TraceabilityLotesCustody from '../../container/AQx-Custody/traceability/traceability-lotes-custody';
 import DashboardMonitoring from '../../container/AQx-Monitoring/Dashboard/DashboardMonitoring';
 import ClientFarm from '../../container/AQx-Farms/client/client-farm';
-import GeneralPathologyLab from '../../container/AQx-Labs/crop/general-pathology-farm';
 import WaterFlowFarm from '../../container/AQx-Farms/culture-medium/water-flow-farm';
 import ShrimpFarm from '../../container/AQx-Farms/crop/shrimp-farm';
 import Cookies from 'js-cookie';

@@ -10,7 +10,7 @@ import { BorderLessHeading } from '../../styled';
 import WeeklyCombinedChart from './charts/WeeklyCombinedChart';
 
 function CostFarm() {
-  // Columnas de la tabla
+
   const columns = [
     {
       title: <span style={{ fontSize: '11px' }}>DdC</span>,
@@ -114,7 +114,7 @@ function CostFarm() {
     );
   };
 
-  // Datos de la tabla con valores quemados
+
   const dataSource = [
     {
       key: 1,
@@ -415,11 +415,11 @@ function CostFarm() {
   ];
 
 
-  // Reutilizamos `dataSource` de la tabla original para los cálculos
+
   const calculateSummaryData = (dataSource) => {
     const semanas = 11; // Asumimos 7 semanas para simplificar
 
-    // Agrupamos los días en semanas y calculamos los subtotales y valores por Ha
+
     const groupedByWeek = Array.from({ length: semanas }, (_, semanaIndex) =>
       dataSource
         .filter((_, index) => Math.floor(index / semanas) === semanaIndex)
@@ -433,7 +433,7 @@ function CostFarm() {
         )
     );
 
-    // Creamos dos filas para la tabla:
+
     const subtotalsRow = {
       key: 'subtotals',
       tipo: 'STTL/Week',
@@ -455,7 +455,7 @@ function CostFarm() {
     return [subtotalsRow, valoresPorHaRow];
   };
 
-  // Configuramos las columnas dinámicamente
+
   const summaryColumns = [
     {
       title: <span style={{ fontSize: '12px' }}> </span>,
@@ -473,10 +473,10 @@ function CostFarm() {
     })),
   ];
 
-  // Calculamos los datos dinámicos de la tabla usando `calculateSummaryData`
+
   const summaryData = calculateSummaryData(dataSource);
 
-  // Renderizamos la tabla
+
 
   return (
     <>

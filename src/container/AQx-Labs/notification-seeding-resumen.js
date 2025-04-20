@@ -7,7 +7,7 @@ import { Cards } from '../../components/cards/frame/cards-frame';
 import banco_pichincha_logo from '../../static/img/bank/banco-pichincha.jpg';
 
 function NotificationSeedingResumen() {
-  // Datos para la tabla de procesamiento
+
   const labInfoData = [
     { key: '1', label: 'Disponibilidad de Procesamiento:', value: '45,860 lbs' },
     { key: '2', label: 'Masa de Procesamiento (46.3%):', value: '21,500 lbs (aprox.)' },
@@ -16,7 +16,7 @@ function NotificationSeedingResumen() {
     { key: '5', label: 'Tiempo de Siembra:', value: '2h 30m (estimado)' },
   ];
 
-  // Datos para la tabla de métodos de pago
+
   const bankPaymentData = [
     { key: '1', label: 'Banco Pichincha', value: 'Cuenta Corriente #056897321' },
     { key: '2', label: 'Titular', value: 'EcSSA Esmeraldas Cia Ltda' },

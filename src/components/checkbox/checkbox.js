@@ -27,7 +27,7 @@ function Checkbox(props) {
     if (onChangeTriger) {
       onChangeTriger(state.checkedList);
     }
-    // eslint-disable-next-line
+
   }, [state]);
 
   const onCheckAllChange = (e) => {

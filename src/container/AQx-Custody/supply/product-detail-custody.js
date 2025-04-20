@@ -1,4 +1,4 @@
-// src/container/AQx-Custody/stamps-containers/ProductDetailsModal.js
+
 
 import React from 'react';
 import { Table, Typography } from 'antd';

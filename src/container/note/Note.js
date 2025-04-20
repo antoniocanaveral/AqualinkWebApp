@@ -320,6 +320,6 @@ function Note() {
 }
 
 Note.propTypes = {
-  // match: PropTypes.shape(PropTypes.object),
+
 };
 export default Note;

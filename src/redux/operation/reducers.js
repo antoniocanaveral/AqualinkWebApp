@@ -1,4 +1,4 @@
-// src/redux/operation/reducer.js
+
 
 import {
     OP_SCREEN_TASK_LOADING,
@@ -31,7 +31,7 @@ import {
   
   export const operationReducer = (state = initialState, action) => {
     switch (action.type) {
-      // Manejo de initTaskScreen
+
       case OP_SCREEN_TASK_LOADING:
         return {
           ...state,
@@ -70,7 +70,7 @@ import {
           error: action.payload.error,
         };
   
-      // Manejo de sm_shrimp_farming_transfer_v
+
       case OP_SHRIMP_FARMING_TRANSFER_LOADING:
         return {
           ...state,
@@ -93,7 +93,7 @@ import {
           error: action.payload.error,
         };
   
-      // Manejo de las listas separadas
+
       case OP_PLANNED_FARMING_LOADED:
         return {
           ...state,

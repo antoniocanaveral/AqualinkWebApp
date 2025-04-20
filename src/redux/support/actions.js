@@ -1,4 +1,4 @@
-// actions.js
+
 export const FETCH_STATUS_LOADING = 'FETCH_STATUS_LOADING';
 export const FETCH_STATUS_SUCCESS = 'FETCH_STATUS_SUCCESS';
 export const FETCH_STATUS_ERROR = 'FETCH_STATUS_ERROR';
@@ -18,7 +18,7 @@ export const fetchStatusError = (error) => ({
 });
 
 
-// actions.js
+
 export const FETCH_CATEGORIES_LOADING = 'FETCH_CATEGORIES_LOADING';
 export const FETCH_CATEGORIES_SUCCESS = 'FETCH_CATEGORIES_SUCCESS';
 export const FETCH_CATEGORIES_ERROR = 'FETCH_CATEGORIES_ERROR';
@@ -38,7 +38,7 @@ export const fetchCategoriesError = (error) => ({
 });
 
 
-// actions.js
+
 
 export const FETCH_REQUESTS_LOADING = 'FETCH_REQUESTS_LOADING';
 export const FETCH_REQUESTS_SUCCESS = 'FETCH_REQUESTS_SUCCESS';

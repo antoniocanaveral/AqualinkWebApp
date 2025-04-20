@@ -52,40 +52,40 @@ const dataLiveFilter = (value, key) => {
   };
 };
 
-// const ticketUpdateData = data => {
-//   return async dispatch => {
-//     try {
-//       dispatch(ticketReadBegin());
-//       dispatch(ticketReadSuccess(data));
-//     } catch (err) {
-//       dispatch(ticketReadErr(err));
-//     }
-//   };
-// };
 
-// const ticketUpdateSearch = (value, key) => {
-//   return async dispatch => {
-//     try {
-//       dispatch(ticketReadBegin());
-//       const data = initialState.filter(item => item[key].startsWith(value));
-//       dispatch(ticketReadSuccess(data));
-//     } catch (err) {
-//       dispatch(ticketReadErr(err));
-//     }
-//   };
-// };
 
-// const singlePageReade = id => {
-//   return async dispatch => {
-//     try {
-//       dispatch(filterSinglePageReadBegin());
-//       const data = initialState.filter(item => parseInt(item.id) === parseInt(id));
 
-//       dispatch(filterSinglePageReadSuccess(data));
-//     } catch (err) {
-//       dispatch(filterSinglePageReadErr(err));
-//     }
-//   };
-// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export { filterWithSubmit, tableReadData, dataLiveFilter };

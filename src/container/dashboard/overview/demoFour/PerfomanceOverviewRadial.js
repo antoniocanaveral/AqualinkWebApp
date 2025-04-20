@@ -9,7 +9,7 @@ import Chart from 'react-apexcharts';
 import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { PerfomanceOverviewStyle } from '../../Style';
 import { BorderLessHeading } from '../../../styled';
-// Sample data
+
 const labels = ['Target', 'Completed', 'In Progress'];
 const dataSets = {
   series: [90, 80, 70],

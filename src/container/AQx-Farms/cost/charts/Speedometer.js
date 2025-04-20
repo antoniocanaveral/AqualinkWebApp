@@ -2,20 +2,20 @@ import React from 'react';
 import GaugeChart from 'react-gauge-chart';
 
 const Speedometer = ({ value, base }) => {
-    // Definir los límites del velocímetro
+
     const minValue = 150;
     const maxValue = 400;
 
-    // Normalizar el valor entre 0 y 1
+
     const normalizedValue = (value - minValue) / (maxValue - minValue);
 
-    // Asegurar que el valor está dentro del rango permitido (0 - 1)
+
     const adjustedValue = Math.max(0, Math.min(1, normalizedValue));
 
-    // Colores de los segmentos según las categorías
+
     const colors = ['#1E88E5', '#43A047', '#FFEB3B', '#FB8C00', '#E53935']; // Azul, Verde, Amarillo, Naranja, Rojo
 
-    // Asignar color a la aguja según el valor
+
     const getNeedleColor = (value) => {
         if (value < 200) return colors[0]; // Azul (150-200)
         if (value < 250) return colors[1]; // Verde (200-250)

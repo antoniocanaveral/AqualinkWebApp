@@ -1,4 +1,4 @@
-// src/container/AQx-Custody/stamps-containers/data.js
+
 
 export const optionsInventory = [
     {
@@ -13,7 +13,7 @@ export const optionsInventory = [
                 disponibles: 10,
                 capacidad: "500 litros",
             },
-            // Agrega más ítems de Bines según sea necesario
+
         ]
     },
     {
@@ -28,7 +28,7 @@ export const optionsInventory = [
                 disponibles: 20,
                 capacidad: "200 litros",
             },
-            // Agrega más ítems de Gavetas S según sea necesario
+
         ]
     },
     {
@@ -43,7 +43,7 @@ export const optionsInventory = [
                 disponibles: 15,
                 capacidad: "250 litros",
             },
-            // Agrega más ítems de Gavetas K según sea necesario
+
         ]
     },
     {
@@ -58,7 +58,7 @@ export const optionsInventory = [
                 disponibles: 30,
                 capacidad: "100 litros",
             },
-            // Agrega más ítems de metaBS según sea necesario
+
         ]
     },
     {
@@ -73,7 +73,7 @@ export const optionsInventory = [
                 disponibles: 100,
                 capacidad: "50 kg",
             },
-            // Agrega más ítems de Hielo según sea necesario
+
         ]
     },
     {
@@ -88,12 +88,12 @@ export const optionsInventory = [
                 disponibles: 100,
                 capacidad: "50 kg",
             },
-            // Agrega más ítems de Hielo según sea necesario
+
         ]
     }
 ];
 
-// Crear una lista plana de ítems para sampleData con los nuevos campos
+
 export const sampleData = optionsInventory.flatMap(category => 
     category.items.map(item => ({
         key: item.codigo, // Asegúrate de que 'codigo' sea único

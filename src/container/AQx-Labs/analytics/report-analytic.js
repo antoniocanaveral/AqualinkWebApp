@@ -5,7 +5,7 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 
 function AnalyticReportFarm() {
-    // Datos de la tabla principal
+
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -161,7 +161,7 @@ function AnalyticReportFarm() {
             ciclo4: '13,5',
             ciclo5: '13,5',
         },
-        // Variables de producción Precría
+
         {
             key: 'variables_produccion_precria',
             descripcion: 'VARIABLES DE PRODUCCIÓN PRECRÍA',
@@ -257,7 +257,7 @@ function AnalyticReportFarm() {
             ciclo4: '0,39',
             ciclo5: '0,28',
         },
-        // Costos de producción pre cría
+
         {
             key: 'costos_produccion_precria',
             descripcion: 'COSTOS DE PRODUCCIÓN PRECRÍA',
@@ -353,7 +353,7 @@ function AnalyticReportFarm() {
             ciclo4: '$6.581,10',
             ciclo5: '$5.604,42',
         },
-        // Variables de producción Fase Engorde
+
         {
             key: 'variables_produccion_engorde',
             descripcion: 'VARIABLES DE PRODUCCIÓN FASE ENGORDA',
@@ -512,7 +512,7 @@ function AnalyticReportFarm() {
             ciclo4: '1,56',
             ciclo5: '1,36',
         },
-        // Costos de producción
+
         {
             key: 'costos_produccion',
             descripcion: 'COSTOS DE PRODUCCIÓN',
@@ -601,7 +601,7 @@ function AnalyticReportFarm() {
         },
     ];
 
-    // Datos de la tabla de resultados
+
     const resultsTableData = [
         {
             key: 'ingreso_ventas',
@@ -684,7 +684,7 @@ function AnalyticReportFarm() {
         }
     ];
 
-    // Definición de columnas
+
     const columns = [
         {
             title: '',
@@ -824,7 +824,7 @@ function AnalyticReportFarm() {
 
     const showDetails = (cycle) => {
 
-        // Construimos el objeto basado en el ciclo seleccionado
+
         const item = {
             marca_alimento: feeding_detail.find((detail) => detail.key === 'marca_alimento')[cycle],
             tipo_alimento_pre_cria: feeding_detail.find((detail) => detail.key === 'tipo_alimento_pre_cria')[cycle],
@@ -839,7 +839,7 @@ function AnalyticReportFarm() {
     };
 
 
-    // Cerrar el modal
+
     const handleCloseModal = () => {
         setIsModalVisible(false);
         setSelectedItem(null);

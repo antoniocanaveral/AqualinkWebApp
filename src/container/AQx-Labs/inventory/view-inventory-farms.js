@@ -21,24 +21,24 @@ function InventoryTableLabs() {
     dispatch(fetchInventory("LAB"));
   }, [dispatch, selectedOrg]);
 
-  // Aplanamos las categorías para obtener todos los items de inventario
+
   const allInventoryItems = useMemo(() => {
     return Object.values(categories).flat() || [];
   }, [categories]);
 
-  // Lista única de almacenes a partir de los registros de inventario
+
   const warehouseOptions = useMemo(() => {
     const warehouses = [...new Set(allInventoryItems.map(item => item.warehouse))].filter(Boolean);
     return warehouses;
   }, [allInventoryItems]);
 
-  // Filtrado de inventario según almacén y categoría
+
   const filteredInventory = useMemo(() => {
     let data = allInventoryItems;
     if (selectedWarehouse !== 'all') {
       data = data.filter(item => item.warehouse === selectedWarehouse);
     }
-    // Se utiliza "product_category_identifier" para filtrar la categoría
+
     if (selectedCategory !== 'all') {
       data = data.filter(item => item.product_category_identifier === selectedCategory);
     }

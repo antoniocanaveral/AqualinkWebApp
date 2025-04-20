@@ -17,7 +17,7 @@ import CalenDar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-// eslint-disable-next-line import/no-cycle
+
 import EventForm from './overview/EventForm';
 import { Aside, CalendarWrapper, EventModalStyleWrap } from './Style';
 import { Button } from '../../components/buttons/buttons';
@@ -213,7 +213,7 @@ function Calendars() {
                 localizer={Localizer}
                 events={events.map(mapToRBCFormat)}
                 resizable
-                // eslint-disable-next-line no-use-before-define
+
                 components={{ toolbar: CustomToolbar }}
                 defaultView="month"
                 defaultDate={new Date()}
@@ -233,9 +233,9 @@ function Calendars() {
 export class CustomToolbar extends Toolbar {
   componentDidMount() {
     const toolbarLink = document.querySelectorAll('.calendar-header__right a');
-    // eslint-disable-next-line no-plusplus
+
     for (let i = 0, { length } = toolbarLink; i < length; i++) {
-      // eslint-disable-next-line func-names
+
       toolbarLink[i].onclick = function () {
         const activatedLink = document.querySelector('.calendar-header__right a.active');
         if (activatedLink) activatedLink.classList.remove('active');

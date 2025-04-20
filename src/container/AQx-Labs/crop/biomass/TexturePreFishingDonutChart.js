@@ -9,7 +9,7 @@ const TexturePreFishingDonutChart = () => {
     }));
     const themeColor = {
         default: { 'white-background': '#ffffff' },
-        // Agregar otros colores según config si es necesario
+
     };
 
     const labels = ['Duro', 'Flácido', 'Mudado'];

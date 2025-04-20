@@ -18,7 +18,7 @@ function TeamList() {
       setData(team);
     }
 
-    // eslint-disable-next-line no-return-assign
+
     return () => (unmounted = true);
   }, []);
 

@@ -6,7 +6,7 @@ const { Option } = Select;
 export const EngordeInfrastructure = ({ index, alimentadores, handleAddAlimentador, form }) => {
     const [metodoAlimentacion, setMetodoAlimentacion] = useState(""); // Estado para controlar el método de alimentación
 
-    // Registrar campos dinámicos en el formulario al montar el componente
+
     useEffect(() => {
         form.setFieldsValue({
             [`piscinaEngordeId-${index}`]: form.getFieldValue(`piscinaEngordeId-${index}`) || undefined,

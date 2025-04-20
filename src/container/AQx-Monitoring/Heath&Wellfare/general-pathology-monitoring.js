@@ -22,7 +22,7 @@ function GeneralPathologyMonitoring() {
   const [isVeterinaryPlanModalVisible, setIsVeterinaryPlanModalVisible] = useState(false);
   const [selectedVeterinaryPlan, setSelectedVeterinaryPlan] = useState(null);
 
-  // Selección de org, sector y pool
+
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
@@ -32,11 +32,11 @@ function GeneralPathologyMonitoring() {
   const activeOrgs = [orgToAudit];
   const auditType = Cookies.get('orgAuditType');
 
-  // Datos de organizaciones
+
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-  // Manejo de selección de org
+
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -46,19 +46,19 @@ function GeneralPathologyMonitoring() {
     setSelectedSector(null);
   };
 
-  // Manejo de selección de sector
+
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-  // Manejo de selección de pool
+
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
 
-  // Opciones para Farms
+
   const farmsSelectOptions = organizations.length > 0 ? [
     {
       options: farmsOrgsWithPools.map(org => ({
@@ -72,7 +72,7 @@ function GeneralPathologyMonitoring() {
     },
   ] : [];
 
-  // Opciones para sectores
+
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -96,7 +96,7 @@ function GeneralPathologyMonitoring() {
     },
   ] : [];
 
-  // Opciones para pools
+
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -125,13 +125,13 @@ function GeneralPathologyMonitoring() {
 
 
 
-  // Mostrar el modal del plan veterinario
+
   const showVeterinaryPlanModal = (record) => {
     setSelectedVeterinaryPlan(veterinaryPlans[record.key - 1]); // Asociar el plan según la semana
     setIsVeterinaryPlanModalVisible(true);
   };
 
-  // Cerrar el modal del plan veterinario
+
   const handleVeterinaryPlanModalCancel = () => {
     setIsVeterinaryPlanModalVisible(false);
     setSelectedVeterinaryPlan(null);
@@ -287,13 +287,13 @@ function GeneralPathologyMonitoring() {
   ];
 
 
-  // Mostrar modal con los detalles
+
   const showModal = (record) => {
     setSelectedRecord(record);
     setIsModalVisible(true);
   };
 
-  // Cerrar modal
+
   const handleCancel = () => {
     setIsModalVisible(false);
     setSelectedRecord(null);

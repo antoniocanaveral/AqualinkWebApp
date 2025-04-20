@@ -20,7 +20,7 @@ function HarvestLab() {
   const [updatedObservation, setUpdatedObservation] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
 
-  //Modales
+
   const [modalCoord, setModalCoord] = useState(false);
   const [modalHarvest, setModalHarvest] = useState(false);
   const [modalPacking, setModalPacking] = useState(false);

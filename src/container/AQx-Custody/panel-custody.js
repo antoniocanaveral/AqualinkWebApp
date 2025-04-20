@@ -137,7 +137,7 @@ function PanelCustody() {
             <TankCarouselCustody
               tankData={validCoordinationInfo.map((coord) => {
                 console.log(coord)
-                // Definir clasificación reportada basada en las categorías disponibles
+
                 const clasificacionReportada =
                   coord.SM_Category30_40 ? '30-40' :
                     coord.SM_Category40_50 ? '40-50' :

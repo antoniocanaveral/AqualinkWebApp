@@ -9,10 +9,10 @@ const PLDistributionDonutChart = () => {
     }));
     const themeColor = {
         default: { 'white-background': '#ffffff' },
-        // Agregar otros colores según config si es necesario
+
     };
 
-    // Etiquetas y datos para la distribución por PL
+
     const labels = ['Lote L001', 'Lote L002', 'Lote L003'];
     const datasets = [
         {

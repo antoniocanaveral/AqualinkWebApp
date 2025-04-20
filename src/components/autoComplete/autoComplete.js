@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { AutoCompleteStyled } from './style';
 
 const onSelect = () => {
-  // console.log('onSelect', value);
+
 };
 
 const renderItem = (title, count) => {

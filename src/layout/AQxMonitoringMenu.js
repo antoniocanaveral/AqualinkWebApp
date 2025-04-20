@@ -1,7 +1,7 @@
 import {
   UilDesktop,
   UilHeadphones,
-  //for message-notifications-center
+
   UilBell,
 } from '@iconscout/react-unicons';
 
@@ -296,17 +296,17 @@ function AQxMonitoringMenu({ toggleCollapsed }) {
       'group',
     ),
 
-    // Message Notifications Center
+
     getItem(
       <NavLink to={`${path}/message-notifications-center`}>
         {t('Mensajes y Notificaciones')}
       </NavLink>,
       'message-notifications-center',
-      //icon for message-notifications-center
+
       !topMenu && <UilBell />,
     ),
 
-    // SOPORTE
+
     getItem(
       <NavLink to={`${path}/support`}>
         {t('Soporte')}
@@ -324,7 +324,7 @@ function AQxMonitoringMenu({ toggleCollapsed }) {
       onOpenChange={onOpenChange}
       onClick={onClick}
       mode={!topMenu || window.innerWidth <= 1024 ? 'inline' : 'horizontal'}
-      // // eslint-disable-next-line no-nested-ternary
+
       defaultSelectedKeys={
         !topMenu
           ? [

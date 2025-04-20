@@ -63,9 +63,9 @@ function AddNew() {
         dispatch(fbFileUploder(info.file.originFileObj));
       }
       if (info.file.status === 'done') {
-        // message.success(`${info.file.name} file uploaded successfully`);
+
       } else if (info.file.status === 'error') {
-        // message.error(`${info.file.name} file upload failed.`);
+
       }
     },
   };

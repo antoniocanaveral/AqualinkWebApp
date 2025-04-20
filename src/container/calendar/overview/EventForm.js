@@ -143,7 +143,7 @@ function EventForm({ onHandleAddEvent }) {
 }
 
 EventForm.propTypes = {
-  // eventData: PropTypes.object,
+
   onHandleAddEvent: PropTypes.func,
 };
 

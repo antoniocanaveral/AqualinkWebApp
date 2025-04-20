@@ -57,17 +57,10 @@ function PanelLabs() {
   )?.sm_installedcapacitylarva || 0;
 
 
-  // Calcular la suma total de sm_targetbiomass y sm_reservedbiomass
   const totalTargetBiomass = validLabLote.reduce((sum, lote) => sum + lote.sm_targetbiomass, 0);
   const totalReservedBiomass = validLabLote.reduce((sum, lote) => sum + lote.sm_reservedbiomass, 0);
-
-  // Calcular el porcentaje ocupado con respecto a la capacidad instalada (statusRate)
   const statusRatew = installedCapacity ? ((totalTargetBiomass / installedCapacity) * 100).toFixed(2) : 0;
-
-  // Calcular el porcentaje de lo que se ha usado respecto a target biomass (statusRateLote)
   const statusRateLote = totalTargetBiomass ? (((totalTargetBiomass - totalReservedBiomass) / totalTargetBiomass) * 100).toFixed(2) : 0;
-
-  // Calcular el total de siembra sumando sm_confirmedtotal de coordinations_json
   const totalSiembra = validLabLote.reduce(
     (sum, lote) =>
       sum +
@@ -75,10 +68,8 @@ function PanelLabs() {
     0
   );
 
-  // Calcular el porcentaje de siembra respecto al total de lotes (statusRateSiembra)
   const statusRateSiembra = totalTargetBiomass ? ((totalSiembra / totalTargetBiomass) * 100).toFixed(2) : 0;
 
-  // Proyección es igual al total de lotes
   const proyeccion = totalTargetBiomass;
 
 
@@ -138,7 +129,7 @@ function PanelLabs() {
 
   const selectedLabOrg = labOrgs.find(org => org.orgId === selectedOrg);
 
-  // Obtener el número de módulos y tanques
+
   const countModules = selectedLabOrg?.countSalesRegion || 0;
   const countTanks = selectedLabOrg?.countWarehouses || 0;
 
@@ -161,7 +152,7 @@ function PanelLabs() {
     { title: 'Estado', dataIndex: 'estado', key: 'estado', align: 'center' }
   ];
   
-  // Datos de la tabla de Coordinación de Cosechas
+
   const data = [
     { key: '1', finca: 'Finca El Progreso', loteID: 'L-001', larva: '40-50', kilos: '1,200', estado: 'Pendiente' },
     { key: '2', finca: 'AgroMar', loteID: 'L-002', larva: '60-70', kilos: '1,500', estado: 'Completado' },
@@ -230,7 +221,7 @@ function PanelLabs() {
   ];
 
 
-  // Función para extraer valores de coordinaciones (máximo 3)
+
   const extractCoordinationData = (coordinations) => {
     const despacho = ['', '', ''];
     const cantidad = ['', '', ''];

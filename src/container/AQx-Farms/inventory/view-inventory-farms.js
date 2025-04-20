@@ -64,12 +64,12 @@ function InventoryTable() {
         ...farmsSelectOptions,
     ];
 
-      // Aplanamos las categorías para obtener todos los items de inventario
+
       const allInventoryItems = useMemo(() => {
         return Object.values(categories).flat() || [];
       }, [categories]);
 
-    // Lista única de almacenes a partir de los registros de inventario
+
     const warehouseOptions = useMemo(() => {
         const warehouses = [...new Set(allInventoryItems.map(item => item.warehouse))].filter(Boolean);
         return warehouses;

@@ -5,7 +5,7 @@ const TankCardLogistic = ({ data }) => {
     const navigate = useNavigate();
 
     const handleViewLote = () => {
-        // Redirige a la ruta deseada con el loteID
+
         navigate(`/lab/seeding-coords`);
     };
 

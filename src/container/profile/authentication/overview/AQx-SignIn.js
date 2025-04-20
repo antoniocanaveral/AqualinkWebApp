@@ -3,20 +3,20 @@ import UilGithub from '@iconscout/react-unicons/icons/uil-github';
 import UilTwitter from '@iconscout/react-unicons/icons/uil-twitter';
 import Alert from '../../../../components/alerts/alerts';
 import { Button, Col, Form, Input, Row } from 'antd';
-//import { Auth0Lock } from 'auth0-lock';
+
 import React, { useCallback, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { ReactSVG } from 'react-svg';
 import { AuthFormWrap } from './style';
 import { login/*,authOLogin*/ } from '../../../../redux/authentication/actionCreator';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
-//import { auth0options } from '../../../../config/auth0';
 
-//const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-//const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+
+
+
 
 function SignIn() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ function SignIn() {
   const [withError, setWithError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  //const lock = new Auth0Lock(clientId, domain, auth0options);
+
 
   const handleSubmit = useCallback(
     (values) => {

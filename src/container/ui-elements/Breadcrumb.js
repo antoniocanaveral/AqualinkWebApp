@@ -6,7 +6,7 @@ import { BreadcrumbWrapperStyle } from './ui-elements-styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Main } from '../styled';
 import { Cards } from '../../components/cards/frame/cards-frame';
-// import withRouter from '../../HOC/withRouter';
+
 
 const menu = (
   <Menu>

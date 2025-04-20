@@ -21,7 +21,7 @@ function Statistics() {
     },
   ];
   const onFinish = () => {
-    // console.log('finished!');
+
   };
 
   return (

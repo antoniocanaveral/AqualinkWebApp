@@ -11,7 +11,7 @@ import {
   Legend,
 } from 'chart.js';
 
-// Register Chart.js components
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -37,7 +37,7 @@ ChartJS.register(
  * ];
  */
 function ComparativeDispatchPerformanceBarChart({ dataVariations = [] }) {
-  // Ensure we have exactly 5 siembras; fill with zeroes if fewer
+
   const MAX_SIEMBRAS = 5;
   const filledVariations = [...dataVariations];
 
@@ -49,15 +49,15 @@ function ComparativeDispatchPerformanceBarChart({ dataVariations = [] }) {
     });
   }
 
-  // Build arrays for each variation
+
   const variationLarvaCoordinadaData = filledVariations.map(item => item.variacionLarvaCoordinada * 100);
   const variationSolicitadoDespachadoData = filledVariations.map(item => item.variacionSolicitadoDespachado * 100);
   const variationDespachadoSembradoData = filledVariations.map(item => item.variacionDespachadoSembrado * 100);
 
-  // Labels for the x-axis (Siembra 1..5)
+
   const labels = ['Siembra 1', 'Siembra 2', 'Siembra 3', 'Siembra 4', 'Siembra 5'];
 
-  // Prepare ChartJS data
+
   const data = {
     labels,
     datasets: [
@@ -82,7 +82,7 @@ function ComparativeDispatchPerformanceBarChart({ dataVariations = [] }) {
     ],
   };
 
-  // Chart options
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -90,8 +90,8 @@ function ComparativeDispatchPerformanceBarChart({ dataVariations = [] }) {
       y: {
         beginAtZero: true,
         ticks: {
-          // For example, we assume the data is in % (0-200%).
-          // Adjust 'max' or 'stepSize' if your data range is different.
+
+
           max: 200,
           stepSize: 20,
           callback: function (value) {

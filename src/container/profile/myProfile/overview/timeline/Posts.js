@@ -108,7 +108,7 @@ function Posts({ postId, from, time, img, like, comment, content, author }) {
     listType: 'picture-card',
     onChange(info) {
       if (info.file.status !== 'uploading') {
-        // console.log(info.file, info.fileList);
+
         setState({
           ...state,
           fileList: info.fileList,
@@ -130,7 +130,7 @@ function Posts({ postId, from, time, img, like, comment, content, author }) {
     },
     onChange(info) {
       if (info.file.status !== 'uploading') {
-        // console.log(info.file, info.fileList);
+
         setState({
           ...state,
           fileList2: info.fileList,
@@ -157,11 +157,11 @@ function Posts({ postId, from, time, img, like, comment, content, author }) {
     dispatch(postDelete(posts, id));
   };
 
-  // State
+
   const [toggle, setToggle] = React.useState(false);
   const [sIndex, setSIndex] = React.useState(0);
 
-  // Handler
+
   const lightBoxHandler = (status, value) => {
     setToggle(status);
     setSIndex(value);

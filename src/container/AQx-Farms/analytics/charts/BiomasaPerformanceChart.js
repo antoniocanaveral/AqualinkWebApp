@@ -1,4 +1,4 @@
-// src/components/charts/BiomasaPerformanceChart.jsx
+
 
 import React from 'react';
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, Legend, ResponsiveContainer } from "recharts";

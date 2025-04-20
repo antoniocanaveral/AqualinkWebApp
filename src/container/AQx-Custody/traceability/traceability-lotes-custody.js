@@ -6,7 +6,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import moment from 'moment';
 import { generatePDF } from '../../../utility/printPdf';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTraceabilityReports } from '../../../redux/traceability/actionCreator';
+import { fetchTraceabilityReports, fetchTraceabilityReportsCustody } from '../../../redux/traceability/actionCreator';
 import Cookies from 'js-cookie';
 import { fetchLabanalysis } from '../../../redux/labanalysis/actionCreator';
 import LoteDetails from './LoteDetails';
@@ -16,7 +16,7 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-// ---------------------- DATOS DE EJEMPLO ---------------------- //
+
 
 function TraceabilityLotesCustody() {
   const reportRef = useRef();
@@ -33,7 +33,7 @@ function TraceabilityLotesCustody() {
   const { labanalysisList } = useSelector((state) => state.labanalysis);
 
   useEffect(() => {
-    dispatch(fetchTraceabilityReports());
+    dispatch(fetchTraceabilityReportsCustody());
     dispatch(fetchLabanalysis());
   }, [dispatch, selectedOrg]);
 
@@ -43,7 +43,7 @@ function TraceabilityLotesCustody() {
     Cookies.remove('poolId');
   };
 
-  const custodyOrgs = useSelector((state) => state.auth.farmsOrgs);
+  const custodyOrgs = useSelector((state) => state.auth.custodyOrgs);
 
   const farmsSelectOptions = custodyOrgs.length > 0
     ? [
@@ -64,44 +64,32 @@ function TraceabilityLotesCustody() {
     ...farmsSelectOptions,
   ];
 
-  // Lista de clientes (Finca) basada en organization_name
+
   const listaClientes = useMemo(() => {
     const setFincas = new Set();
     if (traceabilityReports && Array.isArray(traceabilityReports)) {
       traceabilityReports.forEach((l) => {
-        setFincas.add(l.organization_name || 'N/A');
+        setFincas.add(l.sm_mainorgname || 'N/A');
       });
     }
     return ['Todos', ...Array.from(setFincas)];
   }, [traceabilityReports]);
 
-  // Lista de proveedores (Hatchery) basada en bp_org_name
-  const listaProveedores = useMemo(() => {
-    if (!selectedCliente || selectedCliente === 'Todos') return [];
-    const setProveedores = new Set();
-    if (traceabilityReports && Array.isArray(traceabilityReports)) {
-      traceabilityReports
-        .filter((l) => l.organization_name === selectedCliente)
-        .forEach((l) => {
-          setProveedores.add(l.bp_org_name || 'N/A');
-        });
-    }
-    return Array.from(setProveedores);
-  }, [traceabilityReports, selectedCliente]);
 
-  // Filtrado de lotes basado en las selecciones y rango de fechas (usamos lote_plantingdate)
+
+
   const filteredLotes = useMemo(() => {
     let result = traceabilityReports ? [...traceabilityReports] : [];
     if (selectedCliente && selectedCliente !== 'Todos') {
-      result = result.filter((l) => l.organization_name === selectedCliente);
+      result = result.filter((l) => l.sm_mainorgname === selectedCliente);
     }
     if (selectedProveedor && selectedProveedor !== 'Todos') {
-      result = result.filter((l) => l.bp_org_name === selectedProveedor);
+      result = result.filter((l) => l.sm_bpartnerorgname === selectedProveedor);
     }
     if (dateRange.length === 2) {
       const [start, end] = dateRange;
       result = result.filter((l) => {
-        return moment(l.lote_plantingdate).isBetween(start, end, 'day', '[]');
+        return moment(l.sm_loteplantingdate).isBetween(start, end, 'day', '[]');
       });
     }
     return result;
@@ -112,9 +100,7 @@ function TraceabilityLotesCustody() {
     setSelectedProveedor(null); // Reset al cambiar de cliente
   };
 
-  const handleSelectProveedor = (value) => {
-    setSelectedProveedor(value);
-  };
+
 
   const handleDateChange = (dates) => {
     if (!dates || dates.length === 0) {
@@ -146,11 +132,11 @@ function TraceabilityLotesCustody() {
   const handlePrintReport = async () => {
     const element = reportRef.current;
     if (!element) return;
-    // Genera el PDF y obtiene el blob URL
+
     const pdfUrl = await generateBlobPDF(element, orientation);
-    // Abre el PDF en una nueva ventana o pestaña
+
     const printWindow = window.open(pdfUrl, '_blank');
-    // Cuando la ventana cargue, dispara la impresión
+
     printWindow.onload = function () {
       printWindow.focus();
       printWindow.print();
@@ -186,22 +172,7 @@ function TraceabilityLotesCustody() {
               </Select>
             </Col>
 
-            <Col>
-              <Select
-                style={{ width: 200 }}
-                placeholder="Seleccione Proveedor"
-                value={selectedProveedor || undefined}
-                onChange={handleSelectProveedor}
-                disabled={!selectedCliente || selectedCliente === 'Todos'}
-                allowClear
-              >
-                {listaProveedores.map((prov) => (
-                  <Option key={prov} value={prov}>
-                    {prov}
-                  </Option>
-                ))}
-              </Select>
-            </Col>
+          
 
             <Col>
               <RangePicker
@@ -259,7 +230,7 @@ function TraceabilityLotesCustody() {
                     {lote.SM_Batch}
                   </div>
                   <div style={{ fontSize: '12px', color: '#555' }}>
-                    <strong>{lote.organization_name}</strong>
+                    <strong>{lote.sm_mainorgname}</strong>
                   </div>
                 </div>
               </Button>
@@ -322,24 +293,11 @@ function TraceabilityLotesCustody() {
                   {selectedLote.SM_Batch}
                 </Title>
                 <QRCodeSVG
-                  value={JSON.stringify({
-                    id: selectedLote.id,
-                    analisis: {
-                      quality: selectedLote.quality_test || 'N/A',
-                      organoleptic: selectedLote.organoleptic_test || 'N/A',
-                    },
-                    custodia: {
-                      transportTime: selectedLote.custody_transport_time || 'N/A',
-                      transportTemp: selectedLote.custody_transport_temperature || 'N/A',
-                    },
-                    origen: {
-                      hatchery: selectedLote.bp_org_name || 'N/A',
-                      broodstock: selectedLote.lote_org_name || 'N/A',
-                    },
-                  })}
+                  value={`http://69.48.179.112/aqualinkdemo/custody/traceability/reporte-lote/${selectedLote.id}`}
                   size={358}
                   includeMargin
                 />
+
               </div>
             </div>
 

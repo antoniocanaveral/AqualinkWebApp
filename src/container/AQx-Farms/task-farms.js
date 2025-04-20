@@ -1,4 +1,4 @@
-// src/components/TaskFarms.js
+
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { Row, Col, Skeleton, notification } from 'antd';
@@ -33,7 +33,7 @@ function TaskFarms() {
         setSelectedSector(null);
         console.log(JSON.stringify(farmsOrgsWithPools));
 
-        // Despachar la acción para obtener los datos de transferencia al cambiar la organización
+
         dispatch(getShrimpFarmingTransferScreen());
     };
 
@@ -111,7 +111,7 @@ function TaskFarms() {
 
     const error = useSelector((state) => state.auth.error);
 
-    // Seleccionar las listas separadas desde Redux
+
     const plannedFarming = useSelector((state) => state.operation.plannedFarming);
     const plannedHarvesting = useSelector((state) => state.operation.plannedHarvesting);
     const plannedTransfers = useSelector((state) => state.operation.plannedTransfers);

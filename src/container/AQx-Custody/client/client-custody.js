@@ -13,7 +13,7 @@ import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 const { TabPane } = Tabs;
 
 function ClientCustody() {
-    // Estado local para controlar la renderización del gráfico
+
     const [showChart, setShowChart] = useState(false);
     const [selectedFarmOrg, setSelectedFarmOrg] = useState(null)
     const custodyOrgsWithWarehouses = useSelector(selectCustodyOrgsWithWarehouses);

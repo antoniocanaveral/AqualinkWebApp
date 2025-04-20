@@ -20,7 +20,7 @@ function PlanningLabs() {
 
   const validLabLote = Array.isArray(lablotes) ? lablotes : [];
  
-  // Estados para almacenar los datos agrupados por org_type
+
   const [dataGIV, setDataGIV] = useState([]);
   const [dataGPA, setDataGPA] = useState([]);
   const [dataIND, setDataIND] = useState([]);
@@ -29,7 +29,7 @@ function PlanningLabs() {
     dispatch(fetchLablotesInfo());
   }, [dispatch, selectedOrg]);
 
-  // Actualiza la agrupación de datos cuando lablotes cambia
+
   useEffect(() => {
     const groups = {
       GIV: [],
@@ -39,10 +39,10 @@ function PlanningLabs() {
 
     if (lablotes && Array.isArray(lablotes)) {
       lablotes.forEach(record => {
-        // Procesamos solo registros con coordinations_json definido y no vacío
+
         if (record.coordinations_json && Array.isArray(record.coordinations_json) && record.coordinations_json.length > 0) {
           record.coordinations_json.forEach(coord => {
-            // Agrupamos solo si el org_type es uno de los permitidos
+
             if (["GIV", "GPA", "IND"].includes(coord.org_type)) {
               groups[coord.org_type].push({
                 key: `${record.id}-${coord.sm_coordination_id}`,
@@ -82,7 +82,7 @@ function PlanningLabs() {
   ] : [];
   const combinedSelectOptions = [...farmsSelectOptions];
 
-  // Definición de columnas de la tabla
+
   const columns = [
     { title: "Lote", dataIndex: "lote", key: "lote" },
     { title: "LoteID", dataIndex: "loteID", key: "loteID" },
@@ -100,9 +100,9 @@ function PlanningLabs() {
     },
   ];
 
-  // Función para mostrar los detalles del tanque correspondiente
+
   const showDetails = (record) => {
-    // Si es necesario, se puede ajustar el formato del identificador
+
     const tank = validLabLote.find(t => t.sm_lablote_ID.identifier === record.lote);
     if (tank) {
       setSelectedTank(tank);

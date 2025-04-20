@@ -3,7 +3,7 @@ import propTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components'; // Asegúrate de tener esto instalado
 
-// Estilo visual personalizado (puedes reemplazar esto si ya tienes InfoCardStyle)
+
 const CardWrapper = styled.div`
   background: #fff;
   border-radius: 16px;

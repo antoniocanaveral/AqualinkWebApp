@@ -315,7 +315,7 @@ const AddUserFarm = () => {
                               }
                             >
                               {() => {
-                                // Obtenemos el valor actual del tipo para este campo
+
                                 const typeValue = form.getFieldValue(['orgGroups', field.name, 'type']);
                                 return (
                                   <Form.Item
@@ -351,7 +351,7 @@ const AddUserFarm = () => {
 
               </>
             ) : (
-              // Renderizado para otros roles (incluye la lógica de almacenes)
+
               <>
                 {selectedRoleObj?.has_warehouses && (
                   <Row gutter={16}>

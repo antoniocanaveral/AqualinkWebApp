@@ -1,4 +1,4 @@
-// Importaciones necesarias
+
 import React, { Suspense } from 'react';
 import { Modal, Row, Col, Typography, Divider, Skeleton } from 'antd';
 import { Cards } from '../../../../components/cards/frame/cards-frame';
@@ -6,7 +6,7 @@ import { Main } from '../../../styled';
 
 const { Title, Text } = Typography;
 
-// Componente PackingModalHarvest
+
 const PackingModalHarvest = ({ visible, onClose}) => {
 
     const dataSource = 

@@ -24,7 +24,7 @@ function EventForm({ onHandleAddEvent, onHandleUpdateEvent }) {
   const [form] = Form.useForm();
 
   const getPriorityLabel = (priority) => {
-    // Mapear la prioridad al color (label)
+
     switch (priority) {
       case 'alta':
         return 'danger'; // Rojo

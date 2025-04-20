@@ -10,7 +10,7 @@ import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { PerfomanceOverviewStyle } from './Style';
 import { BorderLessHeading } from '../../../styled';
 
-// Data based on provided percentages
+
 const labels = ['Balanceado', 'Artemia', 'Algas', 'Ácidos Orgánicos', 'Bacterias', 'Vitaminas'];
 const dataSets = {
   series: [58, 17, 11, 4, 7, 3],

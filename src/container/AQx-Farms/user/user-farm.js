@@ -12,7 +12,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsersByClient } from '../../../redux/user/actionCreator';
 
-// Datos de ejemplo
+
 const data = [
     {
         id: 1,
@@ -54,7 +54,7 @@ const data = [
             { dispositivo: 'Web App', permiso: 'Editar Control', nombreCampo: 'editarControl', allowed: true },
         ]
     },
-    // Puedes añadir más usuarios aquí...
+
 ];
 
 function UserFarm() {
@@ -70,41 +70,41 @@ function UserFarm() {
       }, [dispatch]);
 
       
-    // Nuevos estados para el modal de Recuperar Clave
+
     const [visibleRecoverPassword, setVisibleRecoverPassword] = useState(false);
     const [selectedUserRecover, setSelectedUserRecover] = useState(null);
     
-    // Función para mostrar el modal de permisos
+
     const showPermisosModal = (user) => {
         setSelectedUser(user);
         setVisiblePermisos(true);
     };
 
-    // Función para cerrar el modal de permisos
+
     const handleCancelPermisos = () => {
         setVisiblePermisos(false);
         setSelectedUser(null);
     };
 
-    // Función para mostrar el modal de Recuperar Clave
+
     const showRecoverPasswordModal = (user) => {
         setSelectedUserRecover(user);
         setVisibleRecoverPassword(true);
     };
 
-    // Función para cerrar el modal de Recuperar Clave
+
     const handleCancelRecoverPassword = () => {
         setVisibleRecoverPassword(false);
         setSelectedUserRecover(null);
     };
 
-    // Función para manejar la recuperación de clave
+
     const handleRecoverPassword = async (values) => {
         try {
             const { newPassword, confirmPassword } = values;
             
-            // Enviar la nueva contraseña al backend
-            // Asegúrate de ajustar el endpoint según tu API
+
+
             const response = await axios.post('/api/users/reset-password', {
                 userId: selectedUserRecover.id,
                 newPassword,

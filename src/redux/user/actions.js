@@ -1,4 +1,4 @@
-// actions.js
+
 
 export const FETCH_ROLES_LOADING = 'FETCH_ROLES_LOADING';
 export const FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS';
@@ -12,12 +12,12 @@ export const FETCH_USERS_LOADING = 'FETCH_USERS_LOADING';
 export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
 export const FETCH_USERS_ERROR = 'FETCH_USERS_ERROR';
 
-// Nuevos tipos para el proceso de auditor externo
+
 export const SEND_AUDITOR_EMAIL_LOADING = 'SEND_AUDITOR_EMAIL_LOADING';
 export const SEND_AUDITOR_EMAIL_SUCCESS = 'SEND_AUDITOR_EMAIL_SUCCESS';
 export const SEND_AUDITOR_EMAIL_ERROR = 'SEND_AUDITOR_EMAIL_ERROR';
 
-// Acciones para roles
+
 export const fetchRolesLoading = () => ({
   type: FETCH_ROLES_LOADING,
 });
@@ -32,7 +32,7 @@ export const fetchRolesError = (error) => ({
   payload: { error },
 });
 
-// Acciones para crear usuario
+
 export const createUserLoading = () => ({
   type: CREATE_USER_LOADING,
 });
@@ -47,7 +47,7 @@ export const createUserError = (error) => ({
   payload: error,
 });
 
-// Acciones para usuarios
+
 export const fetchUsersLoading = () => ({
   type: FETCH_USERS_LOADING,
 });
@@ -62,7 +62,7 @@ export const fetchUsersError = (error) => ({
   payload: error,
 });
 
-// Nuevas acciones para el proceso de auditor externo
+
 export const sendAuditorEmailLoading = () => ({
   type: SEND_AUDITOR_EMAIL_LOADING,
 });

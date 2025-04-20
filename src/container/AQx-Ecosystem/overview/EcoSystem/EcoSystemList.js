@@ -1,12 +1,12 @@
-
 import React, { useCallback, useEffect } from 'react';
 import { Row, Col, PageHeader, Avatar } from 'antd';
-import OverviewCard from '../../../../components/cards/OverviewCard'; // Cambiamos a OverviewCard
+import OverviewCard from '../../../../components/cards/OverviewCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { selectModule, loadUserAccess } from '../../../../redux/authentication/actionCreator';
 import InfoCard from '../../../../components/cards/InfoCard';
 import Heading from '../../../../components/heading/heading';
+import Cookies from 'js-cookie';
 
 import {
   UilCloudDataConnection,
@@ -29,23 +29,21 @@ const OverviewDataList = React.memo(() => {
   const withCustody = useSelector((state) => state.auth.withCustody);
   const custodyOrgs = useSelector((state) => state.auth.custodyOrgs);
 
-  // Función para manejar la navegación cuando se hace clic en un módulo
+  // Obtener roles desde cookies y verificar si tiene el rol autorizado
+  const userRoles = JSON.parse(decodeURIComponent(Cookies.get('roles') || '[]'));
+  const hasExternalAuditorRole = userRoles.some(role => role.name === 'Cumplimiento - Auditor Externo');
+
   const gotModule = useCallback(
     (moduleKey, orgInfo, url) => {
       dispatch(
         selectModule(moduleKey, orgInfo, () => {
-          navigate(url); // Redirigir a la URL proporcionada
+          navigate(url);
         })
       );
     },
     [navigate, dispatch]
   );
 
-  const handleNavigation = (path) => {
-    navigate(path);
-  };
-
-  // Definir los datos para cada card de forma acorde a OverviewCard
   const overviewCardData = [
     {
       id: 'labs',
@@ -57,7 +55,7 @@ const OverviewDataList = React.memo(() => {
       status: withLabs ? 'growth' : 'down',
       canAccess: withLabs,
       accessItems: labsOrgs,
-      onPress: () => gotModule('LAB', { orgId: labsOrgs[0]?.orgId, orgName: labsOrgs[0]?.orgName, orgEmail: labsOrgs[0]?.orgEmail }, '/lab/panel'), // Lógica de navegación
+      onPress: () => gotModule('LAB', { orgId: labsOrgs[0]?.orgId, orgName: labsOrgs[0]?.orgName, orgEmail: labsOrgs[0]?.orgEmail }, '/lab/panel'),
     },
     {
       id: 'farms',
@@ -87,96 +85,117 @@ const OverviewDataList = React.memo(() => {
 
   return (
     <Row gutter={24}>
-      <br></br>
-
+      <br />
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', zIndex: 2 }}>
         <figure style={{ textAlign: 'center' }}>
           <Heading as="h2">Hola!</Heading>
-          <Avatar size={70} >EG</Avatar>
+          <Avatar size={70}>EG</Avatar>
           <figcaption>
             <Heading as="h5">Esteban Gallegos</Heading>
           </figcaption>
           <p>Bienvenido a Aqualink</p>
         </figure>
       </div>
-      <div class="background">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+
+      <div className="background">
+        {[...Array(12)].map((_, i) => (
+          <span key={i}></span>
+        ))}
       </div>
-
-
 
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilCloudDataConnection />
-          <PageHeader  title="Smart Apps & WebApps" />
+          <PageHeader title="Smart Apps & WebApps" />
         </div>
       </Col>
+
       {overviewCardData.map((item) => (
         <Col xl={8} md={8} xs={24} key={item.id}>
-          <OverviewCard
-            data={item}
-            bottomStatus
-            contentFirst
-            halfCircleIcon
-            onClick={item.onPress} // Añadir onClick para cada card
-          />
+          <div
+            style={{
+              pointerEvents: item.total > 0 ? 'auto' : 'none',
+              opacity: item.total > 0 ? 1 : 0.5,
+              cursor: item.total > 0 ? 'pointer' : 'not-allowed',
+            }}
+          >
+            <OverviewCard
+              data={item}
+              bottomStatus
+              contentFirst
+              halfCircleIcon
+              onClick={item.total > 0 ? item.onPress : null}
+            />
+          </div>
         </Col>
       ))}
+
 
       <Col xl={24} xs={24}>
         <div className="flex_row">
           <UilSlack />
-          <PageHeader im title="Solutions" />
+          <PageHeader title="Solutions" />
         </div>
-      </Col>
-      <Col xs={24} xl={8} md={8}>
-        <InfoCard icon="UilAnalysis" img={"Analytics.png"} type={"solutions"} />
-      </Col>
-      <Col xs={24} xl={8} md={8}>
-        <InfoCard icon="UilMonitorHeartRate" img={"Control.png"} type={"solutions"} />
       </Col>
 
       <Col xs={24} xl={8} md={8}>
-        <div onClick={
-          () => gotModule('MONITORING', { orgId: null, orgName: null, orgEmail: null }, '/monitoring')
-        }
+        <div
+          onClick={() => gotModule('MONITORING', { orgId: null, orgName: null, orgEmail: null }, '/monitoring')}
+          style={{
+            cursor: hasExternalAuditorRole ? 'pointer' : 'not-allowed',
+            opacity: hasExternalAuditorRole ? 1 : 0.5,
+            pointerEvents: hasExternalAuditorRole ? 'auto' : 'none'
+          }}
         >
-          <InfoCard icon="UilAnalytics" img={"M&E.png"} type={"solutions"} />
+          <InfoCard icon="UilAnalytics" img="M&E.png" type="solutions" />
         </div>
       </Col>
+
       <Col xs={24} xl={8} md={8}>
-        <InfoCard icon="UilBriefcaseAlt" img={"B2b.png"} type={"solutions"} />
+        <div
+          onClick={() => gotModule('NETWORK', { orgId: null, orgName: null, orgEmail: null }, '/network')
+          }
+
+        >
+          <InfoCard icon="SiCoinmarketcap" iconLib="si" img="Network.png" type="solutions" />
+        </div>
       </Col>
 
       <Col xs={24} xl={8} md={8}>
-        <InfoCard icon="UilWifiRouter" img={"Network.png"} type={"solutions"} />
+        <div
+          onClick={hasExternalAuditorRole
+            ? () => gotModule('CONTROL', { orgId: null, orgName: null, orgEmail: null }, '/control')
+            : null}
+          style={{
+            cursor: hasExternalAuditorRole ? 'pointer' : 'not-allowed',
+            opacity: hasExternalAuditorRole ? 1 : 0.5,
+            pointerEvents: hasExternalAuditorRole ? 'auto' : 'none'
+          }}
+        >
+          <InfoCard icon="UilMonitorHeartRate" img="Control.png" type="solutions" />
+        </div>
       </Col>
 
       <Col xs={24} xl={8} md={8}>
-        <InfoCard icon="UilSetting" img={"ERP.png"} type={"solutions"} />
+        <InfoCard icon="UilAnalysis" img="Analytics.png" type="solutions" />
       </Col>
 
+      <Col xs={24} xl={8} md={8}>
+        <InfoCard icon="UilSetting" img="ERP.png" type="solutions" />
+      </Col>
+
+      <Col xs={24} xl={8} md={8}>
+        <InfoCard icon="UilBriefcaseAlt" img="B2b.png" type="solutions" />
+      </Col>
 
       <Col xs={8}>
         <div className="flex_row">
           <UilBooks />
           <PageHeader title="Knowledge Center" />
         </div>
-        <InfoCard icon="UilBrain" img={"AquaDemia.png"} type={"solutions"} />
+        <InfoCard icon="UilBrain" img="AquaDemia.png" type="solutions" />
       </Col>
-
-    </Row >
+    </Row>
   );
 });
 

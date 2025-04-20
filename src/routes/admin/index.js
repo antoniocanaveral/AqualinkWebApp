@@ -26,7 +26,7 @@ const Import = lazy(() => import('../../container/importExport/Import'));
 const Export = lazy(() => import('../../container/importExport/Export'));
 const ToDo = lazy(() => import('../../container/toDo/ToDo'));
 const Note = lazy(() => import('../../container/note/Note'));
-// const Kanban = lazy(() => import('../../container/kanban/Index'));
+
 const Contact = lazy(() => import('../../container/contact/Contact'));
 const ContactGrid = lazy(() => import('../../container/contact/ContactGrid'));
 const ContactAddNew = lazy(() => import('../../container/contact/AddNew'));

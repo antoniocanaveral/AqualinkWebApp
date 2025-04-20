@@ -16,7 +16,7 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-// ---------------------- DATOS DE EJEMPLO ---------------------- //
+
 
 function TraceabilityLotesMonitoring() {
   const reportRef = useRef();
@@ -65,7 +65,7 @@ function TraceabilityLotesMonitoring() {
     ...farmsSelectOptions,
   ];
 
-  // Lista de clientes (Finca) basada en organization_name
+
   const listaClientes = useMemo(() => {
     const setFincas = new Set();
     if (traceabilityReports && Array.isArray(traceabilityReports)) {
@@ -76,7 +76,7 @@ function TraceabilityLotesMonitoring() {
     return ['Todos', ...Array.from(setFincas)];
   }, [traceabilityReports]);
 
-  // Lista de proveedores (Hatchery) basada en bp_org_name
+
   const listaProveedores = useMemo(() => {
     if (!selectedCliente || selectedCliente === 'Todos') return [];
     const setProveedores = new Set();
@@ -90,7 +90,7 @@ function TraceabilityLotesMonitoring() {
     return Array.from(setProveedores);
   }, [traceabilityReports, selectedCliente]);
 
-  // Filtrado de lotes basado en las selecciones y rango de fechas (usamos lote_plantingdate)
+
   const filteredLotes = useMemo(() => {
     let result = traceabilityReports ? [...traceabilityReports] : [];
     if (selectedCliente && selectedCliente !== 'Todos') {
@@ -147,11 +147,11 @@ function TraceabilityLotesMonitoring() {
   const handlePrintReport = async () => {
     const element = reportRef.current;
     if (!element) return;
-    // Genera el PDF y obtiene el blob URL
+
     const pdfUrl = await generateBlobPDF(element, orientation);
-    // Abre el PDF en una nueva ventana o pestaña
+
     const printWindow = window.open(pdfUrl, '_blank');
-    // Cuando la ventana cargue, dispara la impresión
+
     printWindow.onload = function () {
       printWindow.focus();
       printWindow.print();

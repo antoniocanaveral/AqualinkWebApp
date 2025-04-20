@@ -7,17 +7,17 @@ const DatosRealesCard = ({ feedingreport }) => {
     const projected = feedingreport.feedingdata_projectedjson || [];
     const real = feedingreport.feedingdata_realjson || [];
 
-    // Último sm_fca del projected
+
     const lastFca = [...projected]
         .filter(d => d.sm_fca != null)
         .sort((a, b) => b.sm_index - a.sm_index)[0]?.sm_fca?.toFixed(2);
 
-    // Último sm_weeklygrowthreal del real
+
     const lastWGR = [...real]
         .filter(d => d.sm_weeklygrowthreal != null)
         .sort((a, b) => b.sm_index - a.sm_index)[0]?.sm_weeklygrowthreal?.toFixed(2);
 
-    // Último animalest del real (Supervivencia Real)
+
     const lastSupervivencia = [...real]
         .filter(d => d.animalest != null)
         .sort((a, b) => b.sm_index - a.sm_index)[0]?.animalest;

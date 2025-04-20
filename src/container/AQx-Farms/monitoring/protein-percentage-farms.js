@@ -15,14 +15,14 @@ function ProteinPercentageFarm() {
   const { feedingreports, loading } = useSelector(state => state.feedingreport);
   const [selectedBatch, setSelectedBatch] = useState(null);
 
-  // Selección de org, sector y pool
+
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
 
-  // Datos de organizaciones
+
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-  // Manejo de selección de org
+
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
@@ -85,12 +85,12 @@ function ProteinPercentageFarm() {
 
   const generateFeedingData = (feedingreports) => {
     return feedingreports.map(report => {
-      // Asegurarse de que los arrays existan antes de usar map
+
       const preCriaProteins = report.pc_production_json?.map(product => `${product.foodproteinbase}%`).join('-') || '';
       const preEngordeProteins = report.pe_production_json?.map(product => `${product.foodproteinbase}%`).join('-') || '';
       const engordeProteins = report.e_production_json?.map(product => `${product.foodproteinbase}%`).join('-') || '';
 
-      // Convertir formatos de alimento a acrónimos
+
       const alimentos = [...(report.pc_production_json || []), ...(report.pe_production_json || [])]
         .map(product => {
           const format = product.sm_productformat || '';
@@ -102,7 +102,7 @@ function ProteinPercentageFarm() {
           return format;
         }).join('-') || '';
 
-      // Asegurarse de que los valores de semanas existen antes de hacer el cálculo
+
       const totalDias = ((report.SM_PreBreedingWeeks || 0) + (report.SM_FattenWeeks || 0) + (report.SM_PreFatteningWeeks || 0)) * 7;
 
       const realData = report.feedingdata_realjson;
@@ -136,7 +136,7 @@ function ProteinPercentageFarm() {
   const feedingData = generateFeedingData(feedingreports);
 
 
-  // Opciones para Farms
+
   const farmsSelectOptions = organizations.length > 0 ? [
     {
       options: farmsOrgsWithPools.map(org => ({
@@ -150,7 +150,7 @@ function ProteinPercentageFarm() {
     },
   ] : [];
 
-  // Combinación de selects en el PageHeader
+
   const combinedSelectOptions = [
     ...farmsSelectOptions,
   ];
