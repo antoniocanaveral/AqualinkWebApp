@@ -96,10 +96,7 @@ const WarehouseCard = ({ data }) => {
         <span>{getClassification(data) || 'NA'}</span>
       </div>
 
-      <div className="flex-row">
-        <span className="label">Lbs x Ha.:</span>
-        <span>{data.lbsPorHa || 'NA'}</span>
-      </div>
+     
 
       <div className="flex-row">
         <span className="label">Coordinación Pesca:</span>

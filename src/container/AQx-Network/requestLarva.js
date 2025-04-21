@@ -51,7 +51,7 @@ function RequestLarva() {
             },
         },
         { title: 'Fecha Ideal', dataIndex: 'SM_FishingDate', key: 'idealDate', render: (text) => new Date(text).toLocaleDateString('es-ES', { month: 'long', day: 'numeric', year: 'numeric' }) },
-        { title: 'Clasificación', dataIndex: 'sm_targetpl', key: 'classification', align: 'center' },
+        { title: 'PL/gr', dataIndex: 'sm_targetpl', key: 'classification', align: 'center' },
         {
             title: 'Cantidad Disponible',
             dataIndex: 'sm_reservedbiomass',

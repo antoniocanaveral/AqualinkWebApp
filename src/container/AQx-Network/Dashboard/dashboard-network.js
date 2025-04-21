@@ -98,7 +98,7 @@ function DashboardNetwork() {
                 </Cards>
               }
             >
-              <Cards title="Larva por PL" size="large">
+              <Cards title="Larva por PL/gr" size="large">
                 {lablotesLoading ? (
                   <Skeleton active />
                 ) : lablotesError ? (

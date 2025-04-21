@@ -159,7 +159,7 @@ function TraceabilityLotesFarm() {
             <Col>
               <Select
                 style={{ width: 200 }}
-                placeholder="Seleccione Cliente"
+                placeholder="Seleccione Proveedor"
                 value={selectedCliente || undefined}
                 onChange={handleSelectCliente}
                 allowClear
