@@ -11,6 +11,9 @@ import {
     fetchCostCenterLoading,
     fetchCostCenterSuccess,
     fetchCostCenterError,
+    fetchReportStatementLoading,
+    fetchReportStatementSuccess,
+    fetchReportStatementError,
 } from './actions';
 import { handleApiError } from "../error/errorHandler";
 export const registerIndirectCost = (indirectCostData, recordId = null) => async (dispatch) => {
@@ -101,3 +104,27 @@ export const fetchCostCenterInfo = () => async (dispatch) => {
         handleApiError(error, dispatch, registerIndirectCostError);
     }
 };
+
+
+export const fetchReportStatement = () => async (dispatch) => {
+    dispatch(fetchReportStatementLoading());
+  
+    try {
+      const poolId = Cookies.get('poolId');
+      if (!poolId) {
+        throw new Error('Organización no encontrada en las cookies.');
+      }
+  
+      const response = await DataService.get(`/models/sm_reportstatement_v?$filter=M_Warehouse_ID eq ${poolId}`);
+  
+      if (response.data && response.data.records) {
+        dispatch(fetchReportStatementSuccess(response.data.records));
+      } else {
+        throw new Error('No se encontraron datos del estado contable.');
+      }
+  
+    } catch (error) {
+      dispatch(fetchReportStatementError(error.message));
+      handleApiError(error, dispatch, fetchReportStatementError);
+    }
+  };

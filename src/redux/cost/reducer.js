@@ -7,7 +7,10 @@ import {
     FETCH_INDIRECTCOST_ERROR,
     FETCH_COSTCENTER_LOADING,
     FETCH_COSTCENTER_SUCCESS,
-    FETCH_COSTCENTER_ERROR
+    FETCH_COSTCENTER_ERROR,
+    FETCH_REPORTSTATEMENT_LOADING,
+    FETCH_REPORTSTATEMENT_SUCCESS,
+    FETCH_REPORTSTATEMENT_ERROR
 } from "./actions";
 
 const initialState = {
@@ -15,10 +18,10 @@ const initialState = {
     indirectCostData: null,
     error: null,
 
-
     indirectCosts: [],
-
     costCenterData: [],
+
+    reportStatementData: [],
 };
 
 export const costReducer = (state = initialState, action) => {
@@ -42,6 +45,15 @@ export const costReducer = (state = initialState, action) => {
         case FETCH_COSTCENTER_SUCCESS:
             return { ...state, loading: false, costCenterData: action.payload };
         case FETCH_COSTCENTER_ERROR:
+            return { ...state, loading: false, error: action.payload };
+
+        case FETCH_REPORTSTATEMENT_LOADING:
+            return { ...state, loading: true, error: null };
+
+        case FETCH_REPORTSTATEMENT_SUCCESS:
+            return { ...state, loading: false, reportStatementData: action.payload };
+
+        case FETCH_REPORTSTATEMENT_ERROR:
             return { ...state, loading: false, error: action.payload };
 
         default:

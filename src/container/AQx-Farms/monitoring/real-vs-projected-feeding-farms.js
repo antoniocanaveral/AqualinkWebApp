@@ -63,7 +63,9 @@ function RealAndProjectedFeeding() {
           sm_index: proj.sm_index,
           projected: proj.sm_accumulatedfood || 0,
           real: real.sm_accumulatedfoodreal || 0,
+          adjusted: real.sm_dailydoseadjustment || 0,
           tipoAlimento: proj.sm_productformat || real.sm_productformat || '',
+          plannedDate: real.sm_planneddate || proj.sm_planneddate || null,
           proteina: proj.foodproteinbase || real.foodproteinbase || 0
         };
       }).sort((a, b) => a.sm_index - b.sm_index);
@@ -73,8 +75,9 @@ function RealAndProjectedFeeding() {
         lote: report.SM_Batch,
         dia: entry.sm_index,
         alimentoProyectado: entry.projected.toFixed(2),
+        fecha: entry.plannedDate,
         alimentoEntregado: entry.real.toFixed(2),
-        alimentoAjustado: 0.00, // Valor por defecto
+        alimentoAjustado: entry.adjusted.toFixed(2),
         tipoAlimento: entry.tipoAlimento,
         proteina: entry.proteina.toFixed(2)
       }));
@@ -177,7 +180,7 @@ function RealAndProjectedFeeding() {
               }
             >
               <Cards title="Alimentación Real vs Alimentación Proyectada" size="large">
-                <ProjectedSuggestedFeedingChart />
+              <ProjectedSuggestedFeedingChart data={filteredFeedingData} />
               </Cards>
             </Suspense>
           </Col>

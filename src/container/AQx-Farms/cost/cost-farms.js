@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Row, Col, Skeleton, Table, Space, Typography, Progress } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -8,8 +8,189 @@ import CostPerformanceRadial from './charts/CostPerformance';
 import { ChartContainer, SalesRevenueWrapper } from '../../dashboard/Style';
 import { BorderLessHeading } from '../../styled';
 import WeeklyCombinedChart from './charts/WeeklyCombinedChart';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+import Cookies from 'js-cookie';
+import { fetchCostCenterInfo, fetchReportStatement } from '../../../redux/cost/actionCreator';
 
 function CostFarm() {
+
+  const dispatch = useDispatch();
+
+
+  const organizations = useSelector((state) => state.auth.farmsOrgs);
+  const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+
+
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+  const [selectedSector, setSelectedSector] = useState(null);
+  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+
+
+  const { reportStatementData, loading } = useSelector((state) => state.cost);
+
+  console.log("reportStatementData", reportStatementData)
+  const handleOrgChange = (orgId, orgEmail) => {
+    setSelectedOrg(orgId);
+    Cookies.set('orgId', orgId);
+    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.remove('poolId');
+    setSelectedPool(null);
+    setSelectedSector(null);
+  };
+
+
+  const handleSectorChange = (sectorId) => {
+    setSelectedSector(sectorId);
+    setSelectedPool(null);
+  };
+
+
+  const handlePoolChange = (poolId) => {
+    setSelectedPool(poolId);
+    Cookies.set('poolId', poolId);
+  };
+
+
+  const farmsSelectOptions = organizations.length > 0 ? [
+    {
+      options: farmsOrgsWithPools.map(org => ({
+        value: org.orgId,
+        label: org.orgName,
+        email: org.orgEmail,
+      })),
+      onChange: handleOrgChange,
+      placeholder: 'Seleccione una Farm',
+      value: selectedOrg || undefined,
+    },
+  ] : [];
+
+
+  const sectorsOptions = selectedOrg
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .reduce((acc, pool) => {
+        if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
+          acc.push({
+            value: pool.salesRegion.id,
+            label: pool.salesRegion.name,
+          });
+        }
+        return acc;
+      }, [])
+    : [];
+
+  const sectorSelectOptions = selectedOrg ? [
+    {
+      options: sectorsOptions,
+      onChange: handleSectorChange,
+      placeholder: 'Seleccione un Sector',
+      value: selectedSector || undefined,
+    },
+  ] : [];
+
+
+  const poolsOptions = selectedSector
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
+      .map(pool => ({
+        value: pool.poolId,
+        label: pool.poolName,
+      }))
+    : [];
+
+  const poolsSelectOptions = selectedSector ? [
+    {
+      options: poolsOptions,
+      onChange: handlePoolChange,
+      placeholder: 'Seleccione una Pool',
+      disabled: poolsOptions.length === 0,
+      value: selectedPool || undefined,
+    },
+  ] : [];
+
+
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
+    ...sectorSelectOptions,
+    ...poolsSelectOptions,
+  ];
+
+
+  useEffect(() => {
+    if (selectedPool != null) {
+      dispatch(fetchReportStatement());
+    }
+  }, [dispatch, selectedPool]);
+
+  const transformReportStatementData = (rawData) => {
+    if (!Array.isArray(rawData)) return [];
+  
+    const groupedByIndex = {};
+  
+    rawData.forEach((item) => {
+      const index = item.SM_Index ?? 0;
+      const categoria = item.product_category_name?.toUpperCase() ?? '';
+      const monto = item.AmtAcctDr ?? 0;
+  
+      if (!groupedByIndex[index]) {
+        groupedByIndex[index] = {
+          key: index,
+          dia: index,
+          alimentoBalanceado: 0,
+          acidosOrganicos: 0,
+          aditivos: 0,
+          vitaminas: 0,
+          mineralesCalcicos: 0,
+          desparasitantes: 0,
+          fertilizantes: 0,
+          medicados: 0,
+          bacteriaEnzimas: 0,
+          agua: 0,
+        };
+      }
+  
+      const entry = groupedByIndex[index];
+  
+      switch (categoria) {
+        case 'LARVA-CAMARONERA':
+          entry.alimentoBalanceado += monto;
+          break;
+        case 'ADITIVOS':
+          entry.aditivos += monto;
+          break;
+        case 'VITAMINAS':
+          entry.vitaminas += monto;
+          break;
+        case 'ACIDOS ORGANICOS':
+          entry.acidosOrganicos += monto;
+          break;
+        case 'BACTERIAS Y ENZIMAS':
+          entry.bacteriaEnzimas += monto;
+          break;
+        case 'FERTILIZANTE':
+          entry.fertilizantes += monto;
+          break;
+        case 'MINERALES Y CALCAREOS':
+          entry.mineralesCalcicos += monto;
+          break;
+        case 'DESPARASITANTES':
+          entry.desparasitantes += monto;
+          break;
+        case 'MEDICADOS':
+          entry.medicados += monto;
+          break;
+        case 'AGUA':
+          entry.agua += monto;
+          break;
+        default:
+          break;
+      }
+    });
+  
+    return Object.values(groupedByIndex).sort((a, b) => a.dia - b.dia);
+  };
 
   const columns = [
     {
@@ -20,80 +201,89 @@ function CostFarm() {
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>LARVA</span>,
+      title: <span style={{ fontSize: '11px' }}>LARVA-CAMARONERA</span>,
       dataIndex: 'alimentoBalanceado',
       key: 'alimentoBalanceado',
       align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>A. BALANCEADO</span>,
+      title: <span style={{ fontSize: '11px' }}>ÁCIDOS ORGÁNICOS</span>,
       dataIndex: 'acidosOrganicos',
       key: 'acidosOrganicos',
       align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
-      title: <span style={{ fontSize: '11px' }}>A. ORGÁNICOS</span>,
+      title: <span style={{ fontSize: '11px' }}>ADITIVOS</span>,
       dataIndex: 'aditivos',
       key: 'aditivos',
       align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
-    },
-    {
-      title: <span style={{ fontSize: '11px' }}>BACTERIAS Y ENZIMAS</span>,
-      dataIndex: 'vitaminas',
-      key: 'vitaminas',
-      align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
-    },
-    {
-      title: <span style={{ fontSize: '11px' }}>FERTILIZANTE</span>,
-      dataIndex: 'mineralesCalcicos',
-      key: 'mineralesCalcicos',
-      align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
-    },
-    {
-      title: <span style={{ fontSize: '11px' }}>MINERALES Y CALCÁREOS</span>,
-      dataIndex: 'desparasitantes',
-      key: 'desparasitantes',
-      align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
-    },
-    {
-      title: <span style={{ fontSize: '11px' }}>MEDICADOS</span>,
-      dataIndex: 'fertilizantes',
-      key: 'fertilizantes',
-      align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
       title: <span style={{ fontSize: '11px' }}>VITAMINAS</span>,
+      dataIndex: 'vitaminas',
+      key: 'vitaminas',
+      align: 'center',
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
+    },
+    {
+      title: <span style={{ fontSize: '11px' }}>MINERALES CALCÁREOS</span>,
+      dataIndex: 'mineralesCalcicos',
+      key: 'mineralesCalcicos',
+      align: 'center',
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
+    },
+    {
+      title: <span style={{ fontSize: '11px' }}>DESPARASITANTES</span>,
+      dataIndex: 'desparasitantes',
+      key: 'desparasitantes',
+      align: 'center',
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
+    },
+    {
+      title: <span style={{ fontSize: '11px' }}>FERTILIZANTES</span>,
+      dataIndex: 'fertilizantes',
+      key: 'fertilizantes',
+      align: 'center',
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
+    },
+    {
+      title: <span style={{ fontSize: '11px' }}>MEDICADOS</span>,
       dataIndex: 'medicados',
       key: 'medicados',
       align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
-   
+    {
+      title: <span style={{ fontSize: '11px' }}>BACTERIAS Y ENZIMAS</span>,
+      dataIndex: 'bacteriaEnzimas',
+      key: 'bacteriaEnzimas',
+      align: 'center',
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
+    },
+    {
+      title: <span style={{ fontSize: '11px' }}>AGUA</span>,
+      dataIndex: 'agua',
+      key: 'agua',
+      align: 'center',
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
+    },
     {
       title: <span style={{ fontSize: '11px' }}>COSTO IND Ha. / día</span>,
       key: 'costoInd',
       align: 'center',
       render: (_, record) => (
-        <strong style={{ fontSize: '11px' }}>
-          ${calculateCostoInd(record)}
-        </strong>
+        <strong style={{ fontSize: '11px' }}>${calculateCostoInd(record).toFixed(2)}</strong>
       ),
     },
     {
       title: <span style={{ fontSize: '11px' }}>TTL DdC</span>,
-      key: 'costoInd',
+      key: 'costoTotal',
       align: 'center',
       render: (_, record) => (
-        <strong style={{ fontSize: '11px' }}>
-          ${calculateCostoInd(record)}
-        </strong>
+        <strong style={{ fontSize: '11px' }}>${calculateCostoInd(record).toFixed(2)}</strong>
       ),
     },
   ];
@@ -115,330 +305,32 @@ function CostFarm() {
   };
 
 
-  const dataSource = [
-    {
-      key: 1,
-      dia: 1,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    },
-    {
-      key: 2,
-      dia: 2,
-      alimentoBalanceado: 160,
-      acidosOrganicos: 25,
-      aditivos: 18,
-      vitaminas: 12,
-      mineralesCalcicos: 35,
-      desparasitantes: 28,
-      fertilizantes: 42,
-      medicados: 37,
-      bacteriaEnzimas: 55,
-      agua: 25,
-    },
-    {
-      key: 3,
-      dia: 3,
-      alimentoBalanceado: 170,
-      acidosOrganicos: 22,
-      aditivos: 14,
-      vitaminas: 13,
-      mineralesCalcicos: 32,
-      desparasitantes: 27,
-      fertilizantes: 43,
-      medicados: 34,
-      bacteriaEnzimas: 53,
-      agua: 22,
-    },
-    {
-      key: 4,
-      dia: 4,
-      alimentoBalanceado: 155,
-      acidosOrganicos: 19,
-      aditivos: 16,
-      vitaminas: 11,
-      mineralesCalcicos: 28,
-      desparasitantes: 26,
-      fertilizantes: 38,
-      medicados: 31,
-      bacteriaEnzimas: 48,
-      agua: 18,
-    },
-    {
-      key: 5,
-      dia: 5,
-      alimentoBalanceado: 165,
-      acidosOrganicos: 24,
-      aditivos: 17,
-      vitaminas: 15,
-      mineralesCalcicos: 33,
-      desparasitantes: 29,
-      fertilizantes: 41,
-      medicados: 36,
-      bacteriaEnzimas: 54,
-      agua: 24,
-    },
-    {
-      key: 6,
-      dia: 6,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    },
-    {
-      key: 7,
-      dia: 7,
-      alimentoBalanceado: 180,
-      acidosOrganicos: 30,
-      aditivos: 20,
-      vitaminas: 18,
-      mineralesCalcicos: 40,
-      desparasitantes: 30,
-      fertilizantes: 45,
-      medicados: 38,
-      bacteriaEnzimas: 60,
-      agua: 30,
-    },
-    {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    },
-    {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    },
-    {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    }, {
-      key: 8,
-      dia: 8,
-      alimentoBalanceado: 150,
-      acidosOrganicos: 20,
-      aditivos: 15,
-      vitaminas: 10,
-      mineralesCalcicos: 30,
-      desparasitantes: 25,
-      fertilizantes: 40,
-      medicados: 35,
-      bacteriaEnzimas: 50,
-      agua: 20,
-    },
-  ];
+  const dataSource = transformReportStatementData(reportStatementData);
 
 
 
   const calculateSummaryData = (dataSource) => {
-    const semanas = 11; // Asumimos 7 semanas para simplificar
+    if (!dataSource.length) return [];
 
+    // Agrupar por semanas (asumiendo 7 días por semana)
+    const daysPerWeek = 7;
+    const groupedByWeek = {};
 
-    const groupedByWeek = Array.from({ length: semanas }, (_, semanaIndex) =>
-      dataSource
-        .filter((_, index) => Math.floor(index / semanas) === semanaIndex)
-        .reduce(
-          (totals, day) => {
-            totals.subtotal += day.costoInd; // Suma del subtotal por semana
-            totals.valorPorHa += day.costoInd / 10; // Ejemplo: se divide por un factor (como 10 Ha)
-            return totals;
-          },
-          { subtotal: 0, valorPorHa: 0 }
-        )
-    );
-
+    dataSource.forEach((day) => {
+      const weekIndex = Math.floor((day.dia - 1) / daysPerWeek);
+      if (!groupedByWeek[weekIndex]) {
+        groupedByWeek[weekIndex] = { subtotal: 0, valorPorHa: 0 };
+      }
+      const costo = calculateCostoInd(day);
+      groupedByWeek[weekIndex].subtotal += costo;
+      groupedByWeek[weekIndex].valorPorHa += costo / 10; // Ejemplo: dividir por 10 Ha
+    });
 
     const subtotalsRow = {
       key: 'subtotals',
       tipo: 'STTL/Week',
-      ...groupedByWeek.reduce((acc, week, index) => {
-        acc[`semana${index + 1}`] = week.subtotal.toFixed(2); // Formateamos los subtotales
+      ...Object.keys(groupedByWeek).reduce((acc, weekIndex) => {
+        acc[`semana${parseInt(weekIndex) + 1}`] = groupedByWeek[weekIndex].subtotal.toFixed(2);
         return acc;
       }, {}),
     };
@@ -446,15 +338,14 @@ function CostFarm() {
     const valoresPorHaRow = {
       key: 'valoresPorHa',
       tipo: 'STTL/Ha',
-      ...groupedByWeek.reduce((acc, week, index) => {
-        acc[`semana${index + 1}`] = week.valorPorHa.toFixed(2); // Formateamos el valor por Ha
+      ...Object.keys(groupedByWeek).reduce((acc, weekIndex) => {
+        acc[`semana${parseInt(weekIndex) + 1}`] = groupedByWeek[weekIndex].valorPorHa.toFixed(2);
         return acc;
       }, {}),
     };
 
     return [subtotalsRow, valoresPorHaRow];
   };
-
 
   const summaryColumns = [
     {
@@ -484,11 +375,9 @@ function CostFarm() {
 
         highlightText="Aqualink Costos"
         title="Costos de Producción"
-        selectOptions={[
-          ['Camaronera 1', 'Camaronera 2', 'Camaronera 3'],
-          ['Sector 1', 'Sector 2', 'Sector 3'],
-          ['Piscina 1', 'Piscina 2', 'Piscina 3'],
-        ]}
+        selectOptions={combinedSelectOptions}
+        selectedOrg={selectedOrg}
+        selectedPool={selectedPool}
       />
       <Row gutter={25}>
         <Col xl={8} xs={24} style={{ display: "flex" }}>

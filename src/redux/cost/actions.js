@@ -22,3 +22,13 @@ export const FETCH_COSTCENTER_ERROR = 'FETCH_COSTCENTER_ERROR';
 export const fetchCostCenterLoading = () => ({ type: FETCH_COSTCENTER_LOADING });
 export const fetchCostCenterSuccess = (data) => ({ type: FETCH_COSTCENTER_SUCCESS, payload: data });
 export const fetchCostCenterError = (error) => ({ type: FETCH_COSTCENTER_ERROR, payload: error });
+
+
+// --- Report Statement ---
+export const FETCH_REPORTSTATEMENT_LOADING = 'FETCH_REPORTSTATEMENT_LOADING';
+export const FETCH_REPORTSTATEMENT_SUCCESS = 'FETCH_REPORTSTATEMENT_SUCCESS';
+export const FETCH_REPORTSTATEMENT_ERROR = 'FETCH_REPORTSTATEMENT_ERROR';
+
+export const fetchReportStatementLoading = () => ({ type: FETCH_REPORTSTATEMENT_LOADING });
+export const fetchReportStatementSuccess = (data) => ({ type: FETCH_REPORTSTATEMENT_SUCCESS, payload: data });
+export const fetchReportStatementError = (error) => ({ type: FETCH_REPORTSTATEMENT_ERROR, payload: error });
