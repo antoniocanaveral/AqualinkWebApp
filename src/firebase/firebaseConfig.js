@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+/*import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken } from 'firebase/messaging';
 
 // Configuración Firebase
@@ -50,3 +50,4 @@ export const generateToken = async () => {
     return null;
   }
 };
+*/

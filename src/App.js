@@ -21,7 +21,7 @@ import Network from './routes/network';
 import './static/css/style.css';
 import Cookies from 'js-cookie';
 import SelectOrganization from './container/AQx-Monitoring/Menu/SelectOrganization';
-import { generateToken, messaging } from './firebase/firebaseConfig';
+//import { generateToken, messaging } from './firebase/firebaseConfig';
 import { onMessage } from 'firebase/messaging';
 
 const NotFound = lazy(() => import('./container/pages/404'));
@@ -66,7 +66,7 @@ function ProviderConfig() {
       unmounted = true;
     };
   }, [setPath]);
-
+/*
   useEffect(() => {
     generateToken();
   
@@ -84,7 +84,7 @@ function ProviderConfig() {
       });
     });
   }, []);
-  
+  */
 
   const orgId = Cookies.get('orgId');
   const isAuditorExterno = selectedRoleName === 'Cumplimiento - Auditor Externo';
