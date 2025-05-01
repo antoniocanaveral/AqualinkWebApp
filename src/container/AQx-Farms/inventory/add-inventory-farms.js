@@ -13,6 +13,9 @@ const { Title } = Typography;
 function AddInventoryFarms() {
   const dispatch = useDispatch();
   const { categoriesCatalog } = useSelector((state) => state.inventory || {});
+  console.log(categoriesCatalog.length)
+  const loading = useSelector((state) => state.inventory.loading);
+
 
 
   const organizations = useSelector((state) => state.auth.farmsOrgs);
@@ -213,6 +216,9 @@ function AddInventoryFarms() {
         <Row gutter={25}>
           <Col xl={24} xs={24}>
             <Cards title="Añadir Inventario" size="large">
+            {loading ? (
+                <div>Cargando catálogo...</div>
+              )  : (
               <Form
                 form={form}
                 layout="vertical"
@@ -252,6 +258,7 @@ function AddInventoryFarms() {
                           placeholder="Seleccione una Marca"
                           optionFilterProp="children"
                           onChange={handleGroupChange}
+                          oading={loading}
                           filterOption={(input, option) =>
                             option.children.toLowerCase().includes(input.toLowerCase())
                           }
@@ -484,6 +491,7 @@ function AddInventoryFarms() {
                 )}
 
               </Form>
+              )}
             </Cards>
           </Col>
         </Row>

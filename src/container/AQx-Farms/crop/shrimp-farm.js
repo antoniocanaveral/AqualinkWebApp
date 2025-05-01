@@ -1,24 +1,25 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Row, Col, Table, Skeleton, Button, Modal } from 'antd';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers';
-import { GoogleMaps } from '../../../components/maps/google-maps';
-import { Link } from 'react-router-dom';
 import PreCriaVolumeDonutChart from './biomass/PreCriaVolumDonutChart';
 import PLDistributionDonutChart from './biomass/PlDistributionDonutChart';
-import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import CoordModalShrimp from './modals/CoordModalShrimp';
 import ShrimpModalShrimp from './modals/ShrimpModalShrimp';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+import { fetchProductionReports } from '../../../redux/views/production-report/actionCreator';
 
 
 function ShrimpFarm() {
+  const dispatch = useDispatch();
+  const { productionReports, loading } = useSelector(state => state.productionReport);
+
 
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
@@ -117,7 +118,10 @@ function ShrimpFarm() {
     ...poolsSelectOptions,
   ];
 
-
+  useEffect(() => {
+    if (selectedPool)
+      dispatch(fetchProductionReports());
+  }, [dispatch, selectedPool]);
   const [modalCoord, setModalCoord] = React.useState(false);
   const [modalShrimp, setModalShrimp] = React.useState(false);
 
@@ -180,49 +184,30 @@ function ShrimpFarm() {
     },
 
   ];
+  const transformedData = productionReports
+    .map((item, index) => ({
+      key: item.id.toString(),
+      fecha: item.pc_production_json.sm_plantingdate,
+      loteId: item.SM_Batch,
+      pc: item.pc_production_json.prebreeding_pool_name,
+      pe: item.warehouse_name,
+      densidad: item.pc_production_json.sm_densityperhectare,
+      totalSembrado: item.pc_production_json.animals_per_gram,
+      pl: item.pc_production_json.stocking_population,
+      // Temporary field to store planting date for sorting
+      _plantingDate: item.pc_production_json.sm_plantingdate,
+    }))
+    // Filter out items with no planting date and sort by planting date
+    .filter((item) => item._plantingDate)
+    .sort((a, b) => new Date(a._plantingDate) - new Date(b._plantingDate))
+    // Assign cycle numbers
+    .map((item, index) => ({
+      ...item,
+      cicloPc: `Ciclo ${index + 1}`,
+      // Remove temporary field
+      _plantingDate: undefined,
+    }));
 
-  const data = [
-    {
-      id: '1000220',
-      key: '1',
-      fecha: '2024-11-13',
-      loteId: 'L001',
-      pc: 10,
-      pe: 5,
-      densidad: '300/m³',
-      sistema: 'Intensivo',
-      totalSembrado: 1000,
-      pl: 200,
-      cicloPc: 'Ciclo 1',
-    },
-    {
-      id: '1000221',
-      key: '2',
-      fecha: '2024-11-14',
-      loteId: 'L002',
-      pc: 16,
-      pe: 8,
-      densidad: '400/m³',
-      sistema: 'Semi-intensivo',
-      totalSembrado: 1300,
-      pl: 240,
-      cicloPc: 'Ciclo 2',
-    },
-    {
-      id: '1000222',
-      key: '3',
-      fecha: '2024-11-14',
-      loteId: 'L002',
-      pc: 12,
-      pe: 6,
-      densidad: '400/m³',
-      sistema: 'Semi-intensivo',
-      totalSembrado: 1200,
-      pl: 220,
-      cicloPc: 'Ciclo 2',
-    },
-
-  ];
 
   return (
     <>
@@ -285,25 +270,20 @@ function ShrimpFarm() {
 
                   {/* Densidad programada */}
                   <div className="harvest-report-section-3">
-                    <div style={{ width: "30%" }}>
-                      <span className="label">Densidad Programada:</span>
-                      <br />
-                      <span>{plantingReportData.densidadProgramada || "N/A"}</span>
-                    </div>
 
-                    <div style={{ width: "70%" }}>
+
+                    <div style={{ width: "100%" }}>
+                      <h2 className="label">LABORATORIO</h2>
+                      <div >
+                        <span className="label">Densidad Programada:</span>
+                     
+                        <span>{plantingReportData.densidadProgramada || "N/A"}</span>
+                      </div>
                       <div>
                         <span className="label">⦾ PL x gr:</span>
                         <span>{plantingReportData.plPorGr || "N/A"}</span>
                       </div>
-                      <div>
-                        <span className="label">⦾ Temp. Despacho LAB:</span>
-                        <span>{plantingReportData.tempDespachoLab || "N/A"} °C</span>
-                      </div>
-                      <div>
-                        <span className="label">⦾ Peso Despacho LAB:</span>
-                        <span>{plantingReportData.pesoDespachoLab || "N/A"} kgs</span>
-                      </div>
+
                       <div>
                         <span className="label">⦾ Salinidad Despacho:</span>
                         <span>{plantingReportData.salinidadDespacho || "N/A"} ppm</span>
@@ -314,13 +294,15 @@ function ShrimpFarm() {
 
                   {/* Densidad estimada */}
                   <div className="harvest-report-section-3">
-                    <div style={{ width: "30%" }}>
+                   
+
+                    <div style={{ width: "100%" }}>
+                      
+                    <h2 className="label">FINCA</h2>
+                    <div >
                       <span className="label">Densidad Estimada:</span>
-                      <br />
                       <span>{plantingReportData.densidadEstimada || "N/A"}</span>
                     </div>
-
-                    <div style={{ width: "70%" }}>
                       <div>
                         <span className="label">⦾ Peso recepción Finca:</span>
                         <span>{plantingReportData.pesoRecepcionFinca || "N/A"}</span>
@@ -398,7 +380,7 @@ function ShrimpFarm() {
               <Cards title="Reporte de Siembra" size="large">
                 <Table
                   columns={columns}
-                  dataSource={data}
+                  dataSource={transformedData}
                   pagination={{ pageSize: 5 }}
                 />
               </Cards>

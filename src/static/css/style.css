@@ -3943,7 +3943,7 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 .harvest-report-section-3 {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   gap: 10px;
   margin-bottom: 16px;

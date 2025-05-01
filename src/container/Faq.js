@@ -7,6 +7,7 @@ import { Badge, FaqCategoryBox, FaqSupportBox, FaqWrapper } from './pages/style'
 import { PageHeader } from '../components/page-headers/page-headers';
 import { UilPlus, UilMinus } from '@iconscout/react-unicons';
 import { Link } from 'react-router-dom';
+import { KnowledgeBaseCardWrap } from './dashboard/Style';
 
 const { Panel } = Collapse;
 
@@ -182,7 +183,7 @@ function FaqComponent() {
     <>
       <PageHeader
         highlightText="Aqualink Soporte"
-        
+
         title="Faqs"
       />
       <Main>
@@ -329,6 +330,7 @@ function FaqComponent() {
             </FaqWrapper>
           </Col>
         </Row>
+        <KnowledgeBaseCardWrap />
       </Main>
     </>
   );

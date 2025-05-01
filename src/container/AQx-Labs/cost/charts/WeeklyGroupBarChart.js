@@ -14,7 +14,7 @@ export default function WeeklyGroupedBarChart({ dataSource, height = 300 }) { //
   }
 
 
-  const categories = ["Balanceado", "Agua", "Otros", "Indirectos"];
+  const categories = ["Balanceado", "Aditivos", "Larva", "Indirectos"];
   const weeklyData = weeks.map((week) => {
     const balanceado = week.reduce((total, day) => total + day.alimentoBalanceado, 0);
     const agua = week.reduce((total, day) => total + day.agua, 0);

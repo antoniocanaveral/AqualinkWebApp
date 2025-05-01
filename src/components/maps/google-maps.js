@@ -13,6 +13,7 @@ const estadoColors = {
   Custodia: '#13c2c2',
   Control: '#722ed1',
   'En Proceso': '#f5222d',
+  Empacadora: '#1890ff', // Color for empacadora marker
 };
 
 const GoogleMaps = GoogleApiWrapper({
@@ -28,8 +29,14 @@ const GoogleMaps = GoogleApiWrapper({
     mapStyles,
     markers = [],
     styles,
-    type = 'org', // Nuevo prop con valor por defecto
+    type = 'org',
   } = props;
+
+  console.log('GoogleMaps props', props);
+  console.log('GoogleMaps markers', markers);
+  console.log('GoogleMaps type', type);
+  console.log('GoogleMaps latitude', latitude);
+  console.log('GoogleMaps longitude', longitude);
 
   const [state, setState] = useState({
     showingInfoWindow: false,
@@ -72,15 +79,24 @@ const GoogleMaps = GoogleApiWrapper({
       : parseFloat(longitude) || fallbackLng,
   };
 
-
-  const getMarkerIcon = () => {
+  const getMarkerIcon = (marker) => {
     if (type === 'geo') {
+      if (marker.icon === 'mpc.png') {
+        return {
+          url: require('../../static/img/map/mpc.png'),
+          scaledSize: new google.maps.Size(45, 32), // Same size for consistency
+        };
+      }
       return {
         url: require('../../static/img/map/car.png'),
-        scaledSize: new google.maps.Size(45, 32), // tamaño reducido
+        scaledSize: new google.maps.Size(45, 32),
       };
     }
-    return require('../../static/img/map/mpc.png');
+    // Default for type='org'
+    return {
+      url: require('../../static/img/map/mpc.png'),
+      scaledSize: new google.maps.Size(45, 32),
+    };
   };
 
   return (
@@ -100,7 +116,7 @@ const GoogleMaps = GoogleApiWrapper({
         {markers.length === 0 && (
           <Marker
             position={center}
-            icon={getMarkerIcon()}
+            icon={getMarkerIcon({ icon: type === 'geo' ? 'car.png' : 'mpc.png' })}
           />
         )}
 
@@ -116,7 +132,8 @@ const GoogleMaps = GoogleApiWrapper({
             name={marker.lote}
             descripcion={marker.descripcion}
             estado={marker.estado}
-            icon={getMarkerIcon()}
+            eta={marker.eta}
+            icon={getMarkerIcon(marker)}
           />
         ))}
 
@@ -132,7 +149,7 @@ const GoogleMaps = GoogleApiWrapper({
               style={{ width: 250 }}
               bordered={false}
             >
-               <p><strong>Lote:</strong> {state.selectedPlace.name} </p>
+              <p><strong>Lote:</strong> {state.selectedPlace.name}</p>
               <p><strong>Descripción:</strong> {state.selectedPlace.descripcion}</p>
               <p><strong>Tiempo Est. de Llegada:</strong> {state.selectedPlace.eta || '9:25 AM'}</p>
               <p>
@@ -158,7 +175,7 @@ GoogleMaps.defaultProps = {
   height: '400px',
   zoom: 14,
   markers: [],
-  type: 'org', // Nuevo default
+  type: 'org',
   styles: {
     width: '100%',
     height: '100%',
@@ -181,10 +198,12 @@ GoogleMaps.propTypes = {
       lote: PropTypes.string,
       descripcion: PropTypes.string,
       estado: PropTypes.string,
+      eta: PropTypes.string,
       position: PropTypes.shape({
         lat: PropTypes.number.isRequired,
         lng: PropTypes.number.isRequired,
       }).isRequired,
+      icon: PropTypes.string, // Optional icon field
     })
   ),
   styles: PropTypes.object,

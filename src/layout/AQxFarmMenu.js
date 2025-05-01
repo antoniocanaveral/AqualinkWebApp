@@ -102,6 +102,23 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ),
     ),
 
+    getItem(t('AquaLink Planning'), 'aqualink-planning', !topMenu && <UilClipboardAlt />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/planning-studio`}>
+          {t('Planning Studio')}
+        </NavLink>,
+        'planning-studio',
+        null,
+      ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/real-planning`}>
+          {t('Planificación Real')}
+        </NavLink>,
+        'planificacion-real',
+        null,
+      ),
+    ]),
+
 
 
 
@@ -123,23 +140,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-    getItem(t('AquaLink Planning'), 'aqualink-planning', !topMenu && <UilClipboardAlt />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/planning-studio`}>
-          {t('Planning Studio')}
-        </NavLink>,
-        'planning-studio',
-        null,
-      ),
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/real-planning`}>
-          {t('Planificación Real')}
-        </NavLink>,
-        'planificacion-real',
-        null,
-      ),
-    ]),
-
+   
 
 
     getItem(
@@ -150,6 +151,17 @@ function AQxFarmMenu({ toggleCollapsed }) {
       'group',
     ),
 
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/tasks`}>
+        {t('Tareas')}
+      </NavLink>,
+      'tareas',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/tasks`}>
+          <UilDesktop />
+        </NavLink>
+      ),
+    ),
 
     getItem(
       t('Reportes'),
@@ -157,13 +169,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       !topMenu && <UilChart />,
       [
 
-        getItem(
-          <NavLink onClick={toggleCollapsed} to={`${path}/tasks`}>
-            {t('Tareas')}
-          </NavLink>,
-          'tareas',
-
-        ),
+      
         getItem(
           <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/operation-report`}>
             {t('Reporte de Operaciones')}
@@ -349,7 +355,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
         getItem(
           <div className="menu-item-level-1">
-            <NavLink to={`${path}/culture-medium/preparation-bioremediation`}>{t('Preparación de Suelo y Biorremediación')}</NavLink>
+            <NavLink to={`${path}/culture-medium/preparation-bioremediation`}>{t('Prep. Suelo y Biorremediación')}</NavLink>
           </div>,
           'medio-cultivo-preparation',
           null,
@@ -539,6 +545,15 @@ function AQxFarmMenu({ toggleCollapsed }) {
         {t('FAQ')}
       </NavLink>,
       'faq',
+      !topMenu && <UilQuestionCircle />,
+    ),
+
+    
+    getItem(
+      <NavLink to={`${path}/KnowledgeBase`}>
+        {t('Centro de Conocimiento')}
+      </NavLink>,
+      'KnowledgeBase',
       !topMenu && <UilQuestionCircle />,
     ),
 

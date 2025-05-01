@@ -16,7 +16,7 @@ const FeedingRealTable = ({ feedingreport }) => {
     biomasa: Number(item.biomasa || 0).toFixed(2),
     sm_lineargrowthreal: Number(item.sm_lineargrowthreal || 0).toFixed(3),
     sm_weeklygrowthreal: item.sm_index % 7 === 0 ? Number(item.sm_weeklygrowthreal || 0).toFixed(3) : '—',
-    dieta: '—', // Campo "Dieta" no está definido, si tienes referencia agrega aquí
+    dieta: Number(item.sm_dailydoseadjustment || 0), // Campo "Dieta" no está definido, si tienes referencia agrega aquí
     sm_dailydosereal: Number(item.sm_dailydosereal || 0).toFixed(2),
     sm_dailydose_per_hectare: poolSize > 0 ? (item.sm_dailydosereal / poolSize).toFixed(2) : '0.00',
     sm_accumulatedfoodreal: Number(item.sm_accumulatedfoodreal || 0).toFixed(2),

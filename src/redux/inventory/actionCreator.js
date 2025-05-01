@@ -34,7 +34,7 @@ export const fetchInventory = (org_type) => async (dispatch) => {
     if (!clientId) {
       throw new Error('Client ID no encontrado en las cookies.');
     }
-    const response = await DataService.get(`/models/m_product_stock_extended_v1?$filter=AD_Client_ID eq  ${clientId} AND AD_Org_ID eq ${adOrg} AND org_type eq '${org_type}'` );
+    const response = await DataService.get(`/models/m_product_stock_extended_v1?$filter=AD_Client_ID eq  ${clientId} AND AD_Org_ID eq ${adOrg} AND org_type eq '${org_type}'`);
 
     if (response.data && response.data.records) {
       const records = response.data.records;
@@ -61,74 +61,55 @@ export const fetchInventory = (org_type) => async (dispatch) => {
   }
 };
 
+
+const fetchAllCatalogRecords = async (filterValue) => {
+  const limit = 300;
+  let allRecords = [];
+  let lastId = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await DataService.get(
+      `/models/m_product_catalog?$filter=org_type eq '${filterValue}' and M_Product_ID gt ${lastId}&limit=${limit}&orderBy=M_Product_ID`
+    );
+
+    const records = response.data?.records || [];
+    allRecords.push(...records);
+
+    if (records.length < limit) {
+      hasMore = false;
+    } else {
+      // 👇 Aquí accedemos al ID real dentro del objeto
+      lastId = records[records.length - 1].M_Product_ID.id;
+    }
+  }
+
+  return allRecords;
+};
+
+
+
 export const fetchProductCatalogFarm = () => async (dispatch) => {
   try {
     dispatch(opCatalogLoading());
-    const clientId = Cookies.get('selectedClientId');
-
-    if (!clientId) {
-      throw new Error('Client ID no encontrado en las cookies.');
-    }
-
-    const response = await DataService.get(`/models/m_product_catalog?$filter=org_type eq 'FARM'`);
-
-    if (response.data && response.data.records) {
-      const farmCatalogs = response.data.records;
-
-      const catalogsByCategory = farmCatalogs.reduce((acc, catalog) => {
-        const category = catalog.M_Product_Category_ID?.identifier || 'Sin Categoría';
-
-        if (!acc[category]) {
-          acc[category] = [];
-        }
-
-        acc[category].push(catalog);
-        return acc;
-      }, {});
-
-      dispatch(opCatalogLoaded(catalogsByCategory));
-    } else {
-      dispatch(opCatalogError('No se encontraron catálogos con org_type "FARM".'));
-    }
+    const records = await fetchAllCatalogRecords('FARM');
+    console.log(records)
+    const catalogsByCategory = reduceByCategory(records);
+    dispatch(opCatalogLoaded(catalogsByCategory));
   } catch (err) {
-    dispatch(opCatalogError(err.message || 'Error al cargar el catálogo de productos.'));
+    dispatch(opCatalogError(err.message || 'Error al cargar FARM.'));
     handleApiError(err, dispatch, opCatalogError);
-
   }
 };
-
 
 export const fetchProductCatalogLab = () => async (dispatch) => {
   try {
     dispatch(opCatalogLoading());
-    const clientId = Cookies.get('selectedClientId');
-
-    if (!clientId) {
-      throw new Error('Client ID no encontrado en las cookies.');
-    }
-
-    const response = await DataService.get(`/models/m_product_catalog?$filter=org_type eq 'LAB'`);
-
-    if (response.data && response.data.records) {
-      const farmCatalogs = response.data.records;
-
-      const catalogsByCategory = farmCatalogs.reduce((acc, catalog) => {
-        const category = catalog.M_Product_Category_ID?.identifier || 'Sin Categoría';
-
-        if (!acc[category]) {
-          acc[category] = [];
-        }
-
-        acc[category].push(catalog);
-        return acc;
-      }, {});
-
-      dispatch(opCatalogLoaded(catalogsByCategory));
-    } else {
-      dispatch(opCatalogError('No se encontraron catálogos con org_type "FARM".'));
-    }
+    const records = await fetchAllCatalogRecords('LAB');
+    const catalogsByCategory = reduceByCategory(records);
+    dispatch(opCatalogLoaded(catalogsByCategory));
   } catch (err) {
-    dispatch(opCatalogError(err.message || 'Error al cargar el catálogo de productos.'));
+    dispatch(opCatalogError(err.message || 'Error al cargar LAB.'));
     handleApiError(err, dispatch, opCatalogError);
   }
 };
@@ -136,37 +117,24 @@ export const fetchProductCatalogLab = () => async (dispatch) => {
 export const fetchProductCatalogCustody = () => async (dispatch) => {
   try {
     dispatch(opCatalogLoading());
-    const clientId = Cookies.get('selectedClientId');
-
-    if (!clientId) {
-      throw new Error('Client ID no encontrado en las cookies.');
-    }
-
-    const response = await DataService.get(`/models/m_product_catalog?$filter=org_type eq 'CUSTODY'`);
-
-    if (response.data && response.data.records) {
-      const farmCatalogs = response.data.records;
-
-      const catalogsByCategory = farmCatalogs.reduce((acc, catalog) => {
-        const category = catalog.M_Product_Category_ID?.identifier || 'Sin Categoría';
-
-        if (!acc[category]) {
-          acc[category] = [];
-        }
-
-        acc[category].push(catalog);
-        return acc;
-      }, {});
-
-      dispatch(opCatalogLoaded(catalogsByCategory));
-    } else {
-      dispatch(opCatalogError('No se encontraron catálogos con org_type "FARM".'));
-    }
+    const records = await fetchAllCatalogRecords('CUSTODY');
+    const catalogsByCategory = reduceByCategory(records);
+    dispatch(opCatalogLoaded(catalogsByCategory));
   } catch (err) {
-    dispatch(opCatalogError(err.message || 'Error al cargar el catálogo de productos.'));
+    dispatch(opCatalogError(err.message || 'Error al cargar CUSTODY.'));
     handleApiError(err, dispatch, opCatalogError);
   }
 };
+
+const reduceByCategory = (records) =>
+  records.reduce((acc, catalog) => {
+    const category = catalog.M_Product_Category_ID?.identifier || 'Sin Categoría';
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(catalog);
+    return acc;
+  }, {});
+
+
 
 
 /**
@@ -181,38 +149,38 @@ export const addProductToInventory = (productData) => async (dispatch) => {
      * 0. Credenciales
      * ---------------------------------------------------------------- */
     const clientId = Cookies.get('selectedClientId');
-    const orgId    = Cookies.get('orgId');
+    const orgId = Cookies.get('orgId');
     if (!clientId || !orgId) throw new Error('Faltan credenciales');
 
     /* ================================================================
      * 1. RECEPCIÓN (cabecera + línea)
      * ================================================================ */
     const inOutResp = await DataService.post('/models/M_InOut', {
-      AD_Client_ID  : +clientId,
-      AD_Org_ID     : +orgId,
-      C_DocType_ID  : 1000014,                // MMR
-      MovementDate  : new Date().toISOString().split('T')[0],
-      C_BPartner_ID : productData.C_BPartner_ID,
+      AD_Client_ID: +clientId,
+      AD_Org_ID: +orgId,
+      C_DocType_ID: 1000014,                // MMR
+      MovementDate: new Date().toISOString().split('T')[0],
+      C_BPartner_ID: productData.C_BPartner_ID,
       C_BPartner_Location_ID: productData.C_BPartner_Location_ID,
-      Description   : 'Recepción (ingreso inventario)',
-      IsSOTrx       : false,
-      MovementType  : 'V+',
+      Description: 'Recepción (ingreso inventario)',
+      IsSOTrx: false,
+      MovementType: 'V+',
       M_Warehouse_ID: productData.M_Warehouse_ID
     });
     const mInOutId = inOutResp.data.id;
 
     const inOutLineResp = await DataService.post('/models/M_InOutLine', {
-      AD_Client_ID : +clientId,
-      AD_Org_ID    : +orgId,
-      M_InOut_ID   : mInOutId,
-      Line         : 10,
-      M_Product_ID : productData.M_Product_ID,
-      MovementQty  : productData.quantity,
-      QtyEntered   : productData.quantity,
-      C_UOM_ID     : 1000000,
-      M_Locator_ID : productData.M_Locator_ID,
-      Description  : 'Recepción de producto',
-      IsActive     : true
+      AD_Client_ID: +clientId,
+      AD_Org_ID: +orgId,
+      M_InOut_ID: mInOutId,
+      Line: 10,
+      M_Product_ID: productData.M_Product_ID,
+      MovementQty: productData.quantity,
+      QtyEntered: productData.quantity,
+      C_UOM_ID: 1000000,
+      M_Locator_ID: productData.M_Locator_ID,
+      Description: 'Recepción de producto',
+      IsActive: true
     });
     const mInOutLineId = inOutLineResp.data.id;
 
@@ -220,33 +188,33 @@ export const addProductToInventory = (productData) => async (dispatch) => {
      * 2. FACTURA (cabecera + línea enlazada)
      * ================================================================ */
     const invoiceResp = await DataService.post('/models/C_Invoice', {
-      AD_Client_ID  : +clientId,
-      AD_Org_ID     : +orgId,
-      C_DocType_ID  : 1000005,               
-      DateInvoiced  : new Date().toISOString().split('T')[0],
-      C_BPartner_ID : productData.C_BPartner_ID,
+      AD_Client_ID: +clientId,
+      AD_Org_ID: +orgId,
+      C_DocType_ID: 1000005,
+      DateInvoiced: new Date().toISOString().split('T')[0],
+      C_BPartner_ID: productData.C_BPartner_ID,
       C_BPartner_Location_ID: productData.C_BPartner_Location_ID,
       M_PriceList_ID: 1000000,
-      Description   : 'Factura de compra de inventario',
-      IsSOTrx       : false
+      Description: 'Factura de compra de inventario',
+      IsSOTrx: false
     });
     const cInvoiceId = invoiceResp.data.id;
 
     await DataService.post('/models/C_InvoiceLine', {
-      AD_Client_ID   : +clientId,
-      AD_Org_ID      : +orgId,
-      C_Invoice_ID   : cInvoiceId,
-      Line           : 10,
-      M_Product_ID   : productData.M_Product_ID,
-      PriceList      : productData.priceList,
-      PriceActual    : productData.priceList,
-      PriceEntered      : productData.priceList,
-      QtyInvoiced    : productData.quantity,
-      QtyEntered     : productData.quantity,
-      C_UOM_ID       : 1000000,
-      C_Tax_ID       : 1000000,
-      LineTotalAmt   : productData.priceList * productData.quantity,
-      M_InOutLine_ID : mInOutLineId          // 🔗 enlace para MatchInv
+      AD_Client_ID: +clientId,
+      AD_Org_ID: +orgId,
+      C_Invoice_ID: cInvoiceId,
+      Line: 10,
+      M_Product_ID: productData.M_Product_ID,
+      PriceList: productData.priceList,
+      PriceActual: productData.priceList,
+      PriceEntered: productData.priceList,
+      QtyInvoiced: productData.quantity,
+      QtyEntered: productData.quantity,
+      C_UOM_ID: 1000000,
+      C_Tax_ID: 1000000,
+      LineTotalAmt: productData.priceList * productData.quantity,
+      M_InOutLine_ID: mInOutLineId          // 🔗 enlace para MatchInv
     });
 
     /* ================================================================
@@ -259,12 +227,12 @@ export const addProductToInventory = (productData) => async (dispatch) => {
      * 4. Ejecutar Costing Run (CostCreate) para generar CostDetail
      * ================================================================ */
     await DataService.post('/processes/m_cost-create', {
-      AD_Client_ID : +clientId,
-      AD_Org_ID    : 0,
-      DateAcct     : new Date().toISOString().split('T')[0],
-      M_Product_ID : productData.M_Product_ID     // 👈 producto válido
+      AD_Client_ID: +clientId,
+      AD_Org_ID: 0,
+      DateAcct: new Date().toISOString().split('T')[0],
+      M_Product_ID: productData.M_Product_ID     // 👈 producto válido
     });
-    
+
 
     /* ================================================================
      * 5. Verificar CostDetail

@@ -92,17 +92,7 @@ function AQxCustodityMenu({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/analytics`}>
-        {t('Aqualink Analytics')}
-      </NavLink>,
-      'Aqualink Analytics',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/analytics`}>
-          <UilChartBar /> {/* Ícono para Analytics */}
-        </NavLink>
-      ),
-    ),
+
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/planning`}>
         {t('Aqualink Planning')}
@@ -115,6 +105,18 @@ function AQxCustodityMenu({ toggleCollapsed }) {
       ),
     ),
 
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/analytics`}>
+        {t('Aqualink Analytics')}
+      </NavLink>,
+      'Aqualink Analytics',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/analytics`}>
+          <UilChartBar /> {/* Ícono para Analytics */}
+        </NavLink>
+      ),
+    ),
+ 
 
 
 

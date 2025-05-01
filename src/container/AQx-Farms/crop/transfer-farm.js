@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Row, Col, Typography, Table, Modal, Card, Skeleton, Badge, Space, Button, Progress } from 'antd';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -11,12 +11,14 @@ import PCEfficiencyComparisonChart from './biomass/PCEfficiencyComparisonChart';
 
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
+import { fetchProductionReports } from '../../../redux/views/production-report/actionCreator';
 
 function TransferFarm() {
-
+  const dispatch = useDispatch();
+  const { productionReports, loading } = useSelector(state => state.productionReport);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
@@ -115,6 +117,12 @@ function TransferFarm() {
   ];
 
 
+  useEffect(() => {
+    if (selectedPool)
+      dispatch(fetchProductionReports());
+  }, [dispatch, selectedPool]);
+
+
   const columns = [
     {
       title: 'Fecha',
@@ -138,8 +146,8 @@ function TransferFarm() {
     },
     {
       title: 'Pef',
-      dataIndex: 'pe',
-      key: 'pe',
+      dataIndex: 'pef',
+      key: 'pef',
     },
     {
       title: 'D',
@@ -161,12 +169,42 @@ function TransferFarm() {
       dataIndex: 'pesoTotalTransferido',
       key: 'pesoTotalTransferido',
     },
+
     {
-      title: 'Población Est.',
+      title: 'Animales pg',
       dataIndex: 'poblacionEstimada',
       key: 'poblacionEstimada',
     },
   ];
+
+  const transformedData = productionReports
+  .map((item, index) => ({
+    key: item.id.toString(),
+    fecha: item.pc_production_json.sm_plantingdate,
+    loteId: item.SM_Batch,
+    pc: item.pc_production_json.prebreeding_pool_name,
+    pe: item.pe_production_json.prefattening_pool_name,
+    pef: item.warehouse_name,
+    densidadSembrada: item.SM_DensityPerHectareFatten,
+    stocking_populationPc: item.pc_production_json.stocking_population,
+    poblacionEstimada: item.SM_AnimalsPerGramFatten,
+    diasPc: item.pc_production_json.prebreeding_weeks*7,
+    pesoTotalTransferido: item.SM_KilosPerPoolFatten,
+    pesoPromedio: item.SM_KilosPerPoolFatten,
+    SM_FarmingSystem: item.SM_FarmingSystem.identifier,
+    // Temporary field to store planting date for sorting
+    _plantingDate: item.pc_production_json.sm_plantingdate,
+  }))
+  // Filter out items with no planting date and sort by planting date
+  .filter((item) => item._plantingDate)
+  .sort((a, b) => new Date(a._plantingDate) - new Date(b._plantingDate))
+  // Assign cycle numbers
+  .map((item, index) => ({
+    ...item,
+    cicloPc: `Ciclo ${index + 1}`,
+    // Remove temporary field
+    _plantingDate: undefined,
+  }));
 
 
   const data = [
@@ -207,9 +245,6 @@ function TransferFarm() {
     densidadProgramada: "1,800,000",
     muestreos: [
       { peso: 19, animales: 20 },
-      { peso: 19, animales: 22 },
-      { peso: 19, animales: 18 },
-      { peso: 19, animales: 21 },
     ],
     biomasaTotal: "Sumatoria (calculada)",
     densidadPorHa: "Fórmula calculada",
@@ -256,7 +291,7 @@ function TransferFarm() {
                 <div className="flex-row">
                   <div>
                     <span className="label">Lote:</span>
-                    <span>{transferReportData.lote || "N/A"}</span>
+                    <span>{transformedData[transformedData.length-1].loteId || "N/A"}</span>
                   </div>
                   <div>
                     <span className="label">Fecha:</span>
@@ -265,15 +300,23 @@ function TransferFarm() {
                 </div>
                 <div className="harvest-report-divider" />
 
+                <div className="flex-row">
+                  <div>
+                    <span className="label">Protocolo de Cultivo:</span>
+                    <span>{transformedData[transformedData.length-1].SM_FarmingSystem || "N/A"}</span>
+                  </div>
+                </div>
+                <div className="harvest-report-divider" />
+
                 {/* Origen y Destino */}
                 <div className="flex-row">
                   <div>
                     <span className="label">ORIGEN Pre Cría:</span>
-                    <span>{transferReportData.origen || "N/A"}</span>
+                    <span>{transformedData[transformedData.length-1].pc || "N/A"}</span>
                   </div>
                   <div>
                     <span className="label">DESTINO Engorde:</span>
-                    <span>{transferReportData.destino || "N/A"}</span>
+                    <span>{transformedData[transformedData.length-1].pef || "N/A"}</span>
                   </div>
                 </div>
                 <div className="harvest-report-divider" />
@@ -282,27 +325,27 @@ function TransferFarm() {
                 <div className="flex-row">
                   <div>
                     <span className="label">Población estimada Pc:</span>
-                    <span>{transferReportData.poblacionEstimada || "N/A"}</span>
+                    <span>{transformedData[transformedData.length-1].stocking_populationPc || "N/A"}</span>
                   </div>
                   <div>
                     <span className="label">Densidad programada Pe:</span>
-                    <span>{transferReportData.densidadProgramada || "N/A"}</span>
+                    <span>{transformedData[transformedData.length-1].densidadSembrada || "N/A"}</span>
                   </div>
                 </div>
                 <div className="harvest-report-divider" />
 
-                {/* Muestreos de peso */}
+                {/* Muestreos de peso*/}
                 <div className='harvest-report-section-3'>
                   <div>
                     <span className="label">Muestreos de peso en proceso de Transferencia:</span>
                     <div className="flex-row" style={{ flexWrap: "wrap", gap: "10px", marginTop: "10px" }}>
                       {transferReportData.muestreos.map((muestreo, index) => (
                         <div key={index} className="harvest-report-section-3" style={{ border: "1px solid green", padding: "5px", borderRadius: "5px", minWidth: "150px" }}>
-                          <span className="label">Peso:</span>
+                          <span className="label">Peso Promedio:</span>
                           <span>{muestreo.peso || "N/A"} gr</span>
                           <br />
-                          <span className="label"># Animales:</span>
-                          <span>{muestreo.animales || "N/A"}</span>
+                          <span className="label"># Animales por gramo:</span>
+                          <span>{transformedData[transformedData.length-1].poblacionEstimada || "N/A"}</span>
                         </div>
                       ))}
                     </div>
@@ -314,7 +357,7 @@ function TransferFarm() {
                 <div className="flex-row">
                   <div>
                     <span className="label">Biomasa Total Transferida:</span>
-                    <span>{transferReportData.biomasaTotal || "N/A"}</span>
+                    <span>{transformedData[transformedData.length-1].pesoTotalTransferido || "N/A"}</span>
                   </div>
                 </div>
                 <div className="harvest-report-divider" />
@@ -323,7 +366,7 @@ function TransferFarm() {
                 <div className="flex-row">
                   <div>
                     <span className="label">Densidad por HA:</span>
-                    <span>{transferReportData.densidadPorHa || "N/A"}</span>
+                    <span>{transformedData[transformedData.length-1].densidadSembrada || "N/A"}</span>
                   </div>
                 </div>
                 <div className="harvest-report-divider" />
@@ -381,7 +424,7 @@ function TransferFarm() {
                 <br />
                 <Table
                   columns={columns}
-                  dataSource={data}
+                  dataSource={transformedData}
                   pagination={{ pageSize: 5 }}
                 />
               </Cards>

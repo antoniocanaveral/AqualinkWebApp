@@ -45,8 +45,11 @@ export const fetchRolesByClient = () => async (dispatch) => {
 
 
 
-export const createUserFarm = (values, selectedOrgId) => async (dispatch) => {
+export const createUserFarm = (values, selectedOrgId, fcmToken) => async (dispatch) => {
   try {
+    console.log("values", values)
+    console.log("selectedOrgId", selectedOrgId)
+    console.log("fcmToken", fcmToken)
     dispatch(createUserLoading());
 
 
@@ -58,12 +61,13 @@ export const createUserFarm = (values, selectedOrgId) => async (dispatch) => {
 
     const userPayload = {
       AD_Client_ID: parseInt(clientId, 10),
-      AD_Org_ID: selectedOrgId ? selectedOrgId: 0,
+      AD_Org_ID: selectedOrgId ? selectedOrgId : 0,
       Name: values.nombre,
       Password: values.claveAcceso,
       EMail: values.correo,
       Phone: values.telefono,
-      TaxID: values.cc, // O el campo que corresponda (por ejemplo, cédula o tax_id)
+      TaxID: values.cc,
+      SM_FCMToken: fcmToken,
     };
 
     const userResponse = await DataService.post('models/ad_user', userPayload);

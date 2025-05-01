@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import actions from './actions';
 import { DataService } from '../../config/dataService/dataService';
+import { generateToken } from '../../firebase/firebaseConfig';
 
 const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr, rolesBegin, rolesSuccess, rolesErr, moduleSelection, loadAccess } = actions;
 
@@ -19,9 +20,10 @@ const login = (values, callback) => {
       const client = response.data.clients[0];
       Cookies.set('selectedClientId', client.id);
 
-
+      console.log("client", client)
       const rolesResponse = await DataService.get(`/auth/roles?client=${client.id}`, true);
       const roles = rolesResponse.data.roles;
+      console.log("roles", roles)
 
       Cookies.set('roles', JSON.stringify(roles));
       Cookies.set('logedIn', true);
@@ -57,12 +59,18 @@ const login = (values, callback) => {
           organizationId: validOrgId,
           language: 'en'
         }, true);
+        const userId = finalLoginResponse.data.userId;
+
+        await registerFCMToken({
+          userId,
+          clientId: client.id,
+        });
 
         Cookies.set('access_token', finalLoginResponse.data.token);
         Cookies.set('refresh_token', finalLoginResponse.data.refresh_token);
         Cookies.set('selectedOrganizationId', validOrgId);
       }
-
+     
 
       dispatch(loginSuccess({
         success: true,
@@ -78,6 +86,51 @@ const login = (values, callback) => {
       callback(false, err);
     }
   };
+};
+
+
+
+export const registerFCMToken = async ({ userId, clientId }) => {
+  try {
+    const fcmToken = await generateToken();
+
+    if (fcmToken && userId) {
+      const deviceType = 'WEB';
+
+      // Verificar si ya existe
+      const existing = await DataService.get(
+        `/models/SM_FCMUserToken?$filter=AD_Client_ID eq ${clientId} and AD_User_ID eq ${userId} and SM_DeviceType eq '${deviceType}'`,
+      );
+      console.log('existing', existing)
+      if (existing?.data?.records.length > 0) {
+        const tokenId = existing.data.records[0].id;
+
+        await DataService.put(`/models/SM_FCMUserToken/${tokenId}`, {
+          AD_User_ID: userId,
+          sm_fcmtoken: fcmToken,
+          sm_devicetype: deviceType,
+          sm_deviceinfo: navigator.userAgent,
+        });
+
+        console.log('🔁 Token FCM actualizado');
+      } else {
+        await DataService.post('/models/SM_FCMUserToken', {
+          AD_Client_ID: clientId,
+          AD_Org_ID: 0,
+          AD_User_ID: userId,
+          sm_fcmtoken: fcmToken,
+          sm_devicetype: deviceType,
+          sm_deviceinfo: navigator.userAgent,
+        });
+
+        console.log('🆕 Token FCM registrado');
+      }
+    } else {
+      console.warn('⚠️ No se pudo generar token FCM');
+    }
+  } catch (error) {
+    console.error('❌ Error al registrar/actualizar token FCM:', error.message || error);
+  }
 };
 
 
@@ -128,6 +181,9 @@ const selectRoleUtil = async (roleId, clientId) => {
     Cookies.set('access_token', response.data.token);
     Cookies.set('refresh_token', response.data.refresh_token);
     Cookies.set('selectedRoleId', roleId);
+
+    const userId = response.data.userId;
+    await registerFCMToken({ userId, clientId: clientId });
   } catch (err) {
     throw err;
   }
@@ -263,8 +319,8 @@ const loadUserAccess = () => {
         `/auth/organizations?client=${clientId}&role=${roleId}&$expand=AD_OrgType_ID`,
         true
       );
-     
-    
+
+
       let withFarms = false;
       let withLabs = false;
       let withCustody = false;

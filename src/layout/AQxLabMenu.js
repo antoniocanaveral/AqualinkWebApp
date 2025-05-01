@@ -99,18 +99,6 @@ function AQXLabMenu({ toggleCollapsed }) {
     ),
 
     getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/analytics`}>
-        {t('Aqualink Analytics')}
-      </NavLink>,
-      'aqualink-analytics',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/analytics`}>
-          <UilChartBar />
-        </NavLink>
-      ),
-    ),
-
-    getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/planning`}>
         {t('Aqualink Planning')}
       </NavLink>,
@@ -122,6 +110,19 @@ function AQXLabMenu({ toggleCollapsed }) {
       ),
     ),
 
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/analytics`}>
+        {t('Aqualink Analytics')}
+      </NavLink>,
+      'aqualink-analytics',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/analytics`}>
+          <UilChartBar />
+        </NavLink>
+      ),
+    ),
+
+   
 
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/dispatch-reports`}>

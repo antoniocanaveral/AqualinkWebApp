@@ -138,9 +138,11 @@ function CostFarm() {
         groupedByIndex[index] = {
           key: index,
           dia: index,
+          sm_pooltype: item.sm_pooltype,
           alimentoBalanceado: 0,
           acidosOrganicos: 0,
           aditivos: 0,
+          SM_Batch: item.SM_Batch,
           vitaminas: 0,
           mineralesCalcicos: 0,
           desparasitantes: 0,
@@ -201,6 +203,13 @@ function CostFarm() {
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
+      title: <span style={{ fontSize: '11px' }}>PISCINA</span>,
+      dataIndex: 'sm_pooltype',
+      key: 'sm_pooltype',
+      align: 'center',
+      render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
+    },
+    {
       title: <span style={{ fontSize: '11px' }}>LARVA-CAMARONERA</span>,
       dataIndex: 'alimentoBalanceado',
       key: 'alimentoBalanceado',
@@ -209,6 +218,13 @@ function CostFarm() {
     },
     {
       title: <span style={{ fontSize: '11px' }}>ÁCIDOS ORGÁNICOS</span>,
+      dataIndex: 'acidosOrganicos',
+      key: 'acidosOrganicos',
+      align: 'center',
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
+    },
+    {
+      title: <span style={{ fontSize: '11px' }}>ALIMENTO BALANCEADO</span>,
       dataIndex: 'acidosOrganicos',
       key: 'acidosOrganicos',
       align: 'center',
@@ -263,13 +279,7 @@ function CostFarm() {
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
-    {
-      title: <span style={{ fontSize: '11px' }}>AGUA</span>,
-      dataIndex: 'agua',
-      key: 'agua',
-      align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
-    },
+    
     {
       title: <span style={{ fontSize: '11px' }}>COSTO IND Ha. / día</span>,
       key: 'costoInd',
@@ -356,7 +366,7 @@ function CostFarm() {
       render: (text) => <strong style={{ fontSize: '12px' }}>{text}</strong>,
     },
     ...Array.from({ length: 14 }).map((_, index) => ({
-      title: <span style={{ fontSize: '12px' }}>WEEK {index + 1}</span>,
+      title: <span style={{ fontSize: '12px' }}>Semana {index + 1}</span>,
       dataIndex: `semana${index + 1}`,
       key: `semana${index + 1}`,
       align: 'center',
@@ -482,7 +492,7 @@ function CostFarm() {
               </Cards>
             }
           >
-            <Cards title={'Costos de Producción'}>
+            <Cards title={`Costos de Producción Lote: ${transformReportStatementData(reportStatementData).length > 0 ? transformReportStatementData(reportStatementData)[0].SM_Batch : ''}`} size="large">
               <Table
                 columns={columns}
                 dataSource={dataSource}

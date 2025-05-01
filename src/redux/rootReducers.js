@@ -47,6 +47,7 @@ import { traceabilityReportReducer } from './traceability/reducer';
 import { feedingreportReducer } from './views/feeding-report/reducers';
 import { productionReportReducer } from './views/production-report/reducers';
 import { waterflowReportReducer } from './views/waterflow/reducer';
+import { smAlertHistoryReducer } from './message&notifications/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -78,6 +79,7 @@ const rootReducers = combineReducers({
   feedingreport: feedingreportReducer,
   productionReport: productionReportReducer,
   waterflowReport: waterflowReportReducer,
+  alertHistoryReducer: smAlertHistoryReducer,
 
   cost: costReducer,
   gallery: galleryReducer,

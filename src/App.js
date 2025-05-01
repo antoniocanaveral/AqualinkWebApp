@@ -1,4 +1,4 @@
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, notification } from 'antd';
 import 'antd/dist/antd.less';
 import React, { useEffect, useState, lazy } from 'react';
 import { Provider, useSelector } from 'react-redux';
@@ -21,6 +21,8 @@ import Network from './routes/network';
 import './static/css/style.css';
 import Cookies from 'js-cookie';
 import SelectOrganization from './container/AQx-Monitoring/Menu/SelectOrganization';
+import { generateToken, messaging } from './firebase/firebaseConfig';
+import { onMessage } from 'firebase/messaging';
 
 const NotFound = lazy(() => import('./container/pages/404'));
 
@@ -64,6 +66,25 @@ function ProviderConfig() {
       unmounted = true;
     };
   }, [setPath]);
+
+  useEffect(() => {
+    generateToken();
+  
+    onMessage(messaging, (payload) => {
+      console.log('📩 Push recibido:', payload);
+  
+      const { title, body, image } = payload.notification || {};
+  
+      notification.open({
+        message: title || 'Notificación',
+        description: body || 'Tienes una nueva notificación.',
+        placement: 'topRight',
+        duration: 5,
+        icon: image ? <img src={image} alt="icon" style={{ width: 24 }} /> : undefined,
+      });
+    });
+  }, []);
+  
 
   const orgId = Cookies.get('orgId');
   const isAuditorExterno = selectedRoleName === 'Cumplimiento - Auditor Externo';

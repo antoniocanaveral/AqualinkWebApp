@@ -11,12 +11,12 @@ import { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
-import { fetchWaterflowReports } from '../../../redux/views/waterflow/actionCreator';
+import { fetchWaterflowParams, fetchWaterflowReports, fetchWaterReplacementParams } from '../../../redux/views/waterflow/actionCreator';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function WaterFlowFarm() {
   const dispatch = useDispatch();
-  const { waterflowReports, loading } = useSelector(state => state.waterflowReport);
+  const { waterflowReports, waterflowParams, waterflowReplacement, loading } = useSelector(state => state.waterflowReport);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
@@ -107,6 +107,8 @@ function WaterFlowFarm() {
   ];
 
   const report = waterflowReports?.[0] || {};
+  const params = waterflowParams || [];
+  const replacement = waterflowReplacement || [];
   const poolSizeHa = report.SM_PoolSize || 0;
   const poolSizeM2 = poolSizeHa * 10000;
 
@@ -128,6 +130,59 @@ function WaterFlowFarm() {
   const volumenTRNFR = volumenOP * 0.60;
   const volumenPesca = volumenOP * 0.40;
 
+  // Inicializamos los valores de los protocolos
+  let protocolos = [
+    { label: "Protocolo de flujo 1", porcentaje: "3%", valor: 0 },
+    { label: "Protocolo de flujo 2", porcentaje: "5%", valor: 0 },
+    { label: "Protocolo de flujo 3", porcentaje: "7%", valor: 0 },
+    { label: "Protocolo de flujo 4", porcentaje: "10%", valor: 0 },
+  ];
+
+  let protocolosRecambio = [
+    { label: "Protocolo de Recambio 1", porcentaje: "20%", valor: 0 },
+    { label: "Protocolo de Recambio 2", porcentaje: "30%", valor: 0 },
+    { label: "Protocolo de Recambio 3", porcentaje: "40%", valor: 0 },
+  ];
+
+  // Sumar los valores de waterflowParams en los protocolos
+  params.forEach((param) => {
+    const porcentaje = parseFloat(param.porcentaje);
+
+    // Actualizar la suma en el array de protocolos
+    protocolos.forEach((protocolo) => {
+      if (protocolo.porcentaje === `${porcentaje}%`) {
+        protocolo.valor += 1;
+      }
+    });
+  });
+
+  // Sumar los valores de waterflowReplacement en los protocolosRecambio
+  replacement.forEach((rep) => {
+    const porcentaje = parseFloat(rep.porcentaje);
+
+    // Actualizar la suma en el array de protocolosRecambio
+    protocolosRecambio.forEach((recambio) => {
+      if (recambio.porcentaje === `${porcentaje}%`) {
+        recambio.valor += 1;
+      }
+    });
+  });
+
+
+
+
+  // Calcular el volumen base total
+  const volumenBaseTotal = volumenOP * poolSizeHa * 10000;
+
+  // Calcular el volumen total de flujo sumando los valores de volumen_operativo en params
+  const volumenFlujoTotal = params.reduce((sum, param) => sum + (param.volumen_operativo || 0), 0);
+
+  // Calcular el volumen total de recambio sumando los valores de volumen_operativo en replacement
+  const volumenRecambioTotal = replacement.reduce((sum, rep) => sum + (rep.volumen_operativo || 0), 0);
+
+  // Volumen total final
+  const volumenTotal = volumenBaseTotal + volumenFlujoTotal + volumenRecambioTotal;
+
   const reportData = {
     areaPiscina: `${poolSizeHa} Ha`,
     superficie: [
@@ -146,18 +201,17 @@ function WaterFlowFarm() {
       { label: "Volumen TRNFR", porcentaje: "60%", valor: `${volumenTRNFR.toFixed(0)} m3` },
       { label: "Volumen a pesca", porcentaje: "40%", valor: `${volumenPesca.toFixed(0)} m3` },
     ],
-    protocolos: [
-      { label: "Protocolo de flujo 1", porcentaje: "3%", valor: "0" },
-      { label: "Protocolo de flujo 2", porcentaje: "5%", valor: "0" },
-      { label: "Protocolo de flujo 3", porcentaje: "7%", valor: "0" },
-      { label: "Protocolo de flujo 4", porcentaje: "10%", valor: "0" },
-    ],
+    protocolos: protocolos,
+    protocolosRecambio: protocolosRecambio,
   };
 
 
   useEffect(() => {
-    if (selectedPool)
+    if (selectedPool) {
       dispatch(fetchWaterflowReports());
+      dispatch(fetchWaterflowParams());
+      dispatch(fetchWaterReplacementParams());
+    }
   }, [dispatch, selectedPool]);
 
   return (
@@ -172,14 +226,11 @@ function WaterFlowFarm() {
       />
       <Main>
         <Row gutter={[10, 0]} equal-heights>
-          <Col xl={10} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+          <Col xl={10} xs={24} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <AqualinkMaps
                 width={'100%'}
-                height={
-                  window.innerWidth >= 2000 ? '600px' :
-                    '305px'
-                }
+                height={window.innerWidth >= 2000 ? '600px' : '305px'}
                 selectedOrg={selectedOrg}
                 selectedSector={selectedSector}
                 selectedPool={selectedPool}
@@ -188,15 +239,22 @@ function WaterFlowFarm() {
             </Suspense>
 
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Área de Piscina y Volumen de Agua" size="large" style={{ flex: 1, marginTop: 0 }}>
-                <WaterFlowCycleChart />
+
+              <Cards title="Área de Piscina y Volumen de Agua" size="large" style={{ flex: 1, minheight: '800px' }}>
+                <div style={{ flex: 1, minHeight: '450px' }}>
+
+                  <WaterFlowCycleChart
+                    waterflowParams={params}
+                    waterflowReplacement={replacement}
+                  />
+                </div>
               </Cards>
             </Suspense>
           </Col>
 
-          <Col xl={14} xs={24} style={{ display: 'flex' }}>
+          <Col xl={14} xs={24} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <Cards title="Medio de Cultivo y Protocolos de Flujo" size="large">
+              <Cards title="Medio de Cultivo y Protocolos de Flujo" size="large" style={{ flex: 1 }}>
                 <Typography.Title level={5} strong>Área de Piscina: {reportData.areaPiscina}</Typography.Title>
 
                 {/* Superficie y Profundidad en la misma fila */}
@@ -242,18 +300,29 @@ function WaterFlowFarm() {
                     <Col span={6}>{item.valor}</Col>
                   </Row>
                 ))}
+
+                <div className="harvest-report-divider" />
+                <Typography.Title level={5}>Protocolo de Recambio</Typography.Title>
+                {reportData.protocolosRecambio.map((item, index) => (
+                  <Row key={index} className="report-row">
+                    <Col span={12}>{item.label}</Col>
+                    <Col span={6}>{item.porcentaje}</Col>
+                    <Col span={6}>{item.valor}</Col>
+                  </Row>
+                ))}
+
                 <div className="harvest-report-divider" />
                 <div className="report-section">
                   <Typography.Title level={5}>Volumen Operativo Ciclo</Typography.Title>
                   <Row className="report-row">
-                    <Col span={24}>0 m3</Col>
+                    <Col span={24}>{Number(volumenTotal).toFixed(2)}</Col>
                   </Row>
                 </div>
               </Cards>
-
             </Suspense>
           </Col>
         </Row>
+
       </Main>
     </>
   );

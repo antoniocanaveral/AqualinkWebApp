@@ -33,6 +33,7 @@ import MessageNotificationsCenter from '../../container/AQx-Farms/message-notifi
 import ReportOpFarm from '../../container/AQx-Farms/reports/report-op-farm';
 import TraceabilityLotesCustody from '../../container/AQx-Custody/traceability/traceability-lotes-custody';
 import TraceabilityLotesFarm from '../../container/AQx-Custody/traceability/traceability-lotes-farm';
+import KnowledgeBase from '../../container/pages/knowledgeBase/Index';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -58,6 +59,7 @@ const Farm = React.memo(() => {
         <Route path="/monitoring/protein-percentage/*" element={<ProteinPercentageFarm />} />
         <Route path="/monitoring/plate-sampling/*" element={<PlateSamplingFarm />} />
         <Route path="/monitoring/feeding-tables/*" element={<FeedingTableFarms />} />
+        <Route path="/KnowledgeBase/*" element={<KnowledgeBase />} />
 
         <Route path="/analytics/*" element={<AnalyticRoutesFarm />} />  
         <Route path="/crop/*" element={<CropRoutesFarm />} />

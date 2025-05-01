@@ -24,6 +24,7 @@ const AddUserFarm = () => {
 
   useEffect(() => {
     dispatch(fetchRolesByClient());
+
   }, [dispatch]);
 
   const areas = [...new Set(
@@ -112,7 +113,9 @@ const AddUserFarm = () => {
     return [];
   };
 
-  const handleSubmit = (values) => {
+
+
+  const handleSubmit = async (values) => {
     if (selectedRoleObj?.Description === 'Cumplimiento - Auditor Externo') {
       let orgNames = [];
       if (values.orgGroups && Array.isArray(values.orgGroups)) {
@@ -133,6 +136,7 @@ const AddUserFarm = () => {
       values.orgsConcatenated = concatenatedOrgs;
       console.log('Valores enviados (Auditor Externo):', values);
       dispatch(sendAuditorEmailProcess(values));
+
       return;
     } else {
       if (selectedRoleObj?.has_warehouses) {
@@ -142,12 +146,15 @@ const AddUserFarm = () => {
         }
       }
       console.log('Valores enviados:', values);
+      message.warning('No se obtuvo FCM Token. El usuario se creará sin notificaciones.');
       dispatch(createUserFarm(values, selectedOrgId));
+
       setSelectedOrgId(null);
       setSelectedSalesRegionId(null);
     }
     form.resetFields();
   };
+
 
   return (
     <>
