@@ -1,4 +1,10 @@
 import {
+  FETCH_CHEMICAL_WATER_PARAMS_ERROR,
+  FETCH_CHEMICAL_WATER_PARAMS_LOADING,
+  FETCH_CHEMICAL_WATER_PARAMS_SUCCESS,
+  FETCH_PHYSICAL_WATER_PARAMS_ERROR,
+  FETCH_PHYSICAL_WATER_PARAMS_LOADING,
+  FETCH_PHYSICAL_WATER_PARAMS_SUCCESS,
   FETCH_WATERFLOW_PARAMS_ERROR,
   FETCH_WATERFLOW_PARAMS_LOADING,
   FETCH_WATERFLOW_PARAMS_SUCCESS,
@@ -16,6 +22,8 @@ const initialState = {
   waterflowReports: [],
   waterflowParams: [],
   waterflowReplacement: [],
+  chemicalWaterParams: [],
+  physicalWaterParams: [],
 };
 
 export const waterflowReportReducer = (state = initialState, action) => {
@@ -38,6 +46,19 @@ export const waterflowReportReducer = (state = initialState, action) => {
       return { ...state, loading: false, waterflowReplacement: action.payload };
     case FETCH_WATERREPLACEMENT_PARAMS_ERROR:
       return { ...state, loading: false, error: action.payload };
+    case FETCH_CHEMICAL_WATER_PARAMS_LOADING:
+      return { ...state, loading: true, error: null };
+    case FETCH_CHEMICAL_WATER_PARAMS_SUCCESS:
+      return { ...state, loading: false, chemicalWaterParams: action.payload };
+    case FETCH_CHEMICAL_WATER_PARAMS_ERROR:
+      return { ...state, loading: false, error: action.payload };
+    case FETCH_PHYSICAL_WATER_PARAMS_LOADING:
+      return { ...state, loading: true, error: null };
+    case FETCH_PHYSICAL_WATER_PARAMS_SUCCESS:
+      return { ...state, loading: false, physicalWaterParams: action.payload };
+    case FETCH_PHYSICAL_WATER_PARAMS_ERROR:
+      return { ...state, loading: false, error: action.payload };
+
     default:
       return state;
   }

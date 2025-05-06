@@ -186,16 +186,15 @@ function ShrimpFarm() {
   ];
   const transformedData = productionReports
     .map((item, index) => ({
-      key: item.id.toString(),
-      fecha: item.pc_production_json.sm_plantingdate,
-      loteId: item.SM_Batch,
-      pc: item.pc_production_json.prebreeding_pool_name,
-      pe: item.warehouse_name,
-      densidad: item.pc_production_json.sm_densityperhectare,
-      totalSembrado: item.pc_production_json.animals_per_gram,
-      pl: item.pc_production_json.stocking_population,
-      // Temporary field to store planting date for sorting
-      _plantingDate: item.pc_production_json.sm_plantingdate,
+      key: item?.id?.toString() ?? index,
+      fecha: item?.pc_production_json?.sm_plantingdate ?? "N/A",
+      loteId: item?.SM_Batch ?? "N/A",
+      pc: item?.pc_production_json?.prebreeding_pool_name ?? "N/A",
+      pe: item?.warehouse_name ?? "N/A",
+      densidad: item?.pc_production_json?.sm_densityperhectare ?? "N/A",
+      totalSembrado: item?.pc_production_json?.animals_per_gram ?? "N/A",
+      pl: item?.pc_production_json?.stocking_population ?? "N/A",
+      _plantingDate: item?.pc_production_json?.sm_plantingdate ?? null,
     }))
     // Filter out items with no planting date and sort by planting date
     .filter((item) => item._plantingDate)

@@ -150,6 +150,9 @@ const LoteViewCustody = () => {
                     <div style={{ padding: '20px' }}>
                         <Row gutter={[16, 16]}>
                             <Col span={24}><Title style={{ color: '#0372ce' }} level={4}>Información General</Title></Col>
+                            
+                            
+                            <Col xs={24} sm={12}><Text><strong>Camaronera:</strong> {selectedLote.orgNameFromCoordination}</Text></Col>
                             <Col xs={24} sm={12}><Text><strong>Fecha de Llegada:</strong> {formatDateTime(selectedLote.sm_arrivaltime)}</Text></Col>
                             <Col xs={24} sm={12}><Text><strong>Hora de Inicio:</strong> {formatDateTime(selectedLote.sm_processstarttime)}</Text></Col>
                             <Col xs={24} sm={12}><Text><strong>Volumen a Proceso:</strong> {selectedLote.sm_processvolume}</Text></Col>

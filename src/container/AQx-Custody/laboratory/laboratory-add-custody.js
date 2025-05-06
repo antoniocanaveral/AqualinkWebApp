@@ -54,7 +54,7 @@ function LaboratoryAddCustody() {
         },
     ] : [];
     const combinedSelectOptions = [...farmsSelectOptions];
-    
+
     console.log(coordinations)
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -175,32 +175,42 @@ function LaboratoryAddCustody() {
         ...Object.keys(sortedGroupedParameters).map((type) => ({
             title: type,
             content: (
-                <Form layout="vertical">
-                    <Row gutter={16}>
-                        {groupedParameters[type].map((param) => {
-                            const isNumeric = param.sm_acceptablerange && /\d/.test(param.sm_acceptablerange);
+                <>
+                    <Form layout="vertical">
+                        <Row gutter={16}>
+                            {groupedParameters[type].map((param) => {
+                                const isNumeric = param.sm_acceptablerange && /\d/.test(param.sm_acceptablerange);
 
-                            return (
-                                <Col key={param.id} span={8}>
-                                    <Form.Item label={param.sm_parametername}>
-                                        <Input
-                                            name={param.sm_parametername}
-                                            value={formData[param.sm_parametername] || ''}
-                                            onChange={handleChange}
-                                            type={isNumeric ? "number" : "text"}
-                                            step="any"
-                                        />
-                                    </Form.Item>
-                                    {param.sm_acceptablerange && param.sm_acceptablerange !== "-" && (
-                                        <div style={{ fontSize: "12px", color: "#888", marginBottom: "10px" }}>
-                                            <strong>Rango Aceptable:</strong> {param.sm_acceptablerange}
-                                        </div>
-                                    )}
-                                </Col>
-                            );
-                        })}
-                    </Row>
-                </Form>
+                                return (
+                                    <Col key={param.id} span={8}>
+                                        <Form.Item label={param.sm_parametername}>
+                                            <Input
+                                                name={param.sm_parametername}
+                                                value={formData[param.sm_parametername] || ''}
+                                                onChange={handleChange}
+                                                type={isNumeric ? "number" : "text"}
+                                                step="any"
+                                            />
+                                        </Form.Item>
+                                        {param.sm_acceptablerange && param.sm_acceptablerange !== "-" && (
+                                            <div style={{ fontSize: "12px", color: "#888", marginBottom: "10px" }}>
+                                                <strong>Rango Aceptable:</strong> {param.sm_acceptablerange}
+                                            </div>
+                                        )}
+                                    </Col>
+                                );
+                            })}
+                        </Row>
+                    </Form>
+                    {/* Botón solo para "Sulfitos." */}
+                    {type === "Sulfitos." && (
+                        <div style={{ marginTop: 20, textAlign: 'center' }}>
+                            <Button type="primary" onClick={() => { /* no hace nada por ahora */ }}>
+                                Sincronizar Biolan
+                            </Button>
+                        </div>
+                    )}
+                </>
             ),
         }))
     ];

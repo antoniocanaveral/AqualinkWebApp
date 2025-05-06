@@ -60,33 +60,75 @@ export const fetchInventory = (org_type) => async (dispatch) => {
 
   }
 };
-
-
 const fetchAllCatalogRecords = async (filterValue) => {
   const limit = 300;
-  let allRecords = [];
-  let lastId = 0;
-  let hasMore = true;
+  const parallelRequests = 5; // Ajusta según la carga que soporte el backend
+  const allRecords = [];
+  const seenIds = new Set();
 
-  while (hasMore) {
-    const response = await DataService.get(
-      `/models/m_product_catalog?$filter=org_type eq '${filterValue}' and M_Product_ID gt ${lastId}&limit=${limit}&orderBy=M_Product_ID`
-    );
+  // Paso 1: Obtener el ID máximo con ese tipo
+  const maxIdResponse = await DataService.get(
+    `/models/m_product_catalog?$filter=org_type eq '${filterValue}'&limit=1&orderBy=id desc`
+  );
+  const maxId = maxIdResponse.data?.records?.[0]?.id || 0;
+  if (maxId === 0) return [];
 
-    const records = response.data?.records || [];
-    allRecords.push(...records);
-
-    if (records.length < limit) {
-      hasMore = false;
-    } else {
-      // 👇 Aquí accedemos al ID real dentro del objeto
-      lastId = records[records.length - 1].M_Product_ID.id;
+  // Paso 2: Crear bloques de rangos artificiales para paralelizar bien
+  const generateTasks = () => {
+    const tasks = [];
+    for (let i = 1; i <= maxId; i += limit) {
+      tasks.push({ from: i, to: i + limit - 1 });
     }
-  }
+    return tasks;
+  };
 
-  return allRecords;
+  const taskQueue = generateTasks();
+
+  // Paso 3: Ejecutar solicitudes por bloques, controladas en paralelo
+  const fetchBlock = async ({ from, to }) => {
+    const records = [];
+
+    let lastId = from - 1;
+
+    while (lastId < to) {
+      const response = await DataService.get(
+        `/models/m_product_catalog?$filter=org_type eq '${filterValue}' and M_Product_Catalog_ID gt ${lastId} and M_Product_Catalog_ID le ${to}&limit=${limit}&orderBy=M_Product_Catalog_ID`
+      );
+      const batch = response.data?.records || [];
+
+      for (const record of batch) {
+        if (!seenIds.has(record.id)) {
+          seenIds.add(record.id);
+          records.push(record);
+        }
+      }
+
+      if (batch.length < limit) break;
+
+      lastId = batch[batch.length - 1].id;
+    }
+
+    return records;
+  };
+
+  const worker = async () => {
+    const result = [];
+
+    while (taskQueue.length > 0) {
+      const task = taskQueue.shift();
+      const data = await fetchBlock(task);
+      result.push(...data);
+    }
+
+    return result;
+  };
+
+  // Paso 4: Ejecutar múltiples workers en paralelo
+  const workers = Array.from({ length: parallelRequests }, () => worker());
+  const results = await Promise.all(workers);
+
+  return results.flat().sort((a, b) => a.id - b.id);
 };
-
 
 
 export const fetchProductCatalogFarm = () => async (dispatch) => {
@@ -96,6 +138,7 @@ export const fetchProductCatalogFarm = () => async (dispatch) => {
     console.log(records)
     const catalogsByCategory = reduceByCategory(records);
     dispatch(opCatalogLoaded(catalogsByCategory));
+    return catalogsByCategory;
   } catch (err) {
     dispatch(opCatalogError(err.message || 'Error al cargar FARM.'));
     handleApiError(err, dispatch, opCatalogError);

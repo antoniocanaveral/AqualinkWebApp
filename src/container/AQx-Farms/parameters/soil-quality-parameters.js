@@ -1,5 +1,5 @@
-import React, { Suspense } from 'react';
-import { Row, Col, Skeleton, Typography, Badge, Space, Table, Button } from 'antd';
+import React, { Suspense, useEffect } from 'react';
+import { Row, Col, Skeleton, Typography, Badge, Space, Table, Button, Select } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { GoogleMaps } from '../../../components/maps/google-maps';
@@ -10,16 +10,18 @@ import { Link } from 'react-router-dom';
 
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
+import { fetchChemicalSoilParams } from '../../../redux/views/soil/actionCreator';
 
 function SoilQualityFarm() {
-
+  const dispatch = useDispatch();
+  const { chemicalSoilParams, loading } = useSelector(state => state.chemicalSoil);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
-
+  const [selectedBatch, setSelectedBatch] = useState(null);
 
 
   const organizations = useSelector((state) => state.auth.farmsOrgs);
@@ -121,7 +123,7 @@ function SoilQualityFarm() {
     { title: 'ALC', dataIndex: 'alcalinidad', key: 'alcalinidad' },
     { title: 'AMONIO', dataIndex: 'amonio', key: 'amonio' },
     { title: 'M. O.', dataIndex: 'materiaOrganica', key: 'materiaOrganica' },
-    { title: 'REDOX', dataIndex: 'redox', key: 'redox' },
+
     { title: 'C:N', dataIndex: 'relacionCN', key: 'relacionCN' },
   ];
 
@@ -133,6 +135,17 @@ function SoilQualityFarm() {
     { key: '6', dia: '5', ph: '8.1', alcalinidad: '155', amonio: '0.7', materiaOrganica: '2.0', redox: '-80', relacionCN: '12:1' },
   ];
 
+  const batchOptions = [...new Set((chemicalSoilParams || []).map(r => r.SM_Batch))].map(batch => ({
+    label: batch,
+    value: batch,
+  }));
+
+  useEffect(() => {
+    if (selectedPool)
+      dispatch(fetchChemicalSoilParams());
+  }, [dispatch, selectedPool]);
+
+
   return (
     <>
       <PageHeader highlightText={"AquaLink Parámetros:"}
@@ -142,6 +155,17 @@ function SoilQualityFarm() {
         selectedPool={selectedPool}
       />
       <Main>
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Seleccione un LoteID"
+          options={batchOptions}
+          value={selectedBatch}
+          onChange={value => setSelectedBatch(value)}
+          allowClear
+          loading={loading}
+        />
+        <br />
+        <br />
         <Row gutter={25}>
           <Col xl={10} xs={24} xxl={10} style={{ display: 'flex' }}>
             <Suspense

@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import axios from 'axios';
 import { Row, Col, Skeleton, Typography, Badge, Space, Form, Input, DatePicker, Select, Button, Divider } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
@@ -16,15 +16,19 @@ import MagnesiumChart from './charts/MagnesiumChart';
 
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
+import { fetchChemicalWaterParams } from '../../../redux/views/waterflow/actionCreator';
+import AlcalinityChart from './charts/AlkalinityChart';
 
 function WaterAqualityFarms() {
-
+  const dispatch = useDispatch();
+  const { chemicalWaterParams, loading } = useSelector(state => state.waterflowReport);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+  const [selectedBatch, setSelectedBatch] = useState(null);
 
 
 
@@ -118,6 +122,20 @@ function WaterAqualityFarms() {
     ...sectorSelectOptions,
     ...poolsSelectOptions,
   ];
+
+  const batchOptions = [...new Set((chemicalWaterParams || []).map(r => r.SM_Batch))].map(batch => ({
+    label: batch,
+    value: batch,
+  }));
+
+
+
+
+  useEffect(() => {
+    if (selectedPool)
+      dispatch(fetchChemicalWaterParams());
+  }, [dispatch, selectedPool]);
+
   return (
     <>
       <PageHeader highlightText={"AquaLink Parámetros:"}
@@ -127,6 +145,18 @@ function WaterAqualityFarms() {
         selectedPool={selectedPool}
       />
       <Main>
+
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Seleccione un LoteID"
+          options={batchOptions}
+          value={selectedBatch}
+          onChange={value => setSelectedBatch(value)}
+          allowClear
+          loading={loading}
+        />
+        <br />
+        <br />
         <Row gutter={25}>
           <Col xl={10} xs={24} xxl={10} style={{ display: 'flex' }}>
             <Suspense
@@ -152,7 +182,7 @@ function WaterAqualityFarms() {
           <Col xl={13} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Comportamiento de Ph y Alcalinidad" size="large">
-                <PhAlcalinityBehaviorChart />
+              <PhAlcalinityBehaviorChart selectedBatch={selectedBatch} />
               </Cards>
             </Suspense>
           </Col>
@@ -161,20 +191,20 @@ function WaterAqualityFarms() {
         <Row gutter={25}>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Cards title="Ph" size="large">
-              <PhChart />
+              <PhChart  selectedBatch={selectedBatch}/>
             </Cards>
           </Col>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Alcalinidad" size="large">
-                <MagnesiumChart />
+                <AlcalinityChart selectedBatch={selectedBatch}/>
               </Cards>
             </Suspense>
           </Col>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Nitratos" size="large">
-                <NitrateChart />
+                <NitrateChart  selectedBatch={selectedBatch}/>
               </Cards>
             </Suspense>
           </Col>
@@ -182,20 +212,20 @@ function WaterAqualityFarms() {
         <Row gutter={25}>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Cards title="Nitrito" size="large">
-              <NitriteChart />
+              <NitriteChart selectedBatch={selectedBatch} />
             </Cards>
           </Col>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Magnesio" size="large">
-                <MagnesiumChart />
+                <MagnesiumChart selectedBatch={selectedBatch} />
               </Cards>
             </Suspense>
           </Col>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Calcio" size="large">
-                <CalciumChart />
+                <CalciumChart selectedBatch={selectedBatch} />
               </Cards>
             </Suspense>
           </Col>
@@ -203,7 +233,7 @@ function WaterAqualityFarms() {
         <Row gutter={25}>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Cards title="Fosfato" size="large">
-              <PhosphateChart />
+              <PhosphateChart selectedBatch={selectedBatch} />
             </Cards>
           </Col>
 

@@ -48,6 +48,8 @@ import { feedingreportReducer } from './views/feeding-report/reducers';
 import { productionReportReducer } from './views/production-report/reducers';
 import { waterflowReportReducer } from './views/waterflow/reducer';
 import { smAlertHistoryReducer } from './message&notifications/reducers';
+import textureReducer from './texture/reducers';
+import { chemicalSoilReducer } from './views/soil/reducer';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -79,7 +81,9 @@ const rootReducers = combineReducers({
   feedingreport: feedingreportReducer,
   productionReport: productionReportReducer,
   waterflowReport: waterflowReportReducer,
+  chemicalSoil: chemicalSoilReducer,
   alertHistoryReducer: smAlertHistoryReducer,
+  texture: textureReducer,
 
   cost: costReducer,
   gallery: galleryReducer,

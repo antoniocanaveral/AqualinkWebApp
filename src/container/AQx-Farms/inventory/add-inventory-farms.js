@@ -89,9 +89,10 @@ function AddInventoryFarms() {
 
 
   useEffect(() => {
-    dispatch(fetchProductCatalogFarm());
+  
+      dispatch(fetchProductCatalogFarm());
   }, [dispatch]);
-
+  
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
     setSelectedGroup(null);

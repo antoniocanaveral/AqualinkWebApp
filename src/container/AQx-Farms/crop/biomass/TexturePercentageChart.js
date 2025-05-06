@@ -1,43 +1,24 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import LineChartWithXAxisPadding from '../../../../components/charts/line/LineChartWithXAxisPadding';
 
-function TexturePercentageChart() {
-  const data = [
-    {
-      name: 'Día 1',
-      duro: 60,
-      flacido: 10,
-      mudado: 30,
-    },
-    {
-      name: 'Día 2',
-      duro: 60,
-      flacido: 20,
-      mudado: 20,
-    },
-    {
-      name: 'Día 3',
-      duro: 70,
-      flacido: 10,
-      mudado: 20,
-    },
-    {
-      name: 'Día 4',
-      duro: 80,
-      flacido: 10,
-      mudado: 10,
-    },
-    {
-      name: 'Día 5',
-      duro: 90,
-      flacido: 5,
-      mudado: 5,
-    },
-  ];
+function TexturePercentageChart({ textures = [], loading = false }) {
+  // Mapear los datos de textures al formato del gráfico
+  const data = useMemo(() => {
+    return textures.map((texture) => ({
+      name: `día ${texture.SM_CampaignItem_ID?.SM_Index || ''}`, // Textura (día + SM_Index)
+      duro: texture.SM_TextureGoodPercent, // Porcentaje Duro
+      flacido: texture.SM_TextureFlaccidPercent, // Porcentaje Flácido
+      mudado: texture.SM_TextureMoltedPercent, // Porcentaje Mudado
+    }));
+  }, [textures]);
 
   return (
-    <div style={{ width: "110%", height: "10%" }}> {/* Asegura que el contenedor tenga el ancho y alto completo */}
-      <LineChartWithXAxisPadding data={data} />
+    <div style={{ width: '100%', height: '300px' }}>
+      {loading ? (
+        <div>Loading...</div> // Indicador de carga
+      ) : (
+        <LineChartWithXAxisPadding data={data} />
+      )}
     </div>
   );
 }

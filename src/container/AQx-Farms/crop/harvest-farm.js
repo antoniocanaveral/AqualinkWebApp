@@ -326,22 +326,6 @@ function HarvestFarm() {
 
                   <div className="harvest-report-section-2">
                     <span className="label">Textura Proceso </span>
-
-                    <div className='align-items'>
-                      <span className="label">Buenos:</span>
-                      <span>{fishingReportData.texturaProceso.buenos}%</span>
-                    </div>
-                    <div className='align-items'>
-                      <span className="label">Flácidos</span>
-                      <span>{fishingReportData.texturaProceso.flacidos}%</span>
-                    </div>
-                    <div className='align-items'>
-                      <span className="label">Mudados</span>
-                      <span>{fishingReportData.texturaProceso.mudados}%</span>
-                    </div>
-
-
-
                   </div>
                 </div>
 

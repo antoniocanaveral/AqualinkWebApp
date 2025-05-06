@@ -53,26 +53,59 @@ export const registerLote = (loteData) => async (dispatch) => {
     }
 };
 
-
 export const fetchLotes = () => async (dispatch) => {
     dispatch(fetchLotesLoading());
-
+  
     try {
-        const adOrgId = Cookies.get('orgId');
-        if (!adOrgId) {
-            throw new Error('Organización no encontrada en las cookies.');
-        }
-
-        const response = await DataService.get(`/models/sm_lote?$filter=AD_Org_ID eq ${adOrgId}`);
-        
-        if (response.data && response.data.records) {
-            dispatch(fetchLotesSuccess(response.data.records));
-        } else {
-            throw new Error('No se encontraron lotes.');
-        }
+      const adOrgId = Cookies.get('orgId');
+      if (!adOrgId) {
+        throw new Error('Organización no encontrada en las cookies.');
+      }
+  
+      const response = await DataService.get(`/models/sm_lote?$filter=AD_Org_ID eq ${adOrgId}`);
+  
+      if (response.data && response.data.records) {
+        const lotes = response.data.records;
+  
+        // Obtener todas las coordinaciones únicas con ID válido
+        const coordinationIds = [...new Set(
+          lotes
+            .map((l) => l.SM_Coordination_ID?.id)
+            .filter((id) => !!id)
+        )];
+  
+        // Fetch paralelo de coordinaciones
+        const coordinationResponses = await Promise.all(
+          coordinationIds.map((id) =>
+            DataService.get(`/models/sm_coordination/${id}`).then(res => ({
+              id,
+              orgName: res.data?.AD_Org_ID?.identifier || 'Desconocido'
+            })).catch(() => ({
+              id,
+              orgName: 'Desconocido'
+            }))
+          )
+        );
+  
+        // Mapeo ID de coordinación → nombre de organización
+        const coordinationOrgMap = coordinationResponses.reduce((acc, { id, orgName }) => {
+          acc[id] = orgName;
+          return acc;
+        }, {});
+  
+        // Agregar `orgNameFromCoordination` al lote
+        const enrichedLotes = lotes.map((lote) => ({
+          ...lote,
+          orgNameFromCoordination: coordinationOrgMap[lote.SM_Coordination_ID?.id] || null
+        }));
+  
+        dispatch(fetchLotesSuccess(enrichedLotes));
+      } else {
+        throw new Error('No se encontraron lotes.');
+      }
     } catch (error) {
-        dispatch(fetchLotesError(error.message));
-        handleApiError(error, dispatch, fetchLotesError);
-
+      dispatch(fetchLotesError(error.message));
+      handleApiError(error, dispatch, fetchLotesError);
     }
-};
+  };
+  

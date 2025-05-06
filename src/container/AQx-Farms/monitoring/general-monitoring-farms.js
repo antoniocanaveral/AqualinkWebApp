@@ -1,5 +1,5 @@
-import React, { Suspense } from 'react';
-import { Row, Col, Skeleton } from 'antd';
+import React, { Suspense, useEffect } from 'react';
+import { Row, Col, Skeleton, Select } from 'antd';
 import GrowthChart from './general/GrowthChart';
 import SurvivalChart from './general/SurvivalChart';
 import ConsumptionSuppliesChart from './general/ConsumptionSuppliesChart';
@@ -12,13 +12,18 @@ import { PageHeader } from '../../../components/page-headers/page-headers';
 
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+import { fetchFeedingreports } from '../../../redux/views/feeding-report/actionCreator';
 
 function GeneralMonitoringFarm() {
+  const dispatch = useDispatch();
+  const { feedingreports, loading } = useSelector(state => state.feedingreport);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+  const [selectedBatch, setSelectedBatch] = useState(null);
+
 
 
   const organizations = useSelector((state) => state.auth.farmsOrgs);
@@ -105,6 +110,19 @@ function GeneralMonitoringFarm() {
     ...poolsSelectOptions,
   ];
 
+  const batchOptions = [...new Set((feedingreports || []).map(r => r.SM_Batch))].map(batch => ({
+    label: batch,
+    value: batch,
+  }));
+
+
+
+
+  useEffect(() => {
+    if (selectedPool)
+      dispatch(fetchFeedingreports());
+  }, [dispatch, selectedPool]);
+
 
   return (
     <>
@@ -118,8 +136,19 @@ function GeneralMonitoringFarm() {
       <Main>
 
 
-
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Seleccione un LoteID"
+          options={batchOptions}
+          value={selectedBatch}
+          onChange={value => setSelectedBatch(value)}
+          allowClear
+          loading={loading}
+        />
+        <br />
+        <br />
         <Row gutter={25}>
+
           <Col xl={8} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
@@ -129,7 +158,8 @@ function GeneralMonitoringFarm() {
               }
             >
               <Cards title="Crecimiento" size="large" style={{ width: '100%', height: '100%' }}>
-                <GrowthChart />
+              <GrowthChart selectedBatch={selectedBatch} />
+
               </Cards>
             </Suspense>
           </Col>
@@ -142,7 +172,7 @@ function GeneralMonitoringFarm() {
               }
             >
               <Cards title="Supervivencia" size="large" style={{ width: '100%', height: '100%' }}>
-                <SurvivalChart />
+                <SurvivalChart selectedBatch={selectedBatch} />
               </Cards>
             </Suspense>
           </Col>
@@ -172,7 +202,7 @@ function GeneralMonitoringFarm() {
               }
             >
               <Cards title="Biomasa" size="large" style={{ width: '100%', height: '100%' }}>
-                <BiomassChart />
+                <BiomassChart  selectedBatch={selectedBatch} />
               </Cards>
             </Suspense>
           </Col>
@@ -185,7 +215,7 @@ function GeneralMonitoringFarm() {
               }
             >
               <Cards title="FCA" size="large" style={{ width: '100%', height: '100%' }}>
-                <FCAChart />
+                <FCAChart selectedBatch={selectedBatch}  />
               </Cards>
             </Suspense>
           </Col>

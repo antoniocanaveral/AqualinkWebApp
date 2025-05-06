@@ -1,33 +1,28 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Row, Col, Typography, Table, Card, Skeleton, Badge, Space } from 'antd';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { GoogleMaps } from '../../../components/maps/google-maps';
-import { Link } from 'react-router-dom';
-import PreCriaVolumeDonutChart from './biomass/PreCriaVolumDonutChart';
-import PLDistributionDonutChart from './biomass/PlDistributionDonutChart';
-import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import TexturePreFishingDonutChart from './biomass/TexturePreFishingDonutChart';
 import TexturePercentageChart from './biomass/TexturePercentageChart';
-
-
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+import { fetchTextures } from '../../../redux/texture/actionCreator';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 
 function TextureFarm() {
+  const dispatch = useDispatch();
+  const { textures, loading } = useSelector((state) => state.texture);
 
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
-
-
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
-
 
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
@@ -38,18 +33,15 @@ function TextureFarm() {
     setSelectedSector(null);
   };
 
-
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
-
 
   const farmsSelectOptions = organizations.length > 0 ? [
     {
@@ -63,7 +55,6 @@ function TextureFarm() {
       value: selectedOrg || undefined,
     },
   ] : [];
-
 
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
@@ -88,7 +79,6 @@ function TextureFarm() {
     },
   ] : [];
 
-
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -109,13 +99,13 @@ function TextureFarm() {
     },
   ] : [];
 
-
   const combinedSelectOptions = [
     ...farmsSelectOptions,
     ...sectorSelectOptions,
     ...poolsSelectOptions,
   ];
 
+  // Definición de columnas
   const columns = [
     {
       title: 'Lote ID',
@@ -154,63 +144,27 @@ function TextureFarm() {
     },
   ];
 
+  // Mapear los datos de textures al formato de la tabla
+  const dataSource = textures.map((texture, index) => ({
+    key: texture.id.toString(),
+    codigo: texture.Value || texture.id, // Lote ID
+    fecha: new Date(texture.Created).toLocaleDateString('es-ES'), // Fecha (formato local)
+    descripcion: texture.Name, // Descripción
+    textura: `día ${texture.SM_CampaignItem_ID?.SM_Index || ''}`, // Textura (día + SM_Index)
+    duro: `${texture.SM_TextureGoodPercent}%`, // Duro (porcentaje)
+    flacido: `${texture.SM_TextureFlaccidPercent}%`, // Flácido (porcentaje)
+    mudado: `${texture.SM_TextureMoltedPercent}%`, // Mudado (porcentaje)
+  }));
 
-  const data = [
-    {
-      key: '1',
-      codigo: 'C001',
-      fecha: '2024-11-13',
-      descripcion: 'textura -7',
-      textura: 'día 1',
-      duro: '60%',
-      flacido: '10%',
-      mudado: '30%',
-    },
-    {
-      key: '2',
-      codigo: 'C002',
-      fecha: '2024-11-14',
-      descripcion: 'textura -6',
-      textura: 'día 2',
-      duro: '60%',
-      flacido: '20%',
-      mudado: '20%',
-    },
-    {
-      key: '3',
-      codigo: 'C003',
-      fecha: '2024-11-15',
-      descripcion: 'textura -5',
-      textura: 'día 3',
-      duro: '70%',
-      flacido: '10%',
-      mudado: '20%',
-    },
-    {
-      key: '4',
-      codigo: 'C004',
-      fecha: '2024-11-16',
-      descripcion: 'textura -4',
-      textura: 'día 4',
-      duro: '80%',
-      flacido: '10%',
-      mudado: '10%',
-    },
-    {
-      key: '5',
-      codigo: 'C005',
-      fecha: '2024-11-17',
-      descripcion: 'textura -3',
-      textura: 'día 5',
-      duro: '90%',
-      flacido: '5%',
-      mudado: '5%',
-    },
-  ];
+  useEffect(() => {
+    if (selectedPool) {
+      dispatch(fetchTextures({ poolId: selectedPool }));
+    }
+  }, [dispatch, selectedPool]);
+
   return (
     <>
       <PageHeader
-
         highlightText="Aqualink Monitoreo"
         title="Textura"
         selectOptions={combinedSelectOptions}
@@ -227,33 +181,14 @@ function TextureFarm() {
                 </Cards>
               }
             >
-              <Cards title="Geolocalización" size="large">
-                <Row gutter={[25, 25]} align="top">
-                  <Col xs={20} md={15}>
-                    <GoogleMaps />
-                  </Col>
-                  <Col xs={20} md={9}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px" }}>
-                      <Badge color="#1890ff" dot style={{ marginRight: 8 }} />
-                      <Typography.Title level={3} style={{ margin: 0 }}>Piscina 3</Typography.Title>
-                    </div>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Camaroneras 1</Typography.Title>
-                        <Typography.Text>Área: 307.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Piscina 3</Typography.Title>
-                        <Typography.Text>Área: 5.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title level={5}>Pre Cría 3</Typography.Title>
-                        <Typography.Text>Área: 1.35 ha</Typography.Text>
-                      </div>
-                    </Space>
-                  </Col>
-                </Row>
-              </Cards>
+              <AqualinkMaps
+                width={'100%'}
+                
+                selectedOrg={selectedOrg}
+                selectedSector={selectedSector}
+                selectedPool={selectedPool}
+                farmsOrgsWithPools={farmsOrgsWithPools}
+              />
             </Suspense>
           </Col>
           <Col xl={10} xs={24} style={{ display: 'flex' }}>
@@ -266,9 +201,8 @@ function TextureFarm() {
             >
               <Cards title="Textura Pre Cosecha" size="large">
                 <div style={{ width: "75%", margin: "0 auto" }}>
-                  <TexturePreFishingDonutChart />
+                  <TexturePreFishingDonutChart textures={textures} />
                 </div>
-
               </Cards>
             </Suspense>
           </Col>
@@ -285,13 +219,13 @@ function TextureFarm() {
               <Cards title="Reporte de Textura" size="large">
                 <Table
                   columns={columns}
-                  dataSource={data}
+                  dataSource={dataSource}
                   pagination={{ pageSize: 5 }}
+                  loading={loading}
                 />
               </Cards>
             </Suspense>
           </Col>
-
           <Col xl={10} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
@@ -301,7 +235,7 @@ function TextureFarm() {
               }
             >
               <Cards title="Distribución de Pl" size="large">
-                <TexturePercentageChart />
+                <TexturePercentageChart textures={textures} loading={loading} />
               </Cards>
             </Suspense>
           </Col>

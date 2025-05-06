@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/aqualinkdemo/static/css/main.63e80a99.css",
-    "main.js": "/aqualinkdemo/static/js/main.5d3a9788.js",
+    "main.js": "/aqualinkdemo/static/js/main.da513efd.js",
     "static/js/1874.0fbd5f0b.chunk.js": "/aqualinkdemo/static/js/1874.0fbd5f0b.chunk.js",
     "static/js/755.c3971289.chunk.js": "/aqualinkdemo/static/js/755.c3971289.chunk.js",
     "static/js/6461.81054289.chunk.js": "/aqualinkdemo/static/js/6461.81054289.chunk.js",
@@ -310,7 +310,7 @@
     "static/js/3548.93fe360a.chunk.js": "/aqualinkdemo/static/js/3548.93fe360a.chunk.js",
     "static/js/9537.a6ca3e8b.chunk.js": "/aqualinkdemo/static/js/9537.a6ca3e8b.chunk.js",
     "static/js/2661.0b1b0557.chunk.js": "/aqualinkdemo/static/js/2661.0b1b0557.chunk.js",
-    "static/js/5727.16701521.chunk.js": "/aqualinkdemo/static/js/5727.16701521.chunk.js",
+    "static/js/5727.45ca29d4.chunk.js": "/aqualinkdemo/static/js/5727.45ca29d4.chunk.js",
     "static/js/9644.80a57a44.chunk.js": "/aqualinkdemo/static/js/9644.80a57a44.chunk.js",
     "static/js/8724.e7057aa4.chunk.js": "/aqualinkdemo/static/js/8724.e7057aa4.chunk.js",
     "static/media/CoverImage.svg": "/aqualinkdemo/static/media/CoverImage.11dd766b9e03c049f261.svg",
@@ -429,6 +429,6 @@
   },
   "entrypoints": [
     "static/css/main.63e80a99.css",
-    "static/js/main.5d3a9788.js"
+    "static/js/main.da513efd.js"
   ]
 }
