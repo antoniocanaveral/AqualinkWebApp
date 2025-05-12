@@ -19,7 +19,7 @@ import OverviewCardMesh from '../../../../components/cards/OverviewCardMesh';
 import { GoogleMaps } from '../../../../components/maps/google-maps';
 import { formatNumber } from '../../../../utility/utility';
 
-function CoordModalShrimp() {
+function CoordModalShrimp({id}) {
   const [orientation, setOrientation] = useState('landscape');  // Controlar la disposición
   const reportRef = useRef(); // Referencia al HTML que se convertirá en PDF
 
@@ -30,7 +30,6 @@ function CoordModalShrimp() {
   ];
 
   const dispatch = useDispatch();
-  let { id } = useParams();
   const coordination = useSelector((state) => state.lab.coordination);
 
   useEffect(() => {
@@ -46,16 +45,16 @@ function CoordModalShrimp() {
   ];
 
   const labInfoData = [
-    { key: '0', label: 'Módulo:', value: coordination?.lab_module || 'M1' },
-    { key: '1', label: 'Tanque:', value: coordination?.tank || 'T1' },
-    { key: '2', label: 'Código:', value: coordination?.SM_FishingNotification || 'PL10' },
+    { key: '0', label: 'Módulo:', value: coordination?.lab_module || '-' },
+    { key: '1', label: 'Tanque:', value: coordination?.tank || '-' },
+    { key: '2', label: 'Código:', value: coordination?.SM_FishingNotification || '-' },
     { key: '2', label: 'Origen de Nauplio:', value: coordination?.origen || '' },
-    { key: '5', label: 'PL:', value: coordination?.answered_pl || 'PL10' },
-    { key: '4', label: 'Conteo Preliminar Lab:', value: coordination ? `${formatNumber(coordination.lab_count)} larvas/gramo` : '280 larvas/gramo' },
-    { key: '6', label: 'Salinidad:', value: coordination ? `${coordination.confirmed_salinity} ppm` : '20 ppm' },
-    { key: '7', label: 'Método de Envío:', value: coordination?.shipping_method || 'FUNDAS' },
-    { key: '11', label: 'Alcalinidad Tanque de Origen:', value: coordination?.alkalinity || '145 ppm' },
-    { key: '12', label: 'PH Tanque de Origen:', value: coordination?.pre_breeding_pool_ph || '6 ppm' },
+    { key: '5', label: 'PL:', value: coordination?.answered_pl || '-' },
+    { key: '4', label: 'Conteo Preliminar Lab:', value: coordination ? `${formatNumber(coordination.lab_count)} larvas/gramo` : '-' },
+    { key: '6', label: 'Salinidad:', value: coordination ? `${coordination.confirmed_salinity} ppm` : '-' },
+    { key: '7', label: 'Método de Envío:', value: coordination?.shipping_method || '-' },
+    { key: '11', label: 'Alcalinidad Tanque de Origen:', value: coordination?.alkalinity || '-' },
+    { key: '12', label: 'PH Tanque de Origen:', value: coordination?.pre_breeding_pool_ph || '-' },
   ];
 
 
@@ -120,10 +119,10 @@ function CoordModalShrimp() {
                             <strong>Fecha:</strong> {coordination?.planned_date ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-'}
                           </Col>
                           <Col span={10}>
-                            <strong>Módulo:</strong> {coordination?.lab_module || 'M1'}
+                            <strong>Módulo:</strong> {coordination?.lab_module || '-'}
                           </Col>
                           <Col span={4}>
-                            <strong>Tanque:</strong> {coordination?.tank || 'T1'}
+                            <strong>Tanque:</strong> {coordination?.tank || '-'}
                           </Col>
                         </Row>
                         <br />

@@ -176,6 +176,24 @@ export const NaturalPersonForm = ({ regions, cities, clientType }) => {
                     </Form.Item>
                 </Col>
 
+                <Col span={5}>
+                    <Form.Item
+                        label="Certificados"
+                        name="sm_certifications"
+                    >
+                        <Select
+                            mode="multiple"
+                            style={{ width: '100%' }}
+                            placeholder="Seleccione certificados"
+                        >
+                            <Option value="cert1">ASC</Option>
+                            <Option value="cert2">GLOBAL GAP</Option>
+                            <Option value="cert3">BAP</Option>
+                            <Option value="cert4">HACCP</Option>
+                        </Select>
+                    </Form.Item>
+                </Col>
+
             </Row>
 
             <Row gutter={16}>
@@ -222,14 +240,14 @@ export const NaturalPersonForm = ({ regions, cities, clientType }) => {
                     </Form.Item>
                 </Col>
                 <Col span={5}>
-                <Form.Item
-                    label="Número de Sectores"
-                    name="c_sales_region"
-                    rules={[{ required: true, message: 'Ingrese sectores' }]}
-                >
-                    <InputNumber size="large" style={{ width: '100%' }} />
-                </Form.Item>
-            </Col> 
+                    <Form.Item
+                        label="Número de Sectores"
+                        name="c_sales_region"
+                        rules={[{ required: true, message: 'Ingrese sectores' }]}
+                    >
+                        <InputNumber size="large" style={{ width: '100%' }} />
+                    </Form.Item>
+                </Col>
             </Row>
 
         </>)

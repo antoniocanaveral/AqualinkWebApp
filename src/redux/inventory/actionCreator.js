@@ -171,7 +171,7 @@ export const fetchProductCatalogCustody = () => async (dispatch) => {
 
 const reduceByCategory = (records) =>
   records.reduce((acc, catalog) => {
-    const category = catalog.M_Product_Category_ID?.identifier || 'Sin Categoría';
+    const category = catalog.category_name || 'Sin Categoría';
     if (!acc[category]) acc[category] = [];
     acc[category].push(catalog);
     return acc;
@@ -195,16 +195,117 @@ export const addProductToInventory = (productData) => async (dispatch) => {
     const orgId = Cookies.get('orgId');
     if (!clientId || !orgId) throw new Error('Faltan credenciales');
 
+    /* ----------------------------------------------------------------
+      * 1. COMPROBAR CATEGORIA Y EXISTENCIA DE PRODUCTO
+      * ---------------------------------------------------------------- */
+    const categoryName = productData.category_name;
+    const productName = productData.Name;
+
+    const categoryResponse = await DataService.get(
+      `/models/M_Product_Category?$filter=Value eq '${categoryName}' AND AD_Client_ID eq ${clientId}`
+    );
+    let categoryId = categoryResponse.data?.records?.[0]?.id || null;
+    if (!categoryId) {
+      await addProductCategory({ value: categoryName, name: categoryName });
+      const newCategoryResponse = await DataService.get(
+        `/models/M_Product_Category?$filter=Value eq '${categoryName}' AND AD_Client_ID eq ${clientId}`
+      );
+      categoryId = newCategoryResponse.data?.records?.[0]?.id;
+    }
+
+    const productResponse = await DataService.get(
+      `/models/M_Product?$filter=Name eq '${productName}' AND AD_Client_ID eq ${clientId}`
+    );
+    let productId = productResponse.data?.records?.[0]?.id || null;
+
+    //obtener UOM
+    const uomResponse = await DataService.get(
+      `/models/C_UOM?$filter=Name eq '${productData.sm_uom_name}' AND AD_Client_ID eq ${clientId}`
+    );
+    const uomId = uomResponse.data?.records?.[0]?.id || null;
+
+    //obtener M_PriceList
+    const priceListResponse = await DataService.get(
+      `/models/M_PriceList?$filter=AD_Client_ID eq ${clientId}`
+    );
+    const priceListId = priceListResponse.data?.records?.[0]?.id || null;
+
+    //obtener C_Tax
+    const taxResponse = await DataService.get(
+      `/models/C_Tax?$filter=AD_Client_ID eq ${clientId}`
+    );
+    const taxId = taxResponse.data?.records?.[0]?.id || null;
+
+
+    //obtener C_DocType
+    const docTypeResponse = await DataService.get(
+      `/models/C_DocType?$filter=AD_Client_ID eq ${clientId} AND Name eq 'MM Receipt'`
+    );
+
+    //obtener C_DocType AP Invoice
+    const docTypeResponse2 = await DataService.get(
+      `/models/C_DocType?$filter=AD_Client_ID eq ${clientId} AND Name eq 'AP Invoice'`
+    );
+    const docTypeId2 = docTypeResponse2.data?.records?.[0]?.id || null;
+
+    //obtener C_BPartner
+    const bPartnerResponse = await DataService.get(
+      `/models/C_BPartner?$filter=AD_Client_ID eq ${clientId}`
+    );
+    const bPartnerId = bPartnerResponse.data?.records?.[0]?.id || null;
+
+    //obtener C_BPartner_Location
+    const bPartnerLocationResponse = await DataService.get(
+      `/models/C_BPartner_Location?$filter=AD_Client_ID eq ${clientId}`
+    );
+    const bPartnerLocationId = bPartnerLocationResponse.data?.records?.[0]?.id || null;
+
+    //obtener C_TaxCategory
+    const taxCategoryResponse = await DataService.get(
+      `/models/C_TaxCategory?$filter=AD_Client_ID eq ${clientId}`
+    );
+    const taxCategoryId = taxCategoryResponse.data?.records?.[0]?.id || null;
+
+    //obtener los 50 primeros productos
+    const productResponse2 = await DataService.get(
+      `/models/M_Product?$filter=AD_Client_ID eq ${clientId}&limit=50`
+    );
+    const productId2 = productResponse2.data?.records?.[0]?.id || null;
+    console.log('productId2', productId2)
+    const docTypeId = docTypeResponse.data?.records?.[0]?.id || null;
+    console.log(productData)
+    if (!productId) {
+      await DataService.post('/models/M_Product', {
+        AD_Client_ID: +clientId,
+        AD_Org_ID: 0,
+        Value: productData.Value,
+        Name: productData.Name,
+        rsu_code: productData.rsu_code,
+        M_Product_Category_ID: categoryId,
+        C_UOM_ID: uomId,
+        C_TaxCategory_ID: taxCategoryId,
+        IsActive: true,
+        Description: productData.Description,
+      });
+      const newProductResponse = await DataService.get(
+        `/models/M_Product?$filter=Name eq '${productName}' AND AD_Client_ID eq ${clientId}`
+      );
+      productId = newProductResponse.data?.records?.[0]?.id;
+    }
+
+
+
+
     /* ================================================================
      * 1. RECEPCIÓN (cabecera + línea)
      * ================================================================ */
     const inOutResp = await DataService.post('/models/M_InOut', {
       AD_Client_ID: +clientId,
       AD_Org_ID: +orgId,
-      C_DocType_ID: 1000014,                // MMR
+      C_DocType_ID: docTypeId,
       MovementDate: new Date().toISOString().split('T')[0],
-      C_BPartner_ID: productData.C_BPartner_ID,
-      C_BPartner_Location_ID: productData.C_BPartner_Location_ID,
+      C_BPartner_ID: bPartnerId,
+      C_BPartner_Location_ID: bPartnerLocationId,
       Description: 'Recepción (ingreso inventario)',
       IsSOTrx: false,
       MovementType: 'V+',
@@ -216,11 +317,11 @@ export const addProductToInventory = (productData) => async (dispatch) => {
       AD_Client_ID: +clientId,
       AD_Org_ID: +orgId,
       M_InOut_ID: mInOutId,
-      Line: 10,
-      M_Product_ID: productData.M_Product_ID,
+      Line: null,
+      M_Product_ID: productId,
       MovementQty: productData.quantity,
       QtyEntered: productData.quantity,
-      C_UOM_ID: 1000000,
+      C_UOM_ID: uomId,
       M_Locator_ID: productData.M_Locator_ID,
       Description: 'Recepción de producto',
       IsActive: true
@@ -233,11 +334,11 @@ export const addProductToInventory = (productData) => async (dispatch) => {
     const invoiceResp = await DataService.post('/models/C_Invoice', {
       AD_Client_ID: +clientId,
       AD_Org_ID: +orgId,
-      C_DocType_ID: 1000005,
+      C_DocType_ID: docTypeId2,
       DateInvoiced: new Date().toISOString().split('T')[0],
-      C_BPartner_ID: productData.C_BPartner_ID,
-      C_BPartner_Location_ID: productData.C_BPartner_Location_ID,
-      M_PriceList_ID: 1000000,
+      C_BPartner_ID: bPartnerId,
+      C_BPartner_Location_ID: bPartnerLocationId,
+      M_PriceList_ID: priceListId,
       Description: 'Factura de compra de inventario',
       IsSOTrx: false
     });
@@ -247,15 +348,15 @@ export const addProductToInventory = (productData) => async (dispatch) => {
       AD_Client_ID: +clientId,
       AD_Org_ID: +orgId,
       C_Invoice_ID: cInvoiceId,
-      Line: 10,
-      M_Product_ID: productData.M_Product_ID,
+      Line: null,
+      M_Product_ID: productId,
       PriceList: productData.priceList,
       PriceActual: productData.priceList,
       PriceEntered: productData.priceList,
       QtyInvoiced: productData.quantity,
       QtyEntered: productData.quantity,
-      C_UOM_ID: 1000000,
-      C_Tax_ID: 1000000,
+      C_UOM_ID: uomId,
+      C_Tax_ID: taxId,
       LineTotalAmt: productData.priceList * productData.quantity,
       M_InOutLine_ID: mInOutLineId          // 🔗 enlace para MatchInv
     });
@@ -263,31 +364,51 @@ export const addProductToInventory = (productData) => async (dispatch) => {
     /* ================================================================
      * 3. Completar documentos
      * ================================================================ */
-    await DataService.put(`/models/M_InOut/${mInOutId}`, { 'doc-action': 'CO' });
     await DataService.put(`/models/C_Invoice/${cInvoiceId}`, { 'doc-action': 'CO' });
+    await DataService.put(`/models/M_InOut/${mInOutId}`, { 'doc-action': 'CO' });
+
 
     /* ================================================================
      * 4. Ejecutar Costing Run (CostCreate) para generar CostDetail
      * ================================================================ */
     await DataService.post('/processes/m_cost-create', {
       AD_Client_ID: +clientId,
-      AD_Org_ID: 0,
+      AD_Org_ID: +orgId,
       DateAcct: new Date().toISOString().split('T')[0],
-      M_Product_ID: productData.M_Product_ID     // 👈 producto válido
+      M_Product_ID: productId,
+      C_AcctSchema_ID: 1000027, // Obligatorio
+      M_CostElement_ID: 1000037,
+      M_InOutLine_ID: mInOutLineId
     });
+    
 
 
     /* ================================================================
-     * 5. Verificar CostDetail
+     * 7. Verificar resultados (esperar 3 segundos para procesamiento)
      * ================================================================ */
-    const costResp = await DataService.get(
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    const costDetailResp = await DataService.get(
       `/models/M_CostDetail?filter=M_InOutLine_ID eq ${mInOutLineId}`
     );
 
-    if (costResp.data.length === 0) {
-      console.warn('⚠️  CostDetail aún no se creó; revisa configuración de costeo.');
+    if (costDetailResp.data.length === 0) {
+      console.error('❌ CostDetail no generado. Verifica:');
+      console.log('- Configuración de Cost Element y Acct Schema');
+      console.log('- M_MatchInv procesado correctamente');
     } else {
-      console.log('✅ CostDetail generado:', costResp.data[0]);
+      console.log('✅ CostDetail generado:', costDetailResp.data[0]);
+
+      // Verificar M_Cost
+      const costResp = await DataService.get(
+        `/models/M_Cost?filter=M_Product_ID eq ${productId} and C_AcctSchema_ID eq 1000027`
+      );
+
+      if (costResp.data.length === 0) {
+        console.error('⚠️ M_Cost no generado. Ejecuta m_cost-create nuevamente.');
+      } else {
+        console.log('✅ M_Cost actualizado:', costResp.data[0]);
+      }
     }
 
     dispatch(opAddProductLoaded());
@@ -306,7 +427,43 @@ export const addProductToInventory = (productData) => async (dispatch) => {
   }
 };
 
+export const addProductCategory = async (categoryData) => {
+  try {
+    const clientId = Cookies.get('selectedClientId');
 
+
+    // Preparar el payload para la categoría
+    const payload = {
+      AD_Client_ID: +clientId,
+      AD_Org_ID: 0,
+      Value: categoryData.value, // Obligatorio
+      Name: categoryData.name, // Obligatorio
+
+    };
+
+
+
+    // Realizar la solicitud POST para agregar la categoría de producto
+    const response = await DataService.post('/models/M_Product_Category', payload);
+
+    if (response.data) {
+      message.success('Categoría de producto agregada exitosamente.');
+      return true;
+    } else {
+      throw new Error('No se pudo agregar la categoría de producto.');
+    }
+  } catch (error) {
+    console.error('Error en el proceso:', error);
+    let msg = error.message;
+    if (error.response?.data?.summary) {
+      try {
+        msg = JSON.parse(error.response.data.summary).message || msg;
+      } catch { /* ignore */ }
+    }
+    message.error(`Error al agregar la categoría de producto: ${msg}`);
+    return false;
+  }
+};
 
 export const fetchSecurityKits = (kitType) => async (dispatch) => {
   try {

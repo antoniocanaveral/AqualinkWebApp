@@ -1,59 +1,52 @@
-import React, { Suspense } from 'react';
-import { Row, Col, Typography, Table, Modal, Card, Skeleton, Badge, Space } from 'antd';
+import React, { Suspense, useEffect, useState } from 'react';
+import { Row, Col, Typography, Table, Modal, Card, Skeleton, Badge, Space, Select } from 'antd';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers';
-import { GoogleMaps } from '../../../components/maps/google-maps';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import { Link } from 'react-router-dom';
-import { AqualinkMaps } from '../../../components/maps/aqualink-map';
-
-
-import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
-
+import { fetchSmTreatmentWithPathologies } from '../../../redux/views/patology/actionCreator';
+import moment from 'moment';
 
 function GeneralPathologyFarm() {
+  const dispatch = useDispatch();
+  const { treatmentWithPathologies, loading } = useSelector(state => state.treatmentWithPathologies);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
   const [isVeterinaryPlanModalVisible, setIsVeterinaryPlanModalVisible] = useState(false);
   const [selectedVeterinaryPlan, setSelectedVeterinaryPlan] = useState(null);
-
-
+  const [selectedBatch, setSelectedBatch] = useState(null);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
-
-
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
 
-
-  const handleOrgChange = (orgId, orgEmail) => {
+  // Handle organization, sector, and pool changes
+  const handleOrgChange = (orgId, option) => {
     setSelectedOrg(orgId);
     Cookies.set('orgId', orgId);
-    Cookies.set('orgEmail', orgEmail || '');
+    Cookies.set('orgEmail', option.email || '');
     Cookies.remove('poolId');
     setSelectedPool(null);
     setSelectedSector(null);
   };
-
 
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
-
 
   const farmsSelectOptions = organizations.length > 0 ? [
     {
@@ -67,7 +60,6 @@ function GeneralPathologyFarm() {
       value: selectedOrg || undefined,
     },
   ] : [];
-
 
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
@@ -91,7 +83,6 @@ function GeneralPathologyFarm() {
       value: selectedSector || undefined,
     },
   ] : [];
-
 
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
@@ -119,20 +110,95 @@ function GeneralPathologyFarm() {
     ...poolsSelectOptions,
   ];
 
+  // Batch options for the Select component
+  const batchOptions = [...new Set((treatmentWithPathologies || []).map(r => r.SM_Batch))].map(batch => ({
+    label: batch,
+    value: batch,
+  }));
 
+  // Process data for the table
+  const getTableData = () => {
+    if (!selectedBatch) return [];
 
+    // Filter records by selected batch
+    const filteredRecords = treatmentWithPathologies.filter(record => record.SM_Batch === selectedBatch);
 
-  const showVeterinaryPlanModal = (record) => {
-    setSelectedVeterinaryPlan(veterinaryPlans[record.key - 1]); // Asociar el plan según la semana
-    setIsVeterinaryPlanModalVisible(true);
+    // Get unique weeks based on pathology_planned_date
+    const dates = filteredRecords.map(record => moment(record.pathology_planned_date));
+    if (dates.length === 0) return [];
+
+    // Find the earliest date
+    const minDate = moment.min(dates);
+
+    // Group records by week relative to minDate
+    const weeks = filteredRecords.reduce((acc, record) => {
+      const date = moment(record.pathology_planned_date);
+      const weekNumber = Math.floor(date.diff(minDate, 'weeks')) + 1; // Semana 1 is the oldest
+      const weekKey = `Semana ${weekNumber}`;
+
+      if (!acc[weekKey]) {
+        acc[weekKey] = {
+          semana: weekKey,
+          records: [],
+          // Mock pathology details (replace with actual data when available)
+          branquias: [{ observation: 'Normal', level: 'bajo' }],
+          hepatopancreas: [{ observation: 'Normal', level: 'bajo' }],
+          intestino: [{ observation: 'Normal', level: 'bajo' }],
+          biomecanicos: [{ observation: 'Normal', level: 'bajo' }],
+          bacteriologico: [{ observation: 'Normal', level: 'bajo' }],
+          viral: [{ observation: 'Normal', level: 'bajo' }],
+        };
+      }
+      acc[weekKey].records.push(record);
+      return acc;
+    }, {});
+
+    // Convert to array and sort by week number
+    return Object.values(weeks).sort((a, b) => {
+      const weekA = parseInt(a.semana.split(' ')[1]);
+      const weekB = parseInt(b.semana.split(' ')[1]);
+      return weekA - weekB;
+    });
   };
 
+  // Dynamically generate veterinary plans based on weeks
+  const veterinaryPlans = getTableData().map((weekData, index) => ({
+    semana: weekData.semana,
+    plan: weekData.records.map(record => ({
+      tratamiento: record.treatment_name,
+      dias: record.SM_Treatment_Days,
+      aplicacion: record.SM_Treatment_Target.identifier,
+      categoria: record.product_category_name,
+      cantidad: record.Amount,
+      unidad: record.C_UOM_ID.identifier,
+    })),
+  }));
+
+  const showModal = (record) => {
+    setSelectedRecord(record);
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setSelectedRecord(null);
+  };
+
+  const showVeterinaryPlanModal = (record) => {
+    setSelectedVeterinaryPlan(veterinaryPlans.find(plan => plan.semana === record.semana));
+    setIsVeterinaryPlanModalVisible(true);
+  };
 
   const handleVeterinaryPlanModalCancel = () => {
     setIsVeterinaryPlanModalVisible(false);
     setSelectedVeterinaryPlan(null);
   };
 
+  useEffect(() => {
+    if (selectedPool) {
+      dispatch(fetchSmTreatmentWithPathologies());
+    }
+  }, [dispatch, selectedPool]);
 
   const renderLevel = (level) => {
     let className = '';
@@ -146,119 +212,26 @@ function GeneralPathologyFarm() {
     return <span className={`badge ${className}`}>{level.replace(/ \(\+\+\+\)| \(\+\+\)| \(\+\)/g, '')}</span>;
   };
 
-  const data = [
-    {
-      key: '1',
-      semana: 'Semana 1',
-      branquias: [
-        { observation: 'sucias', level: 'medio (++)' },
-        { observation: 'algas', level: 'alto (+++)' },
-        { observation: 'detritus', level: 'medio (++)' },
-        { observation: 'Zoothamnium spp.', level: 'bajo (+)' },
-        { observation: 'Vorticella spp.', level: 'bajo (+)' },
-        { observation: 'Acineta spp', level: 'bajo (+)' },
-        { observation: 'Epistylis spp.', level: 'bajo (+)' },
-      ],
-      hepatopancreas: [
-        { observation: 'Lipidos', level: 'medio (++)' },
-        { observation: 'Engrosamiento', level: 'bajo (+)' },
-        { observation: 'Deformidad', level: 'medio (++)' },
-        { observation: 'Estrangulamiento', level: 'bajo (+)' },
-        { observation: 'Baculovirus', level: 'bajo (+)' },
-        { observation: 'color lipidos', level: 'amarillo naranja' },
-      ],
-      intestino: [
-        { observation: 'gregarinas Adultos', level: 'medio (++)' },
-        { observation: 'gregarinas Huevos', level: 'bajo (+)' },
-        { observation: 'nemátodos', level: 'medio (++)' },
-        { observation: 'algas', level: 'bajo (+)' },
-        { observation: 'detritos', level: 'bajo (+)' },
-        { observation: 'alimento balanceado', level: 'medio (++)' },
-        { observation: 'baculovirus', level: 'bajo (+)' },
-      ],
-      biomecanicos: [
-        { observation: 'flacidez', level: 'alto (+++)' },
-        { observation: 'uropodos inflamados', level: 'medio (++)' },
-        { observation: 'necrosis externa', level: 'bajo (+)' },
-        { observation: 'antenas rugosas', level: 'bajo (+)' },
-        { observation: 'deformes -enanos', level: 'bajo (+)' },
-      ],
-      bacteriologico: [
-        { observation: 'Vibriosis', level: 'medio (++)' },
-        { observation: 'Bacterias quitinoplasticas', level: 'bajo (+)' },
-        { observation: 'bacteria intracelulares', level: 'bajo (+)' },
-        { observation: 'bacterias filamentosas', level: 'bajo (+)' },
-      ],
-      viral: [
-        { observation: '(IHNNV) Virus de la Necrosis Infecciosa Hipodérmica y Hematopoyética', level: 'bajo (+)' },
-        { observation: '(BVP) Baculovirus pennaeii', level: 'bajo (+)' },
-        { observation: '(WSSV) Virus del Síndrome de la Mancha Blanca', level: 'bajo (+)' },
-        { observation: '(TSV) Síndrome de Taura', level: 'bajo (+)' },
-      ],
-    },
-    {
-      key: '2',
-      semana: 'Semana 2',
-      branquias: [
-        { observation: 'sucias', level: 'medio (++)' },
-        { observation: 'algas', level: 'alto (+++)' },
-        { observation: 'detritus', level: 'medio (++)' },
-        { observation: 'Zoothamnium spp.', level: 'bajo (+)' },
-        { observation: 'Vorticella spp.', level: 'bajo (+)' },
-        { observation: 'Acineta spp', level: 'bajo (+)' },
-        { observation: 'Epistylis spp.', level: 'bajo (+)' },
-      ],
-      hepatopancreas: [
-        { observation: 'Lipidos', level: 'medio (++)' },
-        { observation: 'Engrosamiento', level: 'bajo (+)' },
-        { observation: 'Deformidad', level: 'medio (++)' },
-        { observation: 'Estrangulamiento', level: 'bajo (+)' },
-        { observation: 'Baculovirus', level: 'bajo (+)' },
-        { observation: 'color lipidos', level: 'amarillo naranja' },
-      ],
-      intestino: [
-        { observation: 'gregarinas Adultos', level: 'medio (++)' },
-        { observation: 'gregarinas Huevos', level: 'bajo (+)' },
-        { observation: 'nemátodos', level: 'medio (++)' },
-        { observation: 'algas', level: 'bajo (+)' },
-        { observation: 'detritos', level: 'bajo (+)' },
-        { observation: 'alimento balanceado', level: 'medio (++)' },
-        { observation: 'baculovirus', level: 'bajo (+)' },
-      ],
-      biomecanicos: [
-        { observation: 'flacidez', level: 'alto (+++)' },
-        { observation: 'uropodos inflamados', level: 'medio (++)' },
-        { observation: 'necrosis externa', level: 'bajo (+)' },
-        { observation: 'antenas rugosas', level: 'bajo (+)' },
-        { observation: 'deformes -enanos', level: 'bajo (+)' },
-      ],
-      bacteriologico: [
-        { observation: 'Vibriosis', level: 'medio (++)' },
-        { observation: 'Bacterias quitinoplasticas', level: 'bajo (+)' },
-        { observation: 'bacteria intracelulares', level: 'bajo (+)' },
-        { observation: 'bacterias filamentosas', level: 'bajo (+)' },
-      ],
-      viral: [
-        { observation: '(IHNNV) Virus de la Necrosis Infecciosa Hipodérmica y Hematopoyética', level: 'bajo (+)' },
-        { observation: '(BVP) Baculovirus pennaeii', level: 'bajo (+)' },
-        { observation: '(WSSV) Virus del Síndrome de la Mancha Blanca', level: 'bajo (+)' },
-        { observation: '(TSV) Síndrome de Taura', level: 'bajo (+)' },
-      ],
-    },
-  ];
-
   const columns = [
     {
       title: 'SEMANA',
       dataIndex: 'semana',
       key: 'semana',
-      width: '70%',  // Da más espacio a la columna de SEMANA
+      width: '50%',
       onCell: (record) => ({ onClick: () => showModal(record) }),
+    },
+    {
+      title: 'Patología',
+      key: 'patologia',
+      render: (text, record) => (
+        <Link onClick={() => showModal(record)}>
+          <UilEye />
+        </Link>
+      ),
     },
     {
       title: 'Plan Veterinario',
       key: 'planVeterinario',
-      width: '30%',  // Reduce el espacio de la columna Plan Veterinario
       render: (text, record) => (
         <Link onClick={() => showVeterinaryPlanModal(record)}>
           <UilEye />
@@ -266,34 +239,6 @@ function GeneralPathologyFarm() {
       ),
     },
   ];
-
-
-  const veterinaryPlans = [
-    {
-      semana: 'Semana 1',
-      plan: [
-        { tratamiento: 'T1', dias: 5, aplicacion: 'agua', categoria: 'calcareos', cantidad: '25', unidad: 'kg/Ha' },
-        { tratamiento: 'T2', dias: 3, aplicacion: 'alimento', categoria: 'medicados', cantidad: '5', unidad: 'gr/Kg' },
-        { tratamiento: 'T3', dias: 1, aplicacion: 'suelo', categoria: 'bacteria', cantidad: '5', unidad: 'lt/Ha' },
-        { tratamiento: 'T4', dias: 3, aplicacion: 'alimento', categoria: 'antiparasitario', cantidad: '5', unidad: 'gr/Kg' },
-        { tratamiento: 'T5', dias: 5, aplicacion: 'alimento', categoria: 'vitamina c', cantidad: '5', unidad: 'gr/Kg' },
-        { tratamiento: 'T6', dias: 7, aplicacion: 'alimento', categoria: 'acidos organicos', cantidad: '20', unidad: 'ml/Kg' },
-      ],
-    },
-  ];
-
-
-
-  const showModal = (record) => {
-    setSelectedRecord(record);
-    setIsModalVisible(true);
-  };
-
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setSelectedRecord(null);
-  };
 
   return (
     <>
@@ -305,6 +250,17 @@ function GeneralPathologyFarm() {
         selectedPool={selectedPool}
       />
       <Main>
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Seleccione un LoteID"
+          options={batchOptions}
+          value={selectedBatch}
+          onChange={value => setSelectedBatch(value)}
+          allowClear
+          loading={loading}
+        />
+        <br />
+        <br />
         <Row gutter={25}>
           <Col xl={12} xs={24} style={{ display: 'flex' }}>
             <Suspense
@@ -328,7 +284,7 @@ function GeneralPathologyFarm() {
               <Cards title="Histórico de Patología" size="large">
                 <Table
                   columns={columns}
-                  dataSource={data}
+                  dataSource={getTableData()}
                   pagination={{ pageSize: 5 }}
                 />
               </Cards>
@@ -346,17 +302,20 @@ function GeneralPathologyFarm() {
           <Row gutter={[16, 16]} style={{ display: 'flex', flexWrap: 'wrap' }}>
             {selectedRecord && (
               <>
-                <Col span={8} style={{ display: 'flex' }}>
+                {/* Branquias */}
+                <Col span={12} style={{ display: 'flex' }}>
                   <Card title="Branquias" className="custom-card">
                     <Table
-                      className='table-responsive'
-                      dataSource={selectedRecord.branquias.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
+                      className="table-responsive"
+                      dataSource={[
+                        { key: 'bra_epilstilys', label: 'Epistylis', level: selectedRecord.branquias?.bra_epilstilys ?? 'N/A' },
+                        { key: 'bra_vorticela', label: 'Vorticela', level: selectedRecord.branquias?.bra_vorticela ?? 'N/A' },
+                        { key: 'bra_zoothamiun', label: 'Zoothamnium', level: selectedRecord.branquias?.bra_zoothamiun ?? 'N/A' },
+                        { key: 'bra_acientos', label: 'Acientos', level: selectedRecord.branquias?.bra_acientos ?? 'N/A' },
+                        { key: 'bra_algas', label: 'Algas', level: selectedRecord.branquias?.bra_algas ?? 'N/A' },
+                      ]}
                       columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                        { title: 'Observación', dataIndex: 'label', key: 'label' },
                         { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
                       ]}
                       pagination={false}
@@ -364,17 +323,21 @@ function GeneralPathologyFarm() {
                     />
                   </Card>
                 </Col>
-                <Col span={8} style={{ display: 'flex' }}>
+
+                {/* Hepatopancreas */}
+                <Col span={12} style={{ display: 'flex' }}>
                   <Card title="Hepatopancreas" className="custom-card">
                     <Table
-                      className='table-responsive'
-                      dataSource={selectedRecord.hepatopancreas.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
+                      className="table-responsive"
+                      dataSource={[
+                        { key: 'hepa_deformacion', label: 'Deformación', level: selectedRecord.hepatopancreas?.hepa_deformacion ?? 'N/A' },
+                        { key: 'hepa_estrangulacion', label: 'Estrangulación', level: selectedRecord.hepatopancreas?.hepa_estrangulacion ?? 'N/A' },
+                        { key: 'hepa_coloracion', label: 'Coloración', level: selectedRecord.hepatopancreas?.hepa_coloracion ?? 'N/A' },
+                        { key: 'hepa_lipidos', label: 'Lípidos', level: selectedRecord.hepatopancreas?.hepa_lipidos ?? 'N/A' },
+                        { key: 'hepa_baculovirus', label: 'Baculovirus', level: selectedRecord.hepatopancreas?.hepa_baculovirus ?? 'N/A' },
+                      ]}
                       columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                        { title: 'Observación', dataIndex: 'label', key: 'label' },
                         { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
                       ]}
                       pagination={false}
@@ -382,17 +345,20 @@ function GeneralPathologyFarm() {
                     />
                   </Card>
                 </Col>
-                <Col span={8} style={{ display: 'flex' }}>
+
+                {/* Intestino */}
+                <Col span={12} style={{ display: 'flex' }}>
                   <Card title="Intestino" className="custom-card">
                     <Table
-                      className='table-responsive'
-                      dataSource={selectedRecord.intestino.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
+                      className="table-responsive"
+                      dataSource={[
+                        { key: 'int_gregarinas', label: 'Gregarinas', level: selectedRecord.intestino?.int_gregarinas ?? 'N/A' },
+                        { key: 'int_baculovirus', label: 'Baculovirus', level: selectedRecord.intestino?.int_baculovirus ?? 'N/A' },
+                        { key: 'int_algas_detritus', label: 'Algas/Detritus', level: selectedRecord.intestino?.int_algas_detritus ?? 'N/A' },
+                        { key: 'int_nematodos', label: 'Nematodos', level: selectedRecord.intestino?.int_nematodos ?? 'N/A' },
+                      ]}
                       columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                        { title: 'Observación', dataIndex: 'label', key: 'label' },
                         { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
                       ]}
                       pagination={false}
@@ -400,53 +366,20 @@ function GeneralPathologyFarm() {
                     />
                   </Card>
                 </Col>
-                <Col span={8} style={{ display: 'flex' }}>
+
+                {/* Biomecánicos */}
+                <Col span={12} style={{ display: 'flex' }}>
                   <Card title="Biomecánicos" className="custom-card">
                     <Table
-                      className='table-responsive'
-                      dataSource={selectedRecord.biomecanicos.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
-                      columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
-                        { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
+                      className="table-responsive"
+                      dataSource={[
+                        { key: 'ana_flacidez', label: 'Flacidez', level: selectedRecord.biomecanicos?.ana_flacidez ?? 'N/A' },
+                        { key: 'ana_antenas', label: 'Antenas', level: selectedRecord.biomecanicos?.ana_antenas ?? 'N/A' },
+                        { key: 'ana_cola', label: 'Cola', level: selectedRecord.biomecanicos?.ana_cola ?? 'N/A' },
+                        { key: 'ana_cabeza', label: 'Cabeza', level: selectedRecord.biomecanicos?.ana_cabeza ?? 'N/A' },
                       ]}
-                      pagination={false}
-                      size="small"
-                    />
-                  </Card>
-                </Col>
-                <Col span={8} style={{ display: 'flex' }}>
-                  <Card title="Bacteriológico" className="custom-card">
-                    <Table
-                      className='table-responsive'
-                      dataSource={selectedRecord.bacteriologico.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
                       columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
-                        { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
-                      ]}
-                      pagination={false}
-                      size="small"
-                    />
-                  </Card>
-                </Col>
-                <Col span={8} style={{ display: 'flex' }}>
-                  <Card title="Viral" className="custom-card">
-                    <Table
-                      className='table-responsive'
-                      dataSource={selectedRecord.viral.map((item, index) => ({
-                        key: index,
-                        observation: item.observation,
-                        level: item.level,
-                      }))}
-                      columns={[
-                        { title: 'Observación', dataIndex: 'observation', key: 'observation' },
+                        { title: 'Observación', dataIndex: 'label', key: 'label' },
                         { title: 'Nivel', dataIndex: 'level', key: 'level', render: renderLevel },
                       ]}
                       pagination={false}
@@ -458,6 +391,7 @@ function GeneralPathologyFarm() {
             )}
           </Row>
         </Modal>
+
 
         <Modal
           title={`Plan Veterinario - ${selectedVeterinaryPlan?.semana}`}
@@ -489,10 +423,9 @@ function GeneralPathologyFarm() {
             size="small"
           />
         </Modal>
-
-
       </Main>
     </>
+
   );
 }
 

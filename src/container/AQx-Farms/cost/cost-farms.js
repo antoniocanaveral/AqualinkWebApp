@@ -126,14 +126,14 @@ function CostFarm() {
 
   const transformReportStatementData = (rawData) => {
     if (!Array.isArray(rawData)) return [];
-  
+
     const groupedByIndex = {};
-  
+
     rawData.forEach((item) => {
       const index = item.SM_Index ?? 0;
       const categoria = item.product_category_name?.toUpperCase() ?? '';
       const monto = item.AmtAcctDr ?? 0;
-  
+
       if (!groupedByIndex[index]) {
         groupedByIndex[index] = {
           key: index,
@@ -152,9 +152,9 @@ function CostFarm() {
           agua: 0,
         };
       }
-  
+
       const entry = groupedByIndex[index];
-  
+
       switch (categoria) {
         case 'LARVA-CAMARONERA':
           entry.alimentoBalanceado += monto;
@@ -190,7 +190,7 @@ function CostFarm() {
           break;
       }
     });
-  
+
     return Object.values(groupedByIndex).sort((a, b) => a.dia - b.dia);
   };
 
@@ -279,7 +279,7 @@ function CostFarm() {
       align: 'center',
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
-    
+
     {
       title: <span style={{ fontSize: '11px' }}>COSTO IND Ha. / día</span>,
       key: 'costoInd',
@@ -503,15 +503,19 @@ function CostFarm() {
             </Cards>
           </Suspense>
         </Col>
-        <Col>
-          <Table
-            columns={summaryColumns}
-            dataSource={summaryData}
-            pagination={false}
-            bordered
-            scroll={{ x: 'max-content' }}
-          />;
-
+        <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ width: '100%', maxWidth: '1200px' }}>
+            <Table
+              columns={summaryColumns}
+              dataSource={summaryData}
+              pagination={false}
+              bordered
+              scroll={{ x: 'max-content' }}
+            />
+          </div>
+          <br/>
+          <br/>
+          
         </Col>
       </Row>
     </>

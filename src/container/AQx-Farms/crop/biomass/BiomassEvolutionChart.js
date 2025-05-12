@@ -1,24 +1,25 @@
 import React from 'react';
 import LineChartWithXAxisPadding from '../../../../components/charts/line/LineChartWithXAxisPadding';
+import { useSelector } from 'react-redux';
 
-function BiomassEvolutionChart() {
-  const biomassData = [
-    { name: 'Semana 1', biomasa: 1000 },
-    { name: 'Semana 2', biomasa: 2000 },
-    { name: 'Semana 3', biomasa: 3000 },
-    { name: 'Semana 4', biomasa: 4000 },
-    { name: 'Semana 5', biomasa: 5000 },
-    { name: 'Semana 6', biomasa: 6000 },
-    { name: 'Semana 7', biomasa: 7000 },
-    { name: 'Semana 8', biomasa: 8000 },
-    { name: 'Semana 9', biomasa: 9000 },
-    { name: 'Semana 10', biomasa: 10000 },
-    { name: 'Semana 11', biomasa: 11000 },
-    { name: 'Semana 12', biomasa: 12000 },
-  ];
+function BiomassEvolutionChart({ selectedBatch }) {
+  const { populationCombined } = useSelector(state => state.populationCombined);
+
+  // Filter data by selectedBatch and sort by fecha to assign weeks
+  const filteredData = selectedBatch
+    ? populationCombined
+        .filter(record => record.SM_Batch === selectedBatch)
+        .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+    : populationCombined.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+  // Map the data to the format required for the chart
+  const biomassData = filteredData.map((record, index) => ({
+    name: `Semana ${index + 1}`,
+    biomasa: parseFloat(record.biomasa) || 0,
+  }));
 
   return (
-    <div style={{ width: "110%", height: "100%" }}> {/* Asegura que el contenedor tenga el ancho y alto completo */}
+    <div style={{ width: "110%", height: "100%" }}>
       <LineChartWithXAxisPadding data={biomassData} />
     </div>
   );

@@ -10,10 +10,9 @@ import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { GoogleMaps } from '../../../../components/maps/google-maps';
 import { formatNumber } from '../../../../utility/utility';
 
-function CoordModalShrimp() {
+function CoordModalShrimp({id}) {
 
     const dispatch = useDispatch();
-    let { id } = useParams();
     const coordination = useSelector((state) => state.lab.coordination);
 
     useEffect(() => {
@@ -22,10 +21,10 @@ function CoordModalShrimp() {
 
     const coordData = [
         { key: '4', label: 'Fecha de Siembra Solicitada:', value: coordination ? moment(coordination.planned_date).format('DD-MM-YYYY HH:mm A') : '-' },
-        { key: '5', label: 'Salinidad Solicitada:', value: coordination ? `${coordination.requested_salinity} ppm` : '20 ppm' },
-        { key: '6', label: 'Cantidad Solicitada:', value: coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '1.000.000 larvas' },
-        { key: '7', label: 'Alcalinidad Piscina Pre Cría:', value: coordination?.coord_alkalinity || '140 ppm' },
-        { key: '8', label: 'PH Piscina de Pre Cría:', value: coordination?.coord_pre_breeding_pool_ph || '5 ppm' },
+        { key: '5', label: 'Salinidad Solicitada:', value: coordination ? `${coordination.requested_salinity} ppm` : '-' },
+        { key: '6', label: 'Cantidad Solicitada:', value: coordination ? `${formatNumber(coordination.requested_quantity)} larvas` : '-' },
+        { key: '7', label: 'Alcalinidad Piscina Pre Cría:', value: coordination?.coord_alkalinity || '-' },
+        { key: '8', label: 'PH Piscina de Pre Cría:', value: coordination?.coord_pre_breeding_pool_ph || '-' },
     ];
 
   
@@ -73,7 +72,7 @@ function CoordModalShrimp() {
                                         >
                                             <div style={{ display: 'flex', flexDirection: "column", alignItems: 'center', textAlign: "center" }}>
                                                 <Typography.Title level={5}>{coordination?.org_name || 'EcSSA Manabí'}</Typography.Title>
-                                                {coordination?.pre_breeding_pool || 'Pre Cria 1'}
+                                                {coordination?.pre_breeding_pool || '-'}
                                             </div>
                                             <br />
                                             <Col xs={24} md={24} style={{ marginBottom: '18px', overflow: 'hidden' }}>

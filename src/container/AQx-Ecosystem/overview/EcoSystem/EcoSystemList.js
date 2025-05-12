@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Row, Col, PageHeader, Avatar } from 'antd';
 import OverviewCard from '../../../../components/cards/OverviewCard';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,12 +15,21 @@ import {
 } from '@iconscout/react-unicons';
 
 const OverviewDataList = React.memo(() => {
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadUserAccess());
+    dispatch(loadUserAccess())
+      .then(() => {
+        setLoading(false);
+        Cookies.set('farmsExist', farmsOrgs.length > 0 ? 'true' : 'false');
+        Cookies.set('labsExist', labsOrgs.length > 0 ? 'true' : 'false');
+        Cookies.set('custodyExist', custodyOrgs.length > 0 ? 'true' : 'false');
+      })
+      .catch(() => setLoading(false));
   }, [dispatch]);
+
 
   const withFarms = useSelector((state) => state.auth.withFarms);
   const farmsOrgs = useSelector((state) => state.auth.farmsOrgs);
@@ -29,7 +38,6 @@ const OverviewDataList = React.memo(() => {
   const withCustody = useSelector((state) => state.auth.withCustody);
   const custodyOrgs = useSelector((state) => state.auth.custodyOrgs);
 
-  // Obtener roles desde cookies y verificar si tiene el rol autorizado
   const userRoles = JSON.parse(decodeURIComponent(Cookies.get('roles') || '[]'));
   const hasExternalAuditorRole = userRoles.some(role => role.name === 'Cumplimiento - Auditor Externo');
 
@@ -55,7 +63,11 @@ const OverviewDataList = React.memo(() => {
       status: withLabs ? 'growth' : 'down',
       canAccess: withLabs,
       accessItems: labsOrgs,
-      onPress: () => gotModule('LAB', { orgId: labsOrgs[0]?.orgId, orgName: labsOrgs[0]?.orgName, orgEmail: labsOrgs[0]?.orgEmail }, '/lab/panel'),
+      onPress: () => {
+
+        gotModule('LAB', { orgId: labsOrgs[0]?.orgId, orgName: labsOrgs[0]?.orgName, orgEmail: labsOrgs[0]?.orgEmail }, '/lab/panel');
+
+      },
     },
     {
       id: 'farms',
@@ -67,7 +79,11 @@ const OverviewDataList = React.memo(() => {
       status: withFarms ? 'growth' : 'down',
       canAccess: withFarms,
       accessItems: farmsOrgs,
-      onPress: () => gotModule('FARM', { orgId: farmsOrgs[0]?.orgId, orgName: farmsOrgs[0]?.orgName, orgEmail: farmsOrgs[0]?.orgEmail }, '/farm'),
+      onPress: () => {
+
+        gotModule('FARM', { orgId: farmsOrgs[0]?.orgId, orgName: farmsOrgs[0]?.orgName, orgEmail: farmsOrgs[0]?.orgEmail }, '/farm');
+
+      },
     },
     {
       id: 'custody',
@@ -79,7 +95,9 @@ const OverviewDataList = React.memo(() => {
       status: withCustody ? 'growth' : 'down',
       canAccess: withCustody,
       accessItems: custodyOrgs,
-      onPress: () => gotModule('CUSTODY', { orgId: custodyOrgs[0]?.orgId, orgName: custodyOrgs[0]?.orgName, orgEmail: custodyOrgs[0]?.orgEmail }, '/custody'),
+      onPress: () => {
+        gotModule('CUSTODY', { orgId: custodyOrgs[0]?.orgId, orgName: custodyOrgs[0]?.orgName, orgEmail: custodyOrgs[0]?.orgEmail }, '/custody');
+      },
     },
   ];
 
@@ -114,9 +132,9 @@ const OverviewDataList = React.memo(() => {
         <Col xl={8} md={8} xs={24} key={item.id}>
           <div
             style={{
-              pointerEvents: item.total > 0 ? 'auto' : 'none',
-              opacity: item.total > 0 ? 1 : 0.5,
-              cursor: item.total > 0 ? 'pointer' : 'not-allowed',
+              pointerEvents: loading ? 'none' : 'auto',  // Inactiva la tarjeta hasta que termine la carga
+              opacity: loading ? 0.5 : 1,  // Baja la opacidad mientras se carga
+              cursor: loading ? 'not-allowed' : 'pointer',  // No se permite interacción mientras se carga
             }}
           >
             <OverviewCard
@@ -124,12 +142,11 @@ const OverviewDataList = React.memo(() => {
               bottomStatus
               contentFirst
               halfCircleIcon
-              onClick={item.total > 0 ? item.onPress : null}
+              onClick={loading ? null : item.onPress}  // No permite hacer clic mientras se está cargando
             />
           </div>
         </Col>
       ))}
-
 
       <Col xl={24} xs={24}>
         <div className="flex_row">
@@ -153,9 +170,7 @@ const OverviewDataList = React.memo(() => {
 
       <Col xs={24} xl={8} md={8}>
         <div
-          onClick={() => gotModule('NETWORK', { orgId: null, orgName: null, orgEmail: null }, '/network')
-          }
-
+          onClick={() => gotModule('NETWORK', { orgId: null, orgName: null, orgEmail: null }, '/network')}
         >
           <InfoCard icon="SiCoinmarketcap" iconLib="si" img="Network.png" type="solutions" />
         </div>

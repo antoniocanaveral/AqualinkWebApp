@@ -7,7 +7,8 @@ const FeedingProjectedTable = ({ feedingreport }) => {
   const poolSize = Number(feedingreport?.SM_PoolSize) || 1;
   const rawData = feedingreport?.feedingdata_projectedjson || [];
 
-  const tableData = rawData.map((item) => ({
+  // Map and format the raw data
+  const formattedData = rawData.map((item) => ({
     key: item.sm_index,
     fecha: dayjs(item.sm_planneddate).format('YYYY-MM-DD'),
     sm_index: item.sm_index,
@@ -15,12 +16,18 @@ const FeedingProjectedTable = ({ feedingreport }) => {
     sm_px: Number(item.sm_px || 0).toFixed(3),
     sm_biomasskgs: Number(item.sm_biomasskgs || 0).toFixed(2),
     sm_lineargrowth: Number(item.sm_lineargrowth || 0).toFixed(3),
-    sm_weeklygrowth: item.sm_index % 7 === 0 ? Number(item.sm_weeklygrowth || 0).toFixed(3) : '—',
+    sm_weeklygrowth: item.sm_index % 7 === 0
+      ? Number(item.sm_weeklygrowth || 0).toFixed(3)
+      : '—',
     sm_feedingrate: Number(item.sm_feedingrate || 0).toFixed(3),
     sm_dailydose: Number(item.sm_dailydose || 0).toFixed(2),
-    sm_dailydose_per_hectare: poolSize > 0 ? (item.sm_dailydose / poolSize).toFixed(2) : '0.00',
+    sm_dailydose_per_hectare:
+      poolSize > 0 ? (item.sm_dailydose / poolSize).toFixed(2) : '0.00',
     sm_accumulatedfood: Number(item.sm_accumulatedfood || 0).toFixed(2),
   }));
+
+  // Sort the data by sm_index
+  const tableData = formattedData.sort((a, b) => a.sm_index - b.sm_index);
 
   const columns = [
     { title: 'Fecha', dataIndex: 'fecha', key: 'fecha' },

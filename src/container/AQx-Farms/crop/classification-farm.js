@@ -1,23 +1,113 @@
-import React, { Suspense } from 'react';
-import { Row, Col, Typography, Card, Skeleton, Space } from 'antd';
+import React, { Suspense, useEffect } from 'react';
+import { Row, Col, Typography, Card, Skeleton, Space, Select } from 'antd';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { GoogleMaps } from '../../../components/maps/google-maps';
-import ClassificationDonutChart from './biomass/ClassificationDonutChart';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
-
 
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
+import { fetchSmClassifications } from '../../../redux/classification/actionCreatot';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
+import ClassificationDonutChart from './biomass/ClassificationDonutChart';
+
+const processClassificationData = (smClassificationData, selectedBatch) => {
+  // Definir los rangos de clasificación con colores
+  const ranges = [
+    { clasificacion: '150/200', values: [5, 6], color: '#ffe0b2' },
+    { clasificacion: '120/150', values: [7, 8], color: '#c8e6c9' },
+    { clasificacion: '100/120', values: [9], color: '#f3e5f5' },
+    { clasificacion: '80/100', values: [10, 11, 12], color: '#fff9c4' },
+    { clasificacion: '70/80', values: [13, 14], color: '#c5e1a5' },
+    { clasificacion: '60/70', values: [15, 16], color: '#bbdefb' },
+    { clasificacion: '50/60', values: [17, 18, 19], color: '#ffe0b2' },
+    { clasificacion: '40/50', values: [20, 21, 22, 23, 24], color: '#d1c4e9' },
+    { clasificacion: '30/40', values: [25, 26, 27, 28, 29, 30, 31, 32], color: '#ffcdd2' },
+  ];
+
+  // Filtrar por selectedBatch si está definido
+  const filteredData = selectedBatch
+    ? smClassificationData.filter(item => item.SM_Batch === selectedBatch)
+    : smClassificationData;
+
+  // Calcular el peso total global
+  const totalWeightGlobal = filteredData.reduce(
+    (sum, item) => sum + item.SM_GRxUnit * item.TotalQty,
+    0
+  );
+
+  // Procesar los datos
+  const processedData = [];
+
+  // Agrupar datos por clasificación
+  const classificationMap = {};
+
+  filteredData.forEach((item) => {
+    const grxUnit = item.SM_GRxUnit;
+    const totalQty = item.TotalQty;
+
+    // Encontrar el rango correspondiente
+    const range = ranges.find((r) => r.values.includes(grxUnit));
+
+    if (!range) return; // Ignorar si no cae en ningún rango
+
+    // Calcular métricas
+    const pesoTotal = grxUnit * totalQty;
+    const porcentaje = totalWeightGlobal > 0 ? ((pesoTotal / totalWeightGlobal) * 100).toFixed(2) + '%' : '0.00%';
+
+    if (!classificationMap[range.clasificacion]) {
+      classificationMap[range.clasificacion] = [];
+    }
+
+    classificationMap[range.clasificacion].push({
+      clasificacion: range.clasificacion,
+      color: range.color,
+      pesoEspecifico: grxUnit,
+      muestra: totalQty,
+      pesoTotal: pesoTotal,
+      porcentaje: porcentaje,
+    });
+  });
+
+  // Asegurarse de incluir todas las clasificaciones
+  ranges.forEach((range) => {
+    if (classificationMap[range.clasificacion]) {
+      // Si hay datos para la clasificación, usarlos
+      processedData.push(...classificationMap[range.clasificacion]);
+    } else {
+      // Si no hay datos, agregar una entrada con valores por defecto
+      processedData.push({
+        clasificacion: range.clasificacion,
+        color: range.color,
+        pesoEspecifico: range.min, // Usar el valor mínimo del rango como pesoEspecifico por defecto
+        muestra: 0,
+        pesoTotal: 0,
+        porcentaje: '0.00%',
+      });
+    }
+  });
+
+  // Ordenar por clasificación y pesoEspecifico
+  processedData.sort((a, b) => {
+    if (a.clasificacion === b.clasificacion) {
+      return a.pesoEspecifico - b.pesoEspecifico;
+    }
+    return ranges.findIndex((r) => r.clasificacion === a.clasificacion) -
+      ranges.findIndex((r) => r.clasificacion === b.clasificacion);
+  });
+
+  return processedData;
+};
 
 function ClassificationFarm() {
+  const dispatch = useDispatch();
+  const { smClassificationData, loading } = useSelector(state => state.smClassification);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
-
+  const [selectedBatch, setSelectedBatch] = useState(null);
 
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
@@ -103,30 +193,18 @@ function ClassificationFarm() {
     ...poolsSelectOptions,
   ];
 
-  const data = [
-    { clasificacion: "150/200", color: "#ffe0b2", pesoEspecifico: 5, muestra: "", pesoTotal: "", porcentaje: "" },
-    { clasificacion: "150/200", color: "#ffe0b2", pesoEspecifico: 6, muestra: "", pesoTotal: "", porcentaje: "" },
-    { clasificacion: "120/150", color: "#c8e6c9", pesoEspecifico: 7, muestra: "", pesoTotal: "", porcentaje: "" },
-    { clasificacion: "120/150", color: "#c8e6c9", pesoEspecifico: 8, muestra: "", pesoTotal: "", porcentaje: "" },
-    { clasificacion: "100/120", color: "#f3e5f5", pesoEspecifico: 9, muestra: "", pesoTotal: "", porcentaje: "" },
-    { clasificacion: "80/100", color: "#fff9c4", pesoEspecifico: 10, muestra: "", pesoTotal: "", porcentaje: "" },
-    { clasificacion: "80/100", color: "#fff9c4", pesoEspecifico: 11, muestra: 2, pesoTotal: 24, porcentaje: "0.76%" },
-    { clasificacion: "70/80", color: "#c5e1a5", pesoEspecifico: 13, muestra: 2, pesoTotal: 28, porcentaje: "0.89%" },
-    { clasificacion: "70/80", color: "#c5e1a5", pesoEspecifico: 14, muestra: "", pesoTotal: "", porcentaje: "" },
-    { clasificacion: "60/70", color: "#bbdefb", pesoEspecifico: 15, muestra: 4, pesoTotal: 60, porcentaje: "1.91%" },
-    { clasificacion: "60/70", color: "#bbdefb", pesoEspecifico: 16, muestra: 5, pesoTotal: 80, porcentaje: "2.54%" },
-    { clasificacion: "50/60", color: "#ffe0b2", pesoEspecifico: 17, muestra: 9, pesoTotal: 153, porcentaje: "4.86%" },
-    { clasificacion: "50/60", color: "#ffe0b2", pesoEspecifico: 18, muestra: 21, pesoTotal: 378, porcentaje: "12.02%" },
-    { clasificacion: "50/60", color: "#ffe0b2", pesoEspecifico: 19, muestra: 13, pesoTotal: 247, porcentaje: "7.85%" },
-    { clasificacion: "50/60", color: "#ffe0b2", pesoEspecifico: 20, muestra: 28, pesoTotal: 560, porcentaje: "17.81%" },
-    { clasificacion: "40/50", color: "#d1c4e9", pesoEspecifico: 21, muestra: 11, pesoTotal: 231, porcentaje: "7.34%" },
-    { clasificacion: "40/50", color: "#d1c4e9", pesoEspecifico: 22, muestra: 30, pesoTotal: 660, porcentaje: "20.99%" },
-    { clasificacion: "40/50", color: "#d1c4e9", pesoEspecifico: 23, muestra: 12, pesoTotal: 276, porcentaje: "8.78%" },
-    { clasificacion: "40/50", color: "#d1c4e9", pesoEspecifico: 24, muestra: 6, pesoTotal: 144, porcentaje: "4.58%" },
-    { clasificacion: "30/40", color: "#ffcdd2", pesoEspecifico: 25, muestra: 8, pesoTotal: 200, porcentaje: "6.36%" },
-    { clasificacion: "30/40", color: "#ffcdd2", pesoEspecifico: 26, muestra: 4, pesoTotal: 104, porcentaje: "3.31%" },
-  ];
+  const batchOptions = [...new Set((smClassificationData || []).map(r => r.SM_Batch))].map(batch => ({
+    label: batch,
+    value: batch,
+  }));
 
+  useEffect(() => {
+    if (selectedPool)
+      dispatch((fetchSmClassifications()));
+  }, [dispatch, selectedPool]);
+
+  // Procesar los datos de clasificación
+  const data = processClassificationData(smClassificationData || [], selectedBatch);
 
   const renderRows = () => {
     let previousClasification = null;
@@ -136,7 +214,6 @@ function ClassificationFarm() {
     data.forEach((row, index) => {
       const isFirstRowOfGroup = row.clasificacion !== previousClasification;
 
-
       if (isFirstRowOfGroup) {
         rowspan = 1;
         for (let i = index + 1; i < data.length; i++) {
@@ -144,16 +221,15 @@ function ClassificationFarm() {
           else break;
         }
 
-
         const porcentajeAgregado = data
           .filter(item => item.clasificacion === row.clasificacion)
           .reduce((total, item) => {
             const porcentaje = parseFloat(item.porcentaje) || 0;
             return total + porcentaje;
           }, 0)
-          .toFixed(2) + '%'; // Formatea el resultado a 2 decimales y añade %
+          .toFixed(2) + '%';
 
-        row.porcentajeAgregado = porcentajeAgregado; // Asigna el valor calculado al campo
+        row.porcentajeAgregado = porcentajeAgregado;
       }
 
       rows.push(
@@ -181,11 +257,9 @@ function ClassificationFarm() {
     return rows;
   };
 
-
   return (
     <>
       <PageHeader
-
         highlightText="Aqualink Monitoreo"
         title="Clasificación"
         selectOptions={combinedSelectOptions}
@@ -193,6 +267,17 @@ function ClassificationFarm() {
         selectedPool={selectedPool}
       />
       <Main>
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Seleccione un LoteID"
+          options={batchOptions}
+          value={selectedBatch}
+          onChange={value => setSelectedBatch(value)}
+          allowClear
+          loading={loading}
+        />
+        <br />
+        <br />
         <Row gutter={[10, 0]} equal-heights>
           <Col xl={10} xs={24} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
             <Suspense
@@ -204,7 +289,6 @@ function ClassificationFarm() {
             >
               <AqualinkMaps />
             </Suspense>
-
             <Suspense
               fallback={
                 <Cards headless>
@@ -219,7 +303,6 @@ function ClassificationFarm() {
               </Cards>
             </Suspense>
           </Col>
-
           <Col xl={14} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
@@ -228,7 +311,7 @@ function ClassificationFarm() {
                 </Cards>
               }
             >
-              <Cards title="Clasificación Pre Cocecha" size="large">
+              <Cards title="" size="large">
                 <table className="full-width-table">
                   <thead>
                     <tr>
@@ -244,8 +327,6 @@ function ClassificationFarm() {
                     {renderRows()}
                   </tbody>
                 </table>
-
-
               </Cards>
             </Suspense>
           </Col>

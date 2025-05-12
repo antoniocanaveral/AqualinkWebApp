@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Form, Input, Select, Button, Upload, InputNumber, Row, Col, Switch, message, Typography, Table, Modal } from 'antd';
+import { Tabs, Form, Input, Select, Button, Upload, InputNumber, Row, Col, Switch, message, Typography, Table, Modal, Spin } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
@@ -19,6 +19,9 @@ const { Option } = Select;
 function AddClientFarm() {
     const dispatch = useDispatch();
     const { businessGroups, adClient, cRegions, cCities, adOrg, brandFeeders, createdSalesRegions } = useSelector(state => state.configuration);
+    const congiguration = useSelector(state => state.configuration);
+    console.log(congiguration)
+    console.log("adClient", adClient)
 
     const [selectedSalesRegion, setSelectedSalesRegion] = useState(null);
     const [form] = Form.useForm();
@@ -166,7 +169,16 @@ function AddClientFarm() {
         dispatch(fetchAdClient());
         dispatch(fetchRegions());
         dispatch(fetchBrandFeeders());
-    }, []);
+    }, [dispatch]);
+    useEffect(() => {
+        if (adClient) {
+            form.setFieldsValue({
+                client: adClient.Name,
+                // otros campos si es necesario
+            });
+        }
+    }, [adClient, form]);
+
 
 
     const handleNextTab = (id) => {
@@ -415,11 +427,13 @@ function AddClientFarm() {
 
                                 <Row gutter={16}>
                                     <Col span={4}>
-                                        <Form.Item
-                                            label="Cliente"
-                                            name="client"
-                                        >
-                                            <Input value={adClient?.Name} defaultValue={adClient?.Name} disabled />
+                                        <Form.Item label="Cliente" name="client">
+                                            {/* Asegúrate de que adClient tenga datos antes de asignarlo al valor */}
+                                            {adClient ? (
+                                                <Input value={adClient.Name} disabled />
+                                            ) : (
+                                                <Spin /> // Opcional, puedes mostrar un spinner mientras esperas los datos
+                                            )}
                                         </Form.Item>
                                     </Col>
                                     <Col span={2}>

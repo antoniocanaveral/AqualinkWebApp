@@ -178,7 +178,7 @@ function ODParametersFarms() {
           <Col xl={13} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Comportamiento de Oxígeno Disuelto" size="large">
-                <DissolvedOxygenBehaviorChart />
+                <DissolvedOxygenBehaviorChart selectedBatch={selectedBatch} />
               </Cards>
             </Suspense>
           </Col>
@@ -187,20 +187,20 @@ function ODParametersFarms() {
         <Row gutter={25}>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Cards title="Oxígeno Disuelto AM" size="large">
-              <DissolvedOxygenAMDayChart />
+              <DissolvedOxygenAMDayChart selectedBatch={selectedBatch}/>
             </Cards>
           </Col>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Oxígeno Disuelto Medio día" size="large">
-                <DissolvedOxygenHalfDayChart />
+                <DissolvedOxygenHalfDayChart selectedBatch={selectedBatch} />
               </Cards>
             </Suspense>
           </Col>
           <Col xl={8} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Oxígeno Disuelto PM" size="large">
-                <DissolvedOxygenPMChart />
+                <DissolvedOxygenPMChart selectedBatch={selectedBatch} />
               </Cards>
             </Suspense>
           </Col>

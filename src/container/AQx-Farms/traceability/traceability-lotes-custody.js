@@ -578,7 +578,7 @@ function TraceabilityLotesCustody() {
                   custodia: selectedLote.custodia,
                   origen: selectedLote.origen,
                 })}
-                size={228}
+                size={108}
                 includeMargin
               />
             </div>

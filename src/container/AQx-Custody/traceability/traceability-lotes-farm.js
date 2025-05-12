@@ -245,7 +245,7 @@ function TraceabilityLotesFarm() {
         visible={isModalVisible}
         onOk={handleDetailOk}
         onCancel={handleDetailCancel}
-        width={1100}
+        width={1450}
         footer={[
           <>
             <Button key="print" onClick={handlePrintReport}>
@@ -263,23 +263,15 @@ function TraceabilityLotesFarm() {
         {selectedLote && (
           <div
             ref={reportRef}
-            style={{
-              border: '2px solid #e3e3e3',
-              borderRadius: '8px',
-              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-              padding: '20px',
-              display: 'flex',
-              flexDirection: 'column', // <--- Cambia a columna
-              gap: '20px',
-            }}
+
           >
             {/* Primera fila: LoteDetails + QR */}
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '20px', flexWrap: 'wrap' }}>
-              <div style={{ flex: '1 1 60%', minWidth: '300px' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '15px', flexWrap: 'wrap' }}>
+              <div style={{ flex: '1 1 81%', minWidth: '300px' }}>
                 <LoteDetails selectedLote={selectedLote} />
               </div>
-              <div style={{ flex: '1 1 35%', minWidth: '200px' }}>
-                <Title level={4} style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ flex: '1 1 9%'}}>
+                <Title style={{ display: 'flex', alignItems: 'center', fontSize: '12px' }}>
                   <span
                     style={{
                       display: 'inline-block',
@@ -292,10 +284,18 @@ function TraceabilityLotesFarm() {
                   />
                   {selectedLote.SM_Batch}
                 </Title>
+
                 <QRCodeSVG
                   value={`http://69.48.179.112/aqualinkdemo/custody/traceability/reporte-lote/${selectedLote.id}`}
-                  size={358}
+                  size={250}
                   includeMargin
+                  level="Q"
+                  imageSettings={{
+                    src: `${process.env.PUBLIC_URL}/favicon.png`, 
+                    height: 40,
+                    width: 40, 
+                    excavate: true, 
+                  }}
                 />
 
               </div>

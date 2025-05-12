@@ -50,6 +50,9 @@ import { waterflowReportReducer } from './views/waterflow/reducer';
 import { smAlertHistoryReducer } from './message&notifications/reducers';
 import textureReducer from './texture/reducers';
 import { chemicalSoilReducer } from './views/soil/reducer';
+import smClassificationReducer from './classification/reducers';
+import { populationCombinedReducer } from './views/population/reducers';
+import { treatmentWithPathologiesReducer } from './views/patology/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -83,6 +86,10 @@ const rootReducers = combineReducers({
   waterflowReport: waterflowReportReducer,
   chemicalSoil: chemicalSoilReducer,
   alertHistoryReducer: smAlertHistoryReducer,
+  smClassification: smClassificationReducer,
+  populationCombined: populationCombinedReducer,
+  treatmentWithPathologies: treatmentWithPathologiesReducer,
+
   texture: textureReducer,
 
   cost: costReducer,

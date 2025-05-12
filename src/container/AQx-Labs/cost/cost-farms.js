@@ -493,12 +493,12 @@ function CostLabs() {
           ["Lab 1", "Lab 2", "Lab 3"],
           ["Módulo 1", "Módulo 2", "Módulo 3"],
           ["Tanque 1", "Tanque 2", "Tanque 3"]
-      ]}
+        ]}
       />
       <Row gutter={25}>
         <Col xl={8} xs={24} style={{ display: "flex" }}>
           <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-           <AqualinkMapLab height={150} />
+            <AqualinkMapLab height={150} />
           </Suspense>
         </Col>
         <Col xl={8} xs={24} style={{ display: "flex" }}>
@@ -585,16 +585,18 @@ function CostLabs() {
             </Cards>
           </Suspense>
         </Col>
-        <Col>
-          <Table
-            columns={summaryColumns}
-            dataSource={summaryData}
-            pagination={false}
-            bordered
-            scroll={{ x: 'max-content' }}
-          />;
-
+        <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ width: '100%', maxWidth: '1200px' }}>
+            <Table
+              columns={summaryColumns}
+              dataSource={summaryData}
+              pagination={false}
+              bordered
+              scroll={{ x: 'max-content' }}
+            />
+          </div>
         </Col>
+
       </Row>
     </>
   );

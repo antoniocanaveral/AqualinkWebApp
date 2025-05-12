@@ -13,13 +13,14 @@ import { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
-import { fetchProductionReports } from '../../../redux/views/production-report/actionCreator';
+
+import { fetchProductionReports, fetchProductionReportsPC } from '../../../redux/views/production-report/actionCreator';
 
 
 function ShrimpFarm() {
   const dispatch = useDispatch();
   const { productionReports, loading } = useSelector(state => state.productionReport);
-
+  const { physicalWaterParams } = useSelector(state => state.waterflowReport);
 
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
@@ -29,7 +30,6 @@ function ShrimpFarm() {
 
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
-
 
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
@@ -94,13 +94,16 @@ function ShrimpFarm() {
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
-      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
+      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector
+        && pool.poolType.id === 'PC')
       .map(pool => ({
         value: pool.poolId,
         label: pool.poolName,
       }))
     : [];
 
+  console.log("POOL", farmsOrgsWithPools.find(org => org.orgId === selectedOrg)?.pools
+    .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector))
   const poolsSelectOptions = selectedSector ? [
     {
       options: poolsOptions,
@@ -118,28 +121,112 @@ function ShrimpFarm() {
     ...poolsSelectOptions,
   ];
 
+  // Inside ShrimpFarm component
+  const getMostRecentReport = (reports) => {
+    if (!reports || reports.length === 0) {
+      return null;
+    }
+    // Sort by SM_FishingDate (most recent first)
+    return reports.sort((a, b) => new Date(b.SM_FishingDate) - new Date(a.SM_FishingDate))[0];
+  };
+
+  // Find matching water parameters by SM_Batch
+  const getMatchingWaterParams = (batch, waterParams) => {
+    if (!batch || !waterParams || waterParams.length === 0) {
+      return null;
+    }
+    return waterParams.find(param => param.SM_Batch === batch) || null;
+  };
+
+  // Derive plantingReportData from productionReports and physicalWaterParams
+  const mostRecentReport = getMostRecentReport(productionReports);
+  const matchingWaterParams = mostRecentReport
+    ? getMatchingWaterParams(mostRecentReport.SM_Batch, physicalWaterParams)
+    : null;
+
+  // Calculate average temperature and oxygen if water params exist
+  const calculateAverages = (waterParams) => {
+    if (!waterParams) {
+      return { tempPc: 'N/A', odPc: 'N/A' };
+    }
+    const temps = [
+      waterParams.temp_dia,
+      waterParams.temp_medio_dia,
+      waterParams.temp_noche,
+    ].filter(val => val !== null && val !== undefined);
+    const oxigs = [
+      waterParams.oxig_dia,
+      waterParams.oxig_medio_dia,
+      waterParams.oxig_noche,
+    ].filter(val => val !== null && val !== undefined);
+
+    const tempAvg = temps.length > 0 ? (temps.reduce((sum, val) => sum + val, 0) / temps.length).toFixed(1) : 'N/A';
+    const oxigAvg = oxigs.length > 0 ? (oxigs.reduce((sum, val) => sum + val, 0) / oxigs.length).toFixed(1) : 'N/A';
+
+    return { tempPc: tempAvg, odPc: oxigAvg };
+  };
+
+  const { tempPc, odPc } = calculateAverages(matchingWaterParams);
+
+  const plantingReportData = mostRecentReport
+    ? {
+      fecha: mostRecentReport.pc_production_json?.sm_plantingdate
+        ? new Date(mostRecentReport.pc_production_json.sm_plantingdate).toLocaleDateString('es-ES')
+        : 'N/A',
+      preCria: mostRecentReport.pc_production_json?.prebreeding_pool_name || 'N/A',
+      densidadProgramada: mostRecentReport.SM_Density
+        ? mostRecentReport.SM_Density.toLocaleString('es-ES')
+        : 'N/A',
+      densidadEstimada: mostRecentReport.coordination_json?.[0]?.clients?.[0]?.sm_programmeddensity
+        ? mostRecentReport.coordination_json[0].clients[0].sm_programmeddensity.toLocaleString('es-ES')
+        : 'N/A',
+      biomasaSembrada: mostRecentReport.pc_production_json?.sm_kilosperpool
+        ? mostRecentReport.pc_production_json.sm_kilosperpool.toFixed(1)
+        : 'N/A',
+      plPorGr: mostRecentReport.coordination_json?.[0]?.clients?.[0]?.sm_estimatedlabcount
+        ? mostRecentReport.coordination_json[0].clients[0].sm_estimatedlabcount.toLocaleString('es-ES')
+        : 'N/A',
+      coordinationClientId: mostRecentReport.coordination_json?.[0]?.clients?.[0]?.sm_coordinationclient_id
+        ? mostRecentReport.coordination_json[0].clients[0].sm_coordinationclient_id.toString()
+        : 'N/A',
+
+      tempDespachoLab: '32', // Not provided in JSON, keep as is or update if available
+      pesoDespachoLab: '2', // Not provided in JSON, keep as is or update if available
+      salinidadDespacho: mostRecentReport.coordination_json?.[0]?.clients?.[0]?.sm_confirmedsalinity
+        ? mostRecentReport.coordination_json[0].clients[0].sm_confirmedsalinity.toLocaleString('es-ES')
+        : 'N/A',
+      pesoRecepcionFinca: mostRecentReport.pc_production_json?.animals_per_gram
+        ? mostRecentReport.pc_production_json.animals_per_gram.toFixed(1)
+        : 'N/A',
+      salinidadPc: '5', // Not provided in JSON, keep as is or update if available
+      tempPc: tempPc, // Updated with calculated average
+      odPc: odPc, // Updated with calculated average
+    }
+    : {
+      // Fallback values if no report is available
+      fecha: 'N/A',
+      preCria: 'N/A',
+      densidadProgramada: 'N/A',
+      densidadEstimada: 'N/A',
+      biomasaSembrada: 'N/A',
+      plPorGr: 'N/A',
+      tempDespachoLab: 'N/A',
+      pesoDespachoLab: 'N/A',
+      salinidadDespacho: 'N/A',
+      pesoRecepcionFinca: 'N/A',
+      salinidadPc: 'N/A',
+      tempPc: 'N/A',
+      odPc: 'N/A',
+    };
+
   useEffect(() => {
     if (selectedPool)
-      dispatch(fetchProductionReports());
+      dispatch(fetchProductionReportsPC());
   }, [dispatch, selectedPool]);
   const [modalCoord, setModalCoord] = React.useState(false);
   const [modalShrimp, setModalShrimp] = React.useState(false);
 
-  const plantingReportData = {
-    fecha: "22/11/2024",
-    preCria: "Pc1",
-    densidadProgramada: "1,800,000",
-    densidadEstimada: "1,940,000",
-    biomasaSembrada: "2.1",
-    plPorGr: "280",
-    tempDespachoLab: "32",
-    pesoDespachoLab: "2",
-    salinidadDespacho: "7",
-    pesoRecepcionFinca: "2.1",
-    salinidadPc: "5",
-    tempPc: "26",
-    odPc: "7.1",
-  };
+
 
   const columns = [
     {
@@ -275,7 +362,7 @@ function ShrimpFarm() {
                       <h2 className="label">LABORATORIO</h2>
                       <div >
                         <span className="label">Densidad Programada:</span>
-                     
+
                         <span>{plantingReportData.densidadProgramada || "N/A"}</span>
                       </div>
                       <div>
@@ -293,15 +380,15 @@ function ShrimpFarm() {
 
                   {/* Densidad estimada */}
                   <div className="harvest-report-section-3">
-                   
+
 
                     <div style={{ width: "100%" }}>
-                      
-                    <h2 className="label">FINCA</h2>
-                    <div >
-                      <span className="label">Densidad Estimada:</span>
-                      <span>{plantingReportData.densidadEstimada || "N/A"}</span>
-                    </div>
+
+                      <h2 className="label">FINCA</h2>
+                      <div >
+                        <span className="label">Densidad Estimada:</span>
+                        <span>{plantingReportData.densidadEstimada || "N/A"}</span>
+                      </div>
                       <div>
                         <span className="label">⦾ Peso recepción Finca:</span>
                         <span>{plantingReportData.pesoRecepcionFinca || "N/A"}</span>
@@ -396,7 +483,7 @@ function ShrimpFarm() {
           onOk={() => setModalCoord(false)}
           onCancel={() => setModalCoord(false)}
         >
-          <CoordModalShrimp />
+          <CoordModalShrimp id={plantingReportData.coordinationClientId}  />
         </Modal>
 
         <Modal
@@ -408,7 +495,7 @@ function ShrimpFarm() {
           onOk={() => setModalShrimp(false)}
           onCancel={() => setModalShrimp(false)}
         >
-          <ShrimpModalShrimp />
+          <ShrimpModalShrimp id={plantingReportData.coordinationClientId} />
         </Modal>
 
       </Main>

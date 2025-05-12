@@ -7,7 +7,7 @@ import propTypes from 'prop-types';
 import { Component } from 'react';
 import { Scrollbars } from '@pezhmanparsaee/react-custom-scrollbars';
 import { connect } from 'react-redux';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { FooterStyle, LayoutContainer, SmallScreenAuthInfo, TopMenuSearch } from './Style';
 import TopMenu from './TopMenu';
@@ -20,94 +20,75 @@ const { theme } = require('../config/theme/themeVariables');
 const { Header, Sider, Content } = Layout;
 
 const ThemeLayout = (WrappedComponent) => {
-
-  const { darkMode } = theme; // Accedemos directamente a darkMode
+  const { darkMode } = theme;
 
   class LayoutComponent extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        collapsed: window.visualViewport.width <= 1024,
-        hide: true,
-      };
-      this.updateDimensions = this.updateDimensions.bind(this);
-    }
-    
+    state = {
+      collapsed: window.visualViewport.width <= 1024,
+      hide: true,
+    };
+
     componentDidMount() {
       window.addEventListener('resize', this.updateDimensions);
       this.updateDimensions();
-      
-      console.log('componentDidMount - window.visualViewport.width:', window.visualViewport.width);
-    
-
-      const headerContent = document.querySelector('.ninjadash-header-content__left');
-      const isMobile = window.visualViewport.width <= 1024;
-      if (headerContent) {
-        console.log(isMobile)
-        console.log(window.visualViewport.width)
-        if (isMobile) {
-          headerContent.style.backgroundColor = '#ffffff';
-        } else {
-          headerContent.style.backgroundColor = '#012E40';
-        }
-      }
     }
-    
-    updateDimensions() {
-      this.setState({
-        collapsed: window.visualViewport.width <= 1024,
-      });
-    }
-    
 
     componentWillUnmount() {
       window.removeEventListener('resize', this.updateDimensions);
     }
 
-    updateDimensions() {
+    updateDimensions = () => {
       this.setState({
         collapsed: window.visualViewport.width <= 1024,
       });
-    }
-    
+
+      this.updateHeaderContentStyle();
+    };
+
+    updateHeaderContentStyle = () => {
+      const headerContent = document.querySelector('.ninjadash-header-content__left');
+      const isMobile = window.visualViewport.width <= 1024;
+      if (headerContent) {
+        headerContent.style.backgroundColor = isMobile ? '#ffffff' : '#012E40';
+      }
+    };
+
+    toggleCollapsed = () => {
+      const { collapsed } = this.state;
+      this.setState({ collapsed: !collapsed }, this.updateHeaderContentStyle);
+    };
+
+    toggleCollapsedMobile = () => {
+      if (window.visualViewport.width <= 1024) {
+        this.setState((prevState) => ({ collapsed: !prevState.collapsed }));
+      }
+    };
+
+    onShowHide = () => {
+      this.setState((prevState) => ({ hide: !prevState.hide }));
+    };
+
+    renderView = ({ style }) => {
+      const customStyle = {
+        marginRight: 'auto',
+        [this.props.rtl ? 'marginLeft' : 'marginRight']: '-17px',
+      };
+      return <div style={{ ...style, ...customStyle }} />;
+    };
+
+    renderThumb = (isHorizontal, { style }) => {
+      const thumbStyle = {
+        borderRadius: 6,
+        backgroundColor: this.props.ChangeLayoutMode ? '#ffffff16' : '#F1F2F6',
+        ...(isHorizontal ? {} : { [this.props.rtl ? 'right' : 'left']: '2px' }),
+      };
+      return <div style={{ ...style, ...thumbStyle }} />;
+    };
 
     render() {
       const { collapsed, hide } = this.state;
-      const { layoutMode, rtl, topMenu } = this.props;
-
+      const { topMenu, rtl } = this.props;
       const left = !rtl ? 'left' : 'right';
-      const toggleCollapsed = () => {
-        this.setState({
-          collapsed: !collapsed,
-        });
-
-        const headerContent = document.querySelector('.ninjadash-header-content__left');
-        if (headerContent) {
-          if (collapsed) {
-
-            headerContent.classList.remove('header-collapsed');
-            headerContent.classList.add('header-not-collapsed');
-          } else {
-
-            headerContent.classList.remove('header-not-collapsed');
-            headerContent.classList.add('header-collapsed');
-          }
-        }
-      };
-
-      const toggleCollapsedMobile = () => {
-        if (window.visualViewport.width <= 1024) {
-          this.setState({
-            collapsed: !collapsed,
-          });
-        }
-      };
-
-      const onShowHide = () => {
-        this.setState({
-          hide: !hide,
-        });
-      };
 
       const SideBarStyle = {
         margin: '63px 0 0 0',
@@ -119,44 +100,10 @@ const ThemeLayout = (WrappedComponent) => {
         zIndex: 988,
       };
 
-      const renderView = ({ style }) => {
-        const customStyle = {
-          marginRight: 'auto',
-          [rtl ? 'marginLeft' : 'marginRight']: '-17px',
-        };
-        return <div style={{ ...style, ...customStyle }} />;
-      };
-
-      const renderThumbVertical = ({ style }) => {
-        const { ChangeLayoutMode } = this.props;
-        const thumbStyle = {
-          borderRadius: 6,
-          backgroundColor: ChangeLayoutMode ? '#ffffff16' : '#F1F2F6',
-          [left]: '2px',
-        };
-        return <div style={{ ...style, ...thumbStyle }} />;
-      };
-
-      const renderThumbHorizontal = ({ style }) => {
-        const { ChangeLayoutMode } = this.props;
-        const thumbStyle = {
-          borderRadius: 6,
-          backgroundColor: ChangeLayoutMode ? '#ffffff16' : '#F1F2F6',
-        };
-        return <div style={{ ...style, ...thumbStyle }} />;
-      };
-
       return (
         <LayoutContainer>
           <Layout className="layout">
-            <Header
-              style={{
-                position: 'fixed',
-                width: '100%',
-                top: 0,
-                [!rtl ? 'left' : 'right']: 0,
-              }}
-            >
+            <Header style={{ position: 'fixed', width: '100%', top: 0, [left]: 0 }}>
               <div className="ninjadash-header-content d-flex">
                 <div className="ninjadash-header-content__left">
                   <div className="navbar-brand align-cener-v">
@@ -166,28 +113,22 @@ const ThemeLayout = (WrappedComponent) => {
                     >
                       <img
                         src={
-                          window.visualViewport.width <= 1024 ||
-                            collapsed
+                          window.visualViewport.width <= 1024 || collapsed
                             ? require(`../static/img/AQx-IMG/aqualink-dark.svg`).default
                             : require(`../static/img/AQx-IMG/aqualink-lite.svg`).default
                         }
-                        alt=""
+                        alt="Logo"
                       />
                     </Link>
                     {!topMenu || window.visualViewport.width <= 1024 ? (
-                      <Button type="link" onClick={toggleCollapsed}>
-                        <img
-                          src={require(`../static/img/icon/${collapsed ? 'left-bar.svg' : 'left-bar.svg'}`)}
-                          alt="menu"
-                        />
+                      <Button type="link" onClick={this.toggleCollapsed}>
+                        <img src={require(`../static/img/icon/${collapsed ? 'left-bar.svg' : 'left-bar.svg'}`)} alt="menu" />
                       </Button>
                     ) : null}
                   </div>
                 </div>
                 <div className="ninjadash-header-content__right d-flex">
-                  <div className="ninjadash-navbar-menu d-flex align-center-v">
-                    {topMenu && window.visualViewport.width > 1024 ? <TopMenu /> : ''}
-                  </div>
+                  {topMenu && window.visualViewport.width > 1024 && <TopMenu />}
                   <div className="ninjadash-nav-actions">
                     {topMenu && window.visualViewport.width > 1024 ? (
                       <TopMenuSearch>
@@ -205,14 +146,14 @@ const ThemeLayout = (WrappedComponent) => {
                     <div className="btn-search" to="#">
                       <Search />
                     </div>
-
-                    <Link className="btn-auth" onClick={onShowHide} to="#">
+                    <Link className="btn-auth" onClick={this.onShowHide} to="#">
                       <UilEllipsisV />
                     </Link>
                   </div>
                 </div>
               </div>
             </Header>
+
             <div className="ninjadash-header-more">
               <Row>
                 <Col md={0} sm={24} xs={24}>
@@ -224,6 +165,7 @@ const ThemeLayout = (WrappedComponent) => {
                 </Col>
               </Row>
             </div>
+
             <Layout>
               {!topMenu || window.visualViewport.width <= 1024 ? (
                 <ThemeProvider theme={darkMode}>
@@ -238,16 +180,17 @@ const ThemeLayout = (WrappedComponent) => {
                       autoHide
                       autoHideTimeout={500}
                       autoHideDuration={200}
-                      renderThumbHorizontal={renderThumbHorizontal}
-                      renderThumbVertical={renderThumbVertical}
-                      renderView={renderView}
+                      renderThumbHorizontal={(props) => this.renderThumb(true, props)}
+                      renderThumbVertical={(props) => this.renderThumb(false, props)}
+                      renderView={this.renderView}
                       renderTrackVertical={(props) => <div {...props} className="ninjadash-track-vertical" />}
                     >
-                      <AQxFarmMenu topMenu={topMenu} toggleCollapsed={toggleCollapsedMobile} />
+                      <AQxFarmMenu topMenu={topMenu} toggleCollapsed={this.toggleCollapsedMobile} />
                     </Scrollbars>
                   </Sider>
                 </ThemeProvider>
               ) : null}
+
               <Layout className="atbd-main-layout">
                 <Content>
                   <WrappedComponent {...this.props} />
@@ -255,33 +198,29 @@ const ThemeLayout = (WrappedComponent) => {
                     <Row>
                       <Col md={12} xs={24}>
                         <span className="admin-footer__copyright">
-                          © 2024<Link to="#">Aqualink</Link>
+                          © 2024 <Link to="#">Aqualink</Link>
                         </span>
                       </Col>
-
                     </Row>
                   </FooterStyle>
                 </Content>
               </Layout>
             </Layout>
           </Layout>
-          {window.visualViewport.width <= 1024 ? (
-            <span className={collapsed ? 'ninjadash-shade' : 'ninjadash-shade show'} onClick={toggleCollapsed} />
-          ) : (
-            ''
+
+          {window.visualViewport.width <= 1024 && (
+            <span className={collapsed ? 'ninjadash-shade' : 'ninjadash-shade show'} onClick={this.toggleCollapsed} />
           )}
         </LayoutContainer>
       );
     }
   }
 
-  const mapStateToProps = (state) => {
-    return {
-      layoutMode: state.ChangeLayoutMode.mode,
-      rtl: state.ChangeLayoutMode.rtlData,
-      topMenu: state.ChangeLayoutMode.topMenu,
-    };
-  };
+  const mapStateToProps = (state) => ({
+    layoutMode: state.ChangeLayoutMode.mode,
+    rtl: state.ChangeLayoutMode.rtlData,
+    topMenu: state.ChangeLayoutMode.topMenu,
+  });
 
   LayoutComponent.propTypes = {
     layoutMode: propTypes.string,
@@ -291,4 +230,5 @@ const ThemeLayout = (WrappedComponent) => {
 
   return connect(mapStateToProps)(LayoutComponent);
 };
+
 export default ThemeLayout;

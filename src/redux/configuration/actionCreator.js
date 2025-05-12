@@ -119,6 +119,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
   try {
     dispatch(adOrgLoading());
 
+
     const payload = {
       AD_Client_ID: selectedClientId,
       Name: orgData.Name,
@@ -139,7 +140,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
       SM_MinisterialAgreement: orgData.sm_ministerialagreement,
       SM_SafetyCertificate: orgData.sm_safetycertificate,
       SM_MainlandOrIsland: orgData.SM_MainlandOrIsland,
-      taxid_rl: orgData.taxid_rl,
+      taxid_rl: orgData.taxid,
       name_rl: orgData.name_rl,
       email_rl: orgData.email_rl,
       sm_installedcapacitylarva: orgData.sm_installedcapacitylarva,
@@ -177,6 +178,33 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
         await DataService.post('/models/m_locator', LocatorGeneral);
       }
 
+      if (org_type !== "FARM" && org_type !== "LAB" && org_type !== "CUSTODY") {
+        console.error(`Tipo de organización inválido: ${org_type}. No se creará el C_BPartner.`);
+        return; // Salir si org_type no es válido
+      }
+
+      // Determinar el tipo de grupo según org_type (sin valor por defecto)
+      const groupValue = org_type === "FARM" ? "FARM"
+        : org_type === "LAB" ? "LAB"
+          : "CUSTODY"; // Solo se asigna si org_type es válido
+
+      // Buscar el C_BP_Group_ID correspondiente al value y AD_Client_ID
+      let c_bp_group_id;
+      try {
+        const groupResponse = await DataService.get(`/models/c_bp_group?$filter=AD_Client_ID eq ${selectedClientId} and Value eq '${groupValue}'`);
+
+        // Verificar si se encontró un registro
+        if (groupResponse.data && groupResponse.data.records && groupResponse.data.records.length > 0) {
+          c_bp_group_id = groupResponse.data.records[0].id; // Obtener el c_bp_group_id del primer registro
+        } else {
+          console.error(`No se encontró un C_BP_Group con value=${groupValue} y AD_Client_ID=${selectedClientId}. No se creará el C_BPartner.`);
+          return; // Salir sin crear el C_BPartner
+        }
+      } catch (error) {
+        console.error('Error al buscar C_BP_Group:', error);
+        return; // Salir en caso de error
+      }
+
       // Create C_BPartner record
       const bpartnerPayload = {
         AD_Client_ID: selectedClientId,
@@ -184,10 +212,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
         IsActive: 'Y',
         Value: orgData.email_rl, // Using email_rl as the value
         Name: orgData.Name, // Using organization name
-        C_BP_Group_ID: org_type === "FARM" ? 1000000
-          : org_type === "LAB" ? 1000001
-            : org_type === "CUSTODY" ? 1000003
-              : 1000000, // Default to FARM group if org_type is unexpected
+        C_BP_Group_ID: c_bp_group_id, // Usar el ID dinámico obtenido
         IsCustomer: 'Y',
         IsVendor: 'N',
         IsEmployee: 'N',
@@ -209,6 +234,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
       const bpartnerResponse = await DataService.post('/models/c_bpartner', bpartnerPayload);
       console.log('C_BPartner created:', bpartnerResponse.data);
 
+
       dispatch(adOrgCreated(response.data));
       Cookies.set('CreatedOrg', JSON.stringify(response.data));
       Cookies.set('CreatedOrgState', 'pending');
@@ -218,7 +244,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
           : org_type === "LAB" ? 1000002
             : org_type === "CUSTODY" ? 1000003
               : 1000004,
-        email: orgData.email_rl
+        EMail: orgData.email_rl
       };
 
       const responseinfo = await DataService.put(`/models/ad_orginfo/${response.data.id}`, payload2);

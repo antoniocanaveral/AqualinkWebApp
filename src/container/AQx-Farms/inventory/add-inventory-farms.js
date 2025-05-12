@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Form, Select, Input, Button, Table, Typography, message } from 'antd';
+import { Row, Col, Form, Select, Input, Button, Table, Typography, message, Spin } from 'antd';
 import { Main } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { PageHeader } from '../../../components/page-headers/page-headers.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProductToInventory, fetchProductCatalogFarm } from '../../../redux/inventory/actionCreator.js';
+import { addProductCategory, addProductToInventory, fetchProductCatalogFarm } from '../../../redux/inventory/actionCreator.js';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors.js';
 import Cookies from 'js-cookie';
 
@@ -89,10 +89,10 @@ function AddInventoryFarms() {
 
 
   useEffect(() => {
-  
-      dispatch(fetchProductCatalogFarm());
+
+    dispatch(fetchProductCatalogFarm());
   }, [dispatch]);
-  
+
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
     setSelectedGroup(null);
@@ -172,6 +172,18 @@ function AddInventoryFarms() {
     console.log(selectedPoolData)
     const productData = {
       M_Product_ID: selectedProduct?.M_Product_ID?.id || null,
+      Name: selectedProduct?.Name || null,
+      Value: selectedProduct?.Value || null,
+      Description: selectedProduct?.Description || null,
+      Classification: selectedProduct?.Classification || null,
+      document_note: selectedProduct?.document_note || null,
+      help_1: selectedProduct?.help_1 || null,
+      help_2: selectedProduct?.help_2 || null,
+      origin_country: selectedProduct?.origin_country || null,
+      rsu_code: selectedProduct?.rsu_code || null,
+      
+      category_name: selectedProduct?.category_name || null,
+      sm_uom_name: selectedProduct?.sm_uom_name || null,
       C_BPartner_ID: selectedProduct?.C_BPartner_ID?.id || null,
       C_BPartner_Location_ID: selectedProduct?.C_BPartner_Location_ID?.id || null,
       priceList: parseFloat(values.precio_lista),
@@ -203,6 +215,7 @@ function AddInventoryFarms() {
     console.log('Error en el formulario:', errorInfo);
   };
 
+
   return (
     <>
       <PageHeader
@@ -214,284 +227,285 @@ function AddInventoryFarms() {
       />
 
       <Main>
+       
         <Row gutter={25}>
           <Col xl={24} xs={24}>
             <Cards title="Añadir Inventario" size="large">
-            {loading ? (
-                <div>Cargando catálogo...</div>
-              )  : (
-              <Form
-                form={form}
-                layout="vertical"
-                requiredMark={false}
-                onFinish={handleSubmit}
-                onFinishFailed={handleSubmitFailed}
-              >
-                <Row gutter={16}>
-                  {/* Selector de Categoría */}
-                  <Col span={12}>
-                    <Form.Item
-                      label="Categoría"
-                      name="category"
-                      rules={[{ required: true, message: 'Seleccione una categoría' }]}
-                    >
-                      <Select placeholder="Seleccione una categoría" onChange={handleCategoryChange}>
-                        <Select.Option value="all">Todas</Select.Option>
-                        {Object.keys(categoriesCatalog).map((categoryName) => (
-                          <Select.Option key={categoryName} value={categoryName}>
-                            {categoryName}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-
-                  {/* Selector de Grupo (Group1) */}
-                  <Col span={12}>
-                    {selectedCategory && (
-                      <Form.Item
-                        label="Marca"
-                        name="marca"
-                        rules={[{ required: true, message: 'Seleccione una Marca' }]}
-                      >
-                        <Select
-                          showSearch
-                          placeholder="Seleccione una Marca"
-                          optionFilterProp="children"
-                          onChange={handleGroupChange}
-                          oading={loading}
-                          filterOption={(input, option) =>
-                            option.children.toLowerCase().includes(input.toLowerCase())
-                          }
-                        >
-                          {filteredGroups.map((group) => (
-                            <Select.Option key={group} value={group}>
-                              {group}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    )}
-                  </Col>
-                </Row>
-
-                <Row gutter={16}>
-                  {/* Selector de Producto */}
-                  <Col span={12}>
-                    {selectedGroup && (
-                      <Form.Item
-                        label="Producto"
-                        name="producto"
-                        rules={[{ required: true, message: 'Seleccione un Producto' }]}
-                      >
-                        <Select
-                          showSearch
-                          placeholder="Seleccione un Producto"
-                          optionFilterProp="children"
-                          onChange={handleProductSelect}
-                          filterOption={(input, option) =>
-                            option.children.toLowerCase().includes(input.toLowerCase())
-                          }
-                        >
-                          {filteredProducts.map((product) => (
-                            <Select.Option key={product.Value} value={product.Value}>
-                              {product.Name}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    )}
-                  </Col>
-
-                  <Col span={12}>
-                    {selectedProduct && (
-                      <Form.Item label="Presentación" name="Classification">
-                        <Input readOnly />
-                      </Form.Item>
-                    )}
-                  </Col>
-                </Row>
-
-                <Row gutter={16}>
-                  {/* Textarea de Descripción */}
-                  <Col xl={12} lg={24} >
-                    {selectedProduct && (
-                      <Form.Item label="Descripción" name="description">
-                        <TextArea style={{ height: "250px" }} rows={4} readOnly />
-                      </Form.Item>
-                    )}
-                  </Col>
-                  <Col xl={12} lg={12}>
-                    {selectedProduct && (
-                      <div>
-                        <Form.Item label="Clasificación Terapéutica" name="document_note">
-                          <Input readOnly />
-                        </Form.Item>
-
-                        <Form.Item
-                          label="Forma Terapéutica"
-                          name="help_1"
-                        >
-                          <Input readOnly />
-                        </Form.Item>
-
-                        <Form.Item
-                          label="Tipo de Formulación"
-                          name="help_2"
-                        >
-                          <Input readOnly />
-                        </Form.Item>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
-
-                <Row gutter={16}>
-                  {selectedProduct && (
-                    <>
-                      <Col xl={8} lg={12}>
-                        <Form.Item
-                          label="Origen de Producto"
-                          name="origin_country"
-                        >
-                          <Input readOnly />
-                        </Form.Item>
-                      </Col>
-                      <Col xl={8} lg={12}>
-                        <Form.Item
-                          label="ID Aqualink"
-                          name="Value"
-                        >
-                          <Input readOnly />
-                        </Form.Item>
-                      </Col>
-                      <Col xl={8} lg={12}>
-                        <Form.Item
-                          label="Código RSU"
-                          name="rsu_code"
-                        >
-                          <Input readOnly />
-                        </Form.Item>
-                      </Col>
-                    </>
-                  )}
-                </Row>
-
-                {selectedProduct && (
+              {loading ? (
+                <div><Spin/></div>
+              ) : (
+                <Form
+                  form={form}
+                  layout="vertical"
+                  requiredMark={false}
+                  onFinish={handleSubmit}
+                  onFinishFailed={handleSubmitFailed}
+                >
                   <Row gutter={16}>
-                    {selectedCategory === 'larva' ? (
+                    {/* Selector de Categoría */}
+                    <Col span={12}>
+                      <Form.Item
+                        label="Categoría"
+                        name="category"
+                        rules={[{ required: true, message: 'Seleccione una categoría' }]}
+                      >
+                        <Select placeholder="Seleccione una categoría" onChange={handleCategoryChange}>
+                          <Select.Option value="all">Todas</Select.Option>
+                          {Object.keys(categoriesCatalog).map((categoryName) => (
+                            <Select.Option key={categoryName} value={categoryName}>
+                              {categoryName}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+
+                    {/* Selector de Grupo (Group1) */}
+                    <Col span={12}>
+                      {selectedCategory && (
+                        <Form.Item
+                          label="Marca"
+                          name="marca"
+                          rules={[{ required: true, message: 'Seleccione una Marca' }]}
+                        >
+                          <Select
+                            showSearch
+                            placeholder="Seleccione una Marca"
+                            optionFilterProp="children"
+                            onChange={handleGroupChange}
+                            oading={loading}
+                            filterOption={(input, option) =>
+                              option.children.toLowerCase().includes(input.toLowerCase())
+                            }
+                          >
+                            {filteredGroups.map((group) => (
+                              <Select.Option key={group} value={group}>
+                                {group}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                      )}
+                    </Col>
+                  </Row>
+
+                  <Row gutter={16}>
+                    {/* Selector de Producto */}
+                    <Col span={12}>
+                      {selectedGroup && (
+                        <Form.Item
+                          label="Producto"
+                          name="producto"
+                          rules={[{ required: true, message: 'Seleccione un Producto' }]}
+                        >
+                          <Select
+                            showSearch
+                            placeholder="Seleccione un Producto"
+                            optionFilterProp="children"
+                            onChange={handleProductSelect}
+                            filterOption={(input, option) =>
+                              option.children.toLowerCase().includes(input.toLowerCase())
+                            }
+                          >
+                            {filteredProducts.map((product) => (
+                              <Select.Option key={product.Value} value={product.Value}>
+                                {product.Name}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                      )}
+                    </Col>
+
+                    <Col span={12}>
+                      {selectedProduct && (
+                        <Form.Item label="Presentación" name="Classification">
+                          <Input readOnly />
+                        </Form.Item>
+                      )}
+                    </Col>
+                  </Row>
+
+                  <Row gutter={16}>
+                    {/* Textarea de Descripción */}
+                    <Col xl={12} lg={24} >
+                      {selectedProduct && (
+                        <Form.Item label="Descripción" name="description">
+                          <TextArea style={{ height: "250px" }} rows={4} readOnly />
+                        </Form.Item>
+                      )}
+                    </Col>
+                    <Col xl={12} lg={12}>
+                      {selectedProduct && (
+                        <div>
+                          <Form.Item label="Clasificación Terapéutica" name="document_note">
+                            <Input readOnly />
+                          </Form.Item>
+
+                          <Form.Item
+                            label="Forma Terapéutica"
+                            name="help_1"
+                          >
+                            <Input readOnly />
+                          </Form.Item>
+
+                          <Form.Item
+                            label="Tipo de Formulación"
+                            name="help_2"
+                          >
+                            <Input readOnly />
+                          </Form.Item>
+                        </div>
+                      )}
+                    </Col>
+                  </Row>
+
+                  <Row gutter={16}>
+                    {selectedProduct && (
                       <>
-                        <Col span={8}>
+                        <Col xl={8} lg={12}>
                           <Form.Item
-                            label="Código Reproductor"
-                            name="codigo_reproductor"
-                            rules={[{ required: true, message: 'Ingrese el código reproductor' }]}
+                            label="Origen de Producto"
+                            name="origin_country"
                           >
-                            <Input placeholder="Código Reproductor" />
+                            <Input readOnly />
                           </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col xl={8} lg={12}>
                           <Form.Item
-                            label="Proveedor"
-                            name="proveedor"
-                            rules={[{ required: true, message: 'Ingrese el proveedor' }]}
+                            label="ID Aqualink"
+                            name="Value"
                           >
-                            <Input placeholder="Proveedor" />
+                            <Input readOnly />
                           </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col xl={8} lg={12}>
                           <Form.Item
-                            label="Origen Nauplio"
-                            name="origen_nauplio"
-                            rules={[{ required: true, message: 'Ingrese el origen del nauplio' }]}
+                            label="Código RSU"
+                            name="rsu_code"
                           >
-                            <Input placeholder="Origen Nauplio" />
+                            <Input readOnly />
                           </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                          <Form.Item
-                            label="Precio Lista"
-                            name="precio_lista"
-                            rules={[{ required: true, message: 'Ingrese el precio de lista' }]}
-                          >
-                            <Input placeholder="Precio Lista" type="number" />
-                          </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                          <Form.Item
-                            label="Cantidad"
-                            name="cantidad"
-                            rules={[{ required: true, message: 'Ingrese la cantidad' }]}
-                          >
-                            <Input placeholder="Cantidad" type="number" />
-                          </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                          <Form.Item
-                            label="Lote Destino"
-                            name="lote_destino"
-                            rules={[{ required: true, message: 'Ingrese el lote destino' }]}
-                          >
-                            <Input placeholder="Lote Destino" />
-                          </Form.Item>
-                        </Col>
-                      </>
-                    ) : (
-                      <>
-                        <Col xl={4}>
-                          <Form.Item
-                            label="Precio Lista"
-                            name="precio_lista"
-                            rules={[{ required: true, message: 'Ingrese el precio de lista' }]}
-                          >
-                            <Input placeholder="Precio Lista" type="number" />
-                          </Form.Item>
-                        </Col>
-
-                        <Col xl={4}>
-                          <Form.Item
-                            label="Cantidad"
-                            name="cantidad"
-                            rules={[{ required: true, message: 'Ingrese la cantidad' }]}
-                          >
-                            <Input placeholder="Cantidad" type="number" />
-                          </Form.Item>
-                        </Col>
-
-
-                        <Col xl={5}>
-                          <Form.Item
-                            label="Almacén"
-                            name="M_Warehouse_ID"
-                            rules={[{ required: true, message: 'Ingrese la cantidad' }]}
-                          >
-                            <Select
-                              options={poolsOptions}
-                              onChange={handlePoolChange}
-                              placeholder="Seleccione una Almacén"
-                              value={poolsOptions.find((opt) => opt.value === selectedPool) || undefined}
-                              allowClear
-                              disabled={!selectedOrg || poolsOptions.length === 0}
-                            />
-                          </Form.Item>
-                        </Col>
-
-                        <Col xl={8}>
-                          <Row justify="end" gutter={10} style={{ marginTop: '36px' }}>
-                            <Col>
-                              <Button onClick={() => form.resetFields()} type="default">Borrar</Button>
-                            </Col>
-                            <Col>
-                              <Button htmlType="submit" type="primary">Añadir a Inventario</Button> {/* Cambio aquí */}
-                            </Col>
-                          </Row>
                         </Col>
                       </>
                     )}
                   </Row>
-                )}
 
-              </Form>
+                  {selectedProduct && (
+                    <Row gutter={16}>
+                      {selectedCategory === 'larva' ? (
+                        <>
+                          <Col span={8}>
+                            <Form.Item
+                              label="Código Reproductor"
+                              name="codigo_reproductor"
+                              rules={[{ required: true, message: 'Ingrese el código reproductor' }]}
+                            >
+                              <Input placeholder="Código Reproductor" />
+                            </Form.Item>
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item
+                              label="Proveedor"
+                              name="proveedor"
+                              rules={[{ required: true, message: 'Ingrese el proveedor' }]}
+                            >
+                              <Input placeholder="Proveedor" />
+                            </Form.Item>
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item
+                              label="Origen Nauplio"
+                              name="origen_nauplio"
+                              rules={[{ required: true, message: 'Ingrese el origen del nauplio' }]}
+                            >
+                              <Input placeholder="Origen Nauplio" />
+                            </Form.Item>
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item
+                              label="Precio Lista"
+                              name="precio_lista"
+                              rules={[{ required: true, message: 'Ingrese el precio de lista' }]}
+                            >
+                              <Input placeholder="Precio Lista" type="number" />
+                            </Form.Item>
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item
+                              label="Cantidad"
+                              name="cantidad"
+                              rules={[{ required: true, message: 'Ingrese la cantidad' }]}
+                            >
+                              <Input placeholder="Cantidad" type="number" />
+                            </Form.Item>
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item
+                              label="Lote Destino"
+                              name="lote_destino"
+                              rules={[{ required: true, message: 'Ingrese el lote destino' }]}
+                            >
+                              <Input placeholder="Lote Destino" />
+                            </Form.Item>
+                          </Col>
+                        </>
+                      ) : (
+                        <>
+                          <Col xl={4}>
+                            <Form.Item
+                              label="Precio Lista"
+                              name="precio_lista"
+                              rules={[{ required: true, message: 'Ingrese el precio de lista' }]}
+                            >
+                              <Input placeholder="Precio Lista" type="number" />
+                            </Form.Item>
+                          </Col>
+
+                          <Col xl={4}>
+                            <Form.Item
+                              label="Cantidad"
+                              name="cantidad"
+                              rules={[{ required: true, message: 'Ingrese la cantidad' }]}
+                            >
+                              <Input placeholder="Cantidad" type="number" />
+                            </Form.Item>
+                          </Col>
+
+
+                          <Col xl={5}>
+                            <Form.Item
+                              label="Almacén"
+                              name="M_Warehouse_ID"
+                              rules={[{ required: true, message: 'Ingrese la cantidad' }]}
+                            >
+                              <Select
+                                options={poolsOptions}
+                                onChange={handlePoolChange}
+                                placeholder="Seleccione una Almacén"
+                                value={poolsOptions.find((opt) => opt.value === selectedPool) || undefined}
+                                allowClear
+                                disabled={!selectedOrg || poolsOptions.length === 0}
+                              />
+                            </Form.Item>
+                          </Col>
+
+                          <Col xl={8}>
+                            <Row justify="end" gutter={10} style={{ marginTop: '36px' }}>
+                              <Col>
+                                <Button onClick={() => form.resetFields()} type="default">Borrar</Button>
+                              </Col>
+                              <Col>
+                                <Button htmlType="submit" type="primary">Añadir a Inventario</Button> {/* Cambio aquí */}
+                              </Col>
+                            </Row>
+                          </Col>
+                        </>
+                      )}
+                    </Row>
+                  )}
+
+                </Form>
               )}
             </Cards>
           </Col>

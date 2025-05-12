@@ -20,10 +20,8 @@ const login = (values, callback) => {
       const client = response.data.clients[0];
       Cookies.set('selectedClientId', client.id);
 
-      console.log("client", client)
       const rolesResponse = await DataService.get(`/auth/roles?client=${client.id}`, true);
       const roles = rolesResponse.data.roles;
-      console.log("roles", roles)
 
       Cookies.set('roles', JSON.stringify(roles));
       Cookies.set('logedIn', true);

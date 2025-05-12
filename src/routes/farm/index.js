@@ -34,6 +34,7 @@ import ReportOpFarm from '../../container/AQx-Farms/reports/report-op-farm';
 import TraceabilityLotesCustody from '../../container/AQx-Custody/traceability/traceability-lotes-custody';
 import TraceabilityLotesFarm from '../../container/AQx-Custody/traceability/traceability-lotes-farm';
 import KnowledgeBase from '../../container/pages/knowledgeBase/Index';
+import AddClientFarm from '../../container/AQx-Farms/client/client-add-farm';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -41,6 +42,7 @@ const Farm = React.memo(() => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
   return (
     <Suspense
       fallback={
@@ -50,30 +52,32 @@ const Farm = React.memo(() => {
       }
     >
       <Routes>
-        <Route index element={<PanelFarmRoutes />} />     
-        <Route path="/panel/*" element={<PanelFarmRoutes />} />  
+
+        <Route path="/client/add" element={<AddClientFarm />} />
+        <Route path="/client/*" element={<ClientRouteFarm />} />
+        <Route index path="/*" element={<PanelFarmRoutes />} />
+        <Route path="/panel/*" element={<PanelFarmRoutes />} />
+
         <Route path="/planning-studio/*" element={<PlanningStudioFarms />} />
         <Route path="/real-planning/*" element={<RealPlanning />} />
+
         <Route path="/monitoreo-general/*" element={<GeneralMonitoringFarm />} />
         <Route path="/monitoring/actual-projected/*" element={<RealAndProjectedFeeding />} />
         <Route path="/monitoring/protein-percentage/*" element={<ProteinPercentageFarm />} />
         <Route path="/monitoring/plate-sampling/*" element={<PlateSamplingFarm />} />
         <Route path="/monitoring/feeding-tables/*" element={<FeedingTableFarms />} />
-        <Route path="/KnowledgeBase/*" element={<KnowledgeBase />} />
 
-        <Route path="/analytics/*" element={<AnalyticRoutesFarm />} />  
+        <Route path="/KnowledgeBase/*" element={<KnowledgeBase />} />
+        <Route path="/analytics/*" element={<AnalyticRoutesFarm />} />
         <Route path="/crop/*" element={<CropRoutesFarm />} />
         <Route path="/culture-medium/*" element={<CultureMediumRoutesFarm />} />
-        <Route path="/laboratory/*" element={<LaboratoryFarm/>} />
+        <Route path="/laboratory/*" element={<LaboratoryFarm />} />
         <Route path="/packing/*" element={<PackingRouteFarm />} />
         <Route path='/costs/*' element={<CostRouteFarm />} />
-        <Route path="/client/*" element={<ClientRouteFarm />} />
         <Route path="/users/*" element={<UserRoutesFarm />} />
-
-        <Route path='/faq/*' element={<FaqComponent/>} />
+        <Route path='/faq/*' element={<FaqComponent />} />
         <Route path="/support/*" element={<SupportTicket />} />
         <Route path='/message-notifications-center/*' element={<MessageNotificationsCenter />} />
-
         <Route path="/inventory/add/*" element={<AddInventoryFarms />} />
         <Route path="/inventory/view/*" element={<InventoryTable />} />
         <Route path="/parameters/od-temp/*" element={<ODParametersFarms />} />
@@ -85,11 +89,13 @@ const Farm = React.memo(() => {
         <Route path="/fishing-coords/*" element={<CustodyCoordinationsRoutes />} />
         <Route path="/traceability/tracking/*" element={<TraceabilityLotesFarm />} />
         <Route path="/operation-report" element={<ReportOpFarm />} />
-       
+
+        {/* Ruta para cuando no se encuentra ninguna coincidencia */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );
 });
+
 
 export default withFarmLayout(Farm);

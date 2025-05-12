@@ -222,8 +222,10 @@ function ClientFarm() {
 
     const data = Object.entries(poolTypesData || {}).map(([label, value]) => ({
         label,
-        value
+        value:  value ? Number(value).toFixed(2) : 0 
     }));
+
+    console.log(data)
 
 
 const preCrias = poolTypesData?.["PC"] || 0;
@@ -242,7 +244,7 @@ const total = preCrias + engorde + preEngorde;
         { key: '5', categoria: 'Certificado de Inocuidad', valor: selectedFarmOrg?.SM_SafetyCertificate || 'N/A' },
         { key: '8', categoria: 'Extensión Productiva (Total)', valor: total + " Has" },
         { key: '9', categoria: 'Extensión Pre Crias', valor: preCrias  + " Has"},
-        { key: '10', categoria: 'Extensión Piscinas Engorde', valor: engorde + " Has" },
+        { key: '10', categoria: 'Extensión Piscinas Engorde', valor: engorde ? Number(engorde).toFixed(2) + " Has": "-" },
         { key: '11', categoria: 'Extensión Piscinas Pre Engorde', valor: preEngorde + " Has" },
     ];
 
