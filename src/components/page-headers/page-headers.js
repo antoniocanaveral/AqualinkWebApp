@@ -31,7 +31,6 @@ function PageHeader(props) {
   const handleMenuClick = (e) => {
     const orgId = Number(e.key);
     const org = organizations.find(o => o.orgId === orgId);
-    console.log("oawd", org)
     if (org) {
       handleOrgChange(org.orgId, org.orgEmail);
     }
@@ -51,12 +50,10 @@ function PageHeader(props) {
 
   const renderSelectOptions = () => {
     if (!selectOptions || selectOptions.length === 0) return null;
-    console.log(selectOptions)
     return (
       <div className="responsive-select-container" style={{ display: 'flex', gap: '10px' }}>
         {selectOptions.map((selectOption, index) => {
           if (!selectOption.options || !Array.isArray(selectOption.options)) {
-            console.warn(`selectOption at index ${index} is missing 'options' or it's not an array.`);
             return null;
           }
 

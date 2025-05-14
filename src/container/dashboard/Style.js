@@ -28,28 +28,41 @@ const EChartCard = Styled.div`
     }
 `;
 
-const OverviewDataStyleWrap = Styled.div`
-    
-    &.card-mesh-wrap{
-        justify-content: space-between;
-        margin-bottom: 25px;
-        border-radius: 10px;
-        background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
-        @media only screen and (max-width: 991px){
-            flex-wrap: wrap;
-        }
-        .ninjadash-overview-card-single{
-            flex: 0 0 auto;
-            margin-bottom: 0;
-            @media only screen and (max-width: 991px){
-                flex: 0 0 50%;
-            }
-            @media only screen and (max-width: 575px){
-                flex: 0 0 100%;
-            }
-        }
 
+const OverviewDataStyleWrap = Styled.div`
+  &.card-mesh-wrap {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    justify-content: center; /* Center cards for smaller screens */
+    gap: 20px; /* Consistent spacing between cards */
+    margin-bottom: 25px;
+    border-radius: 10px;
+    background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
+    
+    .ninjadash-overview-card-single {
+      flex: 1 1 250px; /* Minimum width of 250px, grow to fill space */
+      max-width: 300px; /* Prevent cards from becoming too wide on smaller screens */
+      margin-bottom: 0;
+      
+      @media only screen and (max-width: 991px) {
+        flex: 1 1 45%; /* Two cards per row */
+      }
+      
+      @media only screen and (max-width: 575px) {
+        flex: 1 1 100%; /* One card per row */
+      }
+      
+      @media only screen and (min-width: 1599px) {
+        flex: 1 1 0; /* Equal width for all cards, no minimum */
+        max-width: none; /* Remove max-width to allow full growth */
+      }
     }
+    
+    @media only screen and (min-width: 1599px) {
+      flex-wrap: nowrap; /* Prevent wrapping to keep cards in one row */
+      justify-content: space-between; /* Distribute cards evenly across full width */
+    }
+  }
 `;
 
 const NewProductWrapper = Styled.div`
@@ -104,7 +117,7 @@ const TotalChartStyleWrap = Styled.div`
     .ninjadash-total-earning{
         .ant-card{
             min-height: 396px;
-            @media only screen and (max-width: 1599px){
+            @media only screen and (max-width: 2500px){
                 min-height: 468px;
             }
             @media only screen and (max-width: 1499px){
@@ -495,7 +508,7 @@ const CardBarChart = Styled.div`
 const UserOverviewStyle = Styled.div`
     .ant-card{
         min-height: 458px;
-        @media only screen and (max-width: 1599px){
+        @media only screen and (max-width: 2500px){
             min-height: auto;
         }
     }
@@ -841,7 +854,7 @@ const RevenueGeneratedWrapper = Styled.div`
         align-items: center;
         justify-content: space-between;
         padding: 20px 25px;
-        @media only screen and (max-width: 1599px) {
+        @media only screen and (max-width: 2500px) {
             justify-content: space-around;
             min-height: 305px;
             padding: 0;
@@ -860,7 +873,7 @@ const RevenueGeneratedWrapper = Styled.div`
     .ninjadsh-revenue-chart-source{
         display: flex;
         margin: -22px;
-        @media only screen and (max-width: 1599px) {
+        @media only screen and (max-width: 2500px) {
             margin: -12px;
         }
         @media only screen and (max-width: 1399px) {
@@ -874,7 +887,7 @@ const RevenueGeneratedWrapper = Styled.div`
         }
         .ninjadsh-revenue-chart-source__single{
             margin: 22px;
-            @media only screen and (max-width: 1599px) {
+            @media only screen and (max-width: 2500px) {
                 margin: 12px;
             }
             @media only screen and (max-width: 1399px) {
@@ -892,7 +905,7 @@ const RevenueGeneratedWrapper = Styled.div`
             height: 80px;
             margin-bottom: 10px;
             border-radius: 10px;
-            @media only screen and (max-width: 1599px) {
+            @media only screen and (max-width: 2500px) {
                 width: 60px;
                 height: 60px;
             }
@@ -1353,7 +1366,7 @@ const UpcomingEventsStyleWrap = Styled.div`
 `;
 
 const KnowledgeBaseCardWrap = Styled.div`
-    @media only screen and (max-width: 1599px){
+    @media only screen and (max-width: 2500px){
         min-height: 360px;
     }
     @media only screen and (max-width: 991px){

@@ -1,4 +1,4 @@
-import React, { Suspense} from 'react';
+import React, { Suspense } from 'react';
 import { Row, Col, Skeleton, Typography, Badge, Space, Table, Card, Button, Modal } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
 
 function PreparationBioremediationFarm() {
- const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
@@ -173,7 +173,7 @@ function PreparationBioremediationFarm() {
   return (
     <>
       <PageHeader
-        
+
         highlightText="AquaLink Cultivo"
         title="Preparación Y Biorremediación"
         selectOptions={combinedSelectOptions}
@@ -225,24 +225,30 @@ function PreparationBioremediationFarm() {
           <Col xl={12} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Preparación " size="large">
-                <Table
-                  dataSource={limeData}
-                  columns={limeColumns}
-                  pagination={{ pageSize: 5 }}
-                  rowKey="tipo"
-                />
+                <div className="table-responsive">
+
+                  <Table
+                    dataSource={limeData}
+                    columns={limeColumns}
+                    pagination={{ pageSize: 5 }}
+                    rowKey="tipo"
+                  />
+                </div>
               </Cards>
             </Suspense>
           </Col>
           <Col xl={12} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Biorremediación" size="large">
-                <Table
-                  dataSource={remediationData}
-                  columns={remediationColumns}
-                  pagination={{ pageSize: 5 }}
-                  rowKey="key"
-                />
+                <div className="table-responsive">
+
+                  <Table
+                    dataSource={remediationData}
+                    columns={remediationColumns}
+                    pagination={{ pageSize: 5 }}
+                    rowKey="key"
+                  />
+                </div>
               </Cards>
             </Suspense>
           </Col>

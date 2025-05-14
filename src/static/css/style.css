@@ -38,6 +38,11 @@
   background-color: #FFD8B1 !important;
 }
 
+.map-label {
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  /* Adds a black outline for contrast against map and polygon colors */
+}
+
 .ant-table-thead > tr:nth-child(2) > th.pre-engorde-header {
   background-color: #B3E5FC !important;
 }

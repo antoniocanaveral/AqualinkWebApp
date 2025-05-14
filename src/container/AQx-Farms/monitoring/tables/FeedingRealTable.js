@@ -51,7 +51,7 @@ const FeedingRealTable = ({ feedingreport }) => {
   ];
 
   return (
-    <Cards title="Datos por Semana Reales" size="large">
+    <Cards title="Estrategia de Alimentación Ejecutada" size="large">
       <Table
         columns={columns}
         dataSource={tableData}

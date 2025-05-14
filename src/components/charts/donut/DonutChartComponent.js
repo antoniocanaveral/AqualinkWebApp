@@ -52,6 +52,7 @@ const DonutChartComponent = ({
   };
 
   const totalVolume = datasets[0].data.reduce((a, b) => a + b, 0);
+  console.log('Total Volume:', totalVolume);
 
   return (
     <SalesOverviewStyleWrap2>
@@ -78,6 +79,7 @@ const DonutChartComponent = ({
         <div className="ninjadash-overview-percentage">
           {datasets[0].data.map((value, index) => {
             const itemPercent = Math.round((value / totalVolume) * 100);
+            console.log('Item Percent:', itemPercent);
             return (
               <div className="ninjadash-overview-percentage__item" key={index}>
                 <span

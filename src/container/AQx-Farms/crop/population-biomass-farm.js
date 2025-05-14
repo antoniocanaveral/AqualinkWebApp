@@ -256,7 +256,6 @@ function PopulationBiomassFarm() {
           <Col xl={13} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Reporte de Población" size="large">
-                <div className="report-container">
                   <div className="header">
                     <span className="title">{populationResults[0]?.value}</span>
                     <span className="area">{populationResults[1]?.value}</span>
@@ -288,7 +287,6 @@ function PopulationBiomassFarm() {
                       </div>
                     ))}
                   </div>
-                </div>
               </Cards>
             </Suspense>
           </Col>

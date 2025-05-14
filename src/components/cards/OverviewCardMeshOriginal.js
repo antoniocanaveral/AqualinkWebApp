@@ -24,7 +24,7 @@ function OverviewCardMeshOriginal({ data, circleIcon }) {
       className={circleIcon ? 'ninjadash-overview-card-single ninjadash-icon-circle' : 'ninjadash-overview-card-single'}
     >
       <Card bordered={false}>
-        <div className={`ninjadash-overview-card ninjadash-overview-card-${type}`}>
+        <div className={`ninjadash-overview-card `}>
           <div className="ninjadash-overview-card__left d-flex justify-content-between">
             <div className={`ninjadash-overview-card__left--icon ninjadash-${type}`}>
               <ReactSVG src={require(`../../static/img/AQx-IMG/${icon}`)} />

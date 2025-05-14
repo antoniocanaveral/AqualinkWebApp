@@ -183,7 +183,7 @@ function TextureFarm() {
             >
               <AqualinkMaps
                 width={'100%'}
-                
+
                 selectedOrg={selectedOrg}
                 selectedSector={selectedSector}
                 selectedPool={selectedPool}
@@ -216,13 +216,16 @@ function TextureFarm() {
                 </Cards>
               }
             >
-              <Cards title="Reporte de Textura" size="large">
-                <Table
-                  columns={columns}
-                  dataSource={dataSource}
-                  pagination={{ pageSize: 5 }}
-                  loading={loading}
-                />
+              <Cards title="Reporte de Textura" size="large">`
+                <div className="table-responsive">
+
+                  <Table
+                    columns={columns}
+                    dataSource={dataSource}
+                    pagination={{ pageSize: 5 }}
+                    loading={loading}
+                  />
+                </div>
               </Cards>
             </Suspense>
           </Col>

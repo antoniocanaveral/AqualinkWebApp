@@ -15,11 +15,16 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import { fetchLablotesInfo } from '../../redux/lablote/actionCreator';
+import { AqualinkMaps } from '../../components/maps/aqualink-map';
+import { selectLabOrgsWithWarehouses } from '../../redux/authentication/selectors';
 
 function PanelLabs() {
   const dispatch = useDispatch();
-
+  const organizations = useSelector((state) => state.auth.labsOrgs);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
+  const [selectedSector, setSelectedSector] = useState(null);
+  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+
   const { lablotes, lablotesLoading, lablotesError } = useSelector((state) => state.lablote);
 
   useEffect(() => {
@@ -28,6 +33,8 @@ function PanelLabs() {
 
 
   const labOrgs = useSelector((state) => state.auth.labsOrgs);
+
+  const farmsOrgsWithPools = useSelector(selectLabOrgsWithWarehouses);
   console.log(labOrgs)
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
@@ -35,20 +42,99 @@ function PanelLabs() {
     Cookies.set('orgEmail', orgEmail || '');
   };
 
-  const farmsSelectOptions = labOrgs.length > 0 ? [
+
+  const handleSectorChange = (sectorId) => {
+    setSelectedSector(sectorId);
+    setSelectedPool(null);
+  };
+
+  const handlePoolChange = (poolId) => {
+    setSelectedPool(poolId);
+    Cookies.set('poolId', poolId);
+  };
+
+  const farmsSelectOptions = organizations.length > 0 ? [
     {
-      options: labOrgs.map(org => ({
+      options: farmsOrgsWithPools.map(org => ({
         value: org.orgId,
         label: org.orgName,
         email: org.orgEmail,
       })),
       onChange: handleOrgChange,
-      placeholder: 'Seleccione una Empacadora',
+      placeholder: 'Seleccione una Farm',
       value: selectedOrg || undefined,
     },
   ] : [];
 
-  const combinedSelectOptions = [...farmsSelectOptions];
+  const sectorsOptions = selectedOrg
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .reduce((acc, pool) => {
+        if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
+          acc.push({
+            value: pool.salesRegion.id,
+            label: pool.salesRegion.name,
+          });
+        }
+        return acc;
+      }, [])
+    : [];
+
+
+  const sectorSelectOptions = selectedOrg ? [
+    {
+      options: sectorsOptions,
+      onChange: handleSectorChange,
+      placeholder: 'Seleccione un Sector',
+      value: selectedSector || undefined,
+    },
+  ] : [];
+
+  const poolsOptions = selectedSector
+    ? farmsOrgsWithPools
+      .find(org => org.orgId === selectedOrg)?.pools
+      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
+      .map(pool => ({
+        value: pool.poolId,
+        label: pool.poolName,
+      }))
+    : [];
+
+
+  const poolsSelectOptions = selectedSector ? [
+    {
+      options: poolsOptions,
+      onChange: handlePoolChange,
+      placeholder: 'Seleccione una Piscina',
+      disabled: poolsOptions.length === 0,
+      value: selectedPool || undefined,
+    },
+  ] : [];
+
+  const combinedSelectOptions = [
+    ...farmsSelectOptions,
+    ...sectorSelectOptions,
+    ...poolsSelectOptions,
+  ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const validLabLote = Array.isArray(lablotes) ? lablotes : [];
   console.log(validLabLote)
@@ -147,78 +233,13 @@ function PanelLabs() {
 
   const columns = [
     { title: 'Camaronera', dataIndex: 'camaronera', key: 'camaronera', align: 'center' },
-    { title: 'Lote ID', dataIndex: 'loteID', key: 'loteID'},
+    { title: 'Lote ID', dataIndex: 'loteID', key: 'loteID' },
     { title: 'PL/GR Solicitado', dataIndex: 'plSolicitado', key: 'plSolicitado', align: 'center' },
     { title: 'Estado', dataIndex: 'estado', key: 'estado', align: 'center' }
   ];
-  
-
-  const data = [
-    { key: '1', finca: 'Finca El Progreso', loteID: 'L-001', larva: '40-50', kilos: '1,200', estado: 'Pendiente' },
-    { key: '2', finca: 'AgroMar', loteID: 'L-002', larva: '60-70', kilos: '1,500', estado: 'Completado' },
-    { key: '3', finca: 'Acuícola Santa Rosa', loteID: 'L-003', larva: '40-50', kilos: '1,000', estado: 'Pendiente' },
-    { key: '4', finca: 'Finca La Esperanza', loteID: 'L-004', larva: '60-70', kilos: '900', estado: 'En proceso' },
-    { key: '5', finca: 'Grupo Camarón', loteID: 'L-005', larva: '40-50', kilos: '1,700', estado: 'Completado' },
-    { key: '6', finca: 'Finca Del Sol', loteID: 'L-006', larva: '40-50', kilos: '1,300', estado: 'Pendiente' },
-    { key: '7', finca: 'Pacifiqa', loteID: 'L-007', larva: '60-70', kilos: '800', estado: 'En proceso' },
-    { key: '8', finca: 'EcoShrimp', loteID: 'L-008', larva: '40-50', kilos: '1,000', estado: 'Completado' },
-    { key: '9', finca: 'Camarones Premium', loteID: 'L-009', larva: '60-70', kilos: '950', estado: 'Pendiente' },
-    { key: '10', finca: 'Aquamar', loteID: 'L-010', larva: '40-50', kilos: '1,200', estado: 'Completado' },
-  ];
 
 
 
-
-  const tankData = [
-    {
-      id: 1,
-      nombreCamaronera: 'El Progreso',
-      codigoAQLK: 'AQLK001',
-      loteID: 'L-001',
-      estado: 'Confirmado',
-      fechaPesca: '05 Diciembre 2023',
-      piscina: 'Piscina 1',
-      volumenProgramado: '1.5 M',
-      tipoCosecha: 'Manual',
-      clasificacionReportada: '60-70',
-    },
-    {
-      id: 2,
-      nombreCamaronera: 'Las Palmas',
-      codigoAQLK: 'AQLK002',
-      loteID: 'L-002',
-      estado: 'Confirmado',
-      fechaPesca: '06 Diciembre 2023',
-      piscina: 'Piscina 2',
-      tipoCosecha: 'Manual',
-      volumenProgramado: '2.0 M',
-      clasificacionReportada: '40-50',
-    },
-    {
-      id: 3,
-      nombreCamaronera: 'El Sol',
-      codigoAQLK: 'AQLK003',
-      loteID: 'L-003',
-      estado: 'Confirmado',
-      tipoCosecha: 'Manual',
-      fechaPesca: '07 Diciembre 2023',
-      piscina: 'Piscina 3',
-      volumenProgramado: '1.2 M',
-      clasificacionReportada: 'PL15',
-    },
-    {
-      id: 4,
-      nombreCamaronera: 'Azul',
-      codigoAQLK: 'AQLK004',
-      loteID: 'L-004',
-      estado: 'Confirmado',
-      tipoCosecha: 'Manual',
-      fechaPesca: '08 Diciembre 2023',
-      piscina: 'Piscina 4',
-      volumenProgramado: '1.8 M',
-      clasificacionReportada: 'PL20',
-    },
-  ];
 
 
 
@@ -285,30 +306,21 @@ function PanelLabs() {
               <Cards title="Geolocalización" size="large">
                 <Row gutter={[25, 25]} align="top">
                   <Col xs={24} md={24}>
-                    <GoogleMaps height="300px" />
-                  </Col>
-                  <Col xs={24} md={24}>
-                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <Col xs={24} md={24}>
-                        <Descriptions
-                          column={{ xs: 1, sm: 2, md: 3 }}
-                          bordered
-                          size="small"
-                          layout="vertical"
-                        >
-                          <Descriptions.Item label={<Space><ClusterOutlined /> Módulos</Space>}>
-                            <Text>{countModules}</Text>
-                          </Descriptions.Item>
 
-
-                          <Descriptions.Item label={<Space><DatabaseOutlined /> Tanques</Space>}>
-                            <Text>{countTanks}</Text>
-                          </Descriptions.Item>
-
-
-                        </Descriptions>
-                      </Col>
-                    </Space>
+                    <AqualinkMaps
+                      width={'100%'}
+                      height={
+                        window.innerWidth >= 2000 ? '600px' :
+                          '305px'
+                      }
+                      type={"LabClient"}
+                      selectedOrg={selectedOrg}
+                      selectedSector={selectedSector}
+                      totalModules={countModules}
+                      totalTanks={countTanks}
+                      selectedPool={selectedPool}
+                      farmsOrgsWithPools={farmsOrgsWithPools} // Pasa farmsOrgsWithPools como prop
+                    />
                   </Col>
                 </Row>
               </Cards>

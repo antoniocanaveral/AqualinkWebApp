@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Form, Input, Select, Button, Upload, InputNumber, Row, Col, Switch, message, Typography, Table, Modal, Spin } from 'antd';
+import { Tabs, Form, Input, Select, Button, Upload, InputNumber, Row, Col, Switch, message, Typography, Table, Modal, Spin, Card } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Main } from '../../styled';
@@ -13,6 +13,8 @@ import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAdOrg, createPools, fetchAdClient, fetchBrandFeeders, fetchBusinessGroups, fetchCity, fetchRegions } from '../../../redux/configuration/actionCreator';
 import { useWatch } from 'antd/lib/form/Form';
+import { GoogleMapsPerimeter } from '../../../components/maps/GoogleMapsPerimeter';
+import { GoogleMapsSinglePoint } from '../../../components/maps/GoogleMapsSinglePoint';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
@@ -30,7 +32,8 @@ function AddClientFarm() {
     const [activeTab, setActiveTab] = useState("1");
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedPiscina, setSelectedPiscina] = useState(null);
-    const [nodos, setNodos] = useState({});
+    const [poolPerimeters, setPoolPerimeters] = useState({});
+    const [selectedPoint, setSelectedPoint] = useState(null); // Store single point for Camaronera
 
     const selectedRegion = useWatch("c_region", form);
 
@@ -190,42 +193,14 @@ function AddClientFarm() {
 
 
     const handleFinalizar = () => {
-
-        const formValues = form.getFieldsValue();
-
-
-        const updatedPiscinas = addedPiscinas.map(pool => {
-
-            const initialNode = {
-                latitude: formValues[`${pool.identificador}-nodo-inicial-latitude`],
-                longitude: formValues[`${pool.identificador}-nodo-inicial-longitude`],
-                label: "P-1"
-            };
-
-
-            const dynamicNodes = formValues[`${pool.identificador}-nodos`] || [];
-
-
-            const formattedDynamicNodes = dynamicNodes.map((node, index) => ({
-                ...node,
-                label: `P-${index + 2}`
-            }));
-
-
-            const nodes = [initialNode, ...formattedDynamicNodes];
-
-
-            const validNodes = nodes.filter(n => n.latitude !== undefined && n.longitude !== undefined);
-
-            return {
-                ...pool,
-                nodes: validNodes.length > 0 ? validNodes : null
-            };
-        });
-
+        const updatedPiscinas = addedPiscinas.map(pool => ({
+            ...pool,
+            perimeter: poolPerimeters[pool.identificador] || []
+        }));
         console.log("Piscinas actualizadas:", updatedPiscinas);
         return updatedPiscinas;
     };
+
 
 
     const handlePerfilJuridicoChange = (value) => {
@@ -405,7 +380,32 @@ function AddClientFarm() {
                 </Button>
             )
         }
+
+
     ];
+
+    const handleMapClick = (identificador, lat, lng) => {
+        setPoolPerimeters(prev => ({
+            ...prev,
+            [identificador]: [...(prev[identificador] || []), { lat, lng }]
+        }));
+    };
+
+
+    const handleRemoveCoordinate = (identificador, index) => {
+        setPoolPerimeters(prev => ({
+            ...prev,
+            [identificador]: prev[identificador].filter((_, i) => i !== index)
+        }));
+    };
+
+     const handlePointSelect = (point) => {
+        setSelectedPoint(point);
+        form.setFieldsValue({
+            sm_latitude: point.lat,
+            sm_longitude: point.lng,
+        });
+    };
 
     return (
         <>
@@ -500,6 +500,15 @@ function AddClientFarm() {
                                     </Form.Item>
                                 </Col>
                                 {renderFields(cRegions, cCities)}
+                                <div style={{ marginTop: '20px', marginBottom: '10px' }}>
+                                    <strong>● Ubicación de Camaronera</strong>
+                                </div>
+                                <GoogleMapsSinglePoint
+                                    center={{ lat: -2.18, lng: -79.92 }}
+                                    zoom={14}
+                                    selectedPoint={selectedPoint}
+                                    onPointSelect={handlePointSelect}
+                                />
                                 <Form.Item>
                                     <Button type="primary" onClick={handleSubmit}>
                                         Siguiente
@@ -716,8 +725,9 @@ function AddClientFarm() {
 
 
                         {/* Tab 3: Georeferenciación */}
+                        {/* Other tabs remain unchanged */}
                         <TabPane tab="Georeferenciación" key="3">
-                            <Cards headless>
+                            <Card>
                                 <Form.Item
                                     label="Seleccionar Piscina para Georeferenciación"
                                     name="georeferenciacionPiscina"
@@ -732,56 +742,40 @@ function AddClientFarm() {
                                                 {piscina.identificador}
                                             </Option>
                                         ))}
+
                                     </Select>
                                 </Form.Item>
 
-                                {addedPiscinas.map(pool => (
-                                    <div
-                                        key={pool.identificador}
-                                        style={{ display: selectedPiscina === pool.identificador ? "block" : "none" }}
-                                    >
-                                        <h4>Nodos para {pool.identificador}</h4>
-                                        <Form.List name={`${pool.identificador}-nodos`} preserve>
-                                            {(fields, { add, remove }) => (
-                                                <>
-                                                    {fields.map((field, index) => (
-                                                        <Row gutter={16} key={field.key}>
-                                                            <Col span={12}>
-                                                                <Form.Item
-                                                                    {...field}
-                                                                    label={`Nodo ${index + 1} - Longitud`}
-                                                                    name={[field.name, 'longitude']}
-                                                                    fieldKey={[field.fieldKey, 'longitude']}
-                                                                    rules={[{ required: true, message: "Ingrese la longitud" }]}
-                                                                    preserve
-                                                                >
-                                                                    <InputNumber placeholder="Longitud" style={{ width: "100%" }} />
-                                                                </Form.Item>
-                                                            </Col>
-                                                            <Col span={12}>
-                                                                <Form.Item
-                                                                    {...field}
-                                                                    label={`Nodo ${index + 1} - Latitud`}
-                                                                    name={[field.name, 'latitude']}
-                                                                    fieldKey={[field.fieldKey, 'latitude']}
-                                                                    rules={[{ required: true, message: "Ingrese la latitud" }]}
-                                                                    preserve
-                                                                >
-                                                                    <InputNumber placeholder="Latitud" style={{ width: "100%" }} />
-                                                                </Form.Item>
-                                                            </Col>
-                                                        </Row>
-                                                    ))}
-                                                    <Form.Item>
-                                                        <Button type="dashed" onClick={() => add()} block>
-                                                            Añadir Nodo
+                                {selectedPiscina && (
+                                    <div>
+                                        <h4>Perímetro para {selectedPiscina}</h4>
+
+
+                                        <div>
+                                            <h5>Coordenadas del Perímetro</h5>
+                                            {(poolPerimeters[selectedPiscina] || []).map((coord, index) => (
+                                                <Row key={index} gutter={16} style={{ marginBottom: 8 }}>
+                                                    <Col span={10}>Lat: {coord.lat}</Col>
+                                                    <Col span={10}>Lng: {coord.lng}</Col>
+                                                    <Col span={4}>
+                                                        <Button
+                                                            type="link"
+                                                            onClick={() => handleRemoveCoordinate(selectedPiscina, index)}
+                                                        >
+                                                            Eliminar
                                                         </Button>
-                                                    </Form.Item>
-                                                </>
-                                            )}
-                                        </Form.List>
+                                                    </Col>
+                                                </Row>
+                                            ))}
+                                        </div>
+                                        <GoogleMapsPerimeter
+                                            center={{ lat: -2.18, lng: -79.92 }}
+                                            zoom={12}
+                                            perimeter={poolPerimeters[selectedPiscina] || []}
+                                            onMapClick={(lat, lng) => handleMapClick(selectedPiscina, lat, lng)}
+                                        />
                                     </div>
-                                ))}
+                                )}
 
                                 <Row justify="space-between" style={{ marginTop: "20px" }}>
                                     <Col>
@@ -803,9 +797,8 @@ function AddClientFarm() {
                                         </Button>
                                     </Col>
                                 </Row>
-                            </Cards>
+                            </Card>
                         </TabPane>
-
 
                     </Tabs>
                 </Form>

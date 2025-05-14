@@ -86,15 +86,15 @@ const AqualinkMaps = ({
   };
 
   const typeColors = {
-    "PC": "#debb02",
-    "PE": "#2584b8",
-    "E": "#FF5733"
+    "PC": "#2abd9d",
+    "PE": "#0099e6",
+    "E": "#ff2545"
   };
 
   const polygons = finalPools.map(pool => {
     const paths = pool.geoLocation.map(loc => ({
-      lat: parseFloat(loc.longitude),
-      lng: parseFloat(loc.latitude),
+      lat: parseFloat(loc.lat),
+      lng: parseFloat(loc.lng),
     }));
 
     return {

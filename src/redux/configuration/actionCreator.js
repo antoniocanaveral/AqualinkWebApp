@@ -28,6 +28,7 @@ import {
   cSalesRegionLoading,
 } from './actions';
 import { handleApiError } from '../error/errorHandler';
+import { loadUserAccess } from '../authentication/actionCreator';
 
 export const fetchBusinessGroups = () => async (dispatch) => {
   try {
@@ -306,7 +307,7 @@ export const createPools = (pools) => async (dispatch) => {
       food_quantity: pool.food_quantity,
       growth_days: pool.growth_days,
       C_SalesRegion_ID: pool.c_salesregion_id,
-      SM_Geolocation: pool.nodes ? JSON.stringify(pool.nodes) : null
+      SM_Geolocation: pool.perimeter ? JSON.stringify(pool.perimeter) : null
     }));
 
     console.log(transformedPools);
@@ -364,6 +365,7 @@ export const createPools = (pools) => async (dispatch) => {
       feeders: createdFeeders.map(res => res.data)
     }));
 
+    await dispatch(loadUserAccess())
     return { pools: createdPools, feeders: createdFeeders };
 
   } catch (err) {

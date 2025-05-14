@@ -38,7 +38,7 @@ import ClientFarm from '../../container/AQx-Farms/client/client-farm';
 import WaterFlowFarm from '../../container/AQx-Farms/culture-medium/water-flow-farm';
 import ShrimpFarm from '../../container/AQx-Farms/crop/shrimp-farm';
 import Cookies from 'js-cookie';
-import ClientLabs from '../../container/AQx-Labs/client/client-farm-view.js';
+import ClientLabs from '../../container/AQx-Labs/client/client-lab-view.js';
 import ClientCustody from '../../container/AQx-Custody/client/client-custody.js';
 import GeneralMonitoringMonitoring from '../../container/AQx-Monitoring/Heath&Wellfare/monitoreo-general-monitoring.js';
 import GeneralPathologyFarm from '../../container/AQx-Farms/crop/general-pathology-farm.js';

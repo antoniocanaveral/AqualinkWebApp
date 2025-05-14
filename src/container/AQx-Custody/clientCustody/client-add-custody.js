@@ -10,12 +10,16 @@ import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAdOrg, createPools, fetchAdClient, fetchBrandFeeders, fetchBusinessGroups, fetchCity, fetchRegions } from '../../../redux/configuration/actionCreator';
 import { useWatch } from 'antd/lib/form/Form';
+import { GoogleMapsSinglePoint } from '../../../components/maps/GoogleMapsSinglePoint';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
 function AddClientCustodia() {
     const dispatch = useDispatch();
     const { businessGroups, adClient, cRegions, cCities, adOrg, brandFeeders, createdSalesRegions } = useSelector(state => state.configuration);
+    const [poolPerimeters, setPoolPerimeters] = useState({});
+    const [selectedPoint, setSelectedPoint] = useState(null); // Store single point for Camaronera
+
 
     const [form] = Form.useForm();
 
@@ -128,7 +132,7 @@ function AddClientCustodia() {
 
 
 
-  
+
     useEffect(() => {
         dispatch(fetchBusinessGroups());
         dispatch(fetchAdClient());
@@ -137,7 +141,7 @@ function AddClientCustodia() {
     }, []);
 
 
-   
+
 
     const handlePerfilJuridicoChange = (value) => {
         setPerfilJuridico(value);
@@ -158,6 +162,15 @@ function AddClientCustodia() {
         return null;
     };
 
+
+
+    const handlePointSelect = (point) => {
+        setSelectedPoint(point);
+        form.setFieldsValue({
+            sm_latitude: point.lat,
+            sm_longitude: point.lng,
+        });
+    };
     return (
         <>
             <PageHeader
@@ -249,6 +262,16 @@ function AddClientCustodia() {
                                     </Form.Item>
                                 </Col>
                                 {renderFields(cRegions, cCities)}
+
+                                <div style={{ marginTop: '20px', marginBottom: '10px' }}>
+                                    <strong>● Ubicación de Camaronera</strong>
+                                </div>
+                                <GoogleMapsSinglePoint
+                                    center={{ lat: -2.18, lng: -79.92 }}
+                                    zoom={14}
+                                    selectedPoint={selectedPoint}
+                                    onPointSelect={handlePointSelect}
+                                />
                                 <Form.Item>
                                     <Button type="primary" onClick={handleSubmit}>
                                         Siguiente
@@ -257,7 +280,7 @@ function AddClientCustodia() {
                             </Cards>
                         </TabPane>
 
-                     
+
 
                     </Tabs>
                 </Form>

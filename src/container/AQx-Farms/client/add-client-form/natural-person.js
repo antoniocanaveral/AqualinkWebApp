@@ -221,24 +221,7 @@ export const NaturalPersonForm = ({ regions, cities, clientType }) => {
                         </Select>
                     </Form.Item>
                 </Col>
-                <Col span={5}>
-                    <Form.Item
-                        label="GeoRef Latitud"
-                        name="sm_latitude"
-                        rules={[{ required: true, message: 'Ingrese la latitud' }]}
-                    >
-                        <InputNumber size="large" style={{ width: '100%' }} />
-                    </Form.Item>
-                </Col>
-                <Col span={5}>
-                    <Form.Item
-                        label="GeoRef Longitud"
-                        name="sm_longitude"
-                        rules={[{ required: true, message: 'Ingrese la longitud' }]}
-                    >
-                        <InputNumber size="large" style={{ width: '100%' }} />
-                    </Form.Item>
-                </Col>
+              
                 <Col span={5}>
                     <Form.Item
                         label="Número de Sectores"

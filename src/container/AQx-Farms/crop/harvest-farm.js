@@ -260,7 +260,7 @@ function HarvestFarm() {
 
               <Cards title="Reporte de Pesca" size="large">
                 {/* Tipo */}
-                <div className="harvest-report-section">
+  <div style={{display: "flex", flexWrap: "wrap", justifyContent: "space-between", width: "100%"}}>
                   <div>
                     <span className="label">Tipo: </span>
                     <span>{fishingReportData.tipo}</span>
@@ -392,12 +392,15 @@ function HarvestFarm() {
               <Cards title="Histórico de Pesca y Raleos" size="large">
 
                 <br />
-                <Table
-                  columns={historicalColumns}
-                  dataSource={historicalFishingData}
-                  pagination={{ pageSize: 4 }}
-                  rowKey="loteId"
-                />
+                <div className="table-responsive">
+
+                  <Table
+                    columns={historicalColumns}
+                    dataSource={historicalFishingData}
+                    pagination={{ pageSize: 4 }}
+                    rowKey="loteId"
+                  />
+                </div>
               </Cards>
             </Suspense>
           </Col>

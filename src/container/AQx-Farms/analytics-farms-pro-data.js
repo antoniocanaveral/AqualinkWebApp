@@ -12,6 +12,7 @@ import StackedHorizontalBarChart from './analytics/charts/StackedHorizontalBarCh
 import FCAPerformanceChart from './analytics/charts/FCAPerformanceChart';
 import BiomasaPerformanceChart from './analytics/charts/BiomasaPerformanceChart';
 import OptimizacionCostosPerformanceChart from './analytics/charts/OptimizacionCostosPerformanceChart';
+import { OverviewDataStyleWrap } from '../dashboard/Style';
 
 function ProDataAnalyticsFarms() {
 
@@ -159,15 +160,15 @@ function ProDataAnalyticsFarms() {
                 </Cards>
               }
             >
-              <div className="flex-row-responsive">
+              <OverviewDataStyleWrap className="card-mesh-wrap align-center-v">
                 {proDataBox.map((item, i) => {
                   return <OverviewCardMeshOriginal data={item} key={i} />;
                 })}
-              </div>
+              </OverviewDataStyleWrap>
             </Suspense>
           </Col>
 
-          <Col xl={9} xs={24}>
+          <Col xl={9} xs={24} style={{ display: "flex" }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -267,7 +268,7 @@ function ProDataAnalyticsFarms() {
               }
             >
               <Cards title="Optimización de Costos Performance" size="large" style={{ width: '100%', height: '100%' }}>
-              <OptimizacionCostosPerformanceChart data={costosData} />
+                <OptimizacionCostosPerformanceChart data={costosData} />
               </Cards>
             </Suspense>
           </Col>

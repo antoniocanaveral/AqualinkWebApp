@@ -559,14 +559,16 @@ function PanelFarms() {
                   </Cards>
                 }
               >
-                <Cards title="Inventario de Productos" size="large"  style={{ minHeight:"600px"}}>
-                  <Table
-                  style={{minHeight:"250px"}}
-                    dataSource={inventoryData}
-                    columns={inventoryColumns}
-                    pagination={{ pageSize: 5 }}
-                    rowKey="Value"
-                  />
+                <Cards title="Inventario de Productos" size="large" style={{ minHeight: "600px" }}>
+                  <div className="table-responsive">
+                    <Table
+                      style={{ minHeight: "250px" }}
+                      dataSource={inventoryData}
+                      columns={inventoryColumns}
+                      pagination={{ pageSize: 5 }}
+                      rowKey="Value"
+                    />
+                  </div>
                 </Cards>
 
               </Suspense>

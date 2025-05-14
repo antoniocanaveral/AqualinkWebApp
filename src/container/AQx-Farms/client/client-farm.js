@@ -215,27 +215,31 @@ function ClientFarm() {
 
     const poolTypesData = selectedFarmOrg?.pools?.reduce((acc, pool) => {
         const type = pool.poolType?.identifier;
-        acc[type] = (acc[type] || 0) + (pool.poolSize || 0);
+
+        if (type && type !== "GENERAL") {
+            acc[type] = (acc[type] || 0) + (pool.poolSize || 0);
+        }
+
         return acc;
     }, {});
 
 
+
     const data = Object.entries(poolTypesData || {}).map(([label, value]) => ({
         label,
-        value:  value ? Number(value).toFixed(2) : 0 
+        value: value ? Number(value) : 0
     }));
 
-    console.log(data)
 
 
-const preCrias = poolTypesData?.["PC"] || 0;
-const engorde = poolTypesData?.["E"] || 0;
-const preEngorde = poolTypesData?.["PE"] || 0;
-const total = preCrias + engorde + preEngorde;
+    const preCrias = poolTypesData?.["PC"] || 0;
+    const engorde = poolTypesData?.["E"] || 0;
+    const preEngorde = poolTypesData?.["PE"] || 0;
+    const total = preCrias + engorde + preEngorde;
 
 
 
-    
+
     const farmInfo = [
         { key: '1', categoria: 'Provincia', valor: selectedFarmOrg?.Region_Identifier || 'N/A' },
         { key: '2', categoria: 'Cantón', valor: selectedFarmOrg?.City_Identifier || 'N/A' },
@@ -243,47 +247,29 @@ const total = preCrias + engorde + preEngorde;
         { key: '4', categoria: 'Acuerdo Ministerial', valor: selectedFarmOrg?.SM_MinisterialAgreement || 'N/A' },
         { key: '5', categoria: 'Certificado de Inocuidad', valor: selectedFarmOrg?.SM_SafetyCertificate || 'N/A' },
         { key: '8', categoria: 'Extensión Productiva (Total)', valor: total + " Has" },
-        { key: '9', categoria: 'Extensión Pre Crias', valor: preCrias  + " Has"},
-        { key: '10', categoria: 'Extensión Piscinas Engorde', valor: engorde ? Number(engorde).toFixed(2) + " Has": "-" },
+        { key: '9', categoria: 'Extensión Pre Crias', valor: preCrias + " Has" },
+        { key: '10', categoria: 'Extensión Piscinas Engorde', valor: engorde ? Number(engorde).toFixed(2) + " Has" : "-" },
         { key: '11', categoria: 'Extensión Piscinas Pre Engorde', valor: preEngorde + " Has" },
     ];
 
 
-
     const waterVolumeData = selectedFarmOrg?.pools?.reduce((acc, pool) => {
-        const type = pool.poolType?.identifier || 'Desconocido';
-        const volume = (pool.SM_OppDepth || 0) * (pool.poolSize * 10000);
+        const type = pool.poolType?.identifier;
 
-        acc[type] = (acc[type] || 0) + volume;
+        if (type && type !== "GENERAL") {
+            const volume = (pool.SM_OppDepth || 0) * (pool.poolSize * 10000);
+            acc[type] = (acc[type] || 0) + volume;
+        }
+
         return acc;
     }, {});
+
 
     const waterVolumeChartData = Object.entries(waterVolumeData || {}).map(([label, value]) => ({
         label,
         value
     }));
 
-
-    const geolocationColumns = [
-        {
-            title: 'Identificador',
-            dataIndex: 'identificador',
-            key: 'identificador',
-            width: '10%',
-        },
-        {
-            title: 'Extensión',
-            dataIndex: 'extension',
-            key: 'extension',
-            width: '10%',
-        },
-        ...Array.from({ length: maxNodos }, (_, i) => ({
-            title: `Nodo ${i + 1}`,
-            dataIndex: `nodo${i + 1}`,
-            key: `nodo${i + 1}`,
-            width: '10%',
-        }))
-    ];
 
 
     useEffect(() => {
@@ -412,12 +398,14 @@ const total = preCrias + engorde + preEngorde;
                             <Col span={24}>
                                 <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
                                     <Cards title="Georreferenciación - Detalles de Nodos" size="large">
-                                        <Table
-                                            className='table-responsive'
-                                            columns={geolocationColumns}
-                                            dataSource={geolocationData}
-                                            pagination={{ pageSize: 5 }}
-                                            bordered
+                                        <AqualinkMaps
+                                            width={'100%'}
+                                            height={
+                                                window.innerWidth >= 2000 ? '600px' :
+                                                    '305px'
+                                            }
+                                            selectedOrg={selectedOrg}
+                                            farmsOrgsWithPools={farmsOrgsWithPools} // Pasa farmsOrgsWithPools como prop
                                         />
                                     </Cards>
                                 </Suspense>

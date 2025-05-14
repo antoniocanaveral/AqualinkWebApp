@@ -312,21 +312,24 @@ function ClassificationFarm() {
               }
             >
               <Cards title="" size="large">
-                <table className="full-width-table">
-                  <thead>
-                    <tr>
-                      <th className="header-cell">Clasificación</th>
-                      <th className="header-cell">Peso Específico</th>
-                      <th className="header-cell">Muestra</th>
-                      <th className="header-cell">Peso Total</th>
-                      <th className="header-cell">%</th>
-                      <th className="header-cell">% Agregado</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {renderRows()}
-                  </tbody>
-                </table>
+                <div className="table-responsive">
+
+                  <table className="full-width-table">
+                    <thead>
+                      <tr>
+                        <th className="header-cell">Clasificación</th>
+                        <th className="header-cell">Peso Específico</th>
+                        <th className="header-cell">Muestra</th>
+                        <th className="header-cell">Peso Total</th>
+                        <th className="header-cell">%</th>
+                        <th className="header-cell">% Agregado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {renderRows()}
+                    </tbody>
+                  </table>
+                </div>
               </Cards>
             </Suspense>
           </Col>

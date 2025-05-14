@@ -37,14 +37,14 @@ const FeedingProjectedTable = ({ feedingreport }) => {
     { title: 'Biomasa', dataIndex: 'sm_biomasskgs', key: 'sm_biomasskgs' },
     { title: 'SGR', dataIndex: 'sm_lineargrowth', key: 'sm_lineargrowth' },
     { title: 'WGR', dataIndex: 'sm_weeklygrowth', key: 'sm_weeklygrowth' },
-    { title: 'Tasa de Alimentación', dataIndex: 'sm_feedingrate', key: 'sm_feedingrate' },
+    { title: 'Tasa %', dataIndex: 'sm_feedingrate', key: 'sm_feedingrate' },
     { title: 'Kgs TTL día', dataIndex: 'sm_dailydose', key: 'sm_dailydose' },
     { title: 'Kgs TTL Ha', dataIndex: 'sm_dailydose_per_hectare', key: 'sm_dailydose_per_hectare' },
     { title: 'Alimento', dataIndex: 'sm_accumulatedfood', key: 'sm_accumulatedfood' },
   ];
 
   return (
-    <Cards title="Proyección Diaria de Alimentación" size="large">
+    <Cards title="Estrategia de Alimentación Proyectada" size="large">
       <Table
         columns={columns}
         dataSource={tableData}

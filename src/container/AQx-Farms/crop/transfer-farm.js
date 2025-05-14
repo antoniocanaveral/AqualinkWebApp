@@ -149,11 +149,7 @@ function TransferFarm() {
       dataIndex: 'pef',
       key: 'pef',
     },
-    {
-      title: 'D',
-      dataIndex: 'densidadSembrada',
-      key: 'densidadSembrada',
-    },
+
     {
       title: 'D. P',
       dataIndex: 'diasPc',
@@ -178,32 +174,32 @@ function TransferFarm() {
   ];
 
   const transformedData = productionReports
-  .map((item, index) => ({
-    key: item?.id?.toString() ?? `key-${index}`,
-    fecha: item?.pc_production_json?.sm_plantingdate ?? "N/A",
-    loteId: item?.SM_Batch ?? "N/A",
-    pc: item?.pc_production_json?.prebreeding_pool_name ?? "N/A",
-    pe: item?.pe_production_json?.prefattening_pool_name ?? "N/A",
-    pef: item?.warehouse_name ?? "N/A",
-    densidadSembrada: item?.SM_DensityPerHectareFatten ?? "N/A",
-    stocking_populationPc: item?.pc_production_json?.stocking_population ?? "N/A",
-    poblacionEstimada: item?.SM_AnimalsPerGramFatten ?? "N/A",
-    diasPc: (item?.pc_production_json?.prebreeding_weeks ?? 0) * 7,
-    pesoTotalTransferido: item?.SM_KilosPerPoolFatten ?? "N/A",
-    pesoPromedio: item?.SM_KilosPerPoolFatten ?? "N/A",
-    SM_FarmingSystem: item?.SM_FarmingSystem?.identifier ?? "N/A",
-    _plantingDate: item?.pc_production_json?.sm_plantingdate ?? null,
-  }))
-  // Filter out items with no planting date and sort by planting date
-  .filter((item) => item._plantingDate)
-  .sort((a, b) => new Date(a._plantingDate) - new Date(b._plantingDate))
-  // Assign cycle numbers
-  .map((item, index) => ({
-    ...item,
-    cicloPc: `Ciclo ${index + 1}`,
-    // Remove temporary field
-    _plantingDate: undefined,
-  }));
+    .map((item, index) => ({
+      key: item?.id?.toString() ?? `key-${index}`,
+      fecha: item?.pc_production_json?.sm_plantingdate ?? "N/A",
+      loteId: item?.SM_Batch ?? "N/A",
+      pc: item?.pc_production_json?.prebreeding_pool_name ?? "N/A",
+      pe: item?.pe_production_json?.prefattening_pool_name ?? "N/A",
+      pef: item?.warehouse_name ?? "N/A",
+      densidadSembrada: item?.SM_DensityPerHectareFatten ?? "N/A",
+      stocking_populationPc: item?.pc_production_json?.stocking_population ?? "N/A",
+      poblacionEstimada: item?.SM_AnimalsPerGramFatten ?? "N/A",
+      diasPc: (item?.pc_production_json?.prebreeding_weeks ?? 0) * 7,
+      pesoTotalTransferido: item?.SM_KilosPerPoolFatten ?? "N/A",
+      pesoPromedio: item?.SM_KilosPerPoolFatten ?? "N/A",
+      SM_FarmingSystem: item?.SM_FarmingSystem?.identifier ?? "N/A",
+      _plantingDate: item?.pc_production_json?.sm_plantingdate ?? null,
+    }))
+    // Filter out items with no planting date and sort by planting date
+    .filter((item) => item._plantingDate)
+    .sort((a, b) => new Date(a._plantingDate) - new Date(b._plantingDate))
+    // Assign cycle numbers
+    .map((item, index) => ({
+      ...item,
+      cicloPc: `Ciclo ${index + 1}`,
+      // Remove temporary field
+      _plantingDate: undefined,
+    }));
 
   const latestData = transformedData[transformedData.length - 1];
 
@@ -235,7 +231,7 @@ function TransferFarm() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={9} xs={24} xxl={10} style={{ display: 'flex' }}>
+          <Col xl={9} xs={24} xxl={8} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -264,7 +260,7 @@ function TransferFarm() {
                   <div>
                     <span className="label">Lote:</span>
                     <span>{latestData ? latestData.loteId : "N/A"}
-                  </span>
+                    </span>
                   </div>
                   <div>
                     <span className="label">Fecha:</span>
@@ -320,7 +316,7 @@ function TransferFarm() {
                           <span className="label"># Animales por gramo:</span>
                           <span>{latestData ? latestData.poblacionEstimada : "N/A"}</span>
                         </div>
-                      )): ""}
+                      )) : ""}
                     </div>
                   </div>
                 </div>
@@ -395,11 +391,14 @@ function TransferFarm() {
               <Cards title="Reporte Transferencia" size="large">
 
                 <br />
-                <Table
-                  columns={columns}
-                  dataSource={transformedData}
-                  pagination={{ pageSize: 5 }}
-                />
+                <div className="table-responsive">
+
+                  <Table
+                    columns={columns}
+                    dataSource={transformedData}
+                    pagination={{ pageSize: 5 }}
+                  />
+                </div>
               </Cards>
             </Suspense>
           </Col>
@@ -414,9 +413,7 @@ function TransferFarm() {
               <div>
                 P. X: Peso Promedio
               </div>
-              <div>
-                D: Densidad
-              </div>
+
               <div>
                 P. T: Peso Total Transferido
               </div>

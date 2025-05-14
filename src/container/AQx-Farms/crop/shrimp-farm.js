@@ -306,7 +306,7 @@ function ShrimpFarm() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={8} xs={24} xxl={10} style={{ display: 'flex' }}>
+          <Col xl={8} xs={24} xxl={8} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -330,7 +330,7 @@ function ShrimpFarm() {
           <Col xl={16} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Reporte de Siembra" size="large">
-                <div className="flex-row">
+                <div style={{display: "flex", flexWrap: "wrap", justifyContent: "space-between", width: "100%"}}>
                   <div>
                     <span className="label">Fecha:</span>
                     <span>{plantingReportData.fecha || "N/A"}</span>
@@ -464,11 +464,13 @@ function ShrimpFarm() {
               }
             >
               <Cards title="Reporte de Siembra" size="large">
-                <Table
-                  columns={columns}
-                  dataSource={transformedData}
-                  pagination={{ pageSize: 5 }}
-                />
+                <div className="table-responsive">
+                  <Table
+                    columns={columns}
+                    dataSource={transformedData}
+                    pagination={{ pageSize: 5 }}
+                  />
+                </div>
               </Cards>
             </Suspense>
           </Col>
@@ -483,7 +485,7 @@ function ShrimpFarm() {
           onOk={() => setModalCoord(false)}
           onCancel={() => setModalCoord(false)}
         >
-          <CoordModalShrimp id={plantingReportData.coordinationClientId}  />
+          <CoordModalShrimp id={plantingReportData.coordinationClientId} />
         </Modal>
 
         <Modal

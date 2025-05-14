@@ -28,7 +28,7 @@ const OverviewCardWrap = Styled.div`
                         @media only screen and (max-width: 1699px){
                             right: -48%;
                         }
-                        @media only screen and (max-width: 1599px){
+                        @media only screen and (max-width: 2500px){
                             right: -20%;
                             top: -12px;
                         }
@@ -95,10 +95,7 @@ const OverviewCardWrap = Styled.div`
                     align-items: center;
                     justify-content: center;
                     border-radius: 14px;
-                    @media only screen and (max-width: 767px){
-                        width: 48px;
-                        height: 48px;
-                    }
+                   
                     div{
                         line-height: 1;
                     }
@@ -195,7 +192,7 @@ const OverviewCardWrap = Styled.div`
                         font-weight: 600;
                         margin-bottom: 0;
                         color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
-                        @media only screen and (max-width: 1599px){
+                        @media only screen and (max-width: 2500px){
                             font-size: 24px;
                         }
                         @media only screen and (max-width: 1399px){
@@ -283,7 +280,7 @@ const OverviewCardMeshWrap = Styled.div`
                 @media only screen and (max-width: 1799px){
                     right: -30px;
                 }
-                @media only screen and (max-width: 1599px){
+                @media only screen and (max-width: 2500px){
                     right: 0px;
                 }
                 @media only screen and (max-width: 1199px){
@@ -348,7 +345,7 @@ const OverviewCardMeshWrap = Styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
   border-radius: 8px; /* Opcional, añade esquinas redondeadas */
 
-  @media only screen and (max-width: 1599px) {
+  @media only screen and (max-width: 2500px) {
     padding: 20px !important;
   }
   @media only screen and (max-width: 1399px) {
@@ -363,7 +360,7 @@ const OverviewCardMeshWrap = Styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
   border-radius: 8px; /* Opcional, añade esquinas redondeadas */
 
-  @media only screen and (max-width: 1599px) {
+  @media only screen and (max-width: 2500px) {
     padding: 5px !important;
   }
   @media only screen and (max-width: 1399px) {
@@ -412,7 +409,7 @@ const OverviewCardMeshWrap = Styled.div`
                 height: 70px;
                 border-radius: 14px;
                 ${({ theme }) => (!theme.rtl ? 'margin-right' : 'margin-left')}: 25px;
-                @media only screen and (max-width: 1640px){
+                @media only screen and (max-width: 2500px){
                     width: 50px;
                     height: 50px;
                     border-radius: 8px;
@@ -431,7 +428,7 @@ const OverviewCardMeshWrap = Styled.div`
                     line-height: 1;
                 }
                 svg{
-                    @media only screen and (max-width: 1599px){
+                    @media only screen and (max-width: 2500px){
                         width: 36px;
                         height: 36px;
                     }
@@ -499,7 +496,7 @@ const OverviewCardMeshWrap = Styled.div`
                     font-weight: 600;
                     margin-bottom: 0;
                     color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
-                    @media only screen and (max-width: 1599px){
+                    @media only screen and (max-width: 2500px){
                         font-size: 13px;
                     }
                     @media only screen and (max-width: 1399px){
@@ -602,7 +599,7 @@ const SystemCardWrap = Styled.div`
             margin: 6px;
             background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
             .ant-card-body{
-                @media only screen and (max-width: 1599px){
+                @media only screen and (max-width: 2500px){
                     padding: 20px !important;
                 }
                 @media only screen and (max-width: 1399px){
@@ -669,7 +666,7 @@ const SystemCardWrap = Styled.div`
                     line-height: 1;
                 }
                 svg{
-                    @media only screen and (max-width: 1599px){
+                    @media only screen and (max-width: 2500px){
                         width: 36px;
                         height: 36px;
                     }
@@ -737,7 +734,7 @@ const SystemCardWrap = Styled.div`
                     font-weight: 600;
                     margin-bottom: 0;
                     color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
-                    @media only screen and (max-width: 1599px){
+                    @media only screen and (max-width: 2500px){
                         font-size: 16px;
                     }
                     @media only screen and (max-width: 1399px){
@@ -909,7 +906,7 @@ const CourseCardWrap = Styled.div`
             margin-bottom: 15px;
             img{
                 max-width: 332px;
-                @media only screen and (max-width: 1599px){
+                @media only screen and (max-width: 2500px){
                     max-width: 100%;
                     width: 100%;
                 }
