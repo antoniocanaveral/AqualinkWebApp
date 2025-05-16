@@ -178,7 +178,7 @@ export const LegalPersonForm = ({ regions, cities, clientType }) => {
                 <Form.Item
                     label="Registro SCI"
                     name="sm_codigovap"
-                      rules={[{ required: true, message: 'Ingrese el acuerdo ministerial' }]}
+                    rules={[{ required: true, message: 'Ingrese el acuerdo ministerial' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -216,6 +216,14 @@ export const LegalPersonForm = ({ regions, cities, clientType }) => {
                         <Option value="cert3">BAP</Option>
                         <Option value="cert4">HACCP</Option>
                     </Select>
+                </Form.Item>
+            </Col>
+            <Col span={5}>
+                <Form.Item
+                    label="Código "
+                    name="sm_safetycertificate"
+                >
+                    <Input />
                 </Form.Item>
             </Col>
 
