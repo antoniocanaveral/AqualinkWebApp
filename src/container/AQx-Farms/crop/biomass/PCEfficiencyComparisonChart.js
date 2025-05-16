@@ -1,62 +1,74 @@
 import React from 'react';
-import { Cards } from "../../../../components/cards/frame/cards-frame";
+import { useSelector } from 'react-redux';
+import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { Bar } from 'react-chartjs-2';
 
 function PCEfficiencyComparisonChart() {
-    const data = {
-        labels: ['Lote L001 - PC 10', 'Lote L002 - PC 12'], // Etiquetas para cada PC
-        datasets: [
-            {
-                label: 'Peso Promedio (g)',
-                data: [200, 250], // Datos de peso promedio para cada PC
-                backgroundColor: '#001737',
-                barPercentage: 0.6,
-            },
-            {
-                label: 'Peso Total Transferido (kg)',
-                data: [200, 300], // Datos de peso total transferido para cada PC
-                backgroundColor: '#1ce1ac',
-                barPercentage: 0.6,
-            },
-            {
-                label: 'Población Estimada',
-                data: [1000, 1200], // Datos de población estimada para cada PC
-                backgroundColor: '#FF6384',
-                barPercentage: 0.6,
-            },
-        ],
-    };
+  const { transferCombinedView } = useSelector(state => state.transferCombinedView);
 
-    const options = {
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    fontSize: 14,
-                    fontFamily: 'Jost',
-                    color: '#8C90A4',
-                },
-            },
-            x: {
-                ticks: {
-                    fontSize: 14,
-                    fontFamily: 'Jost',
-                    color: '#8C90A4',
-                },
-            },
-        },
-        plugins: {
-            legend: {
-                display: true,
-            },
-        },
-    };
+  const latestCampaigns = transferCombinedView
+    .filter(item => item.SM_TransferDate)
+    .sort((a, b) => new Date(b.SM_TransferDate) - new Date(a.SM_TransferDate))
+    .slice(0, 2);
 
-    return (
-        <Cards title="Comparativa de Eficiencia entre PCs" size="large">
-            <Bar data={data} options={options} />
-        </Cards>
-    );
+  const labels = latestCampaigns.map(item => 
+    `${item.SM_Batch || 'N/A'} - ${item.sm_ppc_name || 'N/A'}`
+  );
+
+  const data = {
+    labels: labels.length > 0 ? labels : ['Sin datos'],
+    datasets: [
+      {
+        label: 'Peso Promedio (g)',
+        data: labels.length > 0 ? latestCampaigns.map(item => item.SM_AverageWeightReal || 0) : [0],
+        backgroundColor: '#001737',
+        barPercentage: 0.6,
+      },
+      {
+        label: 'Peso Total Transferido (kg)',
+        data: labels.length > 0 ? latestCampaigns.map(item => item.SM_TransferredKg || 0) : [0],
+        backgroundColor: '#1ce1ac',
+        barPercentage: 0.6,
+      },
+      {
+        label: 'Población Estimada',
+        data: labels.length > 0 ? latestCampaigns.map(item => item.SM_AnimalsTotal || 0) : [0],
+        backgroundColor: '#FF6384',
+        barPercentage: 0.6,
+      },
+    ],
+  };
+
+  const options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          fontSize: 14,
+          fontFamily: 'Jost',
+          color: '#8C90A4',
+        },
+      },
+      x: {
+        ticks: {
+          fontSize: 14,
+          fontFamily: 'Jost',
+          color: '#8C90A4',
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      },
+    },
+  };
+
+  return (
+    <Cards title="Comparativa de Eficiencia entre Campañas" size="large">
+      <Bar data={data} options={options} />
+    </Cards>
+  );
 }
 
 export default PCEfficiencyComparisonChart;

@@ -1,133 +1,210 @@
-
-import React, { Suspense } from 'react';
-import { Modal, Row, Col, Typography, Divider, Skeleton } from 'antd';
-import { Cards } from '../../../../components/cards/frame/cards-frame';
-import { Main } from '../../../styled';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Typography, Divider, Descriptions, Spin } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLotes, fetchLotesBySM_Coordination_ID } from '../../../../redux/lote/actionCreator';
 
 const { Title, Text } = Typography;
 
+function PackingModalHarvest({ lote, coordId }) {
+  console.log('PackingModalHarvest - Received lote:', lote);
+  const dispatch = useDispatch();
+  const { lotes, loading, error } = useSelector((state) => state.lote);
+  const [selectedLote, setSelectedLote] = useState(null);
+  const [totalEntero, setTotalEntero] = useState(0);
+  const [totalCola, setTotalCola] = useState(0);
 
-const PackingModalHarvest = ({ visible, onClose}) => {
+  // Fetch lotes when the component mounts or lote changes
+  useEffect(() => {
+    if (lote) {
+      console.log('Dispatching fetchLotes for lote:', lote);
+      dispatch(fetchLotesBySM_Coordination_ID(coordId)).then(() => {
+        console.log('fetchLotes dispatched successfully');
+      }).catch((err) => {
+        console.error('Error dispatching fetchLotes:', err);
+      });
+    } else {
+      console.log('No lote provided, skipping fetchLotes');
+    }
+  }, [dispatch, lote]);
 
-    const dataSource = 
-        {
-            key: '1',
-            fecha: '2024-12-31',
-            dataSourceId: 'L001',
-            horaLlegada: '10:00 AM',
-            horaInicio: '11:00 AM',
-            volumenIngreso: '500',
-            basura: '5 lbs',
-            entero: {
-                "20_30": 100,
-                "30_40": 200,
-                "40_50": 300,
-                "50_60": 400
-            },
-            cola: {
-                "41_60": 150,
-                "61_70": 250,
-                "71_80": 350,
-                "81_90": 450
-            },
-            controlCalidad: {
-                color: "A3",
-                olor: "normal",
-                sabor: "normal",
-                pruebaCoccion: "cabeza roja",
-                controlador: "Controlador A"
-            }
-        };
+  // Filter lotes to find the one matching the provided SM_Batch
+  useEffect(() => {
+    console.log('Checking lotes:', lotes, 'for lote:', lote);
+    if (lotes && lote && !loading) {
+      const matchingLote = lotes.find(
+        (record) => {
+          const identifier = record.SM_Coordination_ID?.identifier;
+          console.log('Comparing:', identifier, 'with', lote);
+          return identifier === lote;
+        }
+      );
+      if (matchingLote) {
+        console.log('Found matching lote:', matchingLote);
+        setSelectedLote(matchingLote);
 
-    if (!dataSource) return null;
+        // Calculate total Entero
+        const enteroSum = [
+          '30_40',
+          '40_50',
+          '50_60',
+          '60_70',
+          '70_80',
+          '80_100',
+          '100_120',
+          '120_150',
+        ].reduce(
+          (acc, category) => acc + (matchingLote[`sm_hocategory${category}`] || 0),
+          0
+        );
+        setTotalEntero(enteroSum);
 
-    return (
-            <Main>
-                <Row gutter={[16, 16]}>
-                    {/* Información General */}
-                    <Col span={24}>
-                        <Title level={4} style={{ color: '#0372ce' }}>Información General</Title>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Fecha:</strong> {dataSource.fecha}</Text>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Lote ID:</strong> {dataSource.dataSourceId}</Text>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Hora de Llegada:</strong> {dataSource.horaLlegada}</Text>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Hora de Inicio:</strong> {dataSource.horaInicio}</Text>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Volumen de Ingreso:</strong> {dataSource.volumenIngreso} L</Text>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Basura:</strong> {dataSource.basura} lbs</Text>
-                    </Col>
-                </Row>
+        // Calculate total Cola
+        const colaSum = [
+          '21_25',
+          '26_30',
+          '31_35',
+          '36_40',
+          '41_50',
+          '51_60',
+          '61_70',
+          '71_90',
+          '100_120',
+          '120_150',
+        ].reduce(
+          (acc, category) => acc + (matchingLote[`sm_hl${category}`] || 0),
+          0
+        );
+        setTotalCola(colaSum);
+      } else {
+        console.log('No matching lote found for:', lote);
+        setSelectedLote(null);
+      }
+    } else {
+      console.log('Lotes not ready or loading:', { lotes, loading, lote });
+    }
+  }, [lotes, lote, loading]);
 
-                <Divider />
+  // Format date and time
+  const formatDateTime = (dateString) => {
+    return dateString ? new Date(dateString).toLocaleString() : 'N/A';
+  };
 
-                {/* Detalles de Entero y Cola */}
-                <Row gutter={[16, 16]}>
-                    {/* Detalles de Entero */}
-                    <Col xs={24} md={12}>
-                        <Title level={4} style={{ color: '#0372ce' }}>Detalles de Entero</Title>
-                        {dataSource.entero && Object.entries(dataSource.entero).map(([key, value]) => (
-                            <Row key={key} style={{ marginBottom: '8px' }}>
-                                <Col span={12}>
-                                    <Text><strong style={{ color: '#012e40' }}>{key.replace('_', ' - ')} :</strong></Text>
-                                </Col>
-                                <Col span={12}>
-                                    <Text>{value} lbs</Text>
-                                </Col>
-                            </Row>
-                        ))}
-                    </Col>
+  return (
+    <div style={{ padding: '20px' }}>
+      {loading ? (
+        <Spin size="large" />
+      ) : error ? (
+        <Text type="danger">Error al cargar los datos: {error}</Text>
+      ) : selectedLote ? (
+        <>
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Title style={{ color: '#0372ce' }} level={4}>
+                Información General
+              </Title>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Text>
+                <strong>Camaronera:</strong>{' '}
+                {selectedLote.orgNameFromCoordination || 'N/A'}
+              </Text>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Text>
+                <strong>Fecha de Llegada:</strong>{' '}
+                {formatDateTime(selectedLote.sm_arrivaltime)}
+              </Text>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Text>
+                <strong>Hora de Inicio:</strong>{' '}
+                {formatDateTime(selectedLote.sm_processstarttime)}
+              </Text>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Text>
+                <strong>Volumen a Proceso:</strong>{' '}
+                {selectedLote.sm_processvolume || 'N/A'}
+              </Text>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Text>
+                <strong>Basura:</strong> {selectedLote.sm_waste || '0'} kg
+              </Text>
+            </Col>
+          </Row>
 
-                    {/* Detalles de Cola */}
-                    <Col xs={24} md={12}>
-                        <Title level={4} style={{ color: '#0372ce' }}>Detalles de Cola</Title>
-                        {dataSource.cola && Object.entries(dataSource.cola).map(([key, value]) => (
-                            <Row key={key} style={{ marginBottom: '8px' }}>
-                                <Col span={12}>
-                                    <Text><strong style={{ color: '#012e40' }}>{key.replace('_', ' - ')} :</strong></Text>
-                                </Col>
-                                <Col span={12}>
-                                    <Text>{value} lbs</Text>
-                                </Col>
-                            </Row>
-                        ))}
-                    </Col>
-                </Row>
+          <Divider />
 
-                <Divider />
+          <Row gutter={[16, 16]}>
+            <Col xs={24} md={12}>
+              <Title level={4} style={{ color: '#0372ce' }}>
+                Detalles de Entero
+              </Title>
+              <Col xs={24} sm={24}>
+                <strong>Volumen Total de Entero: </strong>
+                <Text>{totalEntero} lbs</Text>
+              </Col>
+              <br />
+              <Descriptions bordered size="small" column={2}>
+                {[
+                  '30_40',
+                  '40_50',
+                  '50_60',
+                  '60_70',
+                  '70_80',
+                  '80_100',
+                  '100_120',
+                  '120_150',
+                ].map((category) => (
+                  <Descriptions.Item
+                    key={category}
+                    label={`${category.replace('_', '/')}`}
+                  >
+                    {selectedLote[`sm_hocategory${category}`] || 0} lbs
+                  </Descriptions.Item>
+                ))}
+              </Descriptions>
+            </Col>
 
-                {/* Control de Calidad */}
-                <Row gutter={[16, 16]}>
-                    <Col span={24}>
-                        <Title level={4} style={{ color: '#0372ce' }}>Control de Calidad</Title>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Color:</strong> {dataSource.controlCalidad.color}</Text>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Olor:</strong> {dataSource.controlCalidad.olor}</Text>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Sabor:</strong> {dataSource.controlCalidad.sabor}</Text>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Prueba de Cocción:</strong> {dataSource.controlCalidad.pruebaCoccion}</Text>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Text><strong style={{ color: '#012e40' }}>Controlador:</strong> {dataSource.controlCalidad.controlador}</Text>
-                    </Col>
-                </Row>
-            </Main>
-    );
-};
+            <Col xs={24} md={12}>
+              <Title level={4} style={{ color: '#0372ce' }}>
+                Detalles de Cola
+              </Title>
+              <Col xs={24} sm={24}>
+                <strong>Volumen Total de Cola: </strong>
+                <Text>{totalCola} lbs</Text>
+              </Col>
+              <br />
+              <Descriptions bordered size="small" column={2}>
+                {[
+                  '21_25',
+                  '26_30',
+                  '31_35',
+                  '36_40',
+                  '41_50',
+                  '51_60',
+                  '61_70',
+                  '71_90',
+                  '100_120',
+                  '120_150',
+                ].map((category) => (
+                  <Descriptions.Item
+                    key={category}
+                    label={`${category.replace('_', '/')}`}
+                  >
+                    {selectedLote[`sm_hl${category}`] || 0} lbs
+                  </Descriptions.Item>
+                ))}
+              </Descriptions>
+            </Col>
+          </Row>
+        </>
+      ) : (
+        <Text>No se encontraron datos para el lote {lote}</Text>
+      )}
+    </div>
+  );
+}
 
 export default PackingModalHarvest;

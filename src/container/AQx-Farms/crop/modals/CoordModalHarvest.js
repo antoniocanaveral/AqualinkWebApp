@@ -35,10 +35,10 @@ const coordinationDataColumns = [
 ];
 
 
-function CoordModalHarvest() {
+function CoordModalHarvest({id}) {
+    console.log("CoordModalHarvest", id);
  
     const dispatch = useDispatch();
-    let { id } = useParams();
 
     const coordination = useSelector((state) => state.custody.coordination);
     const drawerStamps = useSelector((state) => state.custody.drawerStamps);
@@ -49,7 +49,7 @@ function CoordModalHarvest() {
         dispatch(loadBinesByCoord(id, () => { }));
         dispatch(loadDrawerByCoord(id, () => { }));
         dispatch(loadDrawerStampByCoord(id, () => { }));
-    }, [dispatch, id]);
+    }, []);
 
    
     const coordData = [

@@ -53,6 +53,8 @@ import { chemicalSoilReducer } from './views/soil/reducer';
 import smClassificationReducer from './classification/reducers';
 import { populationCombinedReducer } from './views/population/reducers';
 import { treatmentWithPathologiesReducer } from './views/patology/reducers';
+import { fishingCoordinationsReducer } from './views/fishing/redurers';
+import { transferCombinedViewReducer } from './views/transfer/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -89,6 +91,8 @@ const rootReducers = combineReducers({
   smClassification: smClassificationReducer,
   populationCombined: populationCombinedReducer,
   treatmentWithPathologies: treatmentWithPathologiesReducer,
+  fishingCoordinations: fishingCoordinationsReducer,
+  transferCombinedView: transferCombinedViewReducer,
 
   texture: textureReducer,
 

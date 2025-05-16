@@ -147,7 +147,7 @@ function TextureFarm() {
   // Mapear los datos de textures al formato de la tabla
   const dataSource = textures.map((texture, index) => ({
     key: texture.id.toString(),
-    codigo: texture.Value || texture.id, // Lote ID
+    codigo: texture.SM_CampaignItem_ID.C_Campaign_ID?.identifier || texture.id, // Lote ID
     fecha: new Date(texture.Created).toLocaleDateString('es-ES'), // Fecha (formato local)
     descripcion: texture.Name, // Descripción
     textura: `día ${texture.SM_CampaignItem_ID?.SM_Index || ''}`, // Textura (día + SM_Index)

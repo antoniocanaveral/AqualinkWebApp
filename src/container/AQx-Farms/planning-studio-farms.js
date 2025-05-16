@@ -17,6 +17,7 @@ function PlanningStudioFarms() {
 
   const [simulationType, setSimulationType] = useState("fijo"); // Valor preseleccionado dinámico
   const [fixedOption, setFixedOption] = useState(null); // Valor inicial sin opción fija
+  const [cultivationSystem, setCultivationSystem] = useState("Bifasico"); // Nuevo estado
 
   const [fixedFieldNeedsValue, setFixedFieldNeedsValue] = useState(false);
   const [fixedFieldDisabled, setFixedFieldDisabled] = useState(false);
@@ -212,27 +213,27 @@ function PlanningStudioFarms() {
 
     try {
       const values = await form.validateFields();
+
       const dataToSend = {
         shrimp_pool_hec: parseFloat(values.shrimp_pool_hec),
+        start_date: values.start_date ? values.start_date.format('YYYY-MM-DD') : null, // Format date as needed
+        days_to_harvest: parseInt(values.days_to_harvest, 10),
         density: parseFloat(values.density),
         estimated_weight: parseFloat(values.stimated_weight),
-        estimated_survival: parseFloat(values.stimated_survival) / 100,
-        days_to_harvest: parseInt(values.days_to_harvest, 10),
+        estimated_survival: parseFloat(values.stimated_survival) / 100, // Convert percentage to decimal
         estimated_fca: parseFloat(values.stimated_fca),
         estimated_performance: parseFloat(values.stimated_performance),
-        selling_price: parseFloat(values.selling_price),
         pre_breeding_weeks: parseInt(values.pre_breeding_weeks, 10),
-        dayly_inditect_cost: parseFloat(values.dayly_inditect_cost),
         food_price: parseFloat(values.food_price),
         breeding_cost: parseFloat(values.breeding_cost),
-        temperature: parseFloat(values.temperature),
-        transfer_weight: parseFloat(values.transfer_weight),
+        dayly_inditect_cost: parseFloat(values.dayly_inditect_cost),
+        selling_price: parseFloat(values.selling_price),
         SGR: parseFloat(values.SGR),
       };
       console.log("dataToSend:", dataToSend);
 
 
-      const response = await axios.post('http://localhost:8080/planning_scenarios', dataToSend);
+      const response = await axios.post('https://aqualink-simulation.onrender.com/planning_scenarios', dataToSend);
       console.log("Escenario añadido:", response.data);
 
 
@@ -263,8 +264,8 @@ function PlanningStudioFarms() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xl={7} xs={24} style={{display: "flex"}} >
-         
+          <Col xl={7} xs={24} style={{ display: "flex" }} >
+
 
             <AqualinkMaps
               width={'100%'}
@@ -283,14 +284,14 @@ function PlanningStudioFarms() {
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Planificación: Ingreso de Datos para Escenarios" size="large">
                 <div style={{ display: "flex", flexDirection: "row", gap: "16px", width: "100%" }}>
-
-                  <div style={{ flex: "0 0 70%" }}>
+                  <div style={{ flex: "1 1 45%" }}>
                     {simulationType === "fijo" && (
                       <Form.Item
                         label={<span style={{ color: '#73879c' }}>Seleccione una opción de Variables fijas</span>}
                         name="fixedOption"
                         initialValue={fixedOption}
                         rules={[{ required: true, message: 'Este campo es requerido' }]}
+                        layout="vertical"
                       >
                         <Select
                           placeholder="Seleccione una opción de Variables fijas"
@@ -298,15 +299,29 @@ function PlanningStudioFarms() {
                         >
                           <Select.Option value="densidad">1. Una sola densidad</Select.Option>
                           <Select.Option value="ciclo">2. Un solo # de días de ciclo</Select.Option>
-                          <Select.Option value="peso">3. Un solo peso </Select.Option>
+                          <Select.Option value="peso">3. Un solo peso</Select.Option>
                           <Select.Option value="fca">4. Un solo FCA</Select.Option>
-
                         </Select>
                       </Form.Item>
                     )}
                   </div>
+                  <div style={{ flex: "1 1 45%" }}>
+                    <Form.Item
+                      label={<span style={{ color: '#73879c' }}>Seleccione un Sistema de Cultivo</span>}
+                      name="cultivationSystem"
+                      initialValue="Bifasico"
+                      rules={[{ required: true, message: 'Este campo es requerido' }]}
+                      layout="vertical"
+                    >
+                      <Select
+                        placeholder="Seleccione un Sistema de Cultivo"
+                      >
+                        <Select.Option value="Bifasico">Bifásico</Select.Option>
+                        <Select.Option value="Trifasico">Trifásico</Select.Option>
+                      </Select>
+                    </Form.Item>
+                  </div>
                 </div>
-
                 <Form
                   form={form}
                   layout="vertical"
@@ -517,6 +532,27 @@ function PlanningStudioFarms() {
                         </Select>
                       </Form.Item>
                     </Col>
+
+
+                    {/* Días de pre-engorde (condicional) */}
+                    {cultivationSystem === "Trifasico" && (
+                      <Col xs={24} md={12} lg={6}>
+                        <Form.Item
+                          label={<span style={{ color: '#73879c' }}>Días de pre-engorde</span>}
+                          name="pre_fattening_days"
+                          rules={[{ required: true, message: 'Este campo es requerido' }]}
+                        >
+                          <Select placeholder="Días">
+                            {[15, 20, 25, 30].map(day => ( // Opciones de ejemplo
+                              <Select.Option key={day} value={day}>
+                                {day} días
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                      </Col>
+                    )}
+
 
 
                     {/* Costo x Kg Alimento */}

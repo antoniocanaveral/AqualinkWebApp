@@ -89,18 +89,22 @@ function AQxFarmMenu({ toggleCollapsed }) {
     ),
 
 
-
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}/panel`}>
-        {t('Panel de Control')}
-      </NavLink>,
-      'panel-control',
-      !topMenu && (
-        <NavLink className="menuItem-iocn" to={`${path}/panel`}>
-          <UilDesktop />
-        </NavLink>
+    getItem(t('Panel de Control'), 'aqualink-panel', !topMenu && <UilDesktop />, [
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/panel-overview`}>
+          {t('Panel Overview')}
+        </NavLink>,
+        'panel-overview',
+        null,
       ),
-    ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/panel`}>
+          {t('Panel Detalles')}
+        </NavLink>,
+        'panel-details',
+        null,
+      ),
+    ]),
 
     getItem(t('AquaLink Planning'), 'aqualink-planning', !topMenu && <UilClipboardAlt />, [
       getItem(
@@ -140,7 +144,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
         null,
       ),
     ]),
-   
+
 
 
     getItem(
@@ -169,7 +173,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       !topMenu && <UilChart />,
       [
 
-      
+
         getItem(
           <NavLink className="menuItem-icon menu-item-level-1" to={`${path}/operation-report`}>
             {t('Reporte de Operaciones')}
@@ -548,7 +552,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       !topMenu && <UilQuestionCircle />,
     ),
 
-    
+
     getItem(
       <NavLink to={`${path}/KnowledgeBase`}>
         {t('Centro de Conocimiento')}

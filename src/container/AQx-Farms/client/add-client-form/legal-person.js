@@ -8,7 +8,7 @@ export const LegalPersonForm = ({ regions, cities, clientType }) => {
 
     return (<>
 
-        
+
 
         {/* Información General */}
         <Row gutter={16}>
@@ -157,11 +157,7 @@ export const LegalPersonForm = ({ regions, cities, clientType }) => {
                     </Select>
                 </Form.Item>
             </Col>
-        </Row>
-
-        <Row gutter={16}>
-
-            <Col span={4}>
+            <Col span={5}>
                 <Form.Item
                     label="Tipo de Camaronera"
                     name="SM_MainlandOrIsland"
@@ -173,10 +169,16 @@ export const LegalPersonForm = ({ regions, cities, clientType }) => {
                     </Select>
                 </Form.Item>
             </Col>
-            <Col span={5}>
+        </Row>
+
+        <Row gutter={16}>
+
+
+            <Col span={4}>
                 <Form.Item
                     label="Registro SCI"
                     name="sm_codigovap"
+                      rules={[{ required: true, message: 'Ingrese el acuerdo ministerial' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -201,7 +203,7 @@ export const LegalPersonForm = ({ regions, cities, clientType }) => {
 
             <Col span={5}>
                 <Form.Item
-                    label="Certificados"
+                    label="Certificación Internacional"
                     name="sm_certifications"
                 >
                     <Select
@@ -244,7 +246,7 @@ export const LegalPersonForm = ({ regions, cities, clientType }) => {
                     </Select>
                 </Form.Item>
             </Col>
-           
+
             <Col span={5}>
                 <Form.Item
                     label="Número de Sectores"
@@ -253,7 +255,7 @@ export const LegalPersonForm = ({ regions, cities, clientType }) => {
                 >
                     <InputNumber size="large" style={{ width: '100%' }} />
                 </Form.Item>
-            </Col> 
+            </Col>
         </Row>
 
     </>)

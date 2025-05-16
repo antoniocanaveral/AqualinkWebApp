@@ -7,27 +7,24 @@ import { GoogleMaps } from '../../../components/maps/google-maps';
 import UilEye from '@iconscout/react-unicons/icons/uil-eye';
 import { Link } from 'react-router-dom';
 import PCEfficiencyComparisonChart from './biomass/PCEfficiencyComparisonChart';
-
-
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
 import { AqualinkMaps } from '../../../components/maps/aqualink-map';
 import { fetchProductionReports } from '../../../redux/views/production-report/actionCreator';
+import { fetchTransferCombinedView } from '../../../redux/views/transfer/actionCreator';
 
 function TransferFarm() {
   const dispatch = useDispatch();
   const { productionReports, loading } = useSelector(state => state.productionReport);
+  const { transferCombinedView } = useSelector(state => state.transferCombinedView);
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
 
-
-
   const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
-
 
   const handleOrgChange = (orgId, orgEmail) => {
     setSelectedOrg(orgId);
@@ -38,18 +35,15 @@ function TransferFarm() {
     setSelectedSector(null);
   };
 
-
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
   };
 
-
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
   };
-
 
   const farmsSelectOptions = organizations.length > 0 ? [
     {
@@ -63,7 +57,6 @@ function TransferFarm() {
       value: selectedOrg || undefined,
     },
   ] : [];
-
 
   const sectorsOptions = selectedOrg
     ? farmsOrgsWithPools
@@ -88,7 +81,6 @@ function TransferFarm() {
     },
   ] : [];
 
-
   const poolsOptions = selectedSector
     ? farmsOrgsWithPools
       .find(org => org.orgId === selectedOrg)?.pools
@@ -109,19 +101,16 @@ function TransferFarm() {
     },
   ] : [];
 
-
   const combinedSelectOptions = [
     ...farmsSelectOptions,
     ...sectorSelectOptions,
     ...poolsSelectOptions,
   ];
 
-
   useEffect(() => {
     if (selectedPool)
-      dispatch(fetchProductionReports());
+      dispatch(fetchTransferCombinedView());
   }, [dispatch, selectedPool]);
-
 
   const columns = [
     {
@@ -136,25 +125,20 @@ function TransferFarm() {
     },
     {
       title: 'Ppc',
-      dataIndex: 'pc',
-      key: 'pc',
+      dataIndex: 'ppc',
+      key: 'ppc',
     },
     {
       title: 'Ppe',
-      dataIndex: 'pe',
-      key: 'pe',
+      dataIndex: 'ppe',
+      key: 'ppe',
     },
     {
       title: 'Pef',
       dataIndex: 'pef',
       key: 'pef',
     },
-
-    {
-      title: 'D. P',
-      dataIndex: 'diasPc',
-      key: 'diasPc',
-    },
+   
     {
       title: 'P. X',
       dataIndex: 'pesoPromedio',
@@ -165,64 +149,65 @@ function TransferFarm() {
       dataIndex: 'pesoTotalTransferido',
       key: 'pesoTotalTransferido',
     },
-
     {
       title: 'Animales pg',
-      dataIndex: 'poblacionEstimada',
-      key: 'poblacionEstimada',
+      dataIndex: 'animalesPorGramo',
+      key: 'animalesPorGramo',
     },
   ];
 
-  const transformedData = productionReports
+  const transformedData = transferCombinedView
     .map((item, index) => ({
       key: item?.id?.toString() ?? `key-${index}`,
-      fecha: item?.pc_production_json?.sm_plantingdate ?? "N/A",
+      fecha: item?.SM_TransferDate ?? "N/A",
       loteId: item?.SM_Batch ?? "N/A",
-      pc: item?.pc_production_json?.prebreeding_pool_name ?? "N/A",
-      pe: item?.pe_production_json?.prefattening_pool_name ?? "N/A",
-      pef: item?.warehouse_name ?? "N/A",
-      densidadSembrada: item?.SM_DensityPerHectareFatten ?? "N/A",
-      stocking_populationPc: item?.pc_production_json?.stocking_population ?? "N/A",
-      poblacionEstimada: item?.SM_AnimalsPerGramFatten ?? "N/A",
-      diasPc: (item?.pc_production_json?.prebreeding_weeks ?? 0) * 7,
-      pesoTotalTransferido: item?.SM_KilosPerPoolFatten ?? "N/A",
-      pesoPromedio: item?.SM_KilosPerPoolFatten ?? "N/A",
+      ppc: item?.sm_ppc_name ?? "N/A",
+      ppe: item?.sm_ppe_name ?? "N/A",
+      pef: item?.sm_pef_name ?? "N/A",
+      densidadProgramada: item?.SM_Density ?? "N/A",
+      poblacionEstimada: item?.SM_AnimalsTotal ?? "N/A",
+    
+      pesoTotalTransferido: item?.SM_TransferredKg ?? "N/A",
+      pesoPromedio: item?.SM_AverageWeightReal ?? "N/A",
+      animalesPorGramo: item?.SM_AnimalsTotal ? (1 / item.SM_AverageWeightReal).toFixed(6) : "N/A",
       SM_FarmingSystem: item?.SM_FarmingSystem?.identifier ?? "N/A",
-      _plantingDate: item?.pc_production_json?.sm_plantingdate ?? null,
+      densidadPorHa: item?.SM_DensityPerHectare ?? "N/A",
+      _transferDate: item?.SM_TransferDate ?? null,
     }))
-    // Filter out items with no planting date and sort by planting date
-    .filter((item) => item._plantingDate)
-    .sort((a, b) => new Date(a._plantingDate) - new Date(b._plantingDate))
+    // Filter out items with no transfer date and sort by transfer date
+    .filter((item) => item._transferDate)
+    .sort((a, b) => new Date(a._transferDate) - new Date(b._transferDate))
     // Assign cycle numbers
     .map((item, index) => ({
       ...item,
       cicloPc: `Ciclo ${index + 1}`,
       // Remove temporary field
-      _plantingDate: undefined,
+      _transferDate: undefined,
+    }));
+
+  const allData = transferCombinedView
+    .map((item, index) => ({
+      key: item?.id?.toString() ?? `key-${index}`,
+      fecha: item?.SM_TransferDate ?? "N/A",
+      loteId: item?.SM_Batch ?? "N/A",
+      ppc: item?.sm_ppc_name ?? "N/A",
+      ppe: item?.sm_ppe_name ?? "N/A",
+      pef: item?.sm_pef_name ?? "N/A",
+      densidadProgramada: item?.SM_DensityPerHectare ?? "N/A",
+      poblacionEstimada: item?.SM_AnimalsTotal ?? "N/A",
+    
+      pesoTotalTransferido: item?.SM_TransferredKg ?? "N/A",
+      pesoPromedio: item?.SM_AverageWeightReal ?? "N/A",
+      animalesPorGramo: item?.SM_AnimalsTotal ? (1 / item.SM_AverageWeightReal).toFixed(6) : "N/A",
+      SM_FarmingSystem: item?.SM_FarmingSystem?.identifier ?? "N/A",
+      densidadPorHa: item?.SM_DensityPerHectare ?? "N/A",
     }));
 
   const latestData = transformedData[transformedData.length - 1];
 
-
-  const transferReportData = {
-    lote: "Lote #1",
-    fecha: "22/11/2024",
-    origen: "Pc1",
-    destino: "Pe1",
-    poblacionEstimada: "1,940,000",
-    densidadProgramada: "1,800,000",
-    muestreos: [
-      { peso: 19, animales: 20 },
-    ],
-    biomasaTotal: "Sumatoria (calculada)",
-    densidadPorHa: "Fórmula calculada",
-  };
-
-
   return (
     <>
       <PageHeader
-
         highlightText="Aqualink Monitoreo"
         title="Transferencia"
         selectOptions={combinedSelectOptions}
@@ -259,8 +244,7 @@ function TransferFarm() {
                 <div className="flex-row">
                   <div>
                     <span className="label">Lote:</span>
-                    <span>{latestData ? latestData.loteId : "N/A"}
-                    </span>
+                    <span>{latestData ? latestData.loteId : "N/A"}</span>
                   </div>
                   <div>
                     <span className="label">Fecha:</span>
@@ -281,8 +265,14 @@ function TransferFarm() {
                 <div className="flex-row">
                   <div>
                     <span className="label">ORIGEN Pre Cría:</span>
-                    <span>{latestData ? latestData.pc : "N/A"}</span>
+                    <span>{latestData ? latestData.ppc : "N/A"}</span>
                   </div>
+                  {latestData?.ppe && latestData.ppe !== "N/A" && (
+                    <div>
+                      <span className="label">DESTINO Preengorde:</span>
+                      <span>{latestData.ppe}</span>
+                    </div>
+                  )}
                   <div>
                     <span className="label">DESTINO Engorde:</span>
                     <span>{latestData ? latestData.pef : "N/A"}</span>
@@ -293,30 +283,32 @@ function TransferFarm() {
                 {/* Población estimada y densidad programada */}
                 <div className="flex-row">
                   <div>
-                    <span className="label">Población estimada Pc:</span>
-                    <span>{latestData ? latestData.stocking_populationPc : "N/A"}</span>
+                    <span className="label">Población estimada:</span>
+                    <span>{latestData ? latestData.poblacionEstimada : "N/A"}</span>
                   </div>
                   <div>
-                    <span className="label">Densidad programada Pe:</span>
-                    <span>{latestData ? latestData.densidadSembrada : "N/A"}</span>
+                    <span className="label">Densidad programada:</span>
+                    <span>{latestData ? latestData.densidadProgramada : "N/A"}</span>
                   </div>
                 </div>
                 <div className="harvest-report-divider" />
 
-                {/* Muestreos de peso*/}
+                {/* Muestreos de peso */}
                 <div className='harvest-report-section-3'>
                   <div>
-                    <span className="label">Muestreos de peso en proceso de Transferencia:</span>
+                    <span className="label">Muestreo de peso en proceso de Transferencia:</span>
                     <div className="flex-row" style={{ flexWrap: "wrap", gap: "10px", marginTop: "10px" }}>
-                      {transferReportData ? transferReportData.muestreos.map((muestreo, index) => (
-                        <div key={index} className="harvest-report-section-3" style={{ border: "1px solid green", padding: "5px", borderRadius: "5px", minWidth: "150px" }}>
+                      {latestData && latestData.pesoPromedio !== "N/A" ? (
+                        <div className="harvest-report-section-3" style={{ border: "1px solid green", padding: "5px", borderRadius: "5px", minWidth: "150px" }}>
                           <span className="label">Peso Promedio:</span>
-                          <span>{muestreo.peso || "N/A"} gr</span>
+                          <span>{latestData.pesoPromedio} gr</span>
                           <br />
                           <span className="label"># Animales por gramo:</span>
-                          <span>{latestData ? latestData.poblacionEstimada : "N/A"}</span>
+                          <span>{latestData.animalesPorGramo}</span>
                         </div>
-                      )) : ""}
+                      ) : (
+                        <span>No hay datos de muestreo</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -335,18 +327,16 @@ function TransferFarm() {
                 <div className="flex-row">
                   <div>
                     <span className="label">Densidad por HA:</span>
-                    <span>{latestData ? latestData.densidadSembrada : "N/A"}</span>
+                    <span>{latestData ? latestData.densidadPorHa : "N/A"}</span>
                   </div>
                 </div>
                 <div className="harvest-report-divider" />
               </Cards>
             </Suspense>
           </Col>
-
         </Row>
         <Row gutter={25}>
-
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
+          <Col xl={10} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -354,7 +344,7 @@ function TransferFarm() {
                 </Cards>
               }
             >
-              <Cards title="Performace" size="large">
+              <Cards title="Performance" size="large">
                 <div className='ninjadash-sales-inner' style={{ width: "50%", margin: "0 auto" }}>
                   <Progress
                     type="circle"
@@ -367,7 +357,7 @@ function TransferFarm() {
               </Cards>
             </Suspense>
           </Col>
-          <Col xl={12} xs={24} style={{ display: 'flex' }}>
+          <Col xl={14} xs={24} style={{ display: 'flex' }}>
             <Suspense
               fallback={
                 <Cards headless>
@@ -389,38 +379,31 @@ function TransferFarm() {
               }
             >
               <Cards title="Reporte Transferencia" size="large">
-
                 <br />
                 <div className="table-responsive">
-
                   <Table
                     columns={columns}
-                    dataSource={transformedData}
+                    dataSource={allData}
                     pagination={{ pageSize: 5 }}
                   />
                 </div>
               </Cards>
             </Suspense>
           </Col>
-
         </Row>
         <Row>
           <Col xl={14} xs={24} >
             <div style={{ width: "100%", padding: "10px" }} className='flex-row'>
-              <div>
-                D. P: Días de Pre Cria
-              </div>
+             
               <div>
                 P. X: Peso Promedio
               </div>
-
               <div>
                 P. T: Peso Total Transferido
               </div>
             </div>
           </Col>
         </Row>
-
       </Main>
     </>
   );
