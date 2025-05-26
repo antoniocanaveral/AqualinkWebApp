@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import actions from './actions';
 import { DataService } from '../../config/dataService/dataService';
-import { generateToken } from '../../firebase/firebaseConfig';
+//import { generateToken } from '../../firebase/firebaseConfig';
 
 const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr, rolesBegin, rolesSuccess, rolesErr, moduleSelection, loadAccess } = actions;
 
@@ -59,11 +59,11 @@ const login = (values, callback) => {
         }, true);
         const userId = finalLoginResponse.data.userId;
 
-        await registerFCMToken({
+       /* await registerFCMToken({
           userId,
           clientId: client.id,
         });
-
+*/
         Cookies.set('access_token', finalLoginResponse.data.token);
         Cookies.set('refresh_token', finalLoginResponse.data.refresh_token);
         Cookies.set('selectedOrganizationId', validOrgId);
@@ -87,7 +87,7 @@ const login = (values, callback) => {
 };
 
 
-
+/*
 export const registerFCMToken = async ({ userId, clientId }) => {
   try {
     const fcmToken = await generateToken();
@@ -130,7 +130,7 @@ export const registerFCMToken = async ({ userId, clientId }) => {
     console.error('❌ Error al registrar/actualizar token FCM:', error.message || error);
   }
 };
-
+*/
 
 const findRoles = (callback) => {
   return async (dispatch) => {
@@ -181,7 +181,7 @@ const selectRoleUtil = async (roleId, clientId) => {
     Cookies.set('selectedRoleId', roleId);
 
     const userId = response.data.userId;
-    await registerFCMToken({ userId, clientId: clientId });
+    //await registerFCMToken({ userId, clientId: clientId });
   } catch (err) {
     throw err;
   }

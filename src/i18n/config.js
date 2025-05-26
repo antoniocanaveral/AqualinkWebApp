@@ -1,3 +1,6 @@
+import translationsEn from './localization/en/translation.json';
+import translationsEs from './localization/esp/translation.json';
+
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
@@ -6,10 +9,10 @@ i18n.use(initReactI18next).init({
   lng: 'en',
   resources: {
     en: {
-      translations: require('./localization/en/translation.json'),
+      translations: translationsEn,
     },
     esp: {
-      translations: require('./localization/esp/translation.json'),
+      translations: translationsEs,
     },
   },
   ns: ['translations'],
