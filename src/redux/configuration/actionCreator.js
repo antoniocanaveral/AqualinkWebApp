@@ -192,7 +192,7 @@ export const createAdOrg = (orgData, org_type) => async (dispatch) => {
       // Buscar el C_BP_Group_ID correspondiente al value y AD_Client_ID
       let c_bp_group_id;
       try {
-        const groupResponse = await DataService.get(`/models/c_bp_group?$filter=AD_Client_ID eq ${selectedClientId} and Value eq '${groupValue}'`);
+        const groupResponse = await DataService.get(`/models/c_bp_group?$filter=AD_Client_ID eq ${selectedClientId} and Name eq '${groupValue}'`);
 
         // Verificar si se encontró un registro
         if (groupResponse.data && groupResponse.data.records && groupResponse.data.records.length > 0) {

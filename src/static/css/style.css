@@ -12,6 +12,14 @@
   text-align: center !important;
 }
 
+.ola{
+  font-size: 20px !important;
+  color: #404040 !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  background-color: #007bff !important;
+}
+
 /* 🔹 Colores para los grupos */
 .ant-table-thead > tr > th.pre-cria-header {
   background-color: #FFD8B1 !important; /* Naranja pastel */

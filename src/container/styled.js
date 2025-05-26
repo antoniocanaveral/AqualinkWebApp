@@ -3769,7 +3769,7 @@ const WizardWrapper = Styled.div`
             ${({ theme }) => (!theme.rtl ? 'left' : 'right')}: 100%;
             top: 35px;
             color: #333;
-            background-image: url(${require('../static/img/progress.png')});
+            background-image: url(${new URL('../static/img/progress.png', import.meta.url).href});
             width: 110%;
             height: 6px;
             background-size: cover;
@@ -3793,14 +3793,14 @@ const WizardWrapper = Styled.div`
     .wizard-step-item{
         .ant-steps-item-container{
             &:after{
-                background-image: url(${require('../static/img/progress.png')});
+                background-image: url(${new URL('../static/img/progress.png', import.meta.url).href});
             }
         }
     }
     .wizard-steps-item-active{
         .ant-steps-item-container{
             &:after{
-                background-image: url(${require('../static/img/progress-active.png')});
+                background-image: url(${new URL('../static/img/progress-active.png', import.meta.url).href});
             }
         }
     }
@@ -3808,7 +3808,7 @@ const WizardWrapper = Styled.div`
     .ant-steps-item-finish{
         .ant-steps-item-container{
             &:after{
-                background-image: url(${require('../static/img/progress-success.png')});
+                background-image: url(${new URL('../static/img/progress-success.png', import.meta.url).href});
             }
         }
     }

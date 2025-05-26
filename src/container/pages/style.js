@@ -1730,14 +1730,14 @@ const TestimonialStyleWrapper = Styled.div`
         left: 10px;
         &:before{
           font-family: 'Jost', sans-serif;
-          content: url('${require('../../static/img/icon/arrow-left.png')}');
+          content: url(${new URL('../../static/img/icon/arrow-left.png', import.meta.url).href});
         }
       }
       .swiper-button-next{
         right: 10px;
         &:before{
           font-family: 'Jost', sans-serif;
-          content: url('${require('../../static/img/icon/arrow-right.png')}');
+          content: url(${new URL('../../static/img/icon/arrow-right.png', import.meta.url).href});
         }
       }
       .swiper-pagination{
@@ -1843,7 +1843,7 @@ const TestimonialStyleWrapper = Styled.div`
         }
         &:before{
           font-family: 'Jost', sans-serif;
-          content: url('${require('../../static/img/icon/arrow-left.png')}');
+          content: url(${new URL('../../static/img/icon/arrow-left.png', import.meta.url).href});
         }
       }
       .swiper-button-next{
@@ -1856,7 +1856,7 @@ const TestimonialStyleWrapper = Styled.div`
         }
         &:before{
           font-family: 'Jost', sans-serif;
-          content: url('${require('../../static/img/icon/arrow-right.png')}');
+          content: url(${new URL('../../static/img/icon/arrow-right.png', import.meta.url).href});
         }
       }
       .swiper-container{
@@ -2042,7 +2042,7 @@ const TestimonialStyleWrapper = Styled.div`
         }
         &:before{
           font-family: 'Jost', sans-serif;
-          content: url('${require('../../static/img/icon/arrow-left.png')}');
+          content: url(${new URL('../../static/img/icon/arrow-left.png', import.meta.url).href});
         }
       }
       .swiper-button-next{
@@ -2055,7 +2055,7 @@ const TestimonialStyleWrapper = Styled.div`
         }
         &:before{
           font-family: 'Jost', sans-serif;
-          content: url('${require('../../static/img/icon/arrow-right.png')}');
+          content: url(${new URL('../../static/img/icon/arrow-right.png', import.meta.url).href});
         }
       }
       .swiper-container{

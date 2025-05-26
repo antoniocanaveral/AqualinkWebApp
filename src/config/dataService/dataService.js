@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getItem } from '../../utility/localStorageControl';
 
 
-const API_ENDPOINT = `${process.env.REACT_APP_API_ENDPOINT}/api/v1`;
+const API_ENDPOINT = `${import.meta.env.VITE_API_ENDPOINT}/api/v1`;
 
 const authHeader = (useInitialToken, unSecure) => {
   const h = {'Content-Type': 'application/json'};
