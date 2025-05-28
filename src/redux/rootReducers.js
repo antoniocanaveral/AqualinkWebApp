@@ -55,6 +55,8 @@ import { populationCombinedReducer } from './views/population/reducers';
 import { treatmentWithPathologiesReducer } from './views/patology/reducers';
 import { fishingCoordinationsReducer } from './views/fishing/redurers';
 import { transferCombinedViewReducer } from './views/transfer/reducers';
+import { custodyControlReducer } from './custodyControl/reducers';
+import { smPlanningReducer } from './planning/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -93,6 +95,8 @@ const rootReducers = combineReducers({
   treatmentWithPathologies: treatmentWithPathologiesReducer,
   fishingCoordinations: fishingCoordinationsReducer,
   transferCombinedView: transferCombinedViewReducer,
+  custodyControl: custodyControlReducer,
+  smPlanning: smPlanningReducer,
 
   texture: textureReducer,
 

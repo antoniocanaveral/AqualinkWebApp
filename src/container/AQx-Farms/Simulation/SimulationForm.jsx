@@ -34,42 +34,48 @@ const SimulationForm = ({
   }, [foodPrice, form]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '16px', width: '100%' }}>
-        {simulationType === 'fijo' && (
-          <Form.Item
-            label={<span style={{ color: '#73879c' }}>Seleccione una opción de Variables fijas</span>}
-            name="fixedOption"
-            initialValue={fixedOption}
-            rules={[{ required: true, message: 'Este campo es requerido' }]}
-            layout="vertical"
-            style={{ flex: '1 1 50%' }}
-          >
-            <Select
-              placeholder="Seleccione una opción de Variables fijas"
-              onChange={onFixedOptionChange}
+    <div >
+      <Row gutter={[16, 16]}>
+        <Col xs={12} md={12} lg={12}>
+          {simulationType === 'fijo' && (
+            <Form.Item
+              label={<span style={{ color: '#73879c', width: '100%' }}>Seleccione una opción de Variables fijas</span>}
+              name="fixedOption"
+              initialValue={fixedOption}
+              rules={[{ required: true, message: 'Este campo es requerido' }]}
+              labelCol={{ span: 24 }} // Label takes full width
+              wrapperCol={{ span: 24 }} // Input takes full width, forcing vertical layout
             >
-              <Option value="densidad">1. Una sola densidad</Option>
-              <Option value="ciclo">2. Un solo # de días de ciclo</Option>
-              <Option value="peso">3. Un solo peso</Option>
-              <Option value="fca">4. Un solo FCA</Option>
+              <Select
+                style={{ width: '100%' }}
+                placeholder="Seleccione una opción de Variables fijas"
+                onChange={onFixedOptionChange}
+              >
+                <Option value="densidad">1. Una sola densidad</Option>
+                <Option value="ciclo">2. Un solo # de días de ciclo</Option>
+                <Option value="peso">3. Un solo peso</Option>
+                <Option value="fca">4. Un solo FCA</Option>
+              </Select>
+            </Form.Item>
+          )}
+        </Col>
+
+        <Col xs={12} md={12} lg={12}>
+          <Form.Item
+            label={<span style={{ color: '#73879c' }}>Seleccione un Sistema de Cultivo</span>}
+            name="cultivationSystem"
+            initialValue="Bifasico"
+            rules={[{ required: true, message: 'Este campo es requerido' }]}
+            labelCol={{ span: 24 }} // Label takes full width
+            wrapperCol={{ span: 24 }} // Input takes full width, forcing vertical layout
+          >
+            <Select style={{ width: '100%' }} placeholder="Seleccione un Sistema de Cultivo">
+              <Option value="Bifasico">Bifásico</Option>
+              <Option value="Trifasico">Trifásico</Option>
             </Select>
           </Form.Item>
-        )}
-        <Form.Item
-          label={<span style={{ color: '#73879c' }}>Seleccione un Sistema de Cultivo</span>}
-          name="cultivationSystem"
-          initialValue="Bifasico"
-          rules={[{ required: true, message: 'Este campo es requerido' }]}
-          layout="vertical"
-          style={{ flex: '1 1 50%', width: '90%' }}
-        >
-          <Select placeholder="Seleccione un Sistema de Cultivo">
-            <Option value="Bifasico">Bifásico</Option>
-            <Option value="Trifasico">Trifásico</Option>
-          </Select>
-        </Form.Item>
-      </div>
+        </Col>
+      </Row>
       <Form
         form={form}
         layout="vertical"

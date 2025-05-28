@@ -164,8 +164,10 @@ const PoolMap = ({ google, pools, warehouses, width, height, zoom }) => {
 
   return (
     <MapWrapper width={width} height={height}>
-      <Map google={google} zoom={zoom} center={center} style={{ width, height }} onReady={(_, map) => {
+      <Map google={google} zoom={zoom} center={center} style={{ width, height }} mapTypeId={'satellite'} onReady={(_, map) => {
         map.setCenter(center);
+        map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+
       }}>
         {polygons.map(polygon => (
           <Polygon

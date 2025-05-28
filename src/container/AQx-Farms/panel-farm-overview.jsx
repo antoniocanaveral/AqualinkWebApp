@@ -52,7 +52,6 @@ function PanelFarmOverview() {
         selectOptions={combinedSelectOptions}
         selectedOrg={selectedOrg}
         selectedPool={selectedPool}
-        onBack={() => window.history.back()}
       />
       <Select
         style={{ width: '100%', padding: '0 30px', marginBottom: '20px' }}
