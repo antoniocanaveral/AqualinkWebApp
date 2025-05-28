@@ -48,8 +48,11 @@ const GoogleMapsPerimeter = GoogleApiWrapper({
         zoom={zoom}
         initialCenter={getInitialCenter()}
         onClick={handleMapClick}
+        mapTypeId={'satellite'}
         style={{ width, height }}
         onReady={(_, map) => {
+          map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+
           if (!mapInitialized.current) {
             map.setCenter(getInitialCenter());
             mapInitialized.current = true;

@@ -74,7 +74,9 @@ const GeoTrackingMap = ({
           lng: parseFloat(markers[0]?.position.lng || longitude),
         }}
         zoom={zoom}
+        mapTypeId={'satellite'}
         onClick={onMapClick}
+       
       >
         {/* Marcadores */}
         {markers.map((marker) => (

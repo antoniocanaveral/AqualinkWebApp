@@ -20,6 +20,20 @@
   background-color: #007bff !important;
 }
 
+.equal-height-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.equal-height-col {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+.equal-height-col > div {
+  flex: 1 1 auto;
+  width: 100%;
+}
 /* 🔹 Colores para los grupos */
 .ant-table-thead > tr > th.pre-cria-header {
   background-color: #FFD8B1 !important; /* Naranja pastel */

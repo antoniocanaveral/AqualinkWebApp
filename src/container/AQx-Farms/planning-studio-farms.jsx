@@ -172,31 +172,20 @@ function PlanningStudioFarms() {
       />
       <Main>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <Row gutter={25}>
-            <Col xl={7} xs={24} style={{ display: "flex" }}>
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                style={{ width: "100%" }}
-              >
+          <Row gutter={25} className="equal-height-row" style={{ minHeight: '305px' }}>
+            <Col xl={7} xs={24} className="equal-height-col" style={{ display: 'flex' }}>
+         
                 <AqualinkMaps
                   width="100%"
-                  height={window.innerWidth >= 2000 ? "600px" : "305px"}
+                  height={window.innerWidth >= 2000 ? '600px' : '340px'}
                   descriptionColumn={2}
                   selectedOrg={selectedOrg}
                   selectedSector={selectedSector}
                   selectedPool={selectedPool}
                   farmsOrgsWithPools={farmsOrgsWithPools}
                 />
-              </motion.div>
             </Col>
-            <Col xl={17} xs={24}>
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
+            <Col xl={17} xs={24} className="equal-height-col" style={{ display: 'flex' }}>
                 <Suspense
                   fallback={
                     <Cards headless>
@@ -218,7 +207,6 @@ function PlanningStudioFarms() {
                     />
                   </Cards>
                 </Suspense>
-              </motion.div>
             </Col>
           </Row>
         </motion.div>
@@ -299,7 +287,7 @@ function PlanningStudioFarms() {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   style={{ marginTop: "40px" }}
                 >
-                
+
 
                   {/* CENTERED AQUALINK SCENARIO */}
                   <Row gutter={[25, 25]} justify="center">

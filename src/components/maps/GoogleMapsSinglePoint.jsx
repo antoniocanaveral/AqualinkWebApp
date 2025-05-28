@@ -33,8 +33,11 @@ const GoogleMapsSinglePoint = GoogleApiWrapper({
         initialCenter={center}
         style={{ width, height }}
         onClick={handleMapClick}
+        mapTypeId={'satellite'}
         onReady={(_, map) => {
           map.setCenter(center);
+          map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+
         }}
       >
         {selectedPoint && (

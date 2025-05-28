@@ -1,60 +1,45 @@
-import React, { lazy, Suspense, useRef, useState } from 'react';
-import { Row, Col, Skeleton, Typography, Badge, Space, Table } from 'antd';
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { lazy, Suspense, useEffect } from 'react';
+import { Row, Col, Skeleton } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Main } from '../styled';
 import { OverviewDataStyleWrap } from '../dashboard/Style';
 import OverviewCardMeshOriginal from '../../components/cards/OverviewCardMeshOriginal';
-import { GoogleMaps } from '../../components/maps/google-maps';
+import { estadoDescriptions, GoogleMaps } from '../../components/maps/google-maps';
 import { useDispatch, useSelector } from 'react-redux';
-import Cookies from 'js-cookie';
+import { fetchCustodyControls } from '../../redux/custodyControl/actionCreator';
+import usePageHeaderSelectors from '../../hooks/usePageHeaderSelectors';
+import { fetchCoordinationInfo } from '../../redux/views/coords/actionCreator';
 
 function GeolocationCustody() {
+  const dispatch = useDispatch();
+  const { custodyControls, loading, error } = useSelector(state => state.custodyControl);
   const { coordinationInfo, coordInfoLoading, coordInfoError } = useSelector((state) => state.view_coords);
 
-  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
-  const custodyOrgs = useSelector((state) => state.auth.custodyOrgs);
-
-  const handleOrgChange = (orgId, orgEmail) => {
-    setSelectedOrg(orgId);
-    Cookies.set('orgId', orgId);
-    Cookies.set('orgEmail', orgEmail || '');
-  };
-
-  const custodySelectOptions =
-    custodyOrgs.length > 0
-      ? [
-          {
-            options: custodyOrgs.map((org) => ({
-              value: org.orgId,
-              label: org.orgName,
-              email: org.orgEmail,
-              latitude: org.latitude,
-              longitude: org.longitude,
-            })),
-            onChange: handleOrgChange,
-            placeholder: 'Seleccione una Empacadora',
-            value: selectedOrg || undefined,
-          },
-        ]
-      : [];
-
-  const combinedSelectOptions = [...custodySelectOptions];
+  // Use the custom hook for organization selector
+  const { selectedOrg, combinedSelectOptions } = usePageHeaderSelectors({
+    orgsSelector: () => useSelector((state) => state.auth.custodyOrgs),
+    poolsSelector: () => [],
+    includeSector: false,
+    includePool: false,
+    orgType: 'Empacadora',
+  });
 
   // Find the selected empacadora's coordinates
-  const selectedEmpacadora = custodySelectOptions[0]?.options.find((org) => org.value === selectedOrg);
+  const selectedEmpacadora = combinedSelectOptions[0]?.options.find((org) => org.value === selectedOrg);
   const empacadoraMarker = selectedEmpacadora
     ? {
         id: `empacadora-${selectedEmpacadora.value}`,
         lote: `Empacadora: ${selectedEmpacadora.label}`,
-        descripcion: `Ubicación de la empacadora ${selectedEmpacadora.label}`,
+        descripcion: estadoDescriptions['Empacadora'], // Use shared estadoDescriptions
         estado: 'Empacadora',
         eta: '--:--',
         position: {
           lat: parseFloat(selectedEmpacadora.latitude),
           lng: parseFloat(selectedEmpacadora.longitude),
         },
-        icon: 'mpc.png', // Explicitly indicate the empacadora marker icon
+        icon: 'mpc.png',
       }
     : null;
 
@@ -123,65 +108,27 @@ function GeolocationCustody() {
     },
   ];
 
-  const fakeMarkers = [
-    {
-      id: '1',
-      lote: 'AQ-ECSSA-004-P3-2024-00034',
-      descripcion: 'Confirmado por coordinación de cosechas.',
-      estado: 'Confirmado',
-      eta: '14:30',
-      position: { lat: -2.165, lng: -79.88 },
-      icon: 'car.png', // Explicitly indicate the car icon for fake markers
+  // Map custodyControls to markers
+  const custodyMarkers = custodyControls.map(control => ({
+    id: control.uid,
+    lote: control.C_Campaign_ID?.identifier || 'Unknown',
+    descripcion: estadoDescriptions[control.sm_state] || 'Estado desconocido',
+    estado: control.sm_state,
+    eta: control.SM_EndTime ? new Date(control.SM_EndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--',
+    position: {
+      lat: parseFloat(control.sm_dinamiccoordinates?.locations?.[0]?.latitud || -2.18),
+      lng: parseFloat(control.sm_dinamiccoordinates?.locations?.[0]?.longitud || -79.92),
     },
-    {
-      id: '2',
-      lote: 'AQ-ECSSA-007-P1-2024-00056',
-      descripcion: 'Cosecha iniciada desde la Mini App.',
-      estado: 'Iniciada',
-      eta: '14:45',
-      position: { lat: -2.17, lng: -79.90 },
-      icon: 'car.png',
-    },
-    {
-      id: '3',
-      lote: 'AQ-ECSSA-002-P2-2024-00088',
-      descripcion: 'Cosecha finalizada completamente.',
-      estado: 'Terminada',
-      eta: '15:00',
-      position: { lat: -2.18, lng: -79.91 },
-      icon: 'car.png',
-    },
-    {
-      id: '4',
-      lote: 'AQ-ECSSA-001-P3-2024-00012',
-      descripcion: 'Lote en traslado dentro del terminal del tratador.',
-      estado: 'Custodia',
-      eta: '15:10',
-      position: { lat: -2.185, lng: -79.915 },
-      icon: 'car.png',
-    },
-    {
-      id: '5',
-      lote: 'AQ-ECSSA-005-P1-2024-00023',
-      descripcion: 'Temperaturas registradas en la empacadora.',
-      estado: 'Control',
-      eta: '15:20',
-      position: { lat: -2.19, lng: -79.92 },
-      icon: 'car.png',
-    },
-    {
-      id: '6',
-      lote: 'AQ-ECSSA-003-P4-2024-00067',
-      descripcion: 'En línea de producción: peso y clasificación completados.',
-      estado: 'En Proceso',
-      eta: '15:35',
-      position: { lat: -2.195, lng: -79.925 },
-      icon: 'car.png',
-    },
-  ];
+    icon: 'car.png',
+  }));
 
-  // Combine fakeMarkers with empacadoraMarker (if it exists)
-  const allMarkers = empacadoraMarker ? [...fakeMarkers, empacadoraMarker] : fakeMarkers;
+  // Combine with empacadoraMarker
+  const allMarkers = empacadoraMarker ? [...custodyMarkers, empacadoraMarker] : custodyMarkers;
+
+  useEffect(() => {
+    dispatch(fetchCustodyControls());
+    dispatch(fetchCoordinationInfo());
+  }, [dispatch, selectedOrg]);
 
   return (
     <>
@@ -212,6 +159,7 @@ function GeolocationCustody() {
                 height={window.innerWidth >= 2000 ? 600 : 430}
                 type="geo"
                 markers={allMarkers}
+                custodyControls={custodyControls} // Pass custodyControls data
               />
             </div>
           </Col>
