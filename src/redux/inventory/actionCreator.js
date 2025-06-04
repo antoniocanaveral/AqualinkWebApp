@@ -233,7 +233,7 @@ export const addProductToInventory = (productData) => async (dispatch) => {
     }
 
     const productResponse = await DataService.get(
-      `/models/M_Product?$filter=Name eq '${productName}' AND rsu_code eq '${productData.rsu_code}' AND AD_Client_ID eq ${clientId}`
+      `/models/M_Product?$filter=Name eq '${productName}' AND Value eq '${productData.Value}' AND AD_Client_ID eq ${clientId}`
     );
     let productId = productResponse.data?.records?.[0]?.id || null;
 
@@ -271,11 +271,17 @@ export const addProductToInventory = (productData) => async (dispatch) => {
     const bPartnerResponse = await DataService.get(
       `/models/C_BPartner?$filter=AD_Client_ID eq ${clientId} AND AD_Org_ID eq 0`
     );
-    const bPartnerId = bPartnerResponse.data?.records?.[0]?.id || null;
+    // Filtrar en JS los que tengan 'admin' en el nombre (ignorando mayúsculas/minúsculas)
+    const matchingBPartners = bPartnerResponse.data?.records?.filter(bp =>
+      bp.Name?.toLowerCase().includes('admin')
+    );
+
+    // Obtener el primer ID que coincida, o null si no hay
+    const bPartnerId = matchingBPartners?.[0]?.id || null;
 
     //obtener C_BPartner_Location
     const bPartnerLocationResponse = await DataService.get(
-      `/models/C_BPartner_Location?$filter=AD_Client_ID eq ${clientId}`
+      `/models/C_BPartner_Location?$filter=AD_Client_ID eq ${clientId} AND C_BPartner_ID eq ${bPartnerId}`
     );
     const bPartnerLocationId = bPartnerLocationResponse.data?.records?.[0]?.id || null;
 
@@ -288,6 +294,7 @@ export const addProductToInventory = (productData) => async (dispatch) => {
     const cleanedProductName = cleanName(productData.Name);
     console.log("sda", cleanedProductName)
     if (!productId) {
+      // Crear producto
       await DataService.post('/models/M_Product', {
         AD_Client_ID: +clientId,
         AD_Org_ID: 0,
@@ -307,17 +314,29 @@ export const addProductToInventory = (productData) => async (dispatch) => {
         DocumentNote: productData.document_note,
         Classification: productData.Classification,
       });
+
+      // Obtener nuevamente el ID del producto
       const newProductResponse = await DataService.get(
         `/models/M_Product?$filter=Name eq '${productName}' AND rsu_code eq '${productData.rsu_code}' AND AD_Client_ID eq ${clientId}`
       );
       productId = newProductResponse.data?.records?.[0]?.id;
-      // Obtener versión de lista de precios
-      const priceListVersionResponse = await DataService.get(
-        `/models/M_PriceList_Version?$filter=AD_Client_ID eq ${clientId}`
-      );
-      const priceListVersionId = priceListVersionResponse.data?.records?.[0]?.id;
+    }
 
-      // Vincular producto a lista de precios
+    // Obtener versión de lista de precios
+    const priceListVersionResponse = await DataService.get(
+      `/models/M_PriceList_Version?$filter=AD_Client_ID eq ${clientId}`
+    );
+    const priceListVersionId = priceListVersionResponse.data?.records?.[0]?.id;
+
+    // Verificar si ya existe un precio para este producto
+    const productPriceResponse = await DataService.get(
+      `/models/M_ProductPrice?$filter=AD_Client_ID eq ${clientId} AND M_Product_ID eq ${productId} AND M_PriceList_Version_ID eq ${priceListVersionId}`
+    );
+
+    const existingProductPrice = productPriceResponse.data?.records?.[0]?.id || null;
+
+    // Si no existe, se crea
+    if (!existingProductPrice) {
       await DataService.post('/models/M_ProductPrice', {
         AD_Client_ID: +clientId,
         AD_Org_ID: +orgId,
@@ -326,7 +345,6 @@ export const addProductToInventory = (productData) => async (dispatch) => {
         PriceList: productData.priceList,
         PriceStd: productData.priceList,
         PriceLimit: productData.priceList,
-
       });
     }
 
@@ -452,7 +470,7 @@ export const addProductToInventory = (productData) => async (dispatch) => {
     // Completar Factura
     await DataService.put(`/models/C_Invoice/${cInvoiceId}`, { 'doc-action': 'CO' });
 
-   
+
 
     // Obtener el esquema contable del cliente
     const acctSchemaResponse = await DataService.get(
@@ -487,34 +505,6 @@ export const addProductToInventory = (productData) => async (dispatch) => {
       M_Product_ID: productId,
       DateAcct: new Date().toISOString().split('T')[0]
     });
-
-    /* ================================================================
-     * 7. Verificar resultados (esperar 3 segundos para procesamiento)
-     * ================================================================ */
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    const costDetailResp = await DataService.get(
-      `/models/M_CostDetail?filter=M_InOutLine_ID eq ${mInOutLineId}`
-    );
-
-    if (costDetailResp.data.length === 0) {
-      console.error('❌ CostDetail no generado. Verifica:');
-      console.log('- Configuración de Cost Element y Acct Schema');
-      console.log('- M_MatchInv procesado correctamente');
-    } else {
-      console.log('✅ CostDetail generado:', costDetailResp.data[0]);
-
-      // Verificar M_Cost
-      const costResp = await DataService.get(
-        `/models/M_Cost?filter=M_Product_ID eq ${productId} and C_AcctSchema_ID eq 1000027`
-      );
-
-      if (costResp.data.length === 0) {
-        console.error('⚠️ M_Cost no generado. Ejecuta m_cost-create nuevamente.');
-      } else {
-        console.log('✅ M_Cost actualizado:', costResp.data[0]);
-      }
-    }
 
     dispatch(opAddProductLoaded());
     return true;

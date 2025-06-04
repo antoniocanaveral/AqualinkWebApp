@@ -161,10 +161,10 @@ const GoogleMaps = GoogleApiWrapper({
         onClick={onMapClicked}
         styles={mapStyles}
         style={{ ...styles, width, height }}
-        mapTypeId={'satellite'} // Enforce satellite view
+        mapTypeId={'satellite'}
         onReady={(_, map) => {
           map.setCenter(center);
-          map.setMapTypeId(google.maps.MapTypeId.SATELLITE); // Reinforce satellite view on map ready
+          map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
         }}
       >
         {/* Default marker if no markers, polygons, or custody controls */}

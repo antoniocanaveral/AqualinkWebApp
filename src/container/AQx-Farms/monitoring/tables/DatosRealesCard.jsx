@@ -23,7 +23,7 @@ const DatosRealesCard = ({ feedingreport }) => {
         .sort((a, b) => b.sm_index - a.sm_index)[0]?.animalest;
 
     return (
-        <Cards title="Datos Reales de Ciclo" size="large">
+        <Cards title="Datos Reales de Engorde" size="large">
             <div style={{ fontSize: "12px" }}>
                 <div className="flex-row"><span className="label">Lote ID:</span><span>{feedingreport?.SM_Batch || 'N/A'}</span></div>
                 <div className="harvest-report-divider-2" />

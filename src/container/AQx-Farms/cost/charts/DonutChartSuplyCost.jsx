@@ -1,90 +1,105 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
 
-const DonutChartSuplyCost = ({ data }) => {
-  const [hoveredItem, setHoveredItem] = useState(null); // Estado para almacenar el elemento actualmente sobrevolado
-  const totalValue = data.reduce((acc, item) => acc + item.value, 0); // Suma total de los valores
+// Register Chart.js components
+ChartJS.register(ArcElement, Tooltip);
+
+const DonutChartSuplyCost = ({ data, width = '100%', height = 300 }) => {
+  // Validate data
+  if (!data || data.length === 0) {
+    console.error('No data provided to DonutChartSuplyCost');
+    return <div>No data available</div>;
+  }
+
+  const totalValue = data.reduce((acc, item) => acc + item.value, 0) || 1;
+
+  const chartData = {
+    labels: data.map(d => d.label),
+    datasets: [
+      {
+        data: data.map(d => d.value),
+        backgroundColor: data.map(d => d.color),
+        borderWidth: 2,
+        borderColor: '#fff',
+      },
+    ],
+  };
+
+  const options = {
+    cutout: '70%',
+    responsive: false,
+    width: 500, // Aumentado para un donut más grande
+    height: 100,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: (ctx) => {
+            const label = ctx.label || '';
+            const value = ctx.parsed || 0;
+            const percent = ((value / totalValue) * 100).toFixed(1);
+            return `${label}: ${value.toLocaleString()} (${percent}%)`;
+          },
+        },
+      },
+    },
+  };
+
+  const legendItems = data.map((item, idx) => (
+    <div
+      key={idx}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: 6,
+        width: '50%',
+        boxSizing: 'border-box',
+        paddingRight: 10,
+      }}
+    >
+      <div
+        style={{
+          width: 12,
+          height: 12,
+          backgroundColor: item.color,
+          borderRadius: '50%',
+          marginRight: 8,
+          flexShrink: 0,
+        }}
+      />
+      <div style={{ fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        {item.label} ({((item.value / totalValue) * 100).toFixed(1)}%)
+      </div>
+    </div>
+  ));
 
   return (
-    <div style={{ textAlign: 'center', width: '200px', margin: '0 auto', position: 'relative' }}>
-      {/* SVG del gráfico de dona */}
-      <svg width="200" height="200" viewBox="0 0 42 42" className="donut-chart">
-        {data.reduce(
-          (acc, item, index) => {
-            const previousValue = acc.previousValue;
-            const valuePercentage = (item.value / totalValue) * 100; // Porcentaje del segmento
-            const offset = previousValue; // Desplazamiento del segmento actual
-            acc.previousValue += valuePercentage; // Actualizar desplazamiento acumulado
-
-            acc.segments.push(
-              <circle
-                key={index}
-                cx="21"
-                cy="21"
-                r="15.91549431"
-                fill="transparent"
-                stroke={item.color}
-                strokeWidth="3"
-                strokeDasharray={`${valuePercentage} ${100 - valuePercentage}`}
-                strokeDashoffset={-offset}
-                onMouseEnter={() => setHoveredItem(item)} // Mostrar tooltip al pasar el ratón
-                onMouseLeave={() => setHoveredItem(null)} // Ocultar tooltip al salir
-              />
-            );
-
-            return acc;
-          },
-          { previousValue: 0, segments: [] }
-        ).segments}
-      </svg>
-
-      {/* Tooltip */}
-      {hoveredItem && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -150%)',
-            backgroundColor: '#fff',
-            padding: '8px 12px',
-            borderRadius: '4px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            fontSize: '12px',
-            pointerEvents: 'none',
-            width: 'auto'
-          }}
-        >
-          {hoveredItem.label}: {hoveredItem.value}
-        </div>
-      )}
-
-      {/* Leyenda */}
-      <div style={{ marginTop: '10px' }}>
-        {data.map((item, index) => (
-          <div
-            key={index}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '5px',
-              fontSize: '12px',
-            }}
-          >
-            <div
-              style={{
-                width: '10px',
-                height: '10px',
-                backgroundColor: item.color,
-                borderRadius: '50%',
-                marginRight: '5px',
-              }}
-            ></div>
-            <span style={{ flex: 1, textAlign: 'left' }}>{item.label}</span>
-            <span>{((item.value / totalValue) * 100).toFixed(1)}%</span>
-          </div>
-        ))}
+    <div style={{ width, margin: '0 auto', overflow: 'visible', textAlign: 'center' }}>
+      <div
+        style={{
+          position: 'relative',
+          width: '300px', // Aumentado para un donut más grande
+          height: '300px', // Aumentado para un donut más grande
+          margin: '0 auto',
+          display: 'inline-block',
+        }}
+      >
+        <Doughnut data={chartData} options={options} />
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start',
+          marginTop: -70, // Reducido para menos espacio
+        }}
+      >
+        {legendItems}
       </div>
     </div>
   );
@@ -93,11 +108,13 @@ const DonutChartSuplyCost = ({ data }) => {
 DonutChartSuplyCost.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
-      label: PropTypes.string.isRequired, // Etiqueta de la categoría
-      value: PropTypes.number.isRequired, // Valor numérico
-      color: PropTypes.string.isRequired, // Color del segmento
+      label: PropTypes.string.isRequired,
+      value: PropTypes.number.isRequired,
+      color: PropTypes.string.isRequired,
     })
   ).isRequired,
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  height: PropTypes.number,
 };
 
 export default DonutChartSuplyCost;

@@ -218,7 +218,7 @@ const SimulationForm = ({
               rules={[{ required: true, message: 'Este campo es requerido' }]}
             >
               <Select placeholder="Días">
-                {[21, 28].map(week => (
+                {[14, 21, 28].map(week => (
                   <Option key={week} value={week}>{week} días</Option>
                 ))}
               </Select>

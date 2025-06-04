@@ -28,9 +28,6 @@ export default defineConfig({
   esbuild: {
     loader: 'jsx',
   },
-  define: {
-    // Define require como una función vacía para evitar errores.
-    require: 'undefined'
-  },
+ 
 });
 

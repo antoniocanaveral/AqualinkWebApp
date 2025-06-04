@@ -32,3 +32,26 @@ export const FETCH_REPORTSTATEMENT_ERROR = 'FETCH_REPORTSTATEMENT_ERROR';
 export const fetchReportStatementLoading = () => ({ type: FETCH_REPORTSTATEMENT_LOADING });
 export const fetchReportStatementSuccess = (data) => ({ type: FETCH_REPORTSTATEMENT_SUCCESS, payload: data });
 export const fetchReportStatementError = (error) => ({ type: FETCH_REPORTSTATEMENT_ERROR, payload: error });
+
+
+// actions.js
+
+// Action Types
+export const FETCH_REPORTSTATEMENTFULL_LOADING = 'FETCH_REPORTSTATEMENTFULL_LOADING';
+export const FETCH_REPORTSTATEMENTFULL_SUCCESS = 'FETCH_REPORTSTATEMENTFULL_SUCCESS';
+export const FETCH_REPORTSTATEMENTFULL_ERROR = 'FETCH_REPORTSTATEMENTFULL_ERROR';
+
+// Action Creators
+export const fetchReportStatementFullLoading = () => ({
+  type: FETCH_REPORTSTATEMENTFULL_LOADING,
+});
+
+export const fetchReportStatementFullSuccess = (data) => ({
+  type: FETCH_REPORTSTATEMENTFULL_SUCCESS,
+  payload: data,
+});
+
+export const fetchReportStatementFullError = (error) => ({
+  type: FETCH_REPORTSTATEMENTFULL_ERROR,
+  payload: error,
+});

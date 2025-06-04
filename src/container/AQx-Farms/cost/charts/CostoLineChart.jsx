@@ -34,9 +34,8 @@ const CostoLineChart = ({ data, height }) => {
 
   const colors = {
     'costo real': '#0372CE',
-    'costo proyectado': '#00AAFF',
-    precria: '#FA8B0C',
-    optimo: '#64ae78',
+    'costo proyectado': '#f39c12',
+    'precria': '#9b59b6',
   };
 
   return (
@@ -56,26 +55,31 @@ const CostoLineChart = ({ data, height }) => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis 
-          dataKey="x" 
-          type="number" 
+        <XAxis
+          dataKey="x"
+          type="number"
           domain={[1, 100]} // Eje X con números del 1 al 100
-          tickCount={10} 
+          tickCount={10}
         />
         <YAxis />
         <Tooltip />
         <Legend />
-        {Object.keys(data[0])
-          .filter((key) => key !== 'x') // Excluir la clave 'x'
-          .map((key) => (
-            <Line
-              key={key}
-              type="monotone"
-              dataKey={key}
-              stroke={colors[key]} // Colores personalizados
-              activeDot={{ r: 8 }}
-            />
-          ))}
+        {/* Verificar si hay datos en el gráfico */}
+        {data && data.length > 0 ? (
+          Object.keys(data[0])
+            .filter((key) => key !== 'x') // Excluir la clave 'x'
+            .map((key) => (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                stroke={colors[key]} // Colores personalizados
+                activeDot={{ r: 8 }}
+              />
+            ))
+        ) : (
+          <text>No hay datos disponibles para mostrar el gráfico.</text>
+        )}
       </LineChart>
     </div>
   );
