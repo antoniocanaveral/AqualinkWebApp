@@ -326,7 +326,7 @@ const ScenarioCard = ({ scenario, index, onDelete, onApply, scenariosLength, sel
                 boxShadow: isAqualinkScenario ? "0 3px 8px rgba(1, 184, 26, 0.3)" : undefined,
               }}
             >
-              {isAqualinkScenario ? "Aplicar a producción" : "Seleccionar"}
+              {isAqualinkScenario ? "Aplicar a planificación" : "Seleccionar"}
             </Button>
           ) : (
             <Button type="default" danger size="small">

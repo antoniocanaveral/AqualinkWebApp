@@ -296,7 +296,7 @@ function ClassificationFarm() {
                 </Cards>
               }
             >
-              <Cards title="Clasificación" size="large" style={{ flex: 1, marginTop: 0 }}>
+              <Cards title="Distribución  de Tallas" size="large" style={{ flex: 1, marginTop: 0 }}>
                 <div style={{ width: "78%", margin: "0 auto" }}>
                   <ClassificationDonutChart data={data} />
                 </div>
@@ -311,7 +311,7 @@ function ClassificationFarm() {
                 </Cards>
               }
             >
-              <Cards title="" size="large">
+              <Cards title="Distribución  de Tallas" size="large">
                 <div className="table-responsive">
 
                   <table className="full-width-table">

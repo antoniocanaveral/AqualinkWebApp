@@ -609,7 +609,7 @@ function AnalyticReportFarm() {
         },
         {
             key: 'precio_camarón_raleo',
-            descripcion: 'Precio de camarón raleo (g)',
+            descripcion: 'Precio de camarón raleo ($/kg)',
             ciclo1: '1,00',
             ciclo2: '1,00',
             ciclo3: '1,00',
@@ -618,7 +618,7 @@ function AnalyticReportFarm() {
         },
         {
             key: 'precio_camarón_final',
-            descripcion: 'Precio de camarón final ($/lb)',
+            descripcion: 'Precio de camarón final ($/kg)',
             ciclo1: '1,75',
             ciclo2: '1,54',
             ciclo3: '2,10',

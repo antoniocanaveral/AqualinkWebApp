@@ -72,7 +72,7 @@ function PlanningStudioFarms() {
   const inputLabels = {
     shrimp_pool_hec: "Área de piscina (ha)",
     start_date: "Fecha de inicio",
-    days_to_harvest: "Días de ciclo",
+    days_to_harvest: "Días de Engorde",
     density: "Densidad Estimada",
     stimated_weight: "Peso Estimado a Cosecha",
     stimated_survival: "Supervivencia estimada",

@@ -1,0 +1,58 @@
+const feedingDetail = [
+  {
+    key: 'marca_alimento',
+    descripcion: 'Detalles de Alimentación',
+    ciclo1: 'AQUALINK OPT',
+    ciclo2: 'CARGILL',
+    ciclo3: 'CARGILL / WAYNE',
+    ciclo4: 'WAYNE',
+    ciclo5: 'SKRETTING',
+  },
+  {
+    key: 'tipo_alimento_pre_cria',
+    descripcion: 'Tipo de alimento Pre Cría',
+    ciclo1: '45E',
+    ciclo2: '42E',
+    ciclo3: '40E',
+    ciclo4: '40E',
+    ciclo5: '45E',
+  },
+  {
+    key: 'sistema_alimentacion_pre_cria',
+    descripcion: 'Sistema de Alimentación Pre Cría',
+    ciclo1: 'manual',
+    ciclo2: 'manual',
+    ciclo3: 'manual',
+    ciclo4: 'manual',
+    ciclo5: 'manual',
+  },
+  {
+    key: 'tipo_alimento_pre_engorde',
+    descripcion: 'Tipo de alimento Pre Engorde',
+    ciclo1: '38M',
+    ciclo2: '38M',
+    ciclo3: '38C',
+    ciclo4: '35G',
+    ciclo5: '40E',
+  },
+  {
+    key: 'tipo_alimento_engorde',
+    descripcion: 'Tipo de alimento Engorde',
+    ciclo1: '35P',
+    ciclo2: '35E',
+    ciclo3: '35E',
+    ciclo4: '30P',
+    ciclo5: '35C',
+  },
+  {
+    key: 'sistema_alimentacion_pre_engorde_engorde',
+    descripcion: 'Sistema de Alimentación Pre Engorde & Engorde',
+    ciclo1: 'automático',
+    ciclo2: 'automático',
+    ciclo3: 'automático',
+    ciclo4: 'automático',
+    ciclo5: 'automático',
+  },
+];
+
+export default feedingDetail;

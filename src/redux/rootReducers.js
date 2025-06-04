@@ -29,7 +29,7 @@ import ChangeLayoutMode from './themeLayout/reducers';
 import themeUsersReducer from './themeUsers/reducers';
 import Todo from './todo/reducers';
 import { userGroupReducer, userReducer } from './users/reducers';
-import {  operationReducer } from './operation/reducers';
+import { operationReducer } from './operation/reducers';
 import { inventoryReducer } from './inventory/reducers';
 import { configurationReducer } from './configuration/reducers';
 import { rolesReducer } from './user/reducers';
@@ -57,6 +57,8 @@ import { fishingCoordinationsReducer } from './views/fishing/redurers';
 import { transferCombinedViewReducer } from './views/transfer/reducers';
 import { custodyControlReducer } from './custodyControl/reducers';
 import { smPlanningReducer } from './planning/reducers';
+import { salesIncomeReducer } from './salesincome/reducers';
+import { poolPreparationReducer } from './views/pool-preparation/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -71,7 +73,7 @@ const rootReducers = combineReducers({
   auth: authReducer,
   lab: labReducer,
   operation: operationReducer,
-  inventory: inventoryReducer, 
+  inventory: inventoryReducer,
   configuration: configurationReducer,
   roles: rolesReducer,
   support: supportReducer,
@@ -97,9 +99,9 @@ const rootReducers = combineReducers({
   transferCombinedView: transferCombinedViewReducer,
   custodyControl: custodyControlReducer,
   smPlanning: smPlanningReducer,
-
+  salesIncome: salesIncomeReducer, 
   texture: textureReducer,
-
+  poolPreparation: poolPreparationReducer,
   cost: costReducer,
   gallery: galleryReducer,
   email: emailReducer,

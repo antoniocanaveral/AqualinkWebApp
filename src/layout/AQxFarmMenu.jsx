@@ -214,6 +214,14 @@ function AQxFarmMenu({ toggleCollapsed }) {
           <div style={{ marginLeft: "5px" }}>
           </div>,
           [
+
+            getItem(
+              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/feeding-tables`}>
+                {t('Tablas de Alimentación')}
+              </NavLink>,
+              'alimentacion-tabla',
+              null,
+            ),
             getItem(
               <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/actual-projected`}>
                 {t('Real vs Proyectada')}
@@ -240,13 +248,6 @@ function AQxFarmMenu({ toggleCollapsed }) {
             ), 
              */
 
-            getItem(
-              <NavLink className="menuItem-icon menu-item-level-2" to={`${path}/monitoring/feeding-tables`}>
-                {t('Tablas de Alimentación')}
-              </NavLink>,
-              'alimentacion-tabla',
-              null,
-            ),
           ]
         ),
       ]

@@ -52,7 +52,7 @@ const Speedometer = ({ value, base }) => {
             </div>
             <div className="speedometer-label">
                 
-                <span className="speedometer-title">Costo/ha/día</span>
+                <span className="speedometer-title">Costo Producción/ha/día</span>
                 <br />
                 <center>
                     <span className="speedometer-value">

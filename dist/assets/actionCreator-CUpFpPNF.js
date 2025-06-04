@@ -1,0 +1,1 @@
+import{d4 as i,d5 as n}from"./index-B54C9UsK.js";const{filterGalleryBegin:s,filterGallerySuccess:o,filterGalleryErr:c}=i,y=(a,e)=>async r=>{try{r(s()),setTimeout(()=>{const t=n.filter(l=>e!==""?l[a]===e:l);r(o(t))},500)}catch(t){r(c(t))}};export{y as g};

@@ -5,7 +5,7 @@ const PreEngordeCard = ({ feedingreport }) => {
   if (!feedingreport) return null;
 
   return (
-    <Cards title="Pre Engorde" size="large">
+    <Cards title="Datos Relaes de Pre Engorde" size="large">
       <div style={{ fontSize: "12px" }}>
         <div className="flex-row">
           <span className="label">Piscina:</span>

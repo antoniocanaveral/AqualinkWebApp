@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import { Row, Col, Skeleton, Table, Space, Typography, Progress } from 'antd';
+import { Row, Col, Skeleton, Table, Space, Typography, Progress, Select } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { GoogleMaps } from '../../../components/maps/google-maps';
@@ -10,210 +11,254 @@ import { BorderLessHeading } from '../../styled';
 import WeeklyCombinedChart from './charts/WeeklyCombinedChart';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectFarmsOrgsWithPools } from '../../../redux/authentication/selectors';
-import Cookies from 'js-cookie';
-import { fetchCostCenterInfo, fetchReportStatement } from '../../../redux/cost/actionCreator';
+import { fetchCostCenterInfo, fetchIndirectCosts, fetchReportStatement, fetchSmReportStatementFullView, fetchSmReportStatementFullViewAg } from '../../../redux/cost/actionCreator';
+import usePageHeaderSelectors from '../../../hooks/usePageHeaderSelectors';
+import { AqualinkMaps } from '../../../components/maps/aqualink-map';
+import WeeklyAdditiveChart from './charts/WeeklyAdditiveChart';
+
+const { Option } = Select;
 
 function CostFarm() {
-
   const dispatch = useDispatch();
-
-
-  const organizations = useSelector((state) => state.auth.farmsOrgs);
   const farmsOrgsWithPools = useSelector(selectFarmsOrgsWithPools);
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [availableCampaigns, setAvailableCampaigns] = useState([]);
+  const indirectCosts = useSelector(state => state.cost.indirectCosts);
+  console.log("indirectCosts", indirectCosts);
 
+  const { selectedOrg, selectedSector, selectedPool, combinedSelectOptions } = usePageHeaderSelectors({
+    orgsSelector: () => useSelector((state) => state.auth.farmsOrgs),
+    poolsSelector: () => useSelector(selectFarmsOrgsWithPools),
+    includeSector: true,
+    includePool: true,
+    orgType: 'Camaronera',
+  });
 
-  const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
-  const [selectedSector, setSelectedSector] = useState(null);
-  const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+  const { reportStatementFullData, loading } = useSelector((state) => state.cost);
 
+  console.log("reportStatementData", reportStatementFullData);
 
-  const { reportStatementData, loading } = useSelector((state) => state.cost);
+  // Extraer campañas disponibles de los datos
+  useEffect(() => {
+    if (Array.isArray(reportStatementFullData) && reportStatementFullData.length > 0) {
+      // Filtrar solo registros que tienen C_Campaign_ID
+      const campaignsData = reportStatementFullData.filter(item =>
+        item.C_Campaign_ID && item.C_Campaign_ID.id
+      );
 
-  console.log("reportStatementData", reportStatementData)
-  const handleOrgChange = (orgId, orgEmail) => {
-    setSelectedOrg(orgId);
-    Cookies.set('orgId', orgId);
-    Cookies.set('orgEmail', orgEmail || '');
-    Cookies.remove('poolId');
-    setSelectedPool(null);
-    setSelectedSector(null);
-  };
+      // Extraer campañas únicas
+      const uniqueCampaigns = [];
+      const seenCampaigns = new Set();
 
-
-  const handleSectorChange = (sectorId) => {
-    setSelectedSector(sectorId);
-    setSelectedPool(null);
-  };
-
-
-  const handlePoolChange = (poolId) => {
-    setSelectedPool(poolId);
-    Cookies.set('poolId', poolId);
-  };
-
-
-  const farmsSelectOptions = organizations.length > 0 ? [
-    {
-      options: farmsOrgsWithPools.map(org => ({
-        value: org.orgId,
-        label: org.orgName,
-        email: org.orgEmail,
-      })),
-      onChange: handleOrgChange,
-      placeholder: 'Seleccione una Farm',
-      value: selectedOrg || undefined,
-    },
-  ] : [];
-
-
-  const sectorsOptions = selectedOrg
-    ? farmsOrgsWithPools
-      .find(org => org.orgId === selectedOrg)?.pools
-      .reduce((acc, pool) => {
-        if (pool.salesRegion && !acc.find(sector => sector.value === pool.salesRegion.id)) {
-          acc.push({
-            value: pool.salesRegion.id,
-            label: pool.salesRegion.name,
+      campaignsData.forEach(item => {
+        const campaignId = item.C_Campaign_ID.id;
+        if (!seenCampaigns.has(campaignId)) {
+          seenCampaigns.add(campaignId);
+          uniqueCampaigns.push({
+            id: campaignId,
+            identifier: item.C_Campaign_ID.identifier,
+            name: item.campaign_name || item.C_Campaign_ID.identifier,
+            startDate: item.StartDate,
+            endDate: item.EndDate,
           });
         }
-        return acc;
-      }, [])
-    : [];
+      });
 
-  const sectorSelectOptions = selectedOrg ? [
-    {
-      options: sectorsOptions,
-      onChange: handleSectorChange,
-      placeholder: 'Seleccione un Sector',
-      value: selectedSector || undefined,
-    },
-  ] : [];
+      setAvailableCampaigns(uniqueCampaigns);
 
-
-  const poolsOptions = selectedSector
-    ? farmsOrgsWithPools
-      .find(org => org.orgId === selectedOrg)?.pools
-      .filter(pool => pool.salesRegion && pool.salesRegion.id === selectedSector)
-      .map(pool => ({
-        value: pool.poolId,
-        label: pool.poolName,
-      }))
-    : [];
-
-  const poolsSelectOptions = selectedSector ? [
-    {
-      options: poolsOptions,
-      onChange: handlePoolChange,
-      placeholder: 'Seleccione una Pool',
-      disabled: poolsOptions.length === 0,
-      value: selectedPool || undefined,
-    },
-  ] : [];
-
-
-  const combinedSelectOptions = [
-    ...farmsSelectOptions,
-    ...sectorSelectOptions,
-    ...poolsSelectOptions,
-  ];
-
+      // Seleccionar la primera campaña por defecto si no hay ninguna seleccionada
+      if (uniqueCampaigns.length > 0 && !selectedCampaign) {
+        setSelectedCampaign(uniqueCampaigns[0].id);
+      }
+    }
+  }, [reportStatementFullData, selectedCampaign]);
 
   useEffect(() => {
     if (selectedPool != null) {
-      dispatch(fetchReportStatement());
+      dispatch(fetchSmReportStatementFullViewAg());
+      dispatch(fetchIndirectCosts());
     }
   }, [dispatch, selectedPool]);
 
-  const transformReportStatementData = (rawData) => {
-    if (!Array.isArray(rawData)) return [];
 
-    const groupedByIndex = {};
+  const transformReportStatementData = (rawData, campaignId) => {
+    console.log('Raw Data:', rawData); // Debug: Inspect raw data
+    console.log('Campaign ID:', campaignId); // Debug: Verify campaign ID
 
-    rawData.forEach((item) => {
-      const index = item.SM_Index ?? 0;
-      const categoria = item.product_category_name?.toUpperCase() ?? '';
-      const monto = item.AmtAcctDr ?? 0;
+    if (!Array.isArray(rawData) || !campaignId) {
+      console.warn('Invalid input: rawData is not an array or campaignId is missing');
+      return [];
+    }
 
-      if (!groupedByIndex[index]) {
-        groupedByIndex[index] = {
-          key: index,
-          dia: index,
-          sm_pooltype: item.sm_pooltype,
-          alimentoBalanceado: 0,
-          acidosOrganicos: 0,
-          aditivos: 0,
-          SM_Batch: item.SM_Batch,
-          vitaminas: 0,
-          mineralesCalcicos: 0,
-          desparasitantes: 0,
-          fertilizantes: 0,
-          medicados: 0,
-          bacteriaEnzimas: 0,
-          agua: 0,
-        };
+    // Filtrar los datos por la campaña seleccionada
+    const campaignData = rawData.find(item => item.C_Campaign_ID?.id === campaignId);
+    if (!campaignData) {
+      console.warn(`No campaign found for ID: ${campaignId}`);
+      return [];
+    }
+
+    // Obtener fechas de inicio y fin de la campaña
+    const startDate = new Date(campaignData.StartDate);
+    const endDate = new Date(campaignData.EndDate);
+
+    if (isNaN(startDate) || isNaN(endDate)) {
+      console.warn('Invalid campaign dates:', campaignData.StartDate, campaignData.EndDate);
+      return [];
+    }
+
+    // Calcular el número total de días de la campaña
+    const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    console.log('Total Days:', totalDays); // Debug: Verify total days
+
+    // Crear estructura base para todos los días
+    const allDays = {};
+    for (let day = 1; day <= totalDays; day++) {
+      allDays[day] = {
+        key: day,
+        dia: day,
+        sm_pooltype: campaignData.sm_pooltype || '',
+        SM_Batch: campaignData.SM_Batch || '',
+        alimentoBalanceado: 0,
+        acidosOrganicos: 0,
+        aditivos: 0,
+        vitaminas: 0,
+        mineralesCalcicos: 0,
+        desparasitantes: 0,
+        fertilizantes: 0,
+        medicados: 0,
+        bacteriaEnzimas: 0,
+        agua: 0,
+        larvasCamaronera: 0,
+      };
+    }
+
+    // Procesar los datos de cada fase (prebreeding, prefatten, fatten)
+    const processPhaseData = (phaseData, phaseType) => {
+      if (!Array.isArray(phaseData)) {
+        console.warn(`Phase ${phaseType} data is not an array:`, phaseData);
+        return;
       }
 
-      const entry = groupedByIndex[index];
+      console.log(`Processing ${phaseType} data:`, phaseData); // Debug: Inspect phase data
 
-      switch (categoria) {
-        case 'LARVA-CAMARONERA':
-          entry.alimentoBalanceado += monto;
-          break;
-        case 'ADITIVOS':
-          entry.aditivos += monto;
-          break;
-        case 'VITAMINAS':
-          entry.vitaminas += monto;
-          break;
-        case 'ACIDOS ORGANICOS':
-          entry.acidosOrganicos += monto;
-          break;
-        case 'BACTERIAS Y ENZIMAS':
-          entry.bacteriaEnzimas += monto;
-          break;
-        case 'FERTILIZANTE':
-          entry.fertilizantes += monto;
-          break;
-        case 'MINERALES Y CALCAREOS':
-          entry.mineralesCalcicos += monto;
-          break;
-        case 'DESPARASITANTES':
-          entry.desparasitantes += monto;
-          break;
-        case 'MEDICADOS':
-          entry.medicados += monto;
-          break;
-        case 'AGUA':
-          entry.agua += monto;
-          break;
-        default:
-          break;
-      }
-    });
+      phaseData.forEach((item, index) => {
+        if (!item.dateacct || !item.amtacctdr || !item.product_category_name) {
+          console.warn(`Invalid item in ${phaseType} at index ${index}:`, item);
+          return;
+        }
 
-    return Object.values(groupedByIndex).sort((a, b) => a.dia - b.dia);
+        const transactionDate = new Date(item.dateacct);
+        if (isNaN(transactionDate)) {
+          console.warn(`Invalid date in ${phaseType} at index ${index}:`, item.dateacct);
+          return;
+        }
+
+        const dayDifference = Math.ceil((transactionDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+        // Solo procesar si el día está dentro del rango válido
+        if (dayDifference >= 1 && dayDifference <= totalDays) {
+          const categoria = item.product_category_name?.toUpperCase() ?? '';
+          const monto = parseFloat(item.amtacctdr) || 0;
+
+          const entry = allDays[dayDifference];
+
+          // Actualizar sm_pooltype si no está establecido
+          if (!entry.sm_pooltype) {
+            entry.sm_pooltype = phaseType;
+          }
+
+          // Asignar montos según la categoría
+          switch (categoria) {
+            case 'LARVA-CAMARONERA':
+              entry.larvasCamaronera += monto;
+              break;
+            case 'ALIMENTO BALANCEADO':
+              entry.alimentoBalanceado += monto;
+              break;
+            case 'ADITIVOS GENERAL COSECHA':
+              entry.aditivos += monto;
+              break;
+            case 'VITAMINAS':
+              entry.vitaminas += monto;
+              break;
+            case 'ACIDOS ORGANICOS':
+              entry.acidosOrganicos += monto;
+              break;
+            case 'BACTERIAS Y ENZIMAS':
+              entry.bacteriaEnzimas += monto;
+              break;
+            case 'FERTILIZANTE':
+            case 'FERTILIZANTES':
+              entry.fertilizantes += monto;
+              break;
+            case 'MINERALES Y CALCAREOS':
+              entry.mineralesCalcicos += monto;
+              break;
+            case 'DESPARASITANTES':
+              entry.desparasitantes += monto;
+              break;
+            case 'MEDICADOS':
+              entry.medicados += monto;
+              break;
+            case 'AGUA':
+              entry.agua += monto;
+              break;
+            default:
+              console.warn(`Unrecognized category in ${phaseType}: ${categoria}`);
+              break;
+          }
+        } else {
+          console.warn(`Transaction out of campaign range in ${phaseType}:`, item.dateacct, dayDifference);
+        }
+      });
+    };
+
+    // Procesar cada fase
+    processPhaseData(campaignData.cost_prebreeding_json, 'PC');
+    processPhaseData(campaignData.cost_prefatten_json || [], 'PE'); // Handle missing prefatten
+    processPhaseData(campaignData.cost_fatten_json, 'E');
+
+    // Convertir a array y ordenar por día
+    const result = Object.values(allDays).sort((a, b) => a.dia - b.dia);
+    console.log('Transformed Data:', result); // Debug: Inspect final output
+
+    return result;
   };
 
   const columns = [
     {
       title: <span style={{ fontSize: '11px' }}>DdC</span>,
       dataIndex: 'dia',
+      width: 70,
       key: 'dia',
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
       title: <span style={{ fontSize: '11px' }}>PISCINA</span>,
       dataIndex: 'sm_pooltype',
       key: 'sm_pooltype',
+      width: 70,
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text}</span>,
     },
     {
       title: <span style={{ fontSize: '11px' }}>LARVA-CAMARONERA</span>,
+      dataIndex: 'larvasCamaronera',
+      width: 70,
+      key: 'larvasCamaronera',
+      align: 'center',
+      width: 70,
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
+    },
+    {
+      title: <span style={{ fontSize: '11px' }}>ALIMENTO BALANCEADO</span>,
       dataIndex: 'alimentoBalanceado',
       key: 'alimentoBalanceado',
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
@@ -221,13 +266,7 @@ function CostFarm() {
       dataIndex: 'acidosOrganicos',
       key: 'acidosOrganicos',
       align: 'center',
-      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
-    },
-    {
-      title: <span style={{ fontSize: '11px' }}>ALIMENTO BALANCEADO</span>,
-      dataIndex: 'acidosOrganicos',
-      key: 'acidosOrganicos',
-      align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
@@ -235,6 +274,7 @@ function CostFarm() {
       dataIndex: 'aditivos',
       key: 'aditivos',
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
@@ -242,6 +282,7 @@ function CostFarm() {
       dataIndex: 'vitaminas',
       key: 'vitaminas',
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
@@ -249,6 +290,7 @@ function CostFarm() {
       dataIndex: 'mineralesCalcicos',
       key: 'mineralesCalcicos',
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
@@ -256,6 +298,7 @@ function CostFarm() {
       dataIndex: 'desparasitantes',
       key: 'desparasitantes',
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
@@ -263,6 +306,7 @@ function CostFarm() {
       dataIndex: 'fertilizantes',
       key: 'fertilizantes',
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
@@ -270,6 +314,7 @@ function CostFarm() {
       dataIndex: 'medicados',
       key: 'medicados',
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
     {
@@ -277,13 +322,22 @@ function CostFarm() {
       dataIndex: 'bacteriaEnzimas',
       key: 'bacteriaEnzimas',
       align: 'center',
+      width: 70,
       render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
     },
-
+    {
+      title: <span style={{ fontSize: '11px' }}>AGUA</span>,
+      dataIndex: 'agua',
+      key: 'agua',
+      align: 'center',
+      width: 70,
+      render: (text) => <span style={{ fontSize: '11px' }}>{text.toFixed(2)}</span>,
+    },
     {
       title: <span style={{ fontSize: '11px' }}>COSTO IND Ha. / día</span>,
       key: 'costoInd',
       align: 'center',
+      width: 70,
       render: (_, record) => (
         <strong style={{ fontSize: '11px' }}>${calculateCostoInd(record).toFixed(2)}</strong>
       ),
@@ -292,15 +346,16 @@ function CostFarm() {
       title: <span style={{ fontSize: '11px' }}>TTL DdC</span>,
       key: 'costoTotal',
       align: 'center',
+      width: 70,
       render: (_, record) => (
         <strong style={{ fontSize: '11px' }}>${calculateCostoInd(record).toFixed(2)}</strong>
       ),
     },
   ];
 
-
   const calculateCostoInd = (record) => {
     return (
+      record.larvasCamaronera +
       record.alimentoBalanceado +
       record.acidosOrganicos +
       record.aditivos +
@@ -314,10 +369,7 @@ function CostFarm() {
     );
   };
 
-
-  const dataSource = transformReportStatementData(reportStatementData);
-
-
+  const dataSource = transformReportStatementData(reportStatementFullData, selectedCampaign);
 
   const calculateSummaryData = (dataSource) => {
     if (!dataSource.length) return [];
@@ -362,61 +414,81 @@ function CostFarm() {
       title: <span style={{ fontSize: '12px' }}> </span>,
       dataIndex: 'tipo',
       key: 'tipo',
-      align: 'center',
+      align: 'center', width: 70,
       render: (text) => <strong style={{ fontSize: '12px' }}>{text}</strong>,
     },
     ...Array.from({ length: 14 }).map((_, index) => ({
       title: <span style={{ fontSize: '12px' }}>Semana {index + 1}</span>,
       dataIndex: `semana${index + 1}`,
       key: `semana${index + 1}`,
-      align: 'center',
+      align: 'center', width: 70,
       render: (text) => <span style={{ fontSize: '12px' }}>{text}</span>,
     })),
   ];
 
-
   const summaryData = calculateSummaryData(dataSource);
 
-
+  // Obtener información de la campaña seleccionada para mostrar en el título
+  const selectedCampaignInfo = availableCampaigns.find(c => c.id === selectedCampaign);
 
   return (
     <>
       <PageHeader
-
         highlightText="Aqualink Costos"
         title="Costos de Producción"
         selectOptions={combinedSelectOptions}
         selectedOrg={selectedOrg}
         selectedPool={selectedPool}
       />
+
+      {/* Selector de Campaña */}
+      <Row gutter={25} style={{ marginBottom: 16 }}>
+        <Col span={24}>
+          <Cards title="Selección de Campaña">
+            <Space align="center" style={{ width: '100%', justifyContent: 'space-between' }}>
+              <Typography.Text strong>Seleccionar Campaña:</Typography.Text>
+              <Select
+                style={{ width: 400 }}
+                placeholder="Seleccione una campaña"
+                value={selectedCampaign}
+                onChange={setSelectedCampaign}
+                disabled={availableCampaigns.length === 0}
+              >
+                {availableCampaigns.map(campaign => (
+                  <Option key={campaign.id} value={campaign.id}>
+                    {campaign.name} ({campaign.startDate} - {campaign.endDate})
+                  </Option>
+                ))}
+              </Select>
+              {selectedCampaignInfo && (
+                <Space>
+                  <Typography.Text type="secondary">
+                    Días de cultivo: {Math.ceil((new Date(selectedCampaignInfo.endDate) - new Date(selectedCampaignInfo.startDate)) / (1000 * 60 * 60 * 24)) + 1}
+                  </Typography.Text>
+                </Space>
+              )}
+            </Space>
+          </Cards>
+        </Col>
+      </Row>
+
       <Row gutter={25}>
         <Col xl={8} xs={24} style={{ display: "flex" }}>
-          <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-            <Cards title="Geolocalización" size="large">
-              <Row gutter={[25, 25]} align="top">
-                <Col xs={24} md={24}>
-                  <GoogleMaps height={"250px"} />
-                </Col>
-                <Col xs={24} md={24}>
-                  <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                      <div className="content-block">
-                        <Typography.Title style={{ color: "#666d92" }} level={5}>Camaroneras 1</Typography.Title>
-                        <Typography.Text>Área: 307.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title style={{ color: "#666d92" }} level={5}>Piscina 3</Typography.Title>
-                        <Typography.Text>Área: 5.35 ha</Typography.Text>
-                      </div>
-                      <div className="content-block">
-                        <Typography.Title style={{ color: "#666d92" }} level={5}>Pre Cría 3</Typography.Title>
-                        <Typography.Text>Área: 1.35 ha</Typography.Text>
-                      </div>
-                    </div>
-                  </Space>
-                </Col>
-              </Row>
-            </Cards>
+          <Suspense
+            fallback={
+              <Cards headless>
+                <Skeleton active />
+              </Cards>
+            }
+          >
+            <AqualinkMaps
+              width="100%"
+              height={window.innerWidth >= 2000 ? '600px' : '305px'}
+              selectedOrg={selectedOrg}
+              selectedSector={selectedSector}
+              selectedPool={selectedPool}
+              farmsOrgsWithPools={farmsOrgsWithPools}
+            />
           </Suspense>
         </Col>
         <Col xl={8} xs={24} style={{ display: "flex" }}>
@@ -428,33 +500,21 @@ function CostFarm() {
         </Col>
         <Col xl={8} xs={24} style={{ display: "flex" }}>
           <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-            <Cards title="Aditivo Semanal Promedio" size="large">
-              <WeeklyCombinedChart dataSource={dataSource} />
+            <Cards title="Insumos Semanal y Promedio" size="large">
+              <WeeklyAdditiveChart dataSource={dataSource} />
             </Cards>
-
           </Suspense>
         </Col>
       </Row>
+
       <Cards title={'Costos de Producción'}>
         <Row gutter={25} style={{ alignItems: 'center', display: 'flex' }}>
-          <Col xl={8} xs={24}>
+          <Col xl={14} xs={24}>
             <WeeklyGroupedBarChart dataSource={dataSource} />
           </Col>
 
           <Col xl={6} xs={24} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CostPerformanceRadial />
-          </Col>
-
-          <Col xl={6} xs={24} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className='ninjadash-sales-inner' style={{ width: "50%", margin: "0 auto" }}>
-              <Progress
-                type="circle"
-                width={200}
-                percent={75}
-                strokeColor="#0372CE"
-                trailColor={'#E6D5F6'}
-              />
-            </div>
           </Col>
 
           <Col xl={4} xs={24} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -482,7 +542,6 @@ function CostFarm() {
         </Row>
       </Cards>
 
-
       <Row gutter={25}>
         <Col xl={24} xs={24} style={{ display: 'flex' }}>
           <Suspense
@@ -492,13 +551,16 @@ function CostFarm() {
               </Cards>
             }
           >
-            <Cards title={`Costos de Producción Lote: ${transformReportStatementData(reportStatementData).length > 0 ? transformReportStatementData(reportStatementData)[0].SM_Batch : ''}`} size="large">
+            <Cards
+              title={`Costos de Producción ${selectedCampaignInfo ? ` LoteID: ${selectedCampaignInfo.name}` : ''}`}
+              size="large"
+            >
               <Table
                 columns={columns}
                 dataSource={dataSource}
                 pagination={{ pageSize: 7 }}
                 bordered
-                scroll={{ x: 'max-content' }} // Scroll horizontal si el contenido es amplio
+                scroll={{ x: 'max-content' }}
               />
             </Cards>
           </Suspense>
@@ -513,9 +575,8 @@ function CostFarm() {
               scroll={{ x: 'max-content' }}
             />
           </div>
-          <br/>
-          <br/>
-          
+          <br />
+          <br />
         </Col>
       </Row>
     </>

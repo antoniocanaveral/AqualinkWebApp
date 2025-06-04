@@ -237,7 +237,7 @@ function TextureFarm() {
                 </Cards>
               }
             >
-              <Cards title="Distribución de Pl" size="large">
+              <Cards title="Distribución de Textura" size="large">
                 <TexturePercentageChart textures={textures} loading={loading} />
               </Cards>
             </Suspense>
