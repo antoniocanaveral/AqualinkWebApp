@@ -1,18 +1,20 @@
 /* 🔹 Estilos para Lote */
-.ant-table-thead > tr > th.lote-header {
-  background-color: #F3F3F3 !important; /* Gris suave */
+.ant-table-thead>tr>th.lote-header {
+  background-color: #F3F3F3 !important;
+  /* Gris suave */
   font-weight: bold !important;
   text-align: center !important;
 }
 
 /* 🔹 Estilos para Protocolo */
-.ant-table-thead > tr > th.protocolo-header {
-  background-color: #D6E4FF !important; /* Azul suave */
+.ant-table-thead>tr>th.protocolo-header {
+  background-color: #D6E4FF !important;
+  /* Azul suave */
   font-weight: bold !important;
   text-align: center !important;
 }
 
-.ola{
+.ola {
   font-size: 20px !important;
   color: #404040 !important;
   font-weight: 500 !important;
@@ -30,33 +32,37 @@
   flex: 1 1 auto;
 }
 
-.equal-height-col > div {
+.equal-height-col>div {
   flex: 1 1 auto;
   width: 100%;
 }
+
 /* 🔹 Colores para los grupos */
-.ant-table-thead > tr > th.pre-cria-header {
-  background-color: #FFD8B1 !important; /* Naranja pastel */
+.ant-table-thead>tr>th.pre-cria-header {
+  background-color: #FFD8B1 !important;
+  /* Naranja pastel */
 }
 
-.ant-table-thead > tr > th.pre-engorde-header {
-  background-color: #B3E5FC !important; /* Celeste claro */
+.ant-table-thead>tr>th.pre-engorde-header {
+  background-color: #B3E5FC !important;
+  /* Celeste claro */
 }
 
-.ant-table-thead > tr > th.engorde-final-header {
-  background-color: #C8E6C9 !important; /* Verde menta */
+.ant-table-thead>tr>th.engorde-final-header {
+  background-color: #C8E6C9 !important;
+  /* Verde menta */
 }
 
 /* 🔹 Estilos para asegurar el color en subcolumnas */
-.ant-table-thead > tr:nth-child(2) > th.lote-header {
+.ant-table-thead>tr:nth-child(2)>th.lote-header {
   background-color: #F3F3F3 !important;
 }
 
-.ant-table-thead > tr:nth-child(2) > th.protocolo-header {
+.ant-table-thead>tr:nth-child(2)>th.protocolo-header {
   background-color: #D6E4FF !important;
 }
 
-.ant-table-thead > tr:nth-child(2) > th.pre-cria-header {
+.ant-table-thead>tr:nth-child(2)>th.pre-cria-header {
   background-color: #FFD8B1 !important;
 }
 
@@ -65,11 +71,11 @@
   /* Adds a black outline for contrast against map and polygon colors */
 }
 
-.ant-table-thead > tr:nth-child(2) > th.pre-engorde-header {
+.ant-table-thead>tr:nth-child(2)>th.pre-engorde-header {
   background-color: #B3E5FC !important;
 }
 
-.ant-table-thead > tr:nth-child(2) > th.engorde-final-header {
+.ant-table-thead>tr:nth-child(2)>th.engorde-final-header {
   background-color: #C8E6C9 !important;
 }
 
@@ -4542,8 +4548,10 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 
 
 .ninjadash-status-waiting-bines {
-  background-color: #f39c12 !important; /* Naranja */
-  color: #ffffff; /* Blanco */
+  background-color: #f39c12 !important;
+  /* Naranja */
+  color: #ffffff;
+  /* Blanco */
   font-weight: bold;
   padding: 5px 10px;
   border-radius: 8px;
@@ -4553,8 +4561,10 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
 }
 
 .ninjadash-status-waiting-drawers {
-  background-color: #3498db !important; /* Azul */
-  color: #ffffff; /* Blanco */
+  background-color: #3498db !important;
+  /* Azul */
+  color: #ffffff;
+  /* Blanco */
   font-weight: bold;
   padding: 5px 10px;
   border-radius: 8px;
@@ -4575,4 +4585,10 @@ html[dir="rtl"] .dark-mode .ninjadash-navbar-menu {
   display: inline-block;
   text-align: center;
   min-width: 80px;
+}
+
+
+.remirror-theme .ProseMirror {
+  box-shadow: none !important;
+
 }

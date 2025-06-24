@@ -19,15 +19,26 @@ function LoteAddLab() {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
     const { directories, directoriesLoading } = useSelector((state) => state.directories);
+    const farmsOrgsWithPools = useSelector(selectLabOrgsWithWarehouses);
 
     // Use the custom hook for organization, sector, and pool selectors
-    const { selectedOrg, selectedSector, selectedPool, combinedSelectOptions } = usePageHeaderSelectors({
+    const { selectedOrg, selectedSector, selectedPoolSize, selectedPool, combinedSelectOptions } = usePageHeaderSelectors({
         orgsSelector: () => useSelector((state) => state.auth.labsOrgs),
         poolsSelector: () => useSelector(selectLabOrgsWithWarehouses),
         includeSector: true, // Include sector selector
         includePool: true,  // Include pool selector
         orgType: 'Laboratorio', // Custom placeholder for lab
     });
+
+
+    const labOrgs = useSelector((state) => state.auth.labsOrgs);
+    const selectedLabOrg = labOrgs.find(org => org.orgId === selectedOrg);
+
+    const countModules = selectedLabOrg?.countSalesRegion || 0;
+    const countTanks = selectedLabOrg?.countWarehouses || 0;
+
+    console.log('selectLabOrgsWithWarehouses', selectLabOrgsWithWarehouses);
+    console.log('LabOrgs', useSelector((state) => state.auth.labsOrgs));
 
     const [plantingDate, setPlantingDate] = useState(null);
     const [campaignDays, setCampaignDays] = useState(null);
@@ -47,26 +58,24 @@ function LoteAddLab() {
         }
     }, [plantingDate, campaignDays, form]);
 
-    // Get selected pool object
-    const selectedPoolObject = selectedPool && useSelector(selectLabOrgsWithWarehouses)
-        .find((org) => org.orgId === selectedOrg)?.pools
-        .find((pool) => pool.poolId === selectedPool);
-
-    // Update tank capacity when pool changes
+   
     useEffect(() => {
         form.setFieldsValue({
-            sm_tankcapacity: selectedPoolObject?.poolSize || null,
+            sm_tankcapacity: selectedPoolSize|| null,
         });
-    }, [selectedPoolObject, form]);
+    }, [selectedPool, form]);
 
     // Calculate target biomass
     const calculateTargetBiomass = (allValues) => {
-        const capacity = selectedPoolObject?.poolSize;
+        console.log('Calculating target biomass with allValues:', allValues);
+        const capacity = selectedPoolSize
         const density = allValues.sm_programmeddensity;
         const mortality = allValues.sm_estimatedmortality;
         if (capacity != null && density != null && mortality != null) {
+            console.log('Using values for calculation:', { capacity, density, mortality });
             return (capacity * density * (1 - mortality / 100)).toFixed(2);
         }
+        console.log('Insufficient data to calculate target biomass:', { capacity, density, mortality });
         return null;
     };
 
@@ -106,8 +115,18 @@ function LoteAddLab() {
                 <Row gutter={25}>
                     <Col xl={7} xs={24} style={{ display: "flex" }} >
                         <AqualinkMaps
+                            width={'100%'}
+                            height={
+                                window.innerWidth >= 2000 ? '600px' :
+                                    '305px'
+                            }
+                            type={"LabClient"}
                             selectedOrg={selectedOrg}
-                            height={385}
+                            selectedSector={selectedSector}
+                            totalModules={countModules}
+                            totalTanks={countTanks}
+                            selectedPool={selectedPool}
+                            farmsOrgsWithPools={farmsOrgsWithPools} // Pasa farmsOrgsWithPools como prop
                         />
                     </Col>
                     <Col xl={17} xs={24} style={{ display: "flex" }} >

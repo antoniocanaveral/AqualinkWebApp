@@ -75,9 +75,9 @@ function CoordinationsCustody() {
       case 'ejecutado':
         return 'ninjadash-status-executed';
       case 'espera bines':
-        return 'ninjadash-status-waiting-bines'; // Nuevo estado
+        return 'ninjadash-status-waiting-bines';
       case 'espera gavetas':
-        return 'ninjadash-status-waiting-drawers'; // Nuevo estado
+        return 'ninjadash-status-waiting-drawers';
       default:
         return 'ninjadash-status-undefined';
     }

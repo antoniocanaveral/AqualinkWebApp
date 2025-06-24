@@ -1,16 +1,37 @@
 export const resultsTableData = (productionReports, getCiclosValues, reportStatementFullData, indirectCosts, getEngordeData) => {
     return [
         {
+            key: 'ingreso_ventas_raleo',
+            descripcion: 'Ingreso x Ventas RALEO ($)',
+            ...getCiclosValues(productionReports, (r) => r.sm_raleo_salesincome || 0),
+        },
+        {
+            key: 'ingreso_ventas_cosecha',
+            descripcion: 'Ingreso x Ventas COSECHA ($)',
+            ...getCiclosValues(productionReports, (r) => r.sm_cosecha_salesincome || 0),
+        },
+        {
             key: 'ingreso_ventas_total',
             descripcion: 'Ingreso x Ventas Total ($)',
-            ...getCiclosValues(productionReports, (r) => r.sm_totalsalesincome || 0),
+            ...getCiclosValues(productionReports, (r) => {
+                const raleoIncome = r.sm_raleo_salesincome || 0;
+                const cosechaIncome = r.sm_cosecha_salesincome || 0;
+                const biomassRaleo = r.e_production_json?.biomass_raleo || 0;
+                const biomassPesca = r.e_production_json?.biomass_pesca || 0;
+                return ((biomassRaleo * raleoIncome) + (biomassPesca * cosechaIncome)).toFixed(2);
+            }),
         },
+
         {
             key: 'ingreso_total_ha',
             descripcion: 'Ingreso Total/Ha ($)',
             ...getCiclosValues(productionReports, (r) => {
                 const areaTotal = (r.poolsize_prebreeding || 0) + (r.poolsize_prefattening || 0) + (r.poolsize_mwarehouse || 0);
-                const salesIncome = r.sm_totalsalesincome || 0;
+                const raleoIncome = r.sm_raleo_salesincome || 0;
+                const cosechaIncome = r.sm_cosecha_salesincome || 0;
+                const biomassRaleo = r.e_production_json?.biomass_raleo || 0;
+                const biomassPesca = r.e_production_json?.biomass_pesca || 0;
+                const salesIncome = (biomassRaleo * raleoIncome) + (biomassPesca * cosechaIncome);
                 return areaTotal !== 0 ? (salesIncome / areaTotal).toFixed(2) : 0;
             }),
         },
@@ -30,7 +51,7 @@ export const resultsTableData = (productionReports, getCiclosValues, reportState
                 const engordeSurvival = r.e_production_json.sm_pxreal !== 0
                     ? (engordeBiomass * 1000) / (r.e_production_json.sm_pxreal || 0)
                     : 0;
-                const protocolo = r.Description?.toLowerCase();
+                const protocolo = r.description?.toLowerCase();
                 const supervivenciaTotal = protocolo?.includes('bifásico')
                     ? preCriaSurvival * engordeSurvival
                     : preCriaSurvival * preEngordeSurvival * engordeSurvival;
@@ -43,7 +64,11 @@ export const resultsTableData = (productionReports, getCiclosValues, reportState
             ...getCiclosValues(productionReports, (r, idx) => {
                 const engordeData = getEngordeData([r], getCiclosValues, reportStatementFullData, indirectCosts);
                 const costoTotalProtocolo = parseFloat(engordeData.find(item => item.key === 'costo_total_protocolo')?.[`ciclo${idx + 1}`]) || 0;
-                const salesIncome = r.sm_totalsalesincome || 0;
+                const raleoIncome = r.sm_raleo_salesincome || 0;
+                const cosechaIncome = r.sm_cosecha_salesincome || 0;
+                const biomassRaleo = r.e_production_json?.biomass_raleo || 0;
+                const biomassPesca = r.e_production_json?.biomass_pesca || 0;
+                const salesIncome = (biomassRaleo * raleoIncome) + (biomassPesca * cosechaIncome);
                 return (salesIncome - costoTotalProtocolo).toFixed(2);
             }),
         },
@@ -53,7 +78,11 @@ export const resultsTableData = (productionReports, getCiclosValues, reportState
             ...getCiclosValues(productionReports, (r, idx) => {
                 const engordeData = getEngordeData([r], getCiclosValues, reportStatementFullData, indirectCosts);
                 const costoTotalProtocolo = parseFloat(engordeData.find(item => item.key === 'costo_total_protocolo')?.[`ciclo${idx + 1}`]) || 0;
-                const salesIncome = r.sm_totalsalesincome || 0;
+                const raleoIncome = r.sm_raleo_salesincome || 0;
+                const cosechaIncome = r.sm_cosecha_salesincome || 0;
+                const biomassRaleo = r.e_production_json?.biomass_raleo || 0;
+                const biomassPesca = r.e_production_json?.biomass_pesca || 0;
+                const salesIncome = (biomassRaleo * raleoIncome) + (biomassPesca * cosechaIncome);
                 const rendimientoPiscina = salesIncome - costoTotalProtocolo;
                 const areaTotal = (r.poolsize_prebreeding || 0) + (r.poolsize_prefattening || 0) + (r.poolsize_mwarehouse || 0);
                 return areaTotal !== 0 ? (rendimientoPiscina / areaTotal).toFixed(2) : 0;
@@ -65,7 +94,11 @@ export const resultsTableData = (productionReports, getCiclosValues, reportState
             ...getCiclosValues(productionReports, (r, idx) => {
                 const engordeData = getEngordeData([r], getCiclosValues, reportStatementFullData, indirectCosts);
                 const costoTotalProtocolo = parseFloat(engordeData.find(item => item.key === 'costo_total_protocolo')?.[`ciclo${idx + 1}`]) || 0;
-                const salesIncome = r.sm_totalsalesincome || 0;
+                const raleoIncome = r.sm_raleo_salesincome || 0;
+                const cosechaIncome = r.sm_cosecha_salesincome || 0;
+                const biomassRaleo = r.e_production_json?.biomass_raleo || 0;
+                const biomassPesca = r.e_production_json?.biomass_pesca || 0;
+                const salesIncome = (biomassRaleo * raleoIncome) + (biomassPesca * cosechaIncome);
                 const rendimientoPiscina = salesIncome - costoTotalProtocolo;
                 const areaEngorde = r.poolsize_mwarehouse || 0;
                 const diasCultivo = (r.e_production_json.fatten_weeks * 7) || 0;

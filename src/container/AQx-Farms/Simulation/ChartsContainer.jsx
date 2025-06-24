@@ -5,7 +5,7 @@ import StimatedProductionChart from '../planning/StimatedProductionChart';
 import CostIncomeComparisonChart from '../planning/CostIncomeComparisonChart';
 
 const ChartsContainer = ({ scenarios }) => (
-  <Row gutter={25} style={{ marginTop: '40px' }}>
+  <Row gutter={25} style={{ marginTop: '40px', display: 'flex' }}>
     <Col xs={24} xl={24}>
       <StimatedProductionChart scenarios={scenarios} />
     </Col>

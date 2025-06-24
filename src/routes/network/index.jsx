@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import RequestLarva from '../../container/AQx-Network/requestLarva.jsx';
 import RequestShrimp from '../../container/AQx-Network/requestShrimp.jsx';
 import DashboardNetwork from '../../container/AQx-Network/Dashboard/dashboard-network.jsx';
+import ReserveDetail from '../../container/AQx-Network/reserve/ReserveDetail.jsx';
 
 const NotFound = lazy(() => import('../../container/pages/404'));
 
@@ -29,6 +30,7 @@ const Monitoring = React.memo(() => {
                 <Route path="/dashboard/*" element={<DashboardNetwork />} />
                 <Route path="/larva/*" element={<RequestLarva />} />
                 <Route path="/shrimp/*" element={<RequestShrimp />} />
+                <Route path="/reserve/:sm_reserve_id/:sm_reserve_uu" element={<ReserveDetail />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Suspense>

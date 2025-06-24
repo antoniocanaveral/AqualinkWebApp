@@ -266,7 +266,7 @@ export const getEngordeData = (productionReports, getCiclosValues, reportStateme
     },
     {
       key: 'costo_produccion_kg_camaron',
-      descripcion: 'Costo de Producción x Kg de Camarón Cosechado ($/kg)',
+      descripcion: 'Costo Producción x kg de Camarón Cosechado($/kg)',
       ...getCiclosValues(productionReports, (r, idx) => getCostData(r, idx).costo_produccion_kg_camaron),
     },
   ];

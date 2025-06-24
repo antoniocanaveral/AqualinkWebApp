@@ -1,10 +1,11 @@
 "use client"
-import { Typography, Button, Row } from "antd"
+import { Typography, Button, Row, Col } from "antd"
 import PropTypes from "prop-types"
 import { motion } from "framer-motion"
 import { Cards } from "../../../components/cards/frame/cards-frame"
 
 const ScenarioCard = ({ scenario, index, onDelete, onApply, scenariosLength, selectedScenario, onSelect }) => {
+  
   const isAqualinkScenario = index === 3
   const isSelected = selectedScenario === index
   const isOtherSelected = selectedScenario !== null && selectedScenario !== index && !isAqualinkScenario
@@ -70,43 +71,81 @@ const ScenarioCard = ({ scenario, index, onDelete, onApply, scenariosLength, sel
           </div>
         )}
 
-        {/* Compact data rows with smaller fonts */}
-        <div className="flex-row_space-between" style={{ width: "100%" }}>
-          <Typography.Text strong style={{ fontSize: "0.85rem" }}>
-            Densidad
-          </Typography.Text>
-          <Typography.Text style={{ fontSize: "0.85rem" }}>{scenario.inputs.density}</Typography.Text>
-        </div>
-        <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "-4px 0" }} />
+        {/* Compact data rows with smaller fonts in two columns */}
+        <Row gutter={[12, 12]} style={{ width: "100%" }}>
+          <Col span={isAqualinkScenario ? 12 : 24}>
+            <div className="flex-row_space-between" style={{ width: "100%" }}>
+              <Typography.Text strong style={{ fontSize: "0.75rem" }}>
+                Densidad
+              </Typography.Text>
+              <Typography.Text style={{ fontSize: "0.75rem" }}>{scenario.inputs.density}</Typography.Text>
+            </div>
+            <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "4px 0" }} />
 
-        <div className="flex-row_space-between" style={{ width: "100%" }}>
-          
-          <Typography.Text strong style={{ fontSize: "0.85rem" }}>
-            Peso estimado
-          </Typography.Text>
-          <Typography.Text style={{ fontSize: "0.85rem" }}>{scenario.inputs.stimated_weight}g</Typography.Text>
-        </div>
-        <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "-4px 0" }} />
+            <div className="flex-row_space-between" style={{ width: "100%" }}>
+              <Typography.Text strong style={{ fontSize: "0.75rem" }}>
+                Peso
+              </Typography.Text>
+              <Typography.Text style={{ fontSize: "0.75rem" }}>{scenario.inputs.estimated_weight}g</Typography.Text>
+            </div>
+            <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "4px 0" }} />
 
-        <div className="flex-row_space-between" style={{ width: "100%" }}>
-          <Typography.Text strong style={{ fontSize: "0.85rem" }}>
-            Días de ciclo
-          </Typography.Text>
-          <Typography.Text style={{ fontSize: "0.85rem" }}>{scenario.inputs.days_to_harvest}</Typography.Text>
-        </div>
-        <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "-4px 0" }} />
+            <div className="flex-row_space-between" style={{ width: "100%" }}>
+              <Typography.Text strong style={{ fontSize: "0.75rem" }}>
+                Días de ciclo
+              </Typography.Text>
+              <Typography.Text style={{ fontSize: "0.75rem" }}>{scenario.inputs.days_to_harvest}</Typography.Text>
+            </div>
+            <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "4px 0" }} />
 
-        <div className="flex-row_space-between" style={{ width: "100%" }}>
-          <Typography.Text strong style={{ fontSize: "0.85rem" }}>
-            Supervivencia estimada
-          </Typography.Text>
-          <Typography.Text style={{ fontSize: "0.85rem" }}>
-            {typeof scenario.inputs.estimated_survival === "number"
-              ? `${(scenario.inputs.estimated_survival * 100).toFixed(1)}%`
-              : "N/A"}
-          </Typography.Text>
-        </div>
-        <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "-4px 0" }} />
+            <div className="flex-row_space-between" style={{ width: "100%" }}>
+              <Typography.Text strong style={{ fontSize: "0.75rem" }}>
+                Supervivencia
+              </Typography.Text>
+              <Typography.Text style={{ fontSize: "0.75rem" }}>
+                {typeof scenario.inputs.estimated_survival === "number"
+                  ? `${(scenario.inputs.estimated_survival * 100).toFixed(1)}%`
+                  : "N/A"}
+              </Typography.Text>
+            </div>
+          </Col>
+
+          {isAqualinkScenario && (
+          <Col span={12}>
+            <div className="flex-row_space-between" style={{ width: "100%" }}>
+              <Typography.Text strong style={{ fontSize: "0.75rem" }}>
+                Peso entrada
+              </Typography.Text>
+              <Typography.Text style={{ fontSize: "0.75rem" }}>{scenario.inputs.entry_weight}g</Typography.Text>
+            </div>
+            <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "4px 0" }} />
+
+            <div className="flex-row_space-between" style={{ width: "100%" }}>
+              <Typography.Text strong style={{ fontSize: "0.75rem" }}>
+                Crecimiento semanal
+              </Typography.Text>
+              <Typography.Text style={{ fontSize: "0.75rem" }}>{scenario.inputs.weekly_growth}g</Typography.Text>
+            </div>
+            <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "4px 0" }} />
+
+            <div className="flex-row_space-between" style={{ width: "100%" }}>
+              <Typography.Text strong style={{ fontSize: "0.75rem" }}>
+                Fecha de Pesca
+              </Typography.Text>
+              <Typography.Text style={{ fontSize: "0.75rem" }}>{scenario.inputs.harvest_date || "N/A"}</Typography.Text>
+            </div>
+            <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "4px 0" }} />
+
+            <div className="flex-row_space-between" style={{ width: "100%" }}>
+              <Typography.Text strong style={{ fontSize: "0.75rem" }}>
+                Protocolo A.
+              </Typography.Text>
+              <Typography.Text style={{ fontSize: "0.75rem" }}>{scenario.inputs.feeding_protocol || "N/A"}</Typography.Text>
+            </div>
+          </Col>
+          )}
+        </Row>
+        <hr style={{ width: "100%", border: "0.1px solid #ddd", margin: "4px 0" }} />
 
         {/* Compact Biomasa section */}
         <div
@@ -122,9 +161,9 @@ const ScenarioCard = ({ scenario, index, onDelete, onApply, scenariosLength, sel
               ? "linear-gradient(135deg, #01b81a 0%, #00a015 100%)"
               : index === 3
                 ? "#01b81a"
-                : scenario.estimated_production_lb === 0
+                : scenario.estimated_production_kg === 0
                   ? "#ff4d4f"
-                  : scenario.estimated_production_lb > 10
+                  : scenario.estimated_production_kg > 10
                     ? "#258fdb"
                     : "#ffffff",
             fontSize: "1em",
@@ -155,7 +194,7 @@ const ScenarioCard = ({ scenario, index, onDelete, onApply, scenariosLength, sel
               fontWeight: isAqualinkScenario ? "bold" : "normal",
             }}
           >
-            {scenario.estimated_production_lb}lb
+            {Number(scenario.estimated_production_kg).toFixed(2)}kg
           </Typography.Text>
         </div>
 
@@ -229,7 +268,7 @@ const ScenarioCard = ({ scenario, index, onDelete, onApply, scenariosLength, sel
               marginBottom: "6px",
             }}
           >
-            UTILIDAD HA
+            UTILIDAD OPTIMIZADA HA/Día
           </Typography.Text>
           <Typography.Text
             style={{
@@ -243,6 +282,31 @@ const ScenarioCard = ({ scenario, index, onDelete, onApply, scenariosLength, sel
             {scenario.profit_hectare_day > 0 ? `$${scenario.profit_hectare_day.toFixed(2)}` : "N/A"}
           </Typography.Text>
         </div>
+
+        {
+          isAqualinkScenario && scenario.feasable==="no" &&(
+            <div
+              style={{
+                background: "rgba(255, 0, 0, 0.1)",
+                padding: "10px",
+                borderRadius: "8px",
+                textAlign: "center",
+                marginTop: "10px",
+              }}
+            >
+              <Typography.Text
+                style={{
+                  color: "#ff4d4f",
+                  fontWeight: "bold",
+                  fontSize: "0.9rem",
+                }}
+              >
+               ⚠️ Este escenario no es factible con los parámetros actuales.
+                Aqualink recomienda un ajuste de los parámetros para optimizar la producción.
+              </Typography.Text>
+            </div>
+          )
+        }
 
         {/* Compact Cost and Income section */}
         <div
@@ -312,10 +376,13 @@ const ScenarioCard = ({ scenario, index, onDelete, onApply, scenariosLength, sel
           <Button type="default" onClick={() => onDelete(index)} size="small">
             Eliminar
           </Button>
-          {scenario.estimated_production_lb > 0 ? (
+          {scenario.estimated_production_kg > 0 ? (
             <Button
               type={isAqualinkScenario ? "primary" : "default"}
-              onClick={() => onApply(index)}
+              onClick={() => {
+                onSelect(index);
+                onApply(index);
+              }}
               disabled={scenariosLength !== 3}
               size="small"
               style={{
@@ -354,6 +421,7 @@ const ScenarioCard = ({ scenario, index, onDelete, onApply, scenariosLength, sel
           title="Escenario Aqualink"
           size="large"
           style={{
+            minWidth: "350px",
             border: isSelected ? "4px solid #1890ff" : "2px solid #01b81a",
             boxShadow: isSelected
               ? "0 15px 40px rgba(24, 144, 255, 0.4), 0 0 0 4px rgba(24, 144, 255, 0.2)"

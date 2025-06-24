@@ -90,20 +90,21 @@ function AQxFarmMenu({ toggleCollapsed }) {
 
 
     getItem(t('Panel de Control'), 'aqualink-panel', !topMenu && <UilDesktop />, [
-      getItem(
-        <NavLink className="menuItem-icon" to={`${path}/panel-overview`}>
-          {t('Panel Overview')}
-        </NavLink>,
-        'panel-overview',
-        null,
-      ),
-      getItem(
+       getItem(
         <NavLink className="menuItem-icon" to={`${path}/panel`}>
-          {t('Panel Detalles')}
+          {t('Panel de Control')}
         </NavLink>,
         'panel-details',
         null,
       ),
+      getItem(
+        <NavLink className="menuItem-icon" to={`${path}/panel-overview`}>
+          {t('Panel 2')}
+        </NavLink>,
+        'panel-overview',
+        null,
+      ),
+     
     ]),
 
     getItem(t('AquaLink Planning'), 'aqualink-planning', !topMenu && <UilClipboardAlt />, [

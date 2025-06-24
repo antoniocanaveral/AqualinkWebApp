@@ -32,7 +32,6 @@ function TaskCustody() {
                                     ["Piscina 1", "Piscina 2", "Piscina 3"]
                                 ]}
                             />
-                            <CalendarTask />
                             <Row gutter={16} style={{ marginBottom: '20px', display: 'flex' }}>
                                 <Col xl={8} lg={24} xs={24} style={{ display: 'flex', flexDirection: 'column' }}>
                                     <Suspense

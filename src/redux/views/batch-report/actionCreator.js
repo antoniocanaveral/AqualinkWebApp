@@ -25,6 +25,22 @@ export const fetchOperationReport = () => async (dispatch) => {
     }
 };
 
+export const fetchOperationReportPool = () => async (dispatch) => {
+    dispatch({ type: FETCH_CAMPAIGN_LOADING });
+    try {
+        const poolID = Cookies.get('poolId');
+        const response = await DataService.get(
+            `/models/sm_operationreport_view?$filter=M_Warehouse_ID eq ${poolID}` 
+        );
+
+
+        dispatch({ type: FETCH_CAMPAIGN_SUCCESS, payload: response.data.records });
+    } catch (error) {
+        dispatch({ type: FETCH_CAMPAIGN_ERROR, payload: error.message });
+        handleApiError(error, dispatch, error);
+    }
+};
+
 export const fetchGeolocationWarehouse = () => async (dispatch) => {
   try {
     const adOrgId = Cookies.get('orgId');

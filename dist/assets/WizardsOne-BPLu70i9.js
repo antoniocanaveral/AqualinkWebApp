@@ -1,2 +1,0 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/CheckoutWizard-DfCOZtpl.js","assets/index-B54C9UsK.js","assets/index-D3CzUhBr.css","assets/Style-DimRgoaT.js","assets/actionCreator-CldytpcG.js"])))=>i.map(i=>d[i]);
-import{j as a,cQ as r,r as s,_ as e}from"./index-B54C9UsK.js";const t=s.lazy(()=>e(()=>import("./CheckoutWizard-DfCOZtpl.js"),__vite__mapDeps([0,1,2,3,4])));function o(){return a.jsx(r,{className:"ninjadash-wizard-page",children:a.jsx(t,{})})}export{o as default};

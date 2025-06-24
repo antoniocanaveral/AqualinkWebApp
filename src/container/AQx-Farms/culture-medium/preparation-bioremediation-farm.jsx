@@ -145,14 +145,14 @@ function PreparationBioremediationFarm() {
         bacteria,
         ciclo: cycle,
         fecha,
-        cantidad: treat.Amount ,
+        cantidad: treat.Amount,
         total: Number(treat.TotalAmt || 0).toFixed(2),
         campaignIdentifier,
       };
     })
     .filter(row => row.cantidad > 0 || row.total > 0);
 
-  // Derive bioremediationData from the latest campaign
+  // Derive bioremediationData for the latest campaign with bacteria segmentation
   const latestCampaign = Array.from(
     new Set(treatment.map((treat) => treat.C_Campaign_ID?.id))
   )
@@ -169,13 +169,19 @@ function PreparationBioremediationFarm() {
           .filter((treat) => treat.C_Campaign_ID?.id === latestCampaign)
           .reduce((acc, treat) => {
             const weekStart = getWeekStart(treat.SM_Treatment_Date);
-            acc[weekStart] = (acc[weekStart] || 0) + (treat.Amount ); // Sum amounts in kg
+            const bacteria = treat.M_Product_ID?.identifier || 'N/A';
+            if (!acc[weekStart]) {
+              acc[weekStart] = { bacteriaData: {} };
+            }
+            acc[weekStart].bacteriaData[bacteria] = (acc[weekStart].bacteriaData[bacteria] || 0) + (treat.Amount || 0);
             return acc;
           }, {})
       )
-      .map(([semana, cantidadBacterias]) => ({
+      .map(([semana, { bacteriaData }]) => ({
         semana,
-        cantidadBacterias: Number(cantidadBacterias).toFixed(2),
+        bacteriaData: Object.fromEntries(
+          Object.entries(bacteriaData).map(([key, value]) => [key, Number(value).toFixed(2)])
+        ),
       }))
       .sort((a, b) => new Date(a.semana) - new Date(b.semana))
     : [];

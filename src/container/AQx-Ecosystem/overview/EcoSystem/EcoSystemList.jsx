@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useCallback, useEffect, useState } from 'react';
-import { Row, Col, PageHeader, Avatar } from 'antd';
+import { Row, Col, PageHeader, Avatar, message } from 'antd';
 import OverviewCard from '../../../../components/cards/OverviewCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -13,8 +14,14 @@ import {
   UilBooks,
   UilSlack,
 } from '@iconscout/react-unicons';
+import { useHasAccess } from '../../../../routes/useHasAccess';
+
 
 const OverviewDataList = React.memo(() => {
+  const canAccessFarm = useHasAccess('/farm');
+  const canAccessLab = useHasAccess('/lab');
+  const canAccessCustody = useHasAccess('/custody');
+
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -64,7 +71,10 @@ const OverviewDataList = React.memo(() => {
       canAccess: withLabs,
       accessItems: labsOrgs,
       onPress: () => {
-
+        if (!canAccessLab) {
+          message.warning('No tienes acceso a Laboratorios');
+          return;
+        }
         gotModule('LAB', { orgId: labsOrgs[0]?.orgId, orgName: labsOrgs[0]?.orgName, orgEmail: labsOrgs[0]?.orgEmail }, '/lab/panel');
 
       },
@@ -80,7 +90,10 @@ const OverviewDataList = React.memo(() => {
       canAccess: withFarms,
       accessItems: farmsOrgs,
       onPress: () => {
-
+        if (!canAccessFarm) {
+          message.warning('No tienes acceso a Camaroneras');
+          return;
+        }
         gotModule('FARM', { orgId: farmsOrgs[0]?.orgId, orgName: farmsOrgs[0]?.orgName, orgEmail: farmsOrgs[0]?.orgEmail }, '/farm');
 
       },
@@ -96,6 +109,10 @@ const OverviewDataList = React.memo(() => {
       canAccess: withCustody,
       accessItems: custodyOrgs,
       onPress: () => {
+        if (!canAccessCustody) {
+          message.warning('No tienes acceso a Custodia');
+          return;
+        }
         gotModule('CUSTODY', { orgId: custodyOrgs[0]?.orgId, orgName: custodyOrgs[0]?.orgName, orgEmail: custodyOrgs[0]?.orgEmail }, '/custody');
       },
     },

@@ -231,7 +231,7 @@ function CoordinationLabsResumen() {
                             {binaryFields.map((field, index) => (
                               <div key={index} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                                 <div style={{ width: "50px" }}>
-                                  <ReactSVG src={require(`../../static/img/AQx-IMG/${field.icon}`)} />
+                                 <ReactSVG src={new URL(`../../static/img/AQx-IMG/${field.icon}`, import.meta.url).href} />
                                 </div>
                                 <div style={{ marginLeft: "10px" }}>
                                   <strong>{field.label}</strong>

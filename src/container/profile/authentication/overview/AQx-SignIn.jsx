@@ -13,6 +13,8 @@ import { ReactSVG } from 'react-svg';
 import { AuthFormWrap } from './style';
 import { login/*,authOLogin*/ } from '../../../../redux/authentication/actionCreator';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
+import { auth } from '../../../../firebase/firebaseClient';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 
 
@@ -32,30 +34,50 @@ function SignIn() {
 
 
   const handleSubmit = useCallback(
-    (values) => {
-      dispatch(login(values, (isCompleted, error) => {
-        if(error) {
-          console.log( JSON.stringify(error) );
+    async (values) => {
+      const firebaseEmail = import.meta.env.VITE_FB_TECH_EMAIL;
+      const firebasePassword = import.meta.env.VITE_FB_TECH_PASSWORD;
+
+      // Caso 1: Usuario técnico (solo login Firebase)
+      if (values.userName === firebaseEmail) {
+        try {
+          await signInWithEmailAndPassword(auth, firebaseEmail, firebasePassword);
+          console.log("✅ Login con Firebase exitoso");
+
+          // 🔁 Aquí haces redirección directa si quieres
+          console.log("🔄 Redirigiendo al Centro de Conocimiento...");
+          navigate('/knoledge-center'); // o donde quieras llevarlo
+        } catch (firebaseError) {
+          console.error("❌ Error de autenticación Firebase:", firebaseError.message);
           setWithError(true);
-          if(error.invalidTokenError) {
+          setErrorMsg("Error al iniciar sesión en el Centro de Conocimiento.");
+        }
+        return; // 🚫 No continuar con login iDempiere
+      }
+
+      // Caso 2: Usuario normal (login con iDempiere)
+      dispatch(login(values, (isCompleted, error) => {
+        if (error) {
+          console.log(JSON.stringify(error));
+          setWithError(true);
+          if (error.invalidTokenError) {
             setErrorMsg("Usuario y/o contraseña incorrectos.");
-          } else if(error.networkError) {
+          } else if (error.networkError) {
             setErrorMsg("No es posible conectar con el servidor.");
           } else {
             setErrorMsg("Ocurrió un error desconocido");
           }
         } else {
-          if(isCompleted) {
+          if (isCompleted) {
             navigate('/ecosystem');
           } else {
-            navigate('/roles')
+            navigate('/roles');
           }
         }
       }));
     },
     [navigate, dispatch],
   );
-
 
   const onChange = (checked) => {
     setState({ ...state, checked });
@@ -72,9 +94,9 @@ function SignIn() {
             <Form name="login" form={form} onFinish={handleSubmit} layout="vertical">
 
               {
-                withError && (<div style={{marginBottom: 15}}>
+                withError && (<div style={{ marginBottom: 15 }}>
                   <Alert message="Error" description={errorMsg} type="error" />
-                </div> )
+                </div>)
               }
 
               <Form.Item

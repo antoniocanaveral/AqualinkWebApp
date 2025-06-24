@@ -10,26 +10,37 @@ function BioremediationBarChart({ data, height }) {
         '#7FDBFF', // Azul claro
         '#39CCCC', // Azul verdoso
         '#3D9970', // Verde azulado
+        '#FF4136', // Rojo
+        '#FF851B', // Naranja
+        '#FFDC00', // Amarillo
+        '#2ECC40', // Verde
+        '#B10DC9', // Púrpura
     ];
 
     const colors = generateColorScale();
 
+    // Extract unique bacteria types
+    const bacteriaTypes = [...new Set(data.flatMap(item => Object.keys(item.bacteriaData)))];
+
+    // Create datasets for each bacteria type
+    const datasets = bacteriaTypes.map((bacteria, index) => ({
+        label: bacteria,
+        data: data.map(item => item.bacteriaData[bacteria] || 0),
+        backgroundColor: colors[index % colors.length],
+        barPercentage: 0.6 / bacteriaTypes.length, // Adjust bar width based on number of bacteria
+        categoryPercentage: 0.8,
+    }));
+
     const chartData = {
         labels: data.map(item => item.semana), // Semanas del año
-        datasets: [
-            {
-                label: 'Cantidad de Bacterias Aplicadas (kg)',
-                data: data.map(item => item.cantidadBacterias), // Datos de bacterias aplicadas
-                backgroundColor: data.map((_, index) => colors[index % colors.length]), // Alternar colores
-                barPercentage: 0.6,
-            },
-        ],
+        datasets,
     };
 
     const options = {
         scales: {
             y: {
                 beginAtZero: true,
+                stacked: true, // Enable stacking for y-axis
                 ticks: {
                     fontSize: 14,
                     fontFamily: 'Jost',
@@ -42,6 +53,7 @@ function BioremediationBarChart({ data, height }) {
                 },
             },
             x: {
+                stacked: true, // Enable stacking for x-axis
                 ticks: {
                     fontSize: 14,
                     fontFamily: 'Jost',
@@ -57,9 +69,6 @@ function BioremediationBarChart({ data, height }) {
         plugins: {
             legend: {
                 display: true,
-                labels: {
-                    font: { family: 'Jost', size: 14 },
-                },
             },
         },
         maintainAspectRatio: false, // Necesario para permitir el control dinámico de la altura

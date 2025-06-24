@@ -165,55 +165,72 @@ const loadBinesByCoord = (id, callback) => {
 const submitBin = (fishingId, binsData, callback) => {
     return async (dispatch) => {
         try {
-
             const validBins = binsData.filter((bin) => bin.sm_securitykits_id !== "NA");
 
             if (validBins.length === 0) {
                 return callback(false, "No hay bins válidos para registrar (ningún kit asignado).");
             }
+            
             const selectedOrgId = Cookies.get('orgId');
             if (!selectedOrgId) {
                 throw new Error('Org ID no encontrado en las cookies.');
             }
 
+            // Validar que los bins y kits no estén en uso
             for (const bin of validBins) {
-                let binValidationQuery = `SM_Fishing_ID eq ${fishingId} AND Name eq '${escape(bin.bin)} AND AD_org_ID eq ${selectedOrgId}'`;
-
-                if (bin.sm_securitykits_id) {
-                    binValidationQuery += ` OR sm_securitykits_id eq ${bin.sm_securitykits_id}`;
+                // Validar en sm_fishingbin si el bin ya está asignado a alguna pesca
+                let binValidationQuery = `sm_bin_id eq ${bin.key}`;
+                const fishingBinResponse = await DataService.get(`/models/sm_fishingbin?$filter=${binValidationQuery}`);
+                
+                if (fishingBinResponse.data && fishingBinResponse.data.records && fishingBinResponse.data.records.length > 0) {
+                    return callback(false, `El Bin ${bin.bin} ya está asignado a otra pesca`);
                 }
-                const response = await DataService.get(`/models/sm_fishingbin?$filter=${binValidationQuery}`);
-                if (
-                    response.data &&
-                    response.data.records &&
-                    response.data.records.length > 0
-                ) {
-                    return callback(
-                        false,
-                        `El Bin ${bin.bin} o el kit con id ${bin.sm_securitykits_id} ya están en uso en esta pesca`
-                    );
+
+                // Validar que el kit de seguridad no esté en uso
+                if (bin.sm_securitykits_id) {
+                    let kitValidationQuery = `sm_securitykits_id eq ${bin.sm_securitykits_id}`;
+                    const kitResponse = await DataService.get(`/models/sm_fishingbin?$filter=${kitValidationQuery}`);
+                    
+                    if (kitResponse.data && kitResponse.data.records && kitResponse.data.records.length > 0) {
+                        return callback(false, `El kit de seguridad ${bin.sm_kitcode} ya está en uso en otra pesca`);
+                    }
                 }
             }
 
-
+            // Crear los registros de sm_fishingbin y actualizar el estado de los bins
             for (const bin of validBins) {
-                console.log(bin)
-                const payload = {
+                console.log('Procesando bin:', bin);
+                
+                // Crear registro en sm_fishingbin
+                const fishingBinPayload = {
                     SM_Fishing_ID: fishingId,
                     Name: bin.bin,
-                    SM_SecurityKits_ID: bin.sm_securitykits_id
+                    SM_SecurityKits_ID: bin.sm_securitykits_id,
+                    sm_bin_ID: bin.key, // Relación con sm_bin
+                    // Copiar los stamps del kit de seguridad
+                    SM_Stamp1: bin.seal1,
+                    SM_Stamp2: bin.seal2,
+                    SM_Stamp3: bin.seal3,
+                    SM_Stamp4: bin.seal4
                 };
-                await DataService.put(`/models/sm_fishingbin/${bin.key}`, payload);
+                
+                await DataService.post(`/models/sm_fishingbin`, fishingBinPayload);
+
+                // Actualizar el estado del bin a 'OCUPADO' en sm_bin
+                const binStatusPayload = {
+                    sm_status: 'OCUPADO'
+                };
+                
+                await DataService.put(`/models/sm_bin/${bin.key}`, binStatusPayload);
             }
 
             callback(true);
         } catch (err) {
             dispatch(netWorkError(err));
-            callback(false, err.error.message);
+            callback(false, err?.error?.message || err?.message || 'Error al procesar los bins');
         }
     };
 };
-
 
 const deleteBin = (binId, callback) => {
     return async (dispatch) => {

@@ -105,7 +105,7 @@ const AuthInfo = React.memo(() => {
       <div className="ninjadash-nav-actions__item ninjadash-nav-actions__language">
         <Dropdown placement="bottomRight" content={country} trigger="click">
           <Link to="#" className="ninjadash-nav-action-link">
-            <img src={new URL(`../../../static/img/AQx-IMG/${flag}.png`, import.meta.url).href} alt="" />
+            <img src={new URL(`../../../../static/img/AQx-IMG/${flag}.png`, import.meta.url).href} alt="" />
           </Link>
         </Dropdown>
       </div>

@@ -16,6 +16,7 @@ import AuthInfo from '../components/utilities/auth-info/info';
 import AQxFarmMenu from './AQxFarmMenu';
 
 import { theme } from '../config/theme/themeVariables';
+import { AQxImages } from '../static/img';
 
 
 const { Header, Sider, Content } = Layout;
@@ -162,8 +163,8 @@ const ThemeLayout = (WrappedComponent) => {
                         src={
                           window.visualViewport.width <= 1024 ||
                             collapsed
-                            ? new URL(`../static/img/AQx-IMG/aqualink-dark.svg`, import.meta.url).href
-                            : new URL(`../static/img/AQx-IMG/aqualink-lite.svg`, import.meta.url).href
+                            ? AQxImages.logoDark
+                            : AQxImages.logoLite
                         }
                         alt=""
                       />
@@ -249,7 +250,7 @@ const ThemeLayout = (WrappedComponent) => {
                     <Row>
                       <Col md={12} xs={24}>
                         <span className="admin-footer__copyright">
-                          © 2024<Link to="#">Aqualink</Link>
+                          © 2025<Link to="#">Aqualink</Link>
                         </span>
                       </Col>
 

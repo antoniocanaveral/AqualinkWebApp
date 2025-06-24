@@ -8,88 +8,66 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 function StimatedProductionChart({ scenarios }) {
+    const labels = scenarios.map((_, index) =>
+        index === 3 ? 'Escenario Aqualink' : `Escenario ${index + 1}`
+    );
 
-    const labels = scenarios.map((scenario, index) => `Escenario ${index + 1}`);
-
+    const backgroundColors = scenarios.map((_, index) =>
+        index === 3 ? '#4BC0C0' : '#FFCE56' // Color distinto para Escenario Aqualink
+    );
 
     const data = {
         labels: labels,
         datasets: [
             {
                 label: 'Producción Estimada (lb)',
-                data: scenarios.map(scenario => scenario.estimated_production_lb),
-                backgroundColor: '#FFCE56', // Color de las barras
+                data: scenarios.map(s => s.estimated_production_kg),
+                backgroundColor: backgroundColors,
                 barPercentage: 0.6,
             },
         ],
     };
 
-
     const options = {
         responsive: true,
-        maintainAspectRatio: false, // Permite que el gráfico se adapte al contenedor
+        maintainAspectRatio: false,
         scales: {
             y: {
                 beginAtZero: true,
                 ticks: {
                     color: '#8C90A4',
-                    font: {
-                        size: 14,
-                        family: 'Jost',
-                    },
-                    callback: function(value) {
-                        return value.toFixed(2); // Mostrar dos decimales
-                    },
+                    font: { size: 14, family: 'Jost' },
+                    callback: value => value.toFixed(2),
                 },
                 title: {
                     display: true,
                     text: 'Producción (lb)',
                     color: '#8C90A4',
-                    font: {
-                        size: 16,
-                        family: 'Jost',
-                        weight: 'bold',
-                    },
+                    font: { size: 16, family: 'Jost', weight: 'bold' },
                 },
             },
             x: {
-                ticks: {
-                    color: '#8C90A4',
-                    font: {
-                        size: 14,
-                        family: 'Jost',
-                    },
-                },
+                ticks: { color: '#8C90A4', font: { size: 14, family: 'Jost' } },
                 title: {
                     display: true,
                     text: 'Escenarios',
                     color: '#8C90A4',
-                    font: {
-                        size: 16,
-                        family: 'Jost',
-                        weight: 'bold',
-                    },
+                    font: { size: 16, family: 'Jost', weight: 'bold' },
                 },
             },
         },
         plugins: {
-            legend: {
-                display: false, // Ocultar la leyenda ya que solo hay un dataset
-            },
+            legend: { display: false },
             tooltip: {
                 callbacks: {
-                    label: function(context) {
+                    label: context => {
                         let label = context.dataset.label || '';
-                        if (label) {
-                            label += ': ';
-                        }
-                        if (context.parsed.y !== null) {
-                            label += `${context.parsed.y.toFixed(2)} lb`;
-                        }
+                        if (label) label += ': ';
+                        if (context.parsed.y !== null) label += `${context.parsed.y.toFixed(2)} lb`;
                         return label;
-                    }
-                }
-            }
+                    },
+                },
+            },
         },
     };
 
@@ -99,5 +77,6 @@ function StimatedProductionChart({ scenarios }) {
         </Cards>
     );
 }
+
 
 export default StimatedProductionChart;

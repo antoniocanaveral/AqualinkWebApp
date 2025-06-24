@@ -109,9 +109,10 @@ const LayoutContainer = Styled.div`
                 margin-right: 0;
             }
             .navbar-brand{
-                display: flex;
                 justify-content: space-between;
                 align-items: center;
+                  gap: 12px;
+
                 button{
                     padding: 0;
                     line-height: 0;

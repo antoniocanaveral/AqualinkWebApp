@@ -330,7 +330,7 @@ function ShrimpFarm() {
           <Col xl={16} xs={24} style={{ display: "flex" }}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
               <Cards title="Reporte de Siembra" size="large">
-                <div style={{display: "flex", flexWrap: "wrap", justifyContent: "space-between", width: "100%"}}>
+                <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", width: "100%" }}>
                   <div>
                     <span className="label">Fecha:</span>
                     <span>{plantingReportData.fecha || "N/A"}</span>
@@ -352,40 +352,51 @@ function ShrimpFarm() {
                   </div>
                 </div>
                 <div className="harvest-report-divider" />
-                <div className='flex-row'>
-
+                <div
+                  className="flex-row"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
                   {/* Densidad programada */}
-                  <div className="harvest-report-section-3">
-
-
+                  <div
+                    className="harvest-report-section-3"
+                    style={{
+                      width: "300px", // Ancho fijo para LABORATORIO
+                      textAlign: "center", // Centrar contenido
+                    }}
+                  >
                     <div style={{ width: "100%" }}>
                       <h2 className="label">LABORATORIO</h2>
-                      <div >
+                      <div>
                         <span className="label">Densidad Programada:</span>
-
                         <span>{plantingReportData.densidadProgramada || "N/A"}</span>
                       </div>
                       <div>
                         <span className="label">⦾ PL x gr:</span>
                         <span>{plantingReportData.plPorGr || "N/A"}</span>
                       </div>
-
                       <div>
                         <span className="label">⦾ Salinidad Despacho:</span>
                         <span>{plantingReportData.salinidadDespacho || "N/A"} ppm</span>
                       </div>
                     </div>
-
                   </div>
 
                   {/* Densidad estimada */}
-                  <div className="harvest-report-section-3">
-
-
+                  <div
+                    className="harvest-report-section-3"
+                    style={{
+                      width: "300px", // Ancho fijo para FINCA
+                      textAlign: "center", // Centrar contenido
+                    }}
+                  >
                     <div style={{ width: "100%" }}>
-
                       <h2 className="label">FINCA</h2>
-                      <div >
+                      <div>
                         <span className="label">Densidad Estimada:</span>
                         <span>{plantingReportData.densidadEstimada || "N/A"}</span>
                       </div>
@@ -406,7 +417,6 @@ function ShrimpFarm() {
                         <span>{plantingReportData.odPc || "N/A"} ppm</span>
                       </div>
                     </div>
-
                   </div>
                 </div>
                 <div className="harvest-report-divider" />

@@ -13,6 +13,7 @@ const usePageHeaderSelectors = ({
   const [selectedOrg, setSelectedOrg] = useState(Number(Cookies.get('orgId')) || null);
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedPool, setSelectedPool] = useState(Number(Cookies.get('poolId')) || null);
+  const [selectedPoolSize, setSelectedPoolSize] = useState(null); // Nuevo estado para poolSize
 
   // Selectores de Redux
   const organizations = orgsSelector();
@@ -25,17 +26,22 @@ const usePageHeaderSelectors = ({
     Cookies.set('orgEmail', orgEmail || '');
     Cookies.remove('poolId');
     setSelectedPool(null);
+    setSelectedPoolSize(null); // Reset poolSize
     if (includeSector) setSelectedSector(null);
   };
 
   const handleSectorChange = (sectorId) => {
     setSelectedSector(sectorId);
     setSelectedPool(null);
+    setSelectedPoolSize(null); // Reset poolSize
   };
 
   const handlePoolChange = (poolId) => {
     setSelectedPool(poolId);
     Cookies.set('poolId', poolId);
+    // Buscar el poolSize correspondiente
+    const selectedPoolOption = poolsOptions.find(pool => pool.value === poolId);
+    setSelectedPoolSize(selectedPoolOption?.poolSize || null);
   };
 
   // Opciones para el selector de organizaciones
@@ -122,6 +128,7 @@ const usePageHeaderSelectors = ({
     selectedOrg,
     selectedSector,
     selectedPool,
+    selectedPoolSize, // Incluir poolSize en el retorno
     combinedSelectOptions,
   };
 };

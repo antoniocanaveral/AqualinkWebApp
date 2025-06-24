@@ -59,6 +59,8 @@ import { custodyControlReducer } from './custodyControl/reducers';
 import { smPlanningReducer } from './planning/reducers';
 import { salesIncomeReducer } from './salesincome/reducers';
 import { poolPreparationReducer } from './views/pool-preparation/reducers';
+import { reserveReducer } from './reserve/reducers';
+import { smBinReducer } from './bin/reducers';
 
 const rootReducers = combineReducers({
   themeUsers: themeUsersReducer,
@@ -84,6 +86,8 @@ const rootReducers = combineReducers({
   labanalysis: labanalysisReducer,
   lote: loteReducer,
   lablote: labloteReducer,
+  reserve: reserveReducer,
+  smBin: smBinReducer,
 
   batchReport: batchReportReducer,
   traceabilityReport: traceabilityReportReducer,

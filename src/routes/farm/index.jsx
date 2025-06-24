@@ -37,6 +37,8 @@ import KnowledgeBase from '../../container/pages/knowledgeBase/Index';
 import AddClientFarm from '../../container/AQx-Farms/client/client-add-farm';
 import PanelFarms from '../../container/AQx-Farms/panel-farms';
 import PanelFarmOverview from '../../container/AQx-Farms/panel-farm-overview';
+import DynamicKnowledgeBase from '../../container/pages/knowledgeBase/DynamicKnowledgeBase';
+import KnowledgeViewer from '../../container/pages/knowledgeBase/KnoledgeViewer';
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Farm = React.memo(() => {
@@ -72,7 +74,7 @@ const Farm = React.memo(() => {
         <Route path="/monitoring/plate-sampling/*" element={<PlateSamplingFarm />} />
         <Route path="/monitoring/feeding-tables/*" element={<FeedingTableFarms />} />
 
-        <Route path="/KnowledgeBase/*" element={<KnowledgeBase />} />
+        <Route path="/KnowledgeBase/*" element={<KnowledgeViewer />} />
         <Route path="/analytics/*" element={<AnalyticRoutesFarm />} />
         <Route path="/crop/*" element={<CropRoutesFarm />} />
         <Route path="/culture-medium/*" element={<CultureMediumRoutesFarm />} />

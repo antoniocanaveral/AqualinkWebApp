@@ -12,13 +12,12 @@ export const registerLablote = (labloteData) => async (dispatch) => {
         const adOrgId = Number(Cookies.get('orgId'));
         const poolId = Number(Cookies.get("poolId"));
 
-        const existingResponse = await DataService.get(
+       /* const existingResponse = await DataService.get(
             `/models/sm_lablote?$filter=AD_Client_ID eq ${adClientId} AND AD_Org_ID eq ${adOrgId} AND M_Warehouse_ID eq ${poolId}`);
 
         const existingLablote = existingResponse.data?.records[0];
         console.log(existingLablote
-        )
-console.log(labloteData)
+        )/*
         if (existingLablote) {
             const updatedData = {
                 sm_reservedbiomass: labloteData.sm_targetbiomass, 
@@ -39,18 +38,21 @@ console.log(labloteData)
             dispatch({ type: 'REGISTER_LABLOTE_SUCCESS', payload: updateResponse.data });
             message.success('Lote de laboratorio actualizado con éxito');
         } else {
-
+         
+*/
+labloteData.sm_reservedbiomass = Number(labloteData.sm_targetbiomass);
+        labloteData.sm_targetbiomass = Number(labloteData.sm_targetbiomass);
             const newResponse = await DataService.post(`/models/sm_lablote`, {
                 AD_Client_ID: adClientId,
                 AD_Org_ID: adOrgId,
                 M_Warehouse_ID: poolId,
-                sm_reservedbiomass: labloteData.sm_targetbiomass,
+                sm_reservedbiomass: Number(labloteData.sm_targetbiomass),
                 ...labloteData,
             });
 
             dispatch({ type: 'REGISTER_LABLOTE_SUCCESS', payload: newResponse.data });
             message.success('Lote de laboratorio registrado con éxito');
-        }
+       // }
     } catch (error) {
         dispatch({ type: 'REGISTER_LABLOTE_ERROR', payload: error.message });
         message.error(`Error al registrar o actualizar el lote: ${error.message}`);

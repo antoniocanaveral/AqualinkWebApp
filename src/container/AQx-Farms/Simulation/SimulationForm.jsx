@@ -14,6 +14,10 @@ const SimulationForm = ({
   inputLabels,
   fixedFieldNeedsValue,
   fixedFieldDisabled,
+  selectedPoolSize,
+  indirectCosts,
+  setCultivationSystem,
+  minStartDate
 }) => {
   const fixedOptionFieldNames = {
     densidad: 'density',
@@ -21,6 +25,7 @@ const SimulationForm = ({
     peso: 'stimated_weight',
     fca: 'stimated_fca',
   };
+  console.log("minStartDate", minStartDate);
 
   const foodPrice = Form.useWatch('food_price', form);
 
@@ -33,8 +38,19 @@ const SimulationForm = ({
     }
   }, [foodPrice, form]);
 
+  // Función para obtener el costo indirecto más reciente
+  const getLatestIndirectCost = () => {
+    if (!indirectCosts || indirectCosts.length === 0) return 0;
+
+    const sortedCosts = [...indirectCosts].sort((a, b) =>
+      new Date(b.Created) - new Date(a.Created)
+    );
+
+    return sortedCosts[0]?.sm_indirectcostvalue || 0;
+  };
+
   return (
-    <div >
+    <div>
       <Row gutter={[16, 16]}>
         <Col xs={12} md={12} lg={12}>
           {simulationType === 'fijo' && (
@@ -43,8 +59,8 @@ const SimulationForm = ({
               name="fixedOption"
               initialValue={fixedOption}
               rules={[{ required: true, message: 'Este campo es requerido' }]}
-              labelCol={{ span: 24 }} // Label takes full width
-              wrapperCol={{ span: 24 }} // Input takes full width, forcing vertical layout
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
             >
               <Select
                 style={{ width: '100%' }}
@@ -66,10 +82,14 @@ const SimulationForm = ({
             name="cultivationSystem"
             initialValue="Bifasico"
             rules={[{ required: true, message: 'Este campo es requerido' }]}
-            labelCol={{ span: 24 }} // Label takes full width
-            wrapperCol={{ span: 24 }} // Input takes full width, forcing vertical layout
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
           >
-            <Select style={{ width: '100%' }} placeholder="Seleccione un Sistema de Cultivo">
+            <Select
+              style={{ width: '100%' }}
+              placeholder="Seleccione un Sistema de Cultivo"
+              onChange={setCultivationSystem}
+            >
               <Option value="Bifasico">Bifásico</Option>
               <Option value="Trifasico">Trifásico</Option>
             </Select>
@@ -94,6 +114,8 @@ const SimulationForm = ({
                 type="number"
                 style={{ width: '100%' }}
                 min={0}
+                disabled={true} // No editable
+                value={selectedPoolSize}
               />
             </Form.Item>
           </Col>
@@ -105,6 +127,10 @@ const SimulationForm = ({
             >
               <DatePicker
                 placeholder="Fecha de inicio"
+                disabledDate={current =>
+                  minStartDate ? current && current < minStartDate.toDate() : false
+                }
+
                 style={{
                   height: 'auto',
                   width: '100%',
@@ -161,7 +187,7 @@ const SimulationForm = ({
                 placeholder="Seleccione Peso (g)"
                 disabled={fixedOption === 'peso' && fixedFieldDisabled}
               >
-                {Array.from({ length: 24 }, (_, i) => 15 + i).map(value => (
+                {Array.from({ length: 24 }, (_, i) => 12 + i).map(value => (
                   <Option key={value} value={value}>{value.toLocaleString()} g</Option>
                 ))}
               </Select>
@@ -224,21 +250,24 @@ const SimulationForm = ({
               </Select>
             </Form.Item>
           </Col>
+
+          {/* Campo de Días de PreEngorde solo para Trifásico */}
           {cultivationSystem === 'Trifasico' && (
             <Col xs={24} md={12} lg={6}>
               <Form.Item
-                label={<span style={{ color: '#73879c' }}>Días de pre-engorde</span>}
+                label={<span style={{ color: '#73879c' }}>Días de PreEngorde</span>}
                 name="pre_fattening_days"
-                rules={[{ required: true, message: 'Este campo es requerido' }]}
               >
-                <Select placeholder="Días">
-                  {[15, 20, 25, 30].map(day => (
-                    <Option key={day} value={day}>{day} días</Option>
-                  ))}
-                </Select>
+                <InputNumber
+                  placeholder="28 días"
+                  value={28}
+                  disabled={true} // No editable, fijo en 28
+                  style={{ width: '100%' }}
+                />
               </Form.Item>
             </Col>
           )}
+
           <Col xs={24} md={12} lg={6}>
             <Form.Item
               label={<span style={{ color: '#73879c' }}>{inputLabels.food_price}</span>}
@@ -274,11 +303,14 @@ const SimulationForm = ({
               name="dayly_inditect_cost"
               rules={[{ required: true, message: 'Este campo es requerido' }]}
             >
-              <Select placeholder="Selecciona un valor">
-                {Array.from({ length: 16 }, (_, i) => 15 + i).map(value => (
-                  <Option key={value} value={value}>{value}</Option>
-                ))}
-              </Select>
+              <InputNumber
+                placeholder="Costo indirecto"
+                value={getLatestIndirectCost()}
+                disabled={true} // No editable
+                style={{ width: '100%' }}
+                formatter={value => `$ ${value}`}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} md={12} lg={5}>
@@ -323,6 +355,9 @@ SimulationForm.propTypes = {
   inputLabels: PropTypes.object.isRequired,
   fixedFieldNeedsValue: PropTypes.bool.isRequired,
   fixedFieldDisabled: PropTypes.bool.isRequired,
+  selectedPoolSize: PropTypes.number,
+  indirectCosts: PropTypes.array,
+  setCultivationSystem: PropTypes.func.isRequired,
 };
 
 export default SimulationForm;

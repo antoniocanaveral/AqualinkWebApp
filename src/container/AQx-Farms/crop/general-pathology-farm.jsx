@@ -201,6 +201,9 @@ function GeneralPathologyFarm() {
   }, [dispatch, selectedPool]);
 
   const renderLevel = (level) => {
+    if (level === 'N/A') {
+      return <span style={{ color: '#000' }}>{level}</span>; // Ensure 'N/A' is visible with black text
+    }
     let className = '';
     if (level.includes('bajo')) {
       className = 'badge-green';

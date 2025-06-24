@@ -216,7 +216,7 @@ const ThemeLayout = (WrappedComponent) => {
                     <Row>
                       <Col md={12} xs={24}>
                         <span className="admin-footer__copyright">
-                          © 2024<Link to="#">Aqualink</Link>
+                          © 2025<Link to="#">Aqualink</Link>
                         </span>
                       </Col>
                     

@@ -27,13 +27,13 @@ function RealPlanning() {
     const currentYear = 2025;
     const currentDate = moment();
 
-    // Define table columns
     const columns = [
-        { title: 'Lote ID', dataIndex: 'c_campaign_id', key: 'c_campaign_id' },
+        { title: 'Lote ID', dataIndex: 'c_campaign_id', key: 'c_campaign_id', align: 'left' },
         {
             title: 'ESTADO',
             dataIndex: 'sm_state',
             key: 'sm_state',
+            align: 'left',
             render: (text) => (
                 <span
                     style={{
@@ -45,21 +45,21 @@ function RealPlanning() {
                 </span>
             ),
         },
-        { title: 'Protocolo', dataIndex: 'sm_farmingsystem', key: 'sm_farmingsystem' },
-        { title: 'Estrategia', dataIndex: 'sm_strategy', key: 'sm_strategy' },
-        { title: 'Fecha Inicio', dataIndex: 'startdate', key: 'startdate' },
-        { title: 'Fecha Cosecha', dataIndex: 'sm_plannedfinishdate', key: 'sm_plannedfinishdate' },
-        { title: 'DdCE', dataIndex: 'sm_fattenweeks', key: 'sm_fattenweeks' },
-        { title: 'DdC', dataIndex: 'sm_prebreedingweeks', key: 'sm_prebreedingweeks' },
-        { title: 'Peso Objetivo', dataIndex: 'sm_targetweight', key: 'sm_targetweight' },
-        { title: 'Peso DdC', dataIndex: 'sm_animalsgramreal', key: 'sm_animalsgramreal' },
-        { title: 'Peso Siembra', dataIndex: 'sm_animalsgram', key: 'sm_animalsgram' },
-        { title: 'Densidad Siembra', dataIndex: 'sm_density', key: 'sm_density' },
-        { title: 'FCA Objetivo', dataIndex: 'sm_fca', key: 'sm_fca' },
-        { title: 'FCA DdC', dataIndex: 'sm_fcareal', key: 'sm_fcareal' },
-        { title: 'Biomasa EST', dataIndex: 'sm_biomass', key: 'sm_biomass' },
-        { title: 'Biomasa DdC', dataIndex: 'sm_confirmedbiomass', key: 'sm_confirmedbiomass' },
-        { title: 'Biomasa Ha', dataIndex: 'sm_biomass_per_poolsize', key: 'sm_biomass_per_poolsize' },
+        { title: 'Protocolo de Producción', dataIndex: 'sm_farmingsystem', key: 'sm_farmingsystem', align: 'left' },
+        { title: 'Protocolo Alimentación', dataIndex: 'sm_strategy', key: 'sm_strategy', align: 'center' },
+        { title: 'Fecha Inicio', dataIndex: 'startdate', key: 'startdate', align: 'left' },
+        { title: 'Fecha Cosecha', dataIndex: 'sm_plannedfinishdate', key: 'sm_plannedfinishdate', align: 'left' },
+        { title: 'DdCE', dataIndex: 'sm_fattenweeks', key: 'sm_fattenweeks', align: 'right' },
+        { title: 'DdCR', dataIndex: 'sm_prebreedingweeks', key: 'sm_prebreedingweeks', align: 'right' },
+        { title: 'Peso Objetivo', dataIndex: 'sm_targetweight', key: 'sm_targetweight', align: 'right' },
+        { title: 'Peso DdC', dataIndex: 'sm_animalsgramreal', key: 'sm_animalsgramreal', align: 'right' },
+        { title: 'Peso de Entrada', dataIndex: 'sm_animalsgram', key: 'sm_animalsgram', align: 'right' },
+        { title: 'Densidad Estimada', dataIndex: 'sm_density', key: 'sm_density', align: 'right' },
+        { title: 'Densidad Real', dataIndex: 'SM_DensityPerHectareFatten', key: 'SM_DensityPerHectareFatten', align: 'right' },
+        { title: 'FCA DdC', dataIndex: 'sm_fcareal', key: 'sm_fcareal', align: 'right' },
+        { title: 'Biomasa EST', dataIndex: 'sm_biomass', key: 'sm_biomass', align: 'right' },
+        { title: 'Biomasa DdC', dataIndex: 'sm_confirmedbiomass', key: 'sm_confirmedbiomass', align: 'right' },
+        { title: 'Biomasa Ha', dataIndex: 'sm_biomass_per_poolsize', key: 'sm_biomass_per_poolsize', align: 'right' },
     ];
 
     // Helper function to safely convert to number
@@ -88,6 +88,7 @@ function RealPlanning() {
                 sm_animalsgramreal: plan.SM_AnimalsGramReal ? plan.SM_AnimalsGramReal.toFixed(2) : 'N/A',
                 sm_animalsgram: plan.SM_AnimalsGram ? plan.SM_AnimalsGram.toFixed(2) : 'N/A',
                 sm_density: plan.SM_Density || 'N/A',
+                SM_DensityPerHectareFatten: plan.SM_DensityPerHectareFatten ? plan.SM_DensityPerHectareFatten.toFixed(2) : 'N/A',
                 sm_fca: plan.SM_FCA ? plan.SM_FCA.toFixed(2) : 'N/A',
                 sm_fcareal: plan.SM_FCAReal ? plan.SM_FCAReal.toFixed(2) : 'N/A',
                 sm_biomass: plan.SM_Biomass || 'N/A',
@@ -376,6 +377,18 @@ function RealPlanning() {
                     <Col xl={24} xs={24} style={{ display: 'flex' }}>
                         <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
                             <Cards title="Planning Data" size="large" style={{ width: '100%', height: '100%' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "20px" }}>
+                                    <div>
+                                        DdCE: Días de Corrida Estimada<br />
+                                    </div>
+                                    <div>
+                                        DdCR: Días de Corrida Real<br />
+                                    </div>
+                                    <div>
+                                        Peso DdC: Peso a días de corrida<br />
+                                    </div>
+
+                                </div>
                                 <Table
                                     className="table-responsive"
                                     dataSource={planningData}

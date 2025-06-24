@@ -1,0 +1,1 @@
+import{aJ as i,j as e,eo as o,e as x,f as m,ep as v}from"./index-BJIB_XH5.js";import{O as a}from"./overviewData-xO0Td41A.js";const c=i.memo(()=>{const t=a.slice(Math.max(a.length-4,1));return e.jsx(o,{children:e.jsx(x,{gutter:25,children:t.map((r,s)=>e.jsx(m,{xxl:6,sm:12,xs:24,children:e.jsx(v,{data:r})},s))})})});export{c as default};
