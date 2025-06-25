@@ -1,1 +1,0 @@
-import{j as t}from"./index-BJIB_XH5.js";import{T as s}from"./TaskList-KOM8B5gJ.js";import{T as r}from"./Index-Tssaku5u.js";import"./Style-8BCI8C7O.js";import"./actionCreator-DEGH0E64.js";function p(){return t.jsx(r,{className:"mb-30",children:t.jsx(s,{header:"Task List",description:!0,taskStatus:"favourite",taskLimit:10})})}export{p as default};

@@ -1,0 +1,1 @@
+import{aJ as i,j as e,em as o,e as m,f as x,en as n}from"./index-zxEALkft.js";import{O as a}from"./overviewData-xO0Td41A.js";const c=i.memo(()=>{const t=a.slice(Math.max(a.length-4,1));return e.jsx(o,{children:e.jsx(m,{gutter:25,children:t.map((r,s)=>e.jsx(x,{xxl:6,sm:12,xs:24,children:e.jsx(n,{data:r})},s))})})});export{c as default};
