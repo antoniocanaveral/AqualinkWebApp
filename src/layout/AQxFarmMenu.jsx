@@ -99,7 +99,7 @@ function AQxFarmMenu({ toggleCollapsed }) {
       ),
       getItem(
         <NavLink className="menuItem-icon" to={`${path}/panel-overview`}>
-          {t('Panel 2')}
+          {t('Panel Detalles')}
         </NavLink>,
         'panel-overview',
         null,

@@ -42,6 +42,38 @@ const LoteDetails = ({ selectedLote, fromSection = null }) => {
 
     return <span style={{ color: 'green', fontSize: '15px' }}>●Passed</span>
   }
+
+  // Función para calcular promedios del farm sampling
+  const calculateFarmSamplingAverages = () => {
+    if (!selectedLote.sm_farmsampling?.farmSampling || !Array.isArray(selectedLote.sm_farmsampling.farmSampling)) {
+      return { averageMetabisulfite: "N/A", averageTemperature: "N/A" };
+    }
+
+    const farmSampling = selectedLote.sm_farmsampling.farmSampling;
+    
+    // Filtrar valores válidos (no nulos, no undefined, y que sean números)
+    const validMetabisulfite = farmSampling
+      .map(sample => sample.mmbs)
+      .filter(value => value !== null && value !== undefined && !isNaN(value));
+    
+    const validTemperature = farmSampling
+      .map(sample => sample.temp)
+      .filter(value => value !== null && value !== undefined && !isNaN(value));
+
+    // Calcular promedios
+    const averageMetabisulfite = validMetabisulfite.length > 0 
+      ? (validMetabisulfite.reduce((sum, value) => sum + Number(value), 0) / validMetabisulfite.length).toFixed(2)
+      : "N/A";
+
+    const averageTemperature = validTemperature.length > 0 
+      ? (validTemperature.reduce((sum, value) => sum + Number(value), 0) / validTemperature.length).toFixed(2)
+      : "N/A";
+
+    return { averageMetabisulfite, averageTemperature };
+  };
+
+  const { averageMetabisulfite, averageTemperature } = calculateFarmSamplingAverages();
+
   const fullSections = [
     {
       title: "HATCHERY",
@@ -143,10 +175,18 @@ const LoteDetails = ({ selectedLote, fromSection = null }) => {
             ? moment(selectedLote.sm_confirmedfishingdate).format("YYYY-MM-DD")
             : "N/A",
         },
-        { label: "Harvest Metabisulfite", value: selectedLote.harvest_density },
+        // Usar el promedio calculado de metabisulfito
+        { 
+          label: "Harvest Metabisulfite (avg)", 
+          value: averageMetabisulfite !== "N/A" ? `${averageMetabisulfite} ppm` : "N/A"
+        },
         { label: "Harvest Density (u/m2)", value: selectedLote.harvest_density },
         { label: "Harvest Time Lapse", value: selectedLote.harvest_time_lapse },
-        { label: "Harvest Process Temperature (ºC)", value: selectedLote.harvest_temperature },
+        // Usar el promedio calculado de temperatura
+        { 
+          label: "Harvest Process Temperature (avg ºC)", 
+          value: averageTemperature !== "N/A" ? `${averageTemperature}°C` : "N/A"
+        },
       ],
       columns: 3,
     },

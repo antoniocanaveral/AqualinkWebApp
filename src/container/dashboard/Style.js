@@ -27,40 +27,46 @@ const EChartCard = Styled.div`
         min-width: 132px !important;
     }
 `;
-
-
 const OverviewDataStyleWrap = Styled.div`
   &.card-mesh-wrap {
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping for smaller screens */
-    justify-content: center; /* Center cards for smaller screens */
-    gap: 20px; /* Consistent spacing between cards */
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
     margin-bottom: 25px;
     border-radius: 10px;
     background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
     
     .ninjadash-overview-card-single {
-      flex: 1 1 250px; /* Minimum width of 250px, grow to fill space */
-      max-width: 300px; /* Prevent cards from becoming too wide on smaller screens */
+      flex: 1 1 calc(25% - 12px); /* 4 cards per row on large screens */
       margin-bottom: 0;
       
-      @media only screen and (max-width: 991px) {
-        flex: 1 1 45%; /* Two cards per row */
+      /* Tablet - 2 cards per row */
+      @media only screen and (max-width: 1200px) {
+        flex: 1 1 calc(50% - 8px);
       }
       
-      @media only screen and (max-width: 575px) {
-        flex: 1 1 100%; /* One card per row */
+      /* Mobile - 1 card per row */
+      @media only screen and (max-width: 768px) {
+        flex: 1 1 100%;
       }
       
-      @media only screen and (min-width: 1599px) {
-        flex: 1 1 0; /* Equal width for all cards, no minimum */
-        max-width: none; /* Remove max-width to allow full growth */
+      /* Extra large screens - ensure full width usage */
+      @media only screen and (min-width: 1600px) {
+        flex: 1 1 calc(25% - 12px);
+        min-width: 280px; /* Minimum width to prevent cards from being too narrow */
       }
     }
     
-    @media only screen and (min-width: 1599px) {
-      flex-wrap: nowrap; /* Prevent wrapping to keep cards in one row */
-      justify-content: space-between; /* Distribute cards evenly across full width */
+    /* Ensure no wrapping on very large screens */
+    @media only screen and (min-width: 1600px) {
+      flex-wrap: nowrap;
+      gap: 20px;
+      
+      .ninjadash-overview-card-single {
+        flex: 1;
+        min-width: 300px;
+      }
     }
   }
 `;

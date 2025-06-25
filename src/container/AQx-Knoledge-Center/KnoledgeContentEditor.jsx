@@ -17,6 +17,7 @@ import {
 } from "remirror/extensions";
 import { FontSizeExtension } from "@remirror/extension-font-size";
 import KnowledgeEditorToolbar from './KnowledgeEditorToolBar';
+import { ContentReferenceExtension } from './ContentReferenceExtension';
 
 const KnowledgeContentEditor = ({ 
   initialContent, 
@@ -95,6 +96,7 @@ const KnowledgeContentEditor = ({
       new TaskListExtension(),
       new ImageExtension({ enableResizing: true }),
       new DropCursorExtension(),
+      new ContentReferenceExtension(), // Nueva extensión de referencias
     ],
     content: processedInitialContent,
     selection: "end",
@@ -165,6 +167,65 @@ const KnowledgeContentEditor = ({
         
         .editor-wrapper .remirror-editor:focus {
           outline: none;
+        }
+
+        /* Estilos mejorados para las referencias de contenido en el editor */
+        .editor-wrapper .content-reference {
+          background: linear-gradient(135deg, #1890ff, #40a9ff) !important;
+          color: white !important;
+          padding: 4px 12px !important;
+          border-radius: 16px !important;
+          font-size: 12px !important;
+          margin: 0 4px !important;
+          cursor: pointer !important;
+          text-decoration: none !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          gap: 6px !important;
+          transition: all 0.2s ease !important;
+          font-weight: 500 !important;
+          border: 2px solid rgba(255,255,255,0.2) !important;
+          box-shadow: 0 2px 8px rgba(24,144,255,0.3) !important;
+          user-select: none !important;
+        }
+
+        .editor-wrapper .content-reference:hover {
+          transform: translateY(-1px) !important;
+          box-shadow: 0 4px 12px rgba(24,144,255,0.4) !important;
+          background: linear-gradient(135deg, #0372ce, #1890ff) !important;
+        }
+
+        .editor-wrapper .content-reference .ref-icon {
+          font-size: 10px !important;
+        }
+
+        .editor-wrapper .content-reference .ref-title {
+          font-weight: 500 !important;
+        }
+
+        /* Asegurar que las referencias se muestren correctamente */
+        .editor-wrapper span[data-content-ref="true"] {
+          background: linear-gradient(135deg, #1890ff, #40a9ff) !important;
+          color: white !important;
+          padding: 4px 12px !important;
+          border-radius: 16px !important;
+          font-size: 12px !important;
+          margin: 0 4px !important;
+          cursor: pointer !important;
+          text-decoration: none !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          gap: 6px !important;
+          transition: all 0.2s ease !important;
+          font-weight: 500 !important;
+          border: 2px solid rgba(255,255,255,0.2) !important;
+          box-shadow: 0 2px 8px rgba(24,144,255,0.3) !important;
+        }
+
+        .editor-wrapper span[data-content-ref="true"]:hover {
+          transform: translateY(-1px) !important;
+          box-shadow: 0 4px 12px rgba(24,144,255,0.4) !important;
+          background: linear-gradient(135deg, #0372ce, #1890ff) !important;
         }
       `}</style>
 

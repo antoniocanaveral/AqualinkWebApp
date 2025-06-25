@@ -65,10 +65,10 @@ function OverviewCardMeshOriginal({ data, circleIcon }) {
                 />
                 {suffix && <span style={{ marginLeft: '2px' }}>{suffix}</span>}
               </h5>
-              <span className="ninjadahs-overview-label" style={{ marginLeft: '5px', fontSize: '14px' }}>
+              <span className="ninjadahs-overview-label" style={{ marginLeft: '0px', fontSize: '12px' }}>
                 {label}
               </span>
-              <span className="ninjadahs-overview-label" style={{ display: 'block', fontSize: '13px', marginLeft: '5px' }}>
+              <span className="ninjadahs-overview-label" style={{ display: 'block', fontSize: '12px', marginLeft: '5px' }}>
                 {secondLabel}
               </span>
             </div>

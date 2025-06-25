@@ -53,7 +53,7 @@ function PanelCustody() {
   const installedCapacity = validCoordinationInfo.find(
     (coord) => coord.BP_AD_Org_ID && coord.BP_AD_Org_ID.id === selectedOrg
   )?.sm_installedcapacitylarva || 0;
-  
+
   const totalFishingVolume = validCoordinationInfo.reduce((sum, coord) => sum + (coord.SM_FishingVolume || 0), 0);
   const biomassToday = validCoordinationInfo.reduce((sum, coord) => (coord.SM_FishingDate?.startsWith(today) ? sum + (coord.SM_Biomass || 0) : sum), 0);
   const totalBiomass = validCoordinationInfo.reduce((sum, coord) => sum + (coord.SM_Biomass || 0), 0);
@@ -118,9 +118,9 @@ function PanelCustody() {
       />
       <Main>
         <Row gutter={25}>
-          <Col xxl={12} xs={24}>
+          <Col span={24}>
             <Suspense fallback={<Cards headless><Skeleton active /></Cards>}>
-              <OverviewDataStyleWrap style={{ gap: 4 }} className="card-mesh-wrap align-center-v">
+              <OverviewDataStyleWrap style={{ gap: 16 }} className="card-mesh-wrap align-center-v">
                 {updatedOverviewData.map((item, i) => (
                   <OverviewCardMeshOriginal data={item} key={i} />
                 ))}

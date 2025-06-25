@@ -11,10 +11,12 @@ import { Cards } from "../../../components/cards/frame/cards-frame"
 import { Button, Col, Input } from "antd"
 import Heading from "../../../components/heading/heading"
 import RemirrorContentViewer from "./RemirrorContentViewer"
+import { useNavigate } from "react-router-dom"
 
 
 
 const KnowledgeViewer = () => {
+  const navigate = useNavigate() 
   // Estados principales
   const [loading, setLoading] = useState(true)
   const [connectionStatus, setConnectionStatus] = useState("checking")
@@ -102,6 +104,11 @@ const KnowledgeViewer = () => {
     )
   }
 
+  const handleContactSupport = () => {
+    navigate('../support');
+  };
+
+
   const getAllSubtopics = () => {
     const allSubtopics = []
     data.forEach((item) => {
@@ -170,6 +177,58 @@ const KnowledgeViewer = () => {
     setSelectedSubtopic(subtopicName)
   }
 
+  const handleReferenceClick = (referenceData) => {
+    const { id, title } = referenceData;
+
+    console.log('Clicking reference:', referenceData);
+
+    let targetContent = null;
+
+    // Buscar el contenido por ID si está disponible
+    if (id) {
+      targetContent = data.find(item => item.id === id);
+    }
+
+    // Si no se encontró por ID, buscar por título/subtopic
+    if (!targetContent && title) {
+      // Extraer el título de la referencia (remover "Ver " del inicio si existe)
+      const cleanTitle = title.replace(/^Ver "(.+)"$/, '$1');
+
+      targetContent = data.find(item =>
+        item.subtopic === cleanTitle ||
+        item.subtopic === title ||
+        (item.subtopic && item.subtopic.toLowerCase() === cleanTitle.toLowerCase())
+      );
+    }
+
+    if (targetContent) {
+      // Navegar al contenido referenciado
+      setActiveTab(targetContent.tab);
+      setShowSidebar(true);
+      setSelectedCategory(targetContent.category);
+      setSelectedTopic(targetContent.topic);
+      setSelectedSubtopic(targetContent.subtopic);
+
+      // Expandir categorías y temas necesarios
+      const categoryKey = `${targetContent.tab}-${targetContent.category}`;
+      const topicKey = `${targetContent.tab}-${targetContent.category}-${targetContent.topic}`;
+
+      setExpandedCategories(new Set([categoryKey]));
+      setExpandedTopics(new Set([topicKey]));
+
+      // Mostrar mensaje de navegación
+      console.log(`Navegando a: ${targetContent.subtopic}`);
+
+      // Si necesitas mostrar un mensaje, descomenta la línea siguiente:
+      // message.success(`Navegando a: ${targetContent.subtopic}`);
+    } else {
+      console.error('Contenido referenciado no encontrado:', { id, title });
+
+      // Si necesitas mostrar un mensaje de error, descomenta la línea siguiente:
+      // message.error('Contenido referenciado no encontrado');
+    }
+  };
+
   const handleSearchResultClick = (result) => {
     setActiveTab(result.tab)
     setShowSidebar(true)
@@ -191,7 +250,7 @@ const KnowledgeViewer = () => {
 
     // Si es contenido de Remirror (objeto con estructura JSON)
     if (typeof content === "object" && content.type === "doc" && content.content) {
-      return <RemirrorContentViewer content={content} height={400} />
+      return <RemirrorContentViewer content={content} height={400} onReferenceClick={handleReferenceClick} />
     }
 
     // Si es string que parece JSON
@@ -199,7 +258,7 @@ const KnowledgeViewer = () => {
       try {
         const parsed = JSON.parse(content)
         if (parsed.type === "doc" && parsed.content) {
-          return <RemirrorContentViewer content={parsed} height={400} />
+          return <RemirrorContentViewer content={parsed} height={400} onReferenceClick={handleReferenceClick} />
         }
       } catch (e) {
         // Si no es JSON válido, mostrar como texto en el viewer
@@ -213,11 +272,9 @@ const KnowledgeViewer = () => {
             }]
           }]
         }
-        return <RemirrorContentViewer content={textContent} height={400} />
+        return <RemirrorContentViewer content={textContent} height={400} onReferenceClick={handleReferenceClick} />
       }
     }
-
-    // Fallback para otros tipos - convertir a formato doc
     const fallbackContent = {
       type: "doc",
       content: [{
@@ -228,8 +285,8 @@ const KnowledgeViewer = () => {
         }]
       }]
     }
-    
-    return <RemirrorContentViewer content={fallbackContent} height={400} />
+
+    return <RemirrorContentViewer content={fallbackContent} height={400} onReferenceClick={handleReferenceClick} />
   }
 
   if (loading) {
@@ -256,7 +313,7 @@ const KnowledgeViewer = () => {
     <div className="knowledge-viewer">
       {/* Header */}
       <div className="header">
-        
+
         <h1 className="main-title"> <BiBookBookmark /> Centro de Conocimiento</h1>
 
         {/* Buscador */}
@@ -337,7 +394,7 @@ const KnowledgeViewer = () => {
                                 className={`item-header sub-item ${selectedTopic === topic ? "" : ""}`}
                                 onClick={() => handleTopicClick(topic)}
                               >
-                                <span className="item-icon"><BiBook/> </span>
+                                <span className="item-icon"><BiBook /> </span>
                                 <span className="item-name">{topic}</span>
                                 <span className="expand-icon">{isTopicExpanded ? "▼" : "▶"}</span>
                               </div>
@@ -347,9 +404,8 @@ const KnowledgeViewer = () => {
                                   {getSubtopicsByTopic(activeTab, category, topic).map((subtopic) => (
                                     <div
                                       key={subtopic}
-                                      className={`item-header sub-sub-item ${
-                                        selectedSubtopic === subtopic ? "selected" : ""
-                                      }`}
+                                      className={`item-header sub-sub-item ${selectedSubtopic === subtopic ? "selected" : ""
+                                        }`}
                                       onClick={() => handleSubtopicClick(subtopic)}
                                     >
                                       <span className="item-icon"><BiSpreadsheet /></span>
@@ -390,8 +446,9 @@ const KnowledgeViewer = () => {
                 )}
               </div>
 
+
               {/* Sección de ayuda */}
-               <Col xs={24}>
+              <Col xs={24}>
                 <FaqSupportBox>
                   <Cards headless>
                     <figure>
@@ -399,13 +456,18 @@ const KnowledgeViewer = () => {
                     </figure>
                     <figcaption>
                       <Heading as="h5">¿No encuentras la ayuda que necesitas?</Heading>
-                      <Button size="default" type="primary">
+                      <Button
+                        size="default"
+                        type="primary"
+                        onClick={handleContactSupport}
+                      >
                         Contacta a soporte
                       </Button>
                     </figcaption>
                   </Cards>
                 </FaqSupportBox>
               </Col>
+
             </div>
           ) : (
             <div className="categories-overview">
@@ -416,7 +478,7 @@ const KnowledgeViewer = () => {
 
                 return (
                   <div key={category} className="category-section">
-                    <h3 className="category-title"><BiBookBookmark size={25}/> {category}</h3>
+                    <h3 className="category-title"><BiBookBookmark size={25} /> {category}</h3>
 
                     <div className="topics-list">
                       {displayTopics.map((topic) => (
@@ -427,7 +489,7 @@ const KnowledgeViewer = () => {
                       ))}
                     </div>
 
-                    <Button  size="default" type="primary" onClick={() => handleViewMore(category)}>
+                    <Button size="default" type="primary" onClick={() => handleViewMore(category)}>
                       {hasMore ? `Ver más (${topics.length - 4} adicionales)` : "Ver detalles"}
                     </Button>
                   </div>

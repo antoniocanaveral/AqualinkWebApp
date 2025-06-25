@@ -208,6 +208,7 @@ function RequestShrimp() {
                                                 <Form.Item
                                                     label="Volumen Reservado"
                                                     name="cantidadSolicitada"
+                                                    disabled
                                                     initialValue={selectedLote.SM_ProjectedBiomass}
                                                     rules={[{ required: true, message: 'Por favor, ingrese la cantidad' }]}
                                                 >
@@ -216,6 +217,7 @@ function RequestShrimp() {
                                                         value={cantidadSolicitada}
                                                         onChange={(e) => setCantidadSolicitada(e.target.value)}
                                                         disabled
+                                                        
                                                     />
                                                 </Form.Item>
                                             </Col>
@@ -237,7 +239,7 @@ function RequestShrimp() {
                                                     <Input disabled />
                                                 </Form.Item>
                                                 <Form.Item
-                                                    label="Camaronera"
+                                                    label="Empacadora"
                                                     name="camaroneraSelect"
                                                     initialValue={selectedOrg?.value}
                                                     rules={[{ required: true, message: 'Por favor, seleccione la camaronera' }]}

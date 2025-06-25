@@ -101,6 +101,58 @@
   width: 100%;
   outline: none;
 }
+/* ...existing code... */
+
+/* Estilos específicos para referencias de contenido */
+.ProseMirror .content-reference {
+  background: linear-gradient(135deg, #1890ff, #40a9ff) !important;
+  color: white !important;
+  padding: 6px 12px !important;
+  border-radius: 20px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  margin: 0 4px !important;
+  display: inline-block !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  border: 2px solid rgba(255,255,255,0.3) !important;
+  box-shadow: 0 2px 8px rgba(24,144,255,0.4) !important;
+  user-select: none !important;
+  vertical-align: middle !important;
+  transition: all 0.2s ease !important;
+  line-height: 1.2 !important;
+}
+
+.ProseMirror .content-reference:hover {
+  background: linear-gradient(135deg, #0372ce, #1890ff) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(24,144,255,0.5) !important;
+}
+
+.ProseMirror .content-reference:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 6px rgba(24,144,255,0.4) !important;
+}
+
+/* Cuando el nodo está seleccionado */
+.ProseMirror .content-reference.ProseMirror-selectednode {
+  outline: 3px solid #ffd700 !important;
+  outline-offset: 2px !important;
+}
+
+/* Estilos para cuando se está arrastrando */
+.ProseMirror .content-reference.dragging {
+  opacity: 0.6 !important;
+  transform: rotate(5deg) !important;
+}
+
+/* Asegurar que las referencias sean visibles en diferentes temas */
+.dark .ProseMirror .content-reference {
+  border: 2px solid rgba(255,255,255,0.4) !important;
+  box-shadow: 0 2px 8px rgba(24,144,255,0.6) !important;
+}
+
+/* ...existing code... */
 
 .title-input::placeholder {
   color: var(--editor-toolbar-text);

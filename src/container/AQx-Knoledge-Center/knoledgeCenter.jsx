@@ -18,10 +18,22 @@ import {
   Tooltip,
   Spin,
   Alert,
+  Dropdown,
 } from "antd"
-import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined, CheckCircleOutlined } from "@ant-design/icons"
+import { 
+  PlusOutlined, 
+  EditOutlined, 
+  DeleteOutlined, 
+  ReloadOutlined, 
+  CheckCircleOutlined,
+  LogoutOutlined,
+  UserOutlined,
+  DownOutlined
+} from "@ant-design/icons"
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore"
-import { db } from "../../firebase/firebaseClient"
+import { signOut, onAuthStateChanged } from "firebase/auth" // Importar funciones de Auth
+import { auth, db } from "../../firebase/firebaseClient" // Asegurar que auth esté importado
+import { useNavigate } from "react-router-dom" // Para redirección
 import "./Editor.css"
 import KnowledgeContentEditor from "./KnoledgeContentEditor"
 
@@ -30,10 +42,17 @@ const { Option } = Select
 
 const KnowledgeCenter = () => {
   const [form] = Form.useForm()
+  const navigate = useNavigate()
+  
+  // Estados existentes
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [editing, setEditing] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
+
+  // Estados de usuario
+  const [user, setUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
 
   // Form fields
   const [tabs, setTabs] = useState([])
@@ -50,6 +69,57 @@ const KnowledgeCenter = () => {
   // Estados adicionales para controlar la carga
   const [creatingOption, setCreatingOption] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState("checking")
+
+  // Verificar autenticación
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("Estado de autenticación:", currentUser);
+      setUser(currentUser);
+      setAuthLoading(false);
+      
+      if (!currentUser) {
+        console.log("Usuario no autenticado, redirigiendo...");
+        navigate('/unauthorized');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
+  // Función para cerrar sesión
+  const handleLogout = async () => {
+    try {
+      console.log("Cerrando sesión...");
+      await signOut(auth);
+      message.success("Sesión cerrada correctamente");
+      navigate('/unauthorized');
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      message.error("Error al cerrar sesión: " + error.message);
+    }
+  };
+
+  // Menú del usuario
+  const userMenu = {
+    items: [
+      
+      {
+        key: 'logout',
+        icon: <LogoutOutlined style={{marginRight:"20px"}} />,
+        label: 'Cerrar sesión',
+        onClick: () => {
+          Modal.confirm({
+            title: '¿Cerrar sesión?',
+            content: '¿Estás seguro de que quieres cerrar sesión?',
+            okText: 'Cerrar sesión',
+            okType: 'danger',
+            cancelText: 'Cancelar',
+            onOk: handleLogout,
+          });
+        },
+      },
+    ],
+  };
 
   // Función para verificar conexión a Firestore
   const checkFirestoreConnection = async () => {
@@ -78,6 +148,8 @@ const KnowledgeCenter = () => {
       return false
     }
   }
+
+  // ... resto de las funciones existentes (fetchData, fetchDropdowns, etc.) ...
 
   const fetchData = async () => {
     setLoading(true)
@@ -125,14 +197,21 @@ const KnowledgeCenter = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const isConnected = await checkFirestoreConnection()
-      if (isConnected) {
-        await fetchData()
-        await fetchDropdowns()
+      if (user) { // Solo inicializar si el usuario está autenticado
+        const isConnected = await checkFirestoreConnection()
+        if (isConnected) {
+          await fetchData()
+          await fetchDropdowns()
+        }
       }
     }
-    initialize()
-  }, [])
+    
+    if (!authLoading) {
+      initialize()
+    }
+  }, [user, authLoading])
+
+  // ... resto de las funciones existentes (addNewOption, deleteOption, handleSave, etc.) ...
 
   const addNewOption = async (collectionName, name, setter, currentArray, optionType) => {
     if (!name || !name.trim()) {
@@ -291,6 +370,7 @@ const KnowledgeCenter = () => {
     setEditing(record);
     setModalVisible(true);
   };
+
   const handleDelete = async (id) => {
     if (connectionStatus !== "connected") {
       message.error("Sin conexión a la base de datos")
@@ -327,6 +407,29 @@ const KnowledgeCenter = () => {
       await fetchData()
       await fetchDropdowns()
     }
+  }
+
+  // Mostrar loading mientras se verifica la autenticación
+  if (authLoading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '100vh',
+        flexDirection: 'column'
+      }}>
+        <Spin size="large" />
+        <div style={{ marginTop: 16 }}>
+          <Text>Verificando autenticación...</Text>
+        </div>
+      </div>
+    );
+  }
+
+  // Si no hay usuario autenticado, no mostrar nada (será redirigido)
+  if (!user) {
+    return null;
   }
 
   const renderConnectionStatus = () => {
@@ -598,9 +701,29 @@ const KnowledgeCenter = () => {
   if (connectionStatus !== "connected") {
     return (
       <div style={{ padding: 24, minHeight: "60vh" }}>
-        <Title level={2} style={{ textAlign: "center", marginBottom: 32 }}>
-          Centro de Conocimiento
-        </Title>
+        {/* Header con información del usuario incluso si no hay conexión */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 24,
+            padding: "16px 0",
+          }}
+        >
+          <Title level={2} style={{ margin: 0 }}>
+            Centro de Conocimiento
+          </Title>
+          <Dropdown menu={userMenu} placement="bottomRight" arrow>
+            <Button type="text" style={{ height: 'auto', padding: '8px 12px' }}>
+              <Space>
+                <UserOutlined />
+                <span>{user?.displayName || user?.email || 'Usuario'}</span>
+                <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
+        </div>
         {renderConnectionStatus()}
       </div>
     )
@@ -632,6 +755,16 @@ const KnowledgeCenter = () => {
           <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalVisible(true)} size="large">
             Nuevo Contenido
           </Button>
+          {/* Dropdown del usuario */}
+          <Dropdown menu={userMenu} placement="bottomRight" arrow>
+            <Button type="text" style={{ height: 'auto', padding: '8px 12px' }}>
+              <Space>
+                <UserOutlined />
+                <span>{user?.displayName || user?.email || 'Usuario'}</span>
+                <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
         </Space>
       </div>
 

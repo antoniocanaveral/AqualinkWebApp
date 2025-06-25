@@ -48,7 +48,7 @@ function PanelFarmOverview() {
     <>
       <PageHeader
         highlightText="Aqualink Camaronera"
-        title="Panel 2"
+        title="Panel Detalles"
         selectOptions={combinedSelectOptions}
         selectedOrg={selectedOrg}
         selectedPool={selectedPool}

@@ -2,10 +2,13 @@ import React from 'react';
 import 'remirror/styles/all.css';
 
 // Componente para renderizar contenido de Remirror con estilos consistentes
-const RemirrorContentViewer = ({ content, height = 400 }) => {
-    console.log("Contenido recibido:", content);
+const RemirrorContentViewer = ({ content, height = 400, onReferenceClick }) => {
+    console.log("Contenido recibido en viewer:", content);
+    
     const renderNode = (node, index = 0) => {
         if (!node || !node.type) return null
+
+        console.log(`Renderizando nodo tipo: ${node.type}`, node);
 
         switch (node.type) {
             case "doc":
@@ -30,36 +33,95 @@ const RemirrorContentViewer = ({ content, height = 400 }) => {
                     node.content?.map((child, i) => renderNode(child, i))
                 )
 
-            case "text":
+           case "text":
                 let textElement = node.text || ""
-                let styles = {}
-
-                if (node.marks) {
-                    node.marks.forEach((mark) => {
-                        switch (mark.type) {
-                            case "bold":
-                                textElement = <strong key={`bold-${index}`}>{textElement}</strong>
-                                break
-                            case "italic":
-                                textElement = <em key={`italic-${index}`}>{textElement}</em>
-                                break
-                            case "underline":
-                                textElement = <u key={`underline-${index}`}>{textElement}</u>
-                                break
-                            case "fontSize":
-                                // Corregido: usar 'size' en lugar de 'fontSize'
-                                styles.fontSize = mark.attrs?.size || "inherit"
-                                break
-                        }
-                    })
+                
+                // Verificar si el texto es una referencia (con tema/título)
+                const isReference = textElement.match(/^Ver "(.+)\/(.+)"$/) || textElement.match(/^Ver "(.+)"$/);
+                
+                if (isReference) {
+                    // Extraer tema y título si están disponibles
+                    const fullMatch = textElement.match(/^Ver "(.+)\/(.+)"$/);
+                    let referencedTopic = '';
+                    let referencedTitle = '';
+                    
+                    if (fullMatch) {
+                        // Formato: Ver "tema/título"
+                        referencedTopic = fullMatch[1];
+                        referencedTitle = fullMatch[2];
+                    } else {
+                        // Formato: Ver "título" (sin tema)
+                        const simpleMatch = textElement.match(/^Ver "(.+)"$/);
+                        referencedTitle = simpleMatch[1];
+                    }
+                    
+                    return (
+                        <span
+                            key={index}
+                            className="content-reference-link"
+                            onClick={() => {
+                                console.log('Haciendo clic en referencia:', { topic: referencedTopic, title: referencedTitle });
+                                if (onReferenceClick) {
+                                    onReferenceClick({ 
+                                        topic: referencedTopic,
+                                        title: referencedTitle,
+                                        fullTitle: textElement 
+                                    });
+                                }
+                            }}
+                            style={{
+                                color: '#1890ff',
+                                textDecoration: 'underline',
+                                cursor: 'pointer',
+                                fontWeight: '500',
+                                transition: 'all 0.2s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.color = '#40a9ff';
+                                e.target.style.textDecoration = 'underline';
+                                e.target.style.backgroundColor = '#f0f8ff';
+                                e.target.style.padding = '2px 4px';
+                                e.target.style.borderRadius = '4px';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.color = '#1890ff';
+                                e.target.style.backgroundColor = 'transparent';
+                                e.target.style.padding = '0';
+                            }}
+                        >
+                            {textElement}
+                        </span>
+                    );
                 }
-
+            // Función para manejar referencias de contenido (por si usamos la extensión)
+            case "contentReference":
+                console.log("Renderizando referencia de contenido en viewer:", node.attrs);
+                const { id, title, topic, path } = node.attrs || {};
+                const displayText = topic ? `${topic}/${title}` : title;
+                
                 return (
-                    <span key={index} style={styles}>
-                        {textElement}
+                    <span
+                        key={index}
+                        className="content-reference-viewer"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            console.log('Haciendo clic en referencia:', { id, title, topic, path });
+                            if (onReferenceClick) {
+                                onReferenceClick({ id, title, topic, path });
+                            }
+                        }}
+                        title={`Ir a: ${path || displayText}`}
+                        style={{
+                            color: '#1890ff',
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            transition: 'all 0.2s ease'
+                        }}
+                    >
+                        Ver "{displayText}"
                     </span>
-                )
-
+                );
             case "bulletList":
                 return (
                     <ul key={index} data-list-type="bullet">
@@ -176,7 +238,7 @@ const RemirrorContentViewer = ({ content, height = 400 }) => {
     }
 
     return (
-        <div className="" style={{ height: `500px` }}>
+        <div className="remirror-content-viewer-container" style={{ height: `${height}px` }}>
             <div className="remirror-theme remirror-content-viewer">
                 {content ? renderNode(content) : (
                     <div className="empty-content">
@@ -186,190 +248,212 @@ const RemirrorContentViewer = ({ content, height = 400 }) => {
             </div>
 
             <style jsx>{`
-        .remirror-content-viewer-wrapper {
-          border-radius: 6px;
-          overflow: hidden;
-          background: white;
-        }
+                .remirror-content-viewer-container {
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    width: 100%;
+                }
 
-        .remirror-content-viewer {
-          height: 100%;
-          overflow-y: auto;
-          padding: 16px;
-          font-size: 14px;
-          line-height: 1.5;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        }
+                .remirror-content-viewer {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+                    line-height: 1.6;
+                    color: #333;
+                    background: transparent;
+                    padding: 20px;
+                    border: none;
+                    min-height: 100%;
+                }
 
-        .remirror-content-viewer::-webkit-scrollbar {
-          width: 6px;
-        }
+                .remirror-content-viewer .content-reference-link:hover {
+                    color: #40a9ff !important;
+                    background-color: #f0f8ff !important;
+                    padding: 2px 4px !important;
+                    border-radius: 4px !important;
+                }
 
-        .remirror-content-viewer::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 3px;
-        }
+                .remirror-content-viewer .content-reference-viewer:hover {
+                    color: #40a9ff !important;
+                    background-color: #f0f8ff !important;
+                    padding: 2px 4px !important;
+                    border-radius: 4px !important;
+                }
 
-        .remirror-content-viewer::-webkit-scrollbar-thumb {
-          background: #c1c1c1;
-          border-radius: 3px;
-        }
+                .remirror-content-viewer p {
+                    margin: 0 0 16px 0;
+                    font-size: 14px;
+                }
 
-        .remirror-content-viewer::-webkit-scrollbar-thumb:hover {
-          background: #a8a8a8;
-        }
+                .remirror-content-viewer h1 {
+                    font-size: 28px;
+                    font-weight: 600;
+                    margin: 0 0 20px 0;
+                    color: #262626;
+                    border-bottom: 2px solid #f0f0f0;
+                    padding-bottom: 10px;
+                }
 
-        /* Asegurar que los estilos de Remirror se apliquen correctamente */
-        .remirror-content-viewer .ProseMirror {
-          outline: none;
-          min-height: calc(100% - 32px);
-        }
+                .remirror-content-viewer h2 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin: 24px 0 16px 0;
+                    color: #262626;
+                }
 
-        .remirror-content-viewer .ProseMirror p {
-          margin: 0 0 8px 0;
-        }
+                .remirror-content-viewer h3 {
+                    font-size: 20px;
+                    font-weight: 600;
+                    margin: 20px 0 12px 0;
+                    color: #262626;
+                }
 
-        .remirror-content-viewer .ProseMirror p:last-child {
-          margin-bottom: 0;
-        }
+                .remirror-content-viewer h4,
+                .remirror-content-viewer h5,
+                .remirror-content-viewer h6 {
+                    font-size: 16px;
+                    font-weight: 600;
+                    margin: 16px 0 8px 0;
+                    color: #262626;
+                }
 
-        /* Estilos específicos para listas */
-        .remirror-content-viewer ul[data-list-type="bullet"] {
-          list-style-type: disc;
-          margin: 8px 0;
-          padding-left: 24px;
-        }
+                .remirror-content-viewer ul[data-list-type="bullet"] {
+                    list-style-type: disc;
+                    margin: 16px 0;
+                    padding-left: 24px;
+                }
 
-        .remirror-content-viewer ol[data-list-type="ordered"] {
-          list-style-type: decimal;
-          margin: 8px 0;
-          padding-left: 24px;
-        }
+                .remirror-content-viewer ol[data-list-type="ordered"] {
+                    list-style-type: decimal;
+                    margin: 16px 0;
+                    padding-left: 24px;
+                }
 
-        .remirror-content-viewer ul[data-task-list] {
-          list-style: none;
-          margin: 8px 0;
-          padding-left: 0;
-        }
+                .remirror-content-viewer li {
+                    margin: 4px 0;
+                    font-size: 14px;
+                }
 
-        .remirror-content-viewer li[data-task-list-item] {
-          margin: 4px 0;
-        }
+                .remirror-content-viewer ul[data-task-list] {
+                    list-style: none;
+                    padding-left: 0;
+                    margin: 16px 0;
+                }
 
-        .remirror-content-viewer li[data-task-list-item] label {
-          display: flex;
-          align-items: flex-start;
-          gap: 8px;
-          cursor: default;
-        }
+                .remirror-content-viewer li[data-task-list-item] {
+                    display: flex;
+                    align-items: flex-start;
+                    margin: 8px 0;
+                }
 
-        .remirror-content-viewer li[data-task-list-item] input[type="checkbox"] {
-          margin-top: 2px;
-          cursor: default;
-        }
+                .remirror-content-viewer li[data-task-list-item] label {
+                    display: flex;
+                    align-items: flex-start;
+                    cursor: default;
+                    width: 100%;
+                }
 
-        .remirror-content-viewer li[data-task-list-item][data-checked="true"] span {
-          text-decoration: line-through;
-          color: #888;
-        }
+                .remirror-content-viewer li[data-task-list-item] input[type="checkbox"] {
+                    margin: 0 8px 0 0;
+                    flex-shrink: 0;
+                    margin-top: 2px;
+                }
 
-        /* Estilos para tablas */
-        .remirror-content-viewer .remirror-table-wrapper {
-          width: 100%;
-          border-collapse: collapse;
-          margin: 16px 0;
-          border: 1px solid #e0e0e0;
-          border-radius: 4px;
-          overflow: hidden;
-        }
+                .remirror-content-viewer .remirror-table-wrapper {
+                    width: 100%;
+                    margin: 16px 0;
+                    border-collapse: collapse;
+                    border: 1px solid #e8e8e8;
+                    border-radius: 6px;
+                    overflow: hidden;
+                }
 
-        .remirror-content-viewer .remirror-table-wrapper th {
-          background-color: #f5f5f5;
-          font-weight: 600;
-          padding: 8px 12px;
-          border: 1px solid #e0e0e0;
-          text-align: left;
-        }
+                .remirror-content-viewer .remirror-table-wrapper th,
+                .remirror-content-viewer .remirror-table-wrapper td {
+                    border: 1px solid #e8e8e8;
+                    padding: 8px 12px;
+                    text-align: left;
+                    font-size: 14px;
+                }
 
-        .remirror-content-viewer .remirror-table-wrapper td {
-          padding: 8px 12px;
-          border: 1px solid #e0e0e0;
-        }
+                .remirror-content-viewer .remirror-table-wrapper th {
+                    background-color: #fafafa;
+                    font-weight: 600;
+                    color: #262626;
+                }
 
-        /* Estilos para iframes */
-        .remirror-content-viewer .remirror-iframe-wrapper {
-          margin: 16px 0;
-          border-radius: 4px;
-          overflow: hidden;
-        }
+                .remirror-content-viewer .remirror-iframe-wrapper {
+                    margin: 16px 0;
+                    text-align: center;
+                }
 
-        .remirror-content-viewer .remirror-iframe-wrapper iframe {
-          border: none;
-          border-radius: 4px;
-        }
+                .remirror-content-viewer .remirror-iframe-wrapper iframe {
+                    max-width: 100%;
+                    border-radius: 6px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
 
-        /* Estilos para headings */
-        .remirror-content-viewer h1,
-        .remirror-content-viewer h2,
-        .remirror-content-viewer h3,
-        .remirror-content-viewer h4,
-        .remirror-content-viewer h5,
-        .remirror-content-viewer h6 {
-          margin: 16px 0 8px 0;
-          font-weight: 600;
-          color: #1a1a1a;
-        }
+                .remirror-content-viewer img {
+                    max-width: 100%;
+                    height: auto;
+                    border-radius: 6px;
+                    margin: 16px 0;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
 
-        .remirror-content-viewer h1:first-child,
-        .remirror-content-viewer h2:first-child,
-        .remirror-content-viewer h3:first-child,
-        .remirror-content-viewer h4:first-child,
-        .remirror-content-viewer h5:first-child,
-        .remirror-content-viewer h6:first-child {
-          margin-top: 0;
-        }
+                .remirror-content-viewer strong {
+                    font-weight: 600;
+                    color: #262626;
+                }
 
-        /* Estilos para imágenes */
-        .remirror-content-viewer img {
-          display: block;
-          margin: 16px 0;
-          border-radius: 4px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+                .remirror-content-viewer em {
+                    font-style: italic;
+                }
 
-        /* Estilos para contenido vacío */
-        .remirror-content-viewer .empty-content {
-          text-align: center;
-          padding: 40px 20px;
-          background-color: #f9f9f9;
-          border-radius: 4px;
-          border: 1px dashed #ddd;
-          color: #999;
-          font-style: italic;
-        }
+                .remirror-content-viewer u {
+                    text-decoration: underline;
+                }
 
-        .remirror-content-viewer .empty-content p {
-          margin: 0;
-        }
+                .remirror-content-viewer hr {
+                    border: none;
+                    border-top: 1px solid #e8e8e8;
+                    margin: 24px 0;
+                }
 
-        /* Estilos para nodos desconocidos */
-        .remirror-content-viewer .remirror-unknown-node {
-          background-color: #fff3cd;
-          border: 1px solid #ffeaa7;
-          border-radius: 4px;
-          padding: 8px;
-          margin: 8px 0;
-          color: #856404;
-        }
+                .remirror-content-viewer .empty-content {
+                    text-align: center;
+                    color: #8c8c8c;
+                    font-style: italic;
+                    padding: 40px 20px;
+                }
 
-        
-        /* Línea horizontal */
-        .remirror-content-viewer hr {
-          border: none;
-          border-top: 1px solid #e0e0e0;
-          margin: 16px 0;
-        }
-      `}</style>
+                .remirror-content-viewer .remirror-unknown-node {
+                    border: 1px dashed #ff4d4f;
+                    padding: 8px;
+                    border-radius: 4px;
+                    background-color: #fff2f0;
+                    color: #a8071a;
+                    font-size: 12px;
+                    margin: 8px 0;
+                }
+
+                /* Estilos personalizados para el scrollbar */
+                .remirror-content-viewer-container::-webkit-scrollbar {
+                    width: 6px;
+                }
+
+                .remirror-content-viewer-container::-webkit-scrollbar-track {
+                    background: #f1f1f1;
+                    border-radius: 3px;
+                }
+
+                .remirror-content-viewer-container::-webkit-scrollbar-thumb {
+                    background: #c1c1c1;
+                    border-radius: 3px;
+                }
+
+                .remirror-content-viewer-container::-webkit-scrollbar-thumb:hover {
+                    background: #a8a8a8;
+                }
+            `}</style>
         </div>
     )
 }
