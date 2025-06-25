@@ -1,1 +1,0 @@
-import{aJ as s,j as a,e as t,f as i,em as c,ia as n,ib as l}from"./index-zxEALkft.js";const o=s.memo(()=>a.jsx(t,{children:a.jsx(i,{xs:24,children:a.jsx(c,{className:"card-mesh-wrap align-center-v",children:n.map((e,r)=>a.jsx(l,{data:e,circleIcon:!0},r))})})}));export{o as default};

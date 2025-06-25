@@ -1,1 +1,0 @@
-import{cU as i,cV as n}from"./index-zxEALkft.js";const{filterGalleryBegin:c,filterGallerySuccess:s,filterGalleryErr:o}=i,y=(a,e)=>async r=>{try{r(c()),setTimeout(()=>{const t=n.filter(l=>e!==""?l[a]===e:l);r(s(t))},500)}catch(t){r(o(t))}};export{y as g};
